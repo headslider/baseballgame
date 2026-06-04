@@ -1,0 +1,3436 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>野球やろうぜ！ 管理画面</title>
+  <style>
+    body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f3f5f7;margin:0;color:#18212b}
+    header{background:#102033;color:#fff;padding:18px 20px}
+    header h1{margin:0;font-size:20px}
+    main{max-width:1180px;margin:0 auto;padding:18px}
+    .card{background:#fff;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.08);padding:18px;margin:16px 0}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input,select,button{font:inherit;border-radius:10px;border:1px solid #ccd3dc;padding:10px}
+    button{background:#184c8f;color:#fff;border:0;cursor:pointer;font-weight:700}
+    button.secondary{background:#5b6573}
+    button.danger{background:#b42318}
+    button.small{padding:6px 9px;font-size:12px}
+    .hidden{display:none!important}
+    .msg{margin-top:10px;font-weight:700}
+    .ok{color:#0b7a3b}.err{color:#b42318}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{border-bottom:1px solid #e6e9ee;padding:8px;text-align:left;vertical-align:top}
+    th{background:#f7f9fb;position:sticky;top:0}
+    .table-wrap{max-height:420px;overflow:auto;border:1px solid #e6e9ee;border-radius:12px}
+    .pill{display:inline-block;border-radius:999px;padding:2px 8px;background:#e9f1ff;margin:1px;font-size:12px}
+    .disabled{background:#ffe8e5}.enabled{background:#e5f7ee}
+    .status-draft{background:#fff4cc}.status-published{background:#e5f7ee}.status-disabled{background:#ffe8e5}
+    .export-panel{border:1px solid #e0e6ef;background:#f8fafc;border-radius:14px;padding:12px;margin-top:12px}
+    .status-pending{background:#fff4cc}.status-fixed{background:#e5f7ee}.status-rejected{background:#ffe8e5}.status-cancelled{background:#edf1f5}
+    .new-code{font-size:18px;background:#fff8d8;border:1px dashed #c49a00;padding:12px;border-radius:12px;margin-top:10px;word-break:break-all}
+    nav{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+    nav.tab-menu{position:sticky;top:0;z-index:10;background:#fff;padding:10px 0;border-bottom:1px solid #e6e9ee}
+    nav button{background:#2d6cdf}
+    nav.tab-menu button{background:#eef3fb;color:#18324c;border:1px solid #d5deea}
+    nav.tab-menu button.active{background:#184c8f;color:#fff}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    textarea.code-editor{width:100%;min-height:260px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;line-height:1.45;border:1px solid #ccd3dc;border-radius:12px;padding:12px;box-sizing:border-box}
+    .question-form{background:#f8fafc;border:1px solid #e0e6ef;border-radius:14px;padding:12px;margin:10px 0}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+    .question-form input,.question-form select,.question-form textarea{width:100%;box-sizing:border-box}
+    .choice-block{border:1px solid #dbe3ee;background:#fff;border-radius:12px;padding:10px;margin:10px 0}
+    .choice-row{display:grid;grid-template-columns:90px 1fr;gap:8px;margin:6px 0}
+    .pos-choice-title{font-weight:800;margin-top:10px;border-left:4px solid #184c8f;padding-left:8px}
+    .checkbox-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 10px;align-items:start}
+    .checkbox-row label{font-weight:600;margin:0;white-space:nowrap;display:flex;align-items:center;gap:6px;line-height:1.4}
+    .checkbox-row input[type="checkbox"]{width:auto;min-width:16px;height:16px;margin:0}
+    .inline-new-field{display:none}
+    .inline-new-field.active{display:block}
+    .type-hidden{display:none!important}
+    input:disabled,select:disabled{background:#edf1f5!important;color:#667085!important;cursor:not-allowed!important}
+    .help-tip{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#184c8f;color:#fff;font-size:12px;font-weight:800;margin-left:4px;cursor:help;vertical-align:middle}
+    .help-tip:hover{background:#0d3568}
+    label .help-tip{margin-left:6px}
+    .json-toggle{margin-top:8px}
+    .admin-field-preview{margin-top:14px;border:1px solid #dbe3ee;border-radius:16px;background:linear-gradient(#dff3df,#bfe3bf);padding:12px}
+    .admin-field-preview h3{margin:0 0 8px}
+    .admin-field-canvas{position:relative;width:100%;max-width:520px;aspect-ratio:1/0.72;background:#8fcf8d;border-radius:18px;overflow:hidden;border:2px solid rgba(255,255,255,.7)}
+    .admin-field-canvas:before{content:"";position:absolute;left:50%;top:54%;width:31%;aspect-ratio:1/1;background:#d69a55;transform:translate(-50%,-50%) rotate(45deg);border:2px solid rgba(255,255,255,.85)}
+    .admin-field-canvas:after{content:"";position:absolute;inset:0;clip-path:polygon(50% 18%,72% 53%,50% 91%,28% 53%);background:transparent;border:0;box-shadow:inset 0 0 0 0 transparent;pointer-events:none}.admin-base{position:absolute;width:18px;height:18px;background:#fff;transform:translate(-50%,-50%) rotate(45deg);border:1px solid #b7b7b7;z-index:3}
+    .admin-player{position:absolute;transform:translate(-50%,-50%);z-index:4;background:#184c8f;color:#fff;border-radius:999px;padding:4px 7px;font-size:12px;font-weight:800;box-shadow:0 2px 5px rgba(0,0,0,.25);white-space:nowrap}
+    .admin-runner{background:#d93025}
+    .admin-batter{background:#f28c28}
+    .admin-ball{position:absolute;width:13px;height:13px;border-radius:50%;background:#fff;border:2px solid #222;z-index:6;transform:translate(-50%,-50%)}
+    .admin-arrow{position:absolute;height:4px;background:#ffd400;z-index:5;transform-origin:left center;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+    .admin-arrow:after{content:"";position:absolute;right:-1px;top:50%;transform:translateY(-50%);border-left:12px solid #ffd400;border-top:7px solid transparent;border-bottom:7px solid transparent}
+    .preview-meta{font-size:13px;background:rgba(255,255,255,.75);border-radius:10px;padding:8px;margin-top:8px;line-height:1.5}
+    .admin-game-field-wrap{width:100%;max-width:860px;border-radius:18px;overflow:hidden;border:2px solid rgba(255,255,255,.7);background:#7dbb59}
+    .admin-game-field-wrap svg{width:100%;height:auto;display:block}
+    .split-grid{display:grid;grid-template-columns:1fr;gap:14px}.split-grid.list-full{grid-template-columns:1fr!important}@media(min-width:980px){.split-grid{grid-template-columns:1.1fr .9fr}}
+    label{font-weight:700}
+    .muted{color:#657184;font-size:13px}
+    .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:10px 0 18px}
+    .admin-notice-card{padding:22px}
+    .admin-notice-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}
+    .admin-notice-head h2{margin:0 0 6px}
+    .notice-badge{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:999px;background:linear-gradient(135deg,#184c8f,#2d6cdf);color:#fff;font-weight:800;white-space:nowrap;box-shadow:0 8px 18px rgba(24,76,143,.18)}
+    .notice-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:18px;align-items:start}
+    .notice-form-wrap{background:#f8fafc;border:1px solid #dbe4ef;border-radius:16px;padding:16px}
+    .notice-side{display:grid;gap:14px}
+    .notice-box{background:#f8fafc;border:1px solid #dbe4ef;border-radius:16px;padding:16px}
+    .notice-box h3{margin:0 0 10px;font-size:16px}
+    .notice-box ul{margin:8px 0 0 18px;padding:0}
+    .notice-box li{margin:6px 0;line-height:1.6}
+    .notice-field{display:block;margin-bottom:14px}
+    .notice-label{display:block;font-weight:800;margin-bottom:6px;color:#18324c}
+    .notice-field input,.notice-field select,.notice-field textarea{width:100%;box-sizing:border-box;background:#fff}
+    .notice-field textarea{min-height:132px;resize:vertical;line-height:1.5}
+    .notice-hint{display:block;margin-top:6px;color:#657184;font-size:12px;line-height:1.5}
+    .notice-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
+    .notice-actions button{min-height:44px;padding:10px 16px}
+    .notice-actions .primary-action{font-size:16px}
+    .notice-msg{margin-top:12px;padding:12px 14px;border-radius:12px;background:#f7f9fb;border:1px solid #dbe4ef}
+    .notice-msg.ok{background:#e8f7ee;border-color:#b7e0c3}
+    .notice-msg.err{background:#fdecea;border-color:#f3c2bd}
+    .notice-preview-card{background:linear-gradient(180deg,#19304e,#102033);color:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 10px 22px rgba(16,32,51,.18)}
+    .notice-preview-app{font-size:12px;opacity:.85;margin-bottom:6px}
+    .notice-preview-title{font-size:16px;font-weight:800;line-height:1.4;margin-bottom:6px;word-break:break-word}
+    .notice-preview-body{font-size:13px;line-height:1.6;color:#e5edf8;min-height:44px;word-break:break-word}
+    .notice-preview-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .notice-preview-meta .pill{background:rgba(255,255,255,.14);color:#fff}
+    #adminNoticeHistoryCard h2{margin-bottom:4px}
+    @media (max-width: 900px){
+      .notice-layout{grid-template-columns:1fr}
+      .admin-notice-head{flex-direction:column;align-items:flex-start}
+      .notice-actions{flex-direction:column;align-items:stretch}
+      .notice-actions button{width:100%}
+    }
+  
+    .notice-type-strip{background:#f8fafc;border:1px solid #dbe4ef;border-radius:16px;padding:14px 16px;margin:12px 0 16px}
+    .notice-kind-field{max-width:520px;margin-bottom:0}
+    .notice-ranking-panel{background:#fff8e6;border:2px solid #f0d083;border-radius:18px;padding:16px;margin:0 0 18px}
+    .notice-ranking-panel h3{margin:0 0 8px;color:#18324c}
+    .notice-ranking-panel .grid-2{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:14px}
+    #newQuestionNoticeList table{background:#fff}
+    #newQuestionNoticeList th{background:#eef2f6;color:#18324c}
+    #newQuestionNoticeList td{background:#f1f4f7;border-bottom:1px solid #d8e0ea}
+    #newQuestionNoticeList tr:nth-child(even) td{background:#e8edf3}
+    #newQuestionNoticeList .scheduled-at-cell{font-weight:800;color:#0f4c81;background:#dbeafe!important;border-left:4px solid #2563eb;white-space:nowrap}
+    #newQuestionNoticeList .scheduled-at-empty{color:#94a3b8;font-weight:700}
+
+  
+    .csv-admin-section{margin-top:14px;padding-top:14px;border-top:1px solid #dbe3ee}
+    .csv-admin-section:first-of-type{border-top:none}
+    .csv-import-control-row input[type="file"]{max-width:520px}
+    /* バージョン管理：フォーム崩れ防止 */
+    #tab-version-management .version-form-card{overflow:hidden}
+    #tab-version-management .form-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;align-items:end}
+    #tab-version-management label{display:block;line-height:1.5;color:#18212b}
+    #tab-version-management input,#tab-version-management select,#tab-version-management textarea{width:100%;box-sizing:border-box;margin-top:6px;background:#fff}
+    #tab-version-management textarea{min-height:118px;resize:vertical;line-height:1.55}
+    #tab-version-management .release-text-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+    #tab-version-management .release-action-row{margin-top:16px;align-items:center}
+    #tab-version-management .inline-check{display:inline-flex;align-items:center;gap:8px;width:auto;margin-right:8px;white-space:nowrap}
+    #tab-version-management .inline-check input{width:auto;margin:0;min-width:18px;height:18px}
+    #tab-version-management .release-action-row button{min-height:44px}
+    @media(max-width:820px){#tab-version-management .release-text-grid{grid-template-columns:1fr}#tab-version-management .form-grid{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<header>
+  <h1>野球やろうぜ！ 管理画面</h1>
+  <div class="muted" style="color:#dce6f3">招待ID・管理者ID・監査ログを管理します。</div>
+</header>
+<main>
+  <section id="loginCard" class="card">
+    <h2>最高位管理者ログイン</h2>
+    <div class="row">
+      <label>最高位ID<br><input id="adminId" autocomplete="username"></label>
+      <label>パスワード<br><input id="adminPassword" type="password" autocomplete="current-password"></label>
+      <button id="loginBtn">ログイン</button>
+    </div>
+    <div id="loginMsg" class="msg"></div>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <h2 style="margin-bottom:2px">管理ダッシュボード</h2>
+          <div id="adminLabel" class="muted"></div>
+        </div>
+        <div class="row">
+          <button id="refreshBtn" class="secondary">再読み込み</button>
+          <button id="logoutBtn" class="danger">ログアウト</button>
+        </div>
+      </div>
+      <nav class="tab-menu" aria-label="最高位管理者メニュー">
+        <button class="tab-btn active" data-tab="tab-admin-notice" type="button">お知らせ通知</button>
+        <button class="tab-btn" data-tab="tab-id-management" type="button">ID管理</button>
+        <button class="tab-btn" data-tab="tab-player-management" type="button">ユーザー管理</button>
+        <button class="tab-btn" data-tab="tab-question-management" data-admin-section="question-management" type="button">問題管理</button>
+        <button class="tab-btn" data-tab="tab-request-management" type="button">要望管理</button>
+        <button class="tab-btn" data-tab="tab-user-analytics" type="button">ユーザー分析</button>
+        <button class="tab-btn" data-tab="tab-access-analytics" type="button">アクセス解析・データ解析</button>
+        <button class="tab-btn" data-tab="tab-version-management" type="button">バージョン管理</button>
+        <button class="tab-btn" data-tab="tab-logs" type="button">ログ</button>
+      </nav>
+    </div>
+
+        <div id="tab-admin-notice" class="tab-panel active">
+      <section id="adminNoticeCard" class="card admin-notice-card">
+        <div class="admin-notice-head">
+          <div>
+            <h2>管理者からのお知らせ通知</h2>
+            <div class="muted">通知を許可しているPWA端末へ、管理者からお知らせを一斉送信します。</div>
+          </div>
+          <div class="notice-badge">PWA通知</div>
+        </div>
+
+        <div class="notice-type-strip">
+          <label class="notice-field notice-kind-field">
+            <span class="notice-label">通知内容</span>
+            <select id="noticePushKind">
+              <option value="admin_notice">管理者からのお知らせ通知</option>
+              <option value="ranking_notice">ランキング通知</option>
+              <option value="new_question_notice">新問題追加通知</option>
+              <option value="review_notice">間違いプレイ復習通知</option>
+            </select>
+            <span class="notice-hint">ランキング通知はランキング設定、新問題追加通知は新規問題リスト、管理者からのお知らせ通知は通常スケジュールを表示します。</span>
+          </label>
+        </div>
+
+                <section id="rankingNoticeSettingsPanel" class="notice-ranking-panel" style="display:none">
+          <h3>週間ランキング通知設定</h3>
+          <p class="muted">
+            週間総合ランキングの1位・2位・3位が前回集計時から入れ替わっていた場合のみ通知します。
+            初期値は「日曜日24:00集計、月曜日18:00配信」です。
+          </p>
+          <div class="grid-2">
+            <label class="notice-field">
+              <span class="notice-label">ランキング通知</span>
+              <select id="rankingNoticeEnabled">
+                <option value="0">OFF</option>
+                <option value="1">ON</option>
+              </select>
+            </label>
+            <label class="notice-field">
+              <span class="notice-label">集計曜日</span>
+              <select id="rankingAggregateDay">
+                <option value="sunday">日曜日</option>
+                <option value="monday">月曜日</option>
+                <option value="tuesday">火曜日</option>
+                <option value="wednesday">水曜日</option>
+                <option value="thursday">木曜日</option>
+                <option value="friday">金曜日</option>
+                <option value="saturday">土曜日</option>
+              </select>
+            </label>
+            <label class="notice-field">
+              <span class="notice-label">集計時刻</span>
+              <input id="rankingAggregateTime" type="time" value="00:00">
+              <span class="notice-hint">日曜日24:00は、実装上は月曜日00:00として扱います。</span>
+            </label>
+            <label class="notice-field">
+              <span class="notice-label">配信曜日</span>
+              <select id="rankingDeliveryDay">
+                <option value="monday">月曜日</option>
+                <option value="tuesday">火曜日</option>
+                <option value="wednesday">水曜日</option>
+                <option value="thursday">木曜日</option>
+                <option value="friday">金曜日</option>
+                <option value="saturday">土曜日</option>
+                <option value="sunday">日曜日</option>
+              </select>
+            </label>
+            <label class="notice-field">
+              <span class="notice-label">配信時刻</span>
+              <input id="rankingDeliveryTime" type="time" value="18:00">
+            </label>
+          </div>
+          <div class="notice-actions">
+            <button type="button" onclick="saveRankingNoticeSettings()">ランキング通知設定を保存</button>
+            <button class="secondary" type="button" onclick="aggregateWeeklyRankingNow()">今すぐ週間ランキングを集計</button>
+            <button class="secondary" type="button" onclick="sendWeeklyRankingNoticeNow()">今すぐランキング通知を送信</button>
+          </div>
+          <div id="rankingNoticeSettingsResult" class="msg notice-msg">ランキング通知設定を読み込み中です。</div>
+        </section>
+
+        <section id="newQuestionNoticePanel" class="notice-ranking-panel" style="display:none">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <div>
+              <h3 style="margin-bottom:4px">新規問題追加通知</h3>
+              <p class="muted">新しく追加された下書き問題を選択し、通知配信と同時に公開できます。複数選択してまとめて通知することもできます。</p>
+            </div>
+            <button class="secondary" type="button" onclick="loadNewQuestionNoticeCandidates()">新規問題リストを再読み込み</button>
+          </div>
+          <div id="newQuestionNoticeList" class="table-wrap" style="margin-top:10px"><p class="muted">新規問題リストを読み込み中です。</p></div>
+          <div class="notice-form-wrap" style="margin-top:14px">
+            <div class="grid-2" style="margin:0 0 8px">
+              <label class="notice-field">
+                <span class="notice-label">配信日</span>
+                <input id="newQuestionNoticeDate" type="date">
+              </label>
+              <label class="notice-field">
+                <span class="notice-label">配信時刻</span>
+                <select id="newQuestionNoticeHour"></select>
+                <span class="notice-hint">既存CRONに合わせて時単位で指定します。配信時に選択した下書き問題を公開します。</span>
+              </label>
+            </div>
+            <div class="notice-actions">
+              <button class="primary-action" type="button" onclick="saveNewQuestionScheduledNotice()">選択した問題を通知スケジュール登録</button>
+              <button class="secondary" type="button" onclick="unscheduleSelectedNewQuestions()">選択した問題の通知スケジュール解除</button>
+              <button class="secondary" type="button" onclick="publishSelectedDraftQuestions()">通知せず選択問題を公開</button>
+            </div>
+            <div id="newQuestionNoticeResult" class="msg notice-msg">新規問題を選択して配信日・時刻を指定してください。</div>
+          </div>
+        </section>
+
+        <div class="notice-layout">
+          <div class="notice-form-wrap">
+            <label class="notice-field">
+              <span class="notice-label">通知タイトル</span>
+              <input id="noticePushTitle" maxlength="80" placeholder="例：今週の練習前に復習しよう" value="野球やろうぜ！">
+              <span class="notice-hint">通知の見出しです。短く分かりやすいタイトルをおすすめします。</span>
+            </label>
+
+            <label class="notice-field">
+              <span class="notice-label">通知本文</span>
+              <textarea id="noticePushBody" rows="5" placeholder="例：新しい問題を追加しました。練習前に確認してみよう！"></textarea>
+              <span class="notice-hint">端末に表示される本文です。要点を1〜2文でまとめると見やすくなります。</span>
+            </label>
+
+            <div class="grid-2" style="margin:0 0 8px">
+              <label class="notice-field" style="margin-bottom:0">
+                <span class="notice-label">通知を押した時に開くURL</span>
+                <input id="noticePushUrl" placeholder="./" value="./">
+                <span class="notice-hint">通常は「./」のままで問題ありません。</span>
+              </label>
+              <label class="notice-field" style="margin-bottom:0">
+                <span class="notice-label">送信対象</span>
+                <select id="noticePushTarget">
+                  <option value="all">通知許可済みユーザー全員</option>
+                </select>
+                <span class="notice-hint">現在は全購読端末への一斉送信に対応しています。</span>
+              </label>
+            </div>
+
+            <div class="notice-actions">
+              <button class="primary-action" type="button" onclick="sendAdminNoticePush()">お知らせ通知を送信</button>
+              <button class="secondary" type="button" onclick="loadPushNoticeHistory()">送信履歴を再読み込み</button>
+            </div>
+            <div id="adminNoticePushResult" class="msg notice-msg">通知タイトル・本文を入力して送信してください。</div>
+          </div>
+
+          <aside class="notice-side">
+            <div class="notice-box">
+              <h3>使い方のポイント</h3>
+              <ul>
+                <li>タイトルは短く、本文で内容を具体的に伝えると見やすくなります。</li>
+                <li>通知は購読済みのPWA端末に送信されます。</li>
+                <li>URLは通常「./」のままで、通知を押した時にゲームトップへ戻れます。</li>
+              </ul>
+            </div>
+
+            <div class="notice-box">
+              <h3>通知プレビュー</h3>
+              <div class="notice-preview-card">
+                <div class="notice-preview-app">野球やろうぜ！</div>
+                <div id="noticePreviewTitle" class="notice-preview-title">野球やろうぜ！</div>
+                <div id="noticePreviewBody" class="notice-preview-body">ここに通知本文のプレビューが表示されます。</div>
+                <div class="notice-preview-meta">
+                  <span class="pill">対象: 全員</span>
+                  <span id="noticePreviewUrl" class="pill">URL: ./</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+
+      <section id="scheduledNoticeCard" class="card">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <div>
+            <h2 style="margin-bottom:4px">お知らせ通知スケジュール</h2>
+            <div class="muted">登録した配信日時を過ぎると、既存の毎時CRONランナーで全員向けに配信します。配信後は通知履歴・お知らせページにも残ります。</div>
+          </div>
+          <button class="secondary" type="button" onclick="loadScheduledNotices()">一覧を再読み込み</button>
+        </div>
+        <div class="notice-form-wrap" style="margin-top:14px">
+          <input id="scheduledNoticeId" type="hidden" value="">
+          <div class="grid-2" style="margin:0 0 8px">
+            <label class="notice-field">
+              <span class="notice-label">通知タイトル</span>
+              <input id="scheduledNoticeTitle" maxlength="80" placeholder="例：明日の練習前に確認しよう">
+            </label>
+            <label class="notice-field">
+              <span class="notice-label">通知を押した時に開くURL</span>
+              <input id="scheduledNoticeUrl" placeholder="./" value="./">
+            </label>
+          </div>
+          <label class="notice-field">
+            <span class="notice-label">通知本文</span>
+            <textarea id="scheduledNoticeBody" rows="4" placeholder="例：新しいお知らせがあります。確認してください。"></textarea>
+          </label>
+          <div class="grid-2" style="margin:0 0 8px">
+            <label class="notice-field">
+              <span class="notice-label">配信日</span>
+              <input id="scheduledNoticeDate" type="date">
+              <span class="notice-hint">配信日は日付で指定します。</span>
+            </label>
+            <label class="notice-field">
+              <span class="notice-label">配信時刻</span>
+              <select id="scheduledNoticeHour"></select>
+              <span class="notice-hint">既存CRONに合わせて時単位で指定します。毎時0分のCRONで配信されます。</span>
+            </label>
+          </div>
+          <div class="notice-actions">
+            <button class="primary-action" type="button" onclick="saveScheduledNotice()">スケジュール通知を登録</button>
+            <button class="secondary" type="button" onclick="clearScheduledNoticeForm()">入力をクリア</button>
+          </div>
+          <div id="scheduledNoticeResult" class="msg notice-msg">配信日・時刻を指定してスケジュール登録できます。</div>
+        </div>
+        <div style="margin-top:18px">
+          <h3 style="margin-bottom:8px">スケジュール一覧</h3>
+          <div id="scheduledNoticeTable" class="table-wrap"><p class="muted">読み込み中です。</p></div>
+        </div>
+      </section>
+
+      <section id="adminNoticeHistoryCard" class="card">
+        <h2>お知らせ通知 送信履歴</h2>
+        <div class="muted">直近のお知らせ通知送信履歴を表示します。</div>
+        <div id="adminNoticeHistoryTable" class="table-wrap"><p class="muted">読み込み中です。</p></div>
+      </section>
+    </div>
+
+    <div id="tab-id-management" class="tab-panel">
+    <section id="addCard" class="card">
+      <h2>ID追加</h2>
+      <div class="row">
+        <label>種別<br>
+          <select id="newType">
+            <option value="invite">招待ID</option>
+            <option value="admin">管理者ID</option>
+          </select>
+        </label>
+        <label>ラベル<br><input id="newLabel" placeholder="例：チーム配布用001"></label>
+        <label>利用上限<br><input id="newMaxUses" type="number" min="0" max="9999" value="1"></label>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <label><input type="checkbox" class="featureBox" value="mistake_review" checked> 間違いプレイチェック</label>
+        <label><input type="checkbox" class="featureBox" value="device_transfer" checked> 端末引継ぎ</label>
+        <label><input type="checkbox" class="featureBox" value="admin_mode"> 管理者モード</label>
+        <button id="addCodeBtn">IDを生成</button>
+      </div>
+      <div class="muted">管理者IDを選ぶと、管理者モードも自動で付与します。生成されたIDはこの画面で一度だけ表示されます。</div>
+      <div id="newCodeBox"></div>
+    </section>
+
+
+    <section id="issueLinkSettingsCard" class="card">
+      <h2>招待ID/管理者ID 取得URL設定</h2>
+      <div class="muted">必要な人に配布するキー付きURLを設定します。設定値は scores/issue_link_settings.json に保存される運用データです。アプリ本体の更新ZIPには同梱せず、本番更新時もこのファイルを上書きしないでください。保存したキー付きURLは、管理画面でキーを任意に更新・保存するまで有効期限なしで再利用できます。配布URLには openExternalBrowser=1 を付与します。キーを知っている人は誰でもトップページを開き、ID登録・ログイン後に対象IDを受け取れます。</div>
+      <div class="row" style="margin-top:10px;align-items:flex-end">
+        <label>招待ID用キー<br><input id="issueInviteKey" placeholder="例：invite-team-2026"></label>
+        <button class="secondary" type="button" onclick="generateIssueLinkKey('invite')">招待IDキーを生成</button>
+        <label>管理者ID用キー<br><input id="issueAdminKey" placeholder="例：admin-coach-2026"></label>
+        <button class="secondary" type="button" onclick="generateIssueLinkKey('admin')">管理者IDキーを生成</button>
+        <button type="button" onclick="saveIssueLinkSettings()">取得URL設定を保存</button>
+      </div>
+      <div id="issueLinkSettingsMsg" class="msg"></div>
+      <div class="table-wrap" style="margin-top:12px">
+        <table><tbody>
+          <tr><th>招待ID配布URL</th><td><code id="inviteIssueDistributionUrl">未設定</code><br><button class="secondary small" type="button" onclick="copyIssueDistributionUrl('invite')">URLコピー</button></td></tr>
+          <tr><th>管理者ID配布URL</th><td><code id="adminIssueDistributionUrl">未設定</code><br><button class="secondary small" type="button" onclick="copyIssueDistributionUrl('admin')">URLコピー</button></td></tr>
+        </tbody></table>
+      </div>
+      <div class="muted">セキュリティは、必要な期間ごとに招待ID用キー・管理者ID用キーを再生成して保存し、配布URLを更新することで管理します。古いURLを無効にしたい場合は、新しいキーを保存してください。更新作業では scores/issue_link_settings.json をバックアップし、scores/ フォルダを残したままアプリ本体だけを上書きしてください。管理者ID用URLは指導者・運用担当者のみに配布してください。</div>
+    </section>
+
+    <section id="inviteCard" class="card">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div class="row" style="align-items:center;gap:8px">
+          <h2>招待ID一覧</h2>
+          <button class="secondary small" type="button" onclick="sortCodeList('invite','used_asc')">利用日 早い順</button>
+          <button class="secondary small" type="button" onclick="sortCodeList('invite','used_desc')">利用日 遅い順</button>
+          <span id="inviteSortInfo" class="muted"></span>
+        </div>
+        <button class="secondary" type="button" onclick="downloadCodeCsv('invite')">招待ID一覧CSVダウンロード</button>
+      </div>
+      <div id="inviteCodes" class="table-wrap"></div>
+    </section>
+
+
+
+
+    <section id="inviteUnlockedCard" class="card">
+      <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+        <div>
+          <h2>招待ID付与済みID一覧</h2>
+          <div class="muted">scores/player_features.json を正として、招待IDによって機能が解放されているプレイヤーIDを表示します。旧仕様で招待ID一覧に残っていないIDもここで確認できます。</div>
+        </div>
+        <div class="row" style="gap:8px">
+          <button class="secondary" type="button" onclick="loadInviteUnlockedPlayers()">再読み込み</button>
+          <button class="secondary" type="button" onclick="downloadInviteUnlockedCsv()">付与済みID CSVダウンロード</button>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <label>ID検索<br><input id="inviteUnlockedSearchInput" placeholder="プレイヤーID・機能・hashなど"></label>
+        <button type="button" onclick="loadInviteUnlockedPlayers()">検索</button>
+      </div>
+      <div id="inviteUnlockedSummary" class="row" style="margin-top:10px"></div>
+      <div id="inviteUnlockedTable" class="table-wrap"><p class="muted">読み込み中です。</p></div>
+    </section>
+
+
+    <section id="adminCard" class="card">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div class="row" style="align-items:center;gap:8px">
+          <h2>管理者ID一覧</h2>
+          <button class="secondary small" type="button" onclick="sortCodeList('admin','used_asc')">利用日 早い順</button>
+          <button class="secondary small" type="button" onclick="sortCodeList('admin','used_desc')">利用日 遅い順</button>
+          <span id="adminSortInfo" class="muted"></span>
+        </div>
+        <button class="secondary" type="button" onclick="downloadCodeCsv('admin')">管理者ID一覧CSVダウンロード</button>
+      </div>
+      <div id="adminCodes" class="table-wrap"></div>
+    </section>
+
+
+
+    <section id="adminUnlockedCard" class="card">
+      <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+        <div>
+          <h2>管理者機能解放済みID一覧</h2>
+          <div class="muted">scores/player_features.json を正として、現在「管理者用モード」が使えるプレイヤーIDを表示します。解除すると管理者用モードだけでなく、間違いプレイチェック・引継ぎ機能など対象IDに付与されている全機能を無効化し、player_features.json から対象データを削除します。</div>
+        </div>
+        <div class="row" style="gap:8px">
+          <button class="secondary" type="button" onclick="loadAdminUnlockedPlayers()">再読み込み</button>
+          <button class="secondary" type="button" onclick="downloadAdminUnlockedCsv()">解放済みID CSVダウンロード</button>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <label>ID検索<br><input id="adminUnlockedSearchInput" placeholder="プレイヤーID・取得元・hashなど"></label>
+        <button type="button" onclick="loadAdminUnlockedPlayers()">検索</button>
+      </div>
+      <div id="adminUnlockedSummary" class="row" style="margin-top:10px"></div>
+      <div id="adminUnlockedTable" class="table-wrap"><p class="muted">読み込み中です。</p></div>
+    </section>
+
+    <section id="selfUnissuedCodeCard" class="card">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div>
+          <h2>招待ID/管理者ID 未取得ID</h2>
+          <div class="muted">登録済みプレイヤーIDのうち、招待IDまたは管理者IDの発行・付与がまだ確認できないIDをまとめて表示します。発行台帳だけでなく player_features.json の招待ID付与済み・管理者機能解放済み状態とも照合します。取得済み/付与済みIDは上の「招待ID一覧」「管理者ID一覧」「招待ID付与済みID一覧」「管理者機能解放済みID一覧」で確認します。</div>
+        </div>
+        <button class="secondary" type="button" onclick="downloadSelfUnissuedCodeCsv()">未取得ID CSVダウンロード</button>
+      </div>
+      <div id="selfUnissuedCodeSummary" class="row" style="margin-top:10px"></div>
+      <div id="selfUnissuedCodeTable" class="table-wrap"><p class="muted">読み込み中です。</p></div>
+    </section>
+
+
+
+    </div>
+    <div id="tab-player-management" class="tab-panel">
+      <section id="playerManageCard" class="card">
+        <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+          <div>
+            <h2>ユーザー管理</h2>
+            <div class="muted">登録された全ユーザーの検索、一覧確認、ゲーム利用停止・再開を管理します。</div>
+          </div>
+          <button class="secondary" type="button" onclick="loadPlayerAdminList()">ユーザー一覧を再読み込み</button>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <label>ID検索<br><input id="playerAdminSearchInput" placeholder="プレイヤーID・状態・理由など"></label>
+          <button type="button" onclick="loadPlayerAdminList()">検索</button>
+        </div>
+        <div class="row" style="align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px">
+          <h3 style="margin:0">ユーザー一覧</h3>
+          <button class="secondary small" type="button" onclick="sortPlayerAdminList('last_login_at','asc')">最終ログイン 早い順</button>
+          <button class="secondary small" type="button" onclick="sortPlayerAdminList('last_login_at','desc')">最終ログイン 遅い順</button>
+          <button class="secondary small" type="button" onclick="sortPlayerAdminList('last_played_at','asc')">最終プレイ 早い順</button>
+          <button class="secondary small" type="button" onclick="sortPlayerAdminList('last_played_at','desc')">最終プレイ 遅い順</button>
+          <span id="playerAdminSortInfo" class="muted"></span>
+        </div>
+        <div id="playerAdminInfo" class="muted" style="margin-top:8px"></div>
+        <div id="playerAdminTable" class="table-wrap"><p class="muted">ユーザー管理タブを開くと読み込みます。</p></div><div id="playerIdChangeHistoryDetail" class="card detail-card" style="display:none"></div>
+      </section>
+    </div>
+
+    <div id="tab-question-management" class="tab-panel">
+      <section id="questionManageCard" class="card">
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <h2>出題問題管理</h2>
+            <div class="muted">問題テキスト・選択肢・描画情報をJSONで修正、追加、削除できます。保存前に自動バックアップを作成します。</div>
+          </div>
+          <button class="secondary" type="button" onclick="loadQuestionList()">問題一覧を再読み込み</button>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <label>検索<br><input id="questionSearchInput" placeholder="ID・本文・ball_tagなど"></label>
+          <label>種別<br>
+            <select id="questionTypeFilter" onchange="updateQuestionPositionFilterVisibility();loadQuestionList();">
+              <option value="">すべて</option>
+              <option value="attack">攻撃</option>
+              <option value="defense">守備</option>
+              <option value="basic">基本</option>
+            </select>
+          </label>
+          <label id="questionPositionFilterWrap">守備位置<br>
+            <select id="questionPositionFilter">
+              <option value="">すべて</option>
+              <option value="P">ピッチャー</option>
+              <option value="C">キャッチャー</option>
+              <option value="1B">ファースト</option>
+              <option value="2B">セカンド</option>
+              <option value="SS">ショート</option>
+              <option value="3B">サード</option>
+              <option value="LF">レフト</option>
+              <option value="CF">センター</option>
+              <option value="RF">ライト</option>
+            </select>
+          </label>
+          <button type="button" onclick="loadQuestionList()">検索</button>
+          <button class="secondary" type="button" onclick="newQuestionTemplate()">新規問題テンプレイト</button>
+        </div>
+
+        <div id="questionListInfo" class="muted" style="margin-top:8px"></div>
+        <div id="draftQuestionPanel" class="card" style="display:none;margin-top:12px">
+          <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+            <div>
+              <h3 style="margin:0 0 4px">下書き中の新規問題</h3>
+              <div class="muted">下書き問題はゲームには出題されません。新規問題通知と同時に公開、または通知なしで手動公開できます。</div>
+            </div>
+            <button class="secondary small" type="button" onclick="loadNewQuestionNoticeCandidates()">新規問題候補を更新</button>
+          </div>
+          <div id="draftQuestionList" class="table-wrap" style="margin-top:10px"><p class="muted">問題一覧を読み込むと表示します。</p></div>
+        </div>
+        <div id="questionSplitGrid" class="split-grid list-full" style="margin-top:12px">
+          <div>
+            <div class="row" style="align-items:center;gap:8px;flex-wrap:wrap">
+              <h3>問題一覧</h3>
+              <button class="secondary small" type="button" onclick="sortQuestionList('grade')">学年別</button>
+              <button class="secondary small" type="button" onclick="sortQuestionList('stage')">走者別</button>
+              <button class="secondary small" type="button" onclick="sortQuestionList('outs')">アウトカウント別</button>
+              <button class="secondary small" type="button" onclick="sortQuestionList('status')">公開状態</button>
+              <button class="secondary small" type="button" onclick="sortQuestionList('id')">ID順</button>
+              <span id="questionSortInfo" class="muted"></span>
+            </div>
+            <div id="questionListTable" class="table-wrap"></div>
+            <div id="questionVisualPreview" class="admin-field-preview">
+              <h3>フィールド表示プレビュー</h3>
+              <div class="muted">左の一覧から問題を選択すると、ここに visual の内容を簡易表示します。</div>
+            </div>
+          </div>
+          <div id="questionEditorPanel" style="display:none">
+            <h3>問題フォーム編集</h3>
+            <div class="row">
+              <label>編集中ID<br><input id="questionEditingId" readonly></label>
+              <button id="questionSaveBtn" type="button" onclick="saveQuestionFromEditor()" disabled>保存 / 追加</button>
+              <button id="questionCopyBtn" class="secondary" type="button" onclick="copyEditingQuestion()" disabled>コピー</button>
+              <button class="danger" type="button" onclick="deleteEditingQuestion()">削除</button>
+            </div>
+            <div class="muted" style="margin:8px 0">
+              ルールが決まっている項目はプルダウンで選択します。stageは「問題の判断対象・出題分類」です。攻撃では主に自分がどの走者か、守備ではどの走者状況の守備問題かを表します。visual.runnersは「画面に表示するランナー全員」です。守備時の自分の場所はstageではなくpositionsで指定します。アウト条件は攻撃・守備問題では必須です。アウト数に依存しない問題だけ「アウト共通」を選びます。基本問題はアウト条件なしでも保存できます。必須項目を入力し、選択肢3個・点数3/1/0を満たすまで保存できません。
+            </div>
+            <div id="questionFormEditor" class="question-form">
+              <div class="form-grid">
+                <label>ID*<span class="help-tip" title="問題を識別するIDです。既存IDと重複できません。例：A001、D411">?</span><input id="qf_id" data-qf="id" required readonly placeholder="種別選択後に自動発行"></label>
+                <label>種別*<span class="help-tip" title="新規作成では種別を選んだ時点でIDを自動発行します。既存問題では変更できません。">?</span><select id="qf_type" data-qf="type" required>
+                  <option value="">選択してください</option>
+                  <option value="attack">攻撃</option>
+                  <option value="defense">守備</option>
+                  <option value="basic">基本</option>
+                </select></label>
+                <label>公開状態*<span class="help-tip" title="公開はゲームに出題、非公開（下書き）と停止は出題されません。新規問題は基本的に非公開（下書き）で保存します。">?</span><select id="qf_status" required>
+                  <option value="published">公開</option>
+                  <option value="draft">非公開（下書き）</option>
+                  <option value="disabled">停止</option>
+                </select></label>
+                <label>学年*<span class="help-tip" title="出題対象の学年です。低学年向けは3年生以下を選びます。">?</span><select id="qf_grade" data-qf="grade" required>
+                  <option value="">選択してください</option><option value="2">3年生以下</option><option value="3">3年生</option><option value="4">4年生</option><option value="5">5年生</option><option value="6">6年生</option>
+                </select></label>
+                <label>stage 判断対象・出題分類*<span class="help-tip" title="問題の判断対象・出題分類です。攻撃では主に自分がどの走者かを表します。守備ではどの走者状況の守備問題かを表します。画面に表示する全ランナーは visual.runners で別に設定します。">?</span><select id="qf_stage" data-qf="stage" required>
+                  <option value="">選択してください</option><option value="BASIC">基本動作</option><option value="BR">打者走者</option><option value="EMPTY">走者なし</option><option value="1B">一塁</option><option value="2B">二塁</option><option value="3B">三塁</option><option value="1B2B">一・二塁</option><option value="1B3B">一・三塁</option><option value="2B3B">二・三塁</option><option value="1B2B3B">満塁</option>
+                </select></label>
+                <label>アウト条件<span class="help-tip" title="攻撃・守備問題では必須です。基本問題はアウト条件なしでも保存できます。アウト数に依存しない問題だけ「アウト共通」を選びます。0はゲーム内ではノーアウト表記になります。">?</span><select id="qf_outs" data-qf="outs">
+                  <option value="">選択してください</option><option value="0">ノーアウト</option><option value="1">1アウト</option><option value="2">2アウト</option><option value="common">アウト共通</option>
+                </select></label>
+                <label>inning<span class="help-tip" title="管理用の回表示・追加区分です。通常は「追加」で問題ありません。">?</span><input id="qf_inning" data-qf="inning" placeholder="例：追加"></label>
+                <label>theme*<span class="help-tip" title="問題のテーマ分類です。既存テーマから選ぶか、新規追加を選んで新しいテーマを作ります。">?</span><select id="qf_theme_select" required></select><div id="qf_theme_label" class="muted"></div></label>
+                <label id="qf_theme_new_wrap" class="inline-new-field">新規theme<span class="help-tip" title="新しいテーマIDを英数字とアンダーバーで入力します。例：pickoff_tag_play_basic">?</span><input id="qf_theme_new" placeholder="例：pickoff_tag_play_basic"></label>
+                <label>ball_tag*<span class="help-tip" title="問題一覧や管理画面で表示する短い分類名です。例：盗塁サイン、三塁送球判断">?</span><select id="qf_ball_tag_select" required></select></label>
+                <label id="qf_ball_tag_new_wrap" class="inline-new-field">新規ball_tag<span class="help-tip" title="新しい分類名を日本語で入力します。問題の内容が一目で分かる名前にします。">?</span><input id="qf_ball_tag_new" placeholder="例：一塁タッチプレイ"></label>
+              </div>
+              <label>問題文 situation*<span class="help-tip" title="実際に出題される場面説明です。子どもが状況を理解できる自然な文章にします。">?</span><textarea id="qf_situation" data-qf="situation" rows="4" required></textarea></label>
+              <label>問い prompt*<span class="help-tip" title="選択肢の前に表示する問いかけ文です。定型文から選びます。">?</span><select id="qf_prompt_template" required></select></label>
+              <label id="qf_prompt_custom_wrap" class="inline-new-field">新規・自由入力prompt<span class="help-tip" title="定型文以外の問いかけを使う場合に入力します。">?</span><textarea id="qf_prompt_custom" rows="2"></textarea></label>
+              <div id="attackFields" class="form-grid type-section type-attack-only">
+                <label>攻撃 role<span class="help-tip" title="攻撃問題での自分の役割です。例：打者、走者、自分。">?</span><input id="qf_role" data-qf="role" placeholder="例：自分"></label>
+                <label>攻撃 runner<span class="help-tip" title="攻撃問題で自分がどの走者かを示します。例：一塁走者、二塁走者。">?</span><input id="qf_runner" data-qf="runner" placeholder="例：自分"></label>
+              </div>
+              <h4 id="positionsHeading" class="type-section type-defense-only">守備位置 positions*<span class="help-tip" title="守備問題で出題対象にする守備位置です。守備時の自分の場所はstageではなくpositionsで決まります。守備問題では必ず1つ以上選びます。">?</span></h4>
+              <div id="qf_positions" class="checkbox-row type-section type-defense-only"></div>
+              <h4 id="visualHeading">描画 visual <span class="help-tip" title="フィールド上の表示ランナー、打者走者、矢印、ボール位置を決める設定です。">?</span></h4><div class="muted" style="margin:4px 0 8px">visual.runners は画面に表示するランナー全員です。stageは判断対象・出題分類であり、visual.runnersと一致している必要はありません。</div>
+              <div class="form-grid">
+                <label>ランナー表示 visual.runners<span class="help-tip" title="画面に表示するランナー全員です。例：一・二塁の場面なら1Bと2Bを選びます。stageは判断対象・出題分類なので、visual.runnersとは別設定です。">?</span><div id="qf_visual_runners" class="checkbox-row"></div></label>
+                <label>打者走者 batter_runner*<span class="help-tip" title="打者走者を画面に表示するかどうかです。打った直後の問題では表示、ワイルドピッチ等では通常表示しません。">?</span><select id="qf_batter_runner" required><option value="">選択してください</option><option value="false">表示しない</option><option value="true">表示する</option></select></label>
+                <label>ball_path*<span class="help-tip" title="打球・送球・牽制などの矢印方向です。プレビューとゲーム画面のボール方向に関係します。">?</span><select id="qf_ball_path" required></select><div id="qf_ball_path_label" class="muted"></div></label>
+                <label>ball_holder<span class="help-tip" title="ボールを持っている、または送球開始位置になる選手です。例：P、SS、1B。">?</span><select id="qf_ball_holder"></select></label>
+                <label>target_position<span class="help-tip" title="送球・牽制・打球の到達先です。プレビュー上のボール位置にも使います。">?</span><select id="qf_target_position"></select></label>
+              </div>
+              <h4 id="choicesHeading">選択肢 <span class="help-tip" title="3点・1点・0点の3択を作ります。守備問題では選んだ守備位置ごとに選択肢が必要です。">?</span></h4>
+              <div id="qf_choices"></div>
+            </div>
+            <button class="secondary json-toggle" type="button" onclick="toggleAdvancedJson()">JSON確認を開閉</button>
+            <textarea id="questionJsonEditor" class="code-editor" spellcheck="false" style="display:none" placeholder="フォーム内容から自動生成されます。原則としてフォームで編集してください。"></textarea>
+            <div id="questionRuleMessage" class="msg"></div>
+            <div id="questionEditMessage" class="msg"></div>
+          </div>
+        </div>
+        <div id="questionCountAuditPanel" class="card" style="margin-top:12px">
+          <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+            <div>
+              <h3 style="margin:0 0 4px">守備問題数チェック</h3>
+              <div class="muted">公開中の守備問題を、実際に出題される学年条件（grade+1 / min_grade / max_grade）で集計します。common問題は0・1・2アウトすべての候補に数えます。</div>
+            </div>
+            <button class="secondary small" type="button" onclick="renderDefenseQuestionCountAudit(latestQuestions||[])">集計を更新</button>
+          </div>
+          <div id="questionCountAuditSummary" class="muted" style="margin-top:8px">問題一覧を読み込むと表示します。</div>
+          <div id="questionCountAuditTable" class="table-wrap" style="margin-top:8px"></div>
+        </div>
+        <div class="export-panel">
+          <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+            <div>
+              <h3 style="margin:0 0 4px">問題CSV管理</h3>
+              <div class="muted">CSVエクスポート、CSVインポート・差分確認、復元・バックアップをまとめて管理します。CSV反映や復元の前には現在データも自動バックアップします。最新CSVには outs / outs_scope / visual_batter_runner / visual_ball_path の確認列を含めます。</div>
+            </div>
+          </div>
+
+          <div class="csv-admin-section">
+            <div class="row" style="justify-content:flex-start;align-items:center;gap:10px;flex-wrap:wrap">
+              <h4 style="margin:0">問題CSVエクスポート</h4>
+              <button class="secondary small" type="button" onclick="exportQuestionCsv('all')">全問題CSV</button>
+              <button class="secondary small" type="button" onclick="exportQuestionCsv('filtered')">現在の絞り込みCSV</button>
+            </div>
+            <div class="muted" style="margin-top:4px">基本列＋status＋raw_json形式で出力します。</div>
+            <div id="questionExportMessage" class="msg notice-msg" style="display:none"></div>
+          </div>
+
+          <div class="csv-admin-section">
+            <h4 style="margin:0 0 4px">問題CSVインポート・差分確認</h4>
+            <div class="muted">CSVを読み込み、新規追加・更新候補・変更なし・エラーを確認してから反映します。CSVでもアウト条件、アウト共通、visual.batter_runner、visual.ball_path などの必須項目をチェックします。</div>
+            <div class="csv-import-control-row" style="margin-top:8px;display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
+              <label style="min-width:280px"><input id="questionCsvImportFile" type="file" accept=".csv,text/csv"></label>
+              <div class="row csv-import-actions" style="gap:6px;margin-bottom:2px">
+                <button class="secondary small" type="button" onclick="previewQuestionCsvImport()">CSVを読み込んで確認</button>
+                <button class="small" type="button" onclick="applyQuestionCsvImport()">選択した行を反映</button>
+              </div>
+              <div class="row" style="gap:6px;align-items:center;margin-left:auto;margin-bottom:2px">
+                <span style="white-space:nowrap;font-weight:700;color:#34435a">game_config整合修正</span>
+                <select id="questionCsvFixGameConfig" style="min-width:220px"><option value="1">ズレを表示して修正する</option><option value="0">questions.jsonのみ反映する</option></select>
+              </div>
+            </div>
+            <div id="questionCsvImportMessage" class="msg"></div>
+            <div id="questionCsvPreviewBox" class="table-wrap"></div>
+          </div>
+
+          <div class="csv-admin-section question-restore-section">
+            <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+              <div>
+                <h4 style="margin:0 0 4px">問題データ復元・バックアップ管理</h4>
+                <div class="muted">問題の追加・修正・削除履歴と、CSV反映・復元前に作成されたバックアップをこの枠で一元管理します。</div>
+              </div>
+              <div class="row" style="gap:6px">
+                <button class="secondary small" type="button" onclick="loadQuestionVersions()">変更履歴を更新</button>
+                <button class="secondary small" type="button" onclick="loadQuestionBackups()">バックアップ一覧を更新</button>
+              </div>
+            </div>
+            <div class="restore-subsection">
+              <h5 style="margin:10px 0 4px">変更履歴から復元</h5>
+              <div class="muted">問題フォーム編集・CSV反映・バックアップ復元などの変更履歴から、変更前の questions.json 全体へ戻せます。</div>
+              <div id="questionVersionMessage" class="msg"></div>
+              <div id="questionVersionTable" class="table-wrap"><p class="muted">変更履歴を読み込み中です。</p></div>
+              <div id="questionVersionDetail" class="question-form" style="display:none"></div>
+            </div>
+            <div class="restore-subsection">
+              <h5 style="margin:14px 0 4px">バックアップ一覧から復元・削除</h5>
+              <div class="muted">CSV反映や復元の前に作成されたバックアップを確認・復元・削除できます。</div>
+              <div id="questionBackupMessage" class="msg"></div>
+              <div id="questionBackupList" class="table-wrap"><p class="muted">バックアップ一覧を読み込んでください。</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="tab-user-analytics" class="tab-panel">
+    <section id="userAnalyticsCard" class="card">
+      <div class="row" style="justify-content:space-between">
+        <h2>ゲームユーザー分析</h2>
+        <button class="secondary" type="button" onclick="downloadUserAnalyticsCsv()">ユーザー分析CSVダウンロード</button>
+      </div>
+      <div id="userAnalyticsSummary" class="row"><div class="muted">読み込み中です。</div></div>
+      <h3>学年別プレイ数</h3>
+      <div id="userAnalyticsByGrade"><p class="muted">読み込み中です。</p></div>
+      <h3>ポジション別プレイ数</h3>
+      <div id="userAnalyticsByPosition"><p class="muted">読み込み中です。</p></div>
+      <div class="row" style="align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <h3>ユーザー別分析</h3>
+        <button class="secondary small" type="button" onclick="sortUserAnalytics('last_login_at','asc')">最終ログイン 早い順</button>
+        <button class="secondary small" type="button" onclick="sortUserAnalytics('last_login_at','desc')">最終ログイン 遅い順</button>
+        <button class="secondary small" type="button" onclick="sortUserAnalytics('last_played_at','asc')">最終プレイ 早い順</button>
+        <button class="secondary small" type="button" onclick="sortUserAnalytics('last_played_at','desc')">最終プレイ 遅い順</button>
+        <button class="secondary small" type="button" onclick="sortUserAnalytics('correct_count','desc')">クリア問題数 多い順</button>
+        <button class="secondary small" type="button" onclick="sortUserAnalytics('correct_count','asc')">クリア問題数 少ない順</button>
+        <span id="userAnalyticsSortInfo" class="muted"></span>
+      </div>
+      <div id="userAnalyticsTable" class="table-wrap"><p class="muted">読み込み中です。</p></div>
+    </section>
+
+    </div>
+    <div id="tab-access-analytics" class="tab-panel">
+    <section id="accessAnalyticsCard" class="card">
+      <div class="row" style="justify-content:space-between">
+        <h2>アクセス解析</h2>
+        <button class="secondary" type="button" onclick="downloadAccessLogCsv()">アクセスログCSVダウンロード</button>
+      </div>
+      <div id="accessAnalyticsSummary" class="row"><div class="muted">読み込み中です。</div></div>
+      <h3>日別アクセス数</h3>
+      <div id="accessDailyTable" class="table-wrap"><p class="muted">読み込み中です。</p></div>
+      <h3>ページ別アクセス数</h3>
+      <div id="accessPageTable"><p class="muted">読み込み中です。</p></div>
+      <h3>端末・PWA別アクセス</h3>
+      <div class="grid-2">
+        <div><h4>表示モード</h4><div id="accessDisplayModeTable"><p class="muted">読み込み中です。</p></div></div>
+        <div><h4>端末種別</h4><div id="accessDeviceTypeTable"><p class="muted">読み込み中です。</p></div></div>
+        <div><h4>OS</h4><div id="accessOsTable"><p class="muted">読み込み中です。</p></div></div>
+        <div><h4>ブラウザ</h4><div id="accessBrowserTable"><p class="muted">読み込み中です。</p></div></div>
+      </div>
+      <h3>プレイヤーID登録結果</h3>
+      <div id="idResultTable"><p class="muted">読み込み中です。</p></div>
+      <h3>直近アクセスログ</h3>
+      <div id="accessRecentTable" class="table-wrap"><p class="muted">読み込み中です。</p></div>
+    </section>
+
+    </div>
+
+    <div id="tab-request-management" class="tab-panel">
+      <section class="card">
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <h2>要望管理</h2>
+            <div class="muted">要望フォームから送信されたデータをID単位で管理します。ステータスは「検討中」「修正反映」「対応不可」へ変更できます。</div>
+          </div>
+          <button class="secondary" type="button" onclick="loadRequestAdminList().catch(e=>alert(e.message))">要望データを再読み込み</button>
+        </div>
+        <section class="card" style="background:#f8fbff;border-color:#d7e3f5;margin-top:14px">
+          <h3 style="margin-top:0">新規要望メール通知</h3>
+          <div class="muted">要望フォームから新規要望が登録された時に、指定メールアドレスへ通知します。複数登録する場合は改行またはカンマで区切ってください。</div>
+          <div class="row" style="align-items:flex-end;margin-top:10px;gap:12px;flex-wrap:wrap">
+            <label style="min-width:150px"><input type="checkbox" id="requestNoticeEnabled"> 通知をONにする</label>
+            <label style="width:360px;max-width:100%">通知先メールアドレス<br>
+              <textarea id="requestNoticeEmails" rows="2" style="width:100%;min-height:42px;box-sizing:border-box;resize:vertical" placeholder="例：tamaki@example.com"></textarea>
+            </label>
+          </div>
+          <div class="row" style="align-items:flex-end;gap:10px;flex-wrap:wrap">
+            <label style="width:260px;max-width:100%">送信元メールアドレス<br>
+              <input id="requestNoticeFrom" style="width:100%;box-sizing:border-box" placeholder="no-reply@realemotionfactory.com">
+            </label>
+            <label style="width:260px;max-width:100%">メール件名<br>
+              <input id="requestNoticeSubject" style="width:100%;box-sizing:border-box" placeholder="新規要望メール通知">
+            </label>
+            <button type="button" onclick="saveRequestNoticeSettings().catch(e=>alert(e.message))">通知設定を保存</button>
+            <button class="secondary" type="button" onclick="testRequestNoticeEmail().catch(e=>alert(e.message))">テストメール送信</button>
+          </div>
+          <div class="muted" style="margin-top:6px">新規要望通知メールの本文は、投稿された「要望タイトル」のみを送信します。</div>
+          <div id="requestNoticeMessage" class="msg"></div>
+        </section>
+        <div id="requestAdminSummary" class="row" style="margin:12px 0"><span class="muted">要望管理タブを開くと読み込みます。</span></div>
+        <div id="requestAdminMessage" class="msg"></div>
+        <div id="requestAdminTable" class="table-wrap"><p class="muted">要望管理タブを開くと読み込みます。</p></div>
+      </section>
+    </div>
+
+
+    <div id="tab-version-management" class="tab-panel">
+      <div class="card">
+        <div class="row between">
+          <div>
+            <h2>バージョン管理</h2>
+            <div class="muted">ユーザー向け公開バージョン（v1.0.0形式）と内部開発バージョンを分けて管理します。新規問題追加通知を配信した場合は、自動で次のパッチ版として更新履歴に追加されます。</div>
+          </div>
+          <button class="secondary" type="button" onclick="loadReleaseVersions()">再読み込み</button>
+        </div>
+        <div id="releaseVersionCurrent" class="table-wrap" style="margin-top:12px"><p class="muted">バージョン管理タブを開くと読み込みます。</p></div>
+      </div>
+      <div class="card">
+        <h3>バージョンルール</h3>
+        <div id="releaseVersionRules" class="table-wrap"><p class="muted">読み込み中です。</p></div>
+      </div>
+      <div class="card version-form-card">
+        <h3>バージョン追加・編集</h3>
+        <input id="releaseVersionId" type="hidden">
+        <div class="form-grid">
+          <label>ユーザー向けバージョン<span class="help-tip" title="保護者・選手に表示する公開バージョンです。正式公開は v1.0.0 から開始し、問題追加は v1.0.1 のようにパッチ更新します。">?</span><input id="releasePublicVersion" placeholder="例：v1.0.0"></label>
+          <label>更新種別<span class="help-tip" title="メジャー=大きなシステム変更、マイナー=機能追加や修正、パッチ=問題追加や軽微な修正です。">?</span><select id="releaseType"><option value="major">メジャー：v2.0.0</option><option value="minor">マイナー：v1.1.0</option><option value="patch">パッチ：v1.0.1</option></select></label>
+          <label>公開日<span class="help-tip" title="ユーザー向け更新履歴に表示する日付です。通常は公開日または配信日を入れます。">?</span><input id="releaseDate" type="date"></label>
+          <label>タイトル<span class="help-tip" title="更新履歴の見出しです。ユーザーに分かりやすい短いタイトルにします。">?</span><input id="releaseTitle" placeholder="例：正式公開版"></label>
+          <label>内部バージョン<span class="help-tip" title="開発・検証・ZIP識別用のバージョンです。ユーザーには基本表示しません。例：v762-test / v756-production。">?</span><input id="releaseInternalVersion" readonly></label>
+          <label>cache_version<span class="help-tip" title="PWA / Service Worker のキャッシュ更新用識別名です。変更すると端末が新しいJS/CSS等を取得しやすくなります。">?</span><input id="releaseCacheVersion" readonly></label>
+        </div>
+        <div class="release-text-grid">
+          <label>ユーザー向け更新内容<span class="help-tip" title="保護者・選手に表示する説明です。技術用語を避け、何が追加・改善されたかを短く書きます。">?</span><textarea id="releasePublicSummary" rows="5" placeholder="保護者・選手に表示する内容を短く入力"></textarea></label>
+          <label>管理者向けメモ<span class="help-tip" title="技術的な変更、検証内容、注意点、通知IDや問題IDなど、運用担当者向けの記録です。">?</span><textarea id="releaseAdminNote" rows="5" placeholder="技術的な変更、検証内容、注意点"></textarea></label>
+        </div>
+        <div class="row release-action-row">
+          <label class="inline-check"><input id="releaseVisible" type="checkbox" checked> ユーザーに表示する<span class="help-tip" title="ONにするとユーザー側のお知らせ・更新履歴に表示されます。管理画面だけに残す場合はOFFにします。">?</span></label>
+          <label class="inline-check"><input id="releaseCurrent" type="checkbox"> 現在公開中にする<span class="help-tip" title="ONにした履歴を現在の公開バージョンとして扱います。通常は最新の公開版だけをONにします。">?</span></label>
+          <button class="primary" type="button" onclick="saveReleaseVersion()">保存</button>
+          <button class="secondary" type="button" onclick="resetReleaseVersionForm()">新規入力に戻す</button>
+        </div>
+        <div id="releaseVersionMsg" class="msg"></div>
+      </div>
+      <div class="card">
+        <h3>更新履歴</h3>
+        <div id="releaseVersionTable" class="table-wrap"><p class="muted">読み込み中です。</p></div>
+      </div>
+    </div>
+
+    <div id="tab-logs" class="tab-panel">
+    <section id="idLogCard" class="card">
+      <h2>ID監査ログ</h2>
+      <div class="muted">招待ID・管理者IDの成功、失敗、ブロック、利用上限到達などを表示します。</div>
+      <div id="idAuditLog" class="table-wrap"></div>
+    </section>
+
+    <section id="adminLogCard" class="card">
+      <h2>管理操作ログ</h2>
+      <div id="adminAuditLog" class="table-wrap"></div>
+    </section>
+    </div>
+  </section>
+</main>
+<script>
+const API="api/admin_api.php";
+fetch("api/track_access.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({event:"page_view",page:"admin"})}).catch(()=>{});
+try{localStorage.removeItem("superAdminToken");}catch(e){}
+let token=sessionStorage.getItem("superAdminToken")||"";
+let latestInviteCodes=[];
+let latestAdminCodes=[];
+let latestSelfUnissuedCodeStatus={rows:[],summary:{total:0,any_issued:0,not_issued:0,invite_issued:0,admin_issued:0}};
+let latestAdminUnlockedPlayers={rows:[],summary:{total:0}};
+let latestInviteUnlockedPlayers={rows:[],summary:{total:0}};
+let latestIssueLinkSettings={invite_key:'',admin_key:'',updated_at:'',updated_by:''};
+let latestUserAnalytics=null;
+let latestAccessAnalytics=null;
+let latestPlayers=[];
+let playerAdminSortState={key:"last_played_at",dir:"desc"};
+let userAnalyticsSortState={key:"last_played_at",dir:"desc"};
+let latestQuestions=[];
+let latestDraftQuestionRows=[];
+let questionSortKey="id";
+let questionSortAsc=true;
+let latestAllQuestionsForId=[];
+let latestQuestionVersions=[];
+let questionEditorMode="none";
+let currentLoadedQuestion=null;
+let latestQuestionOptions={themes:[],theme_labels:{},ball_tags:[],prompt_templates:[]};
+let latestRequests=[];
+let latestReleaseVersions=null;
+let codeSortState={invite:"default",admin:"default"};
+const $=id=>document.getElementById(id);
+function setHtml(id, html){
+  const el=$(id);
+  if(el)el.innerHTML=html;
+}
+function setText(id, text){
+  const el=$(id);
+  if(el)el.textContent=text;
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+async function call(action,payload={}){
+  const res=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action,token,...payload})});
+  const json=await res.json().catch(()=>({ok:false,message:"通信結果を読めませんでした"}));
+  if(!res.ok||!json.ok)throw new Error(json.message||json.error||"操作に失敗しました");
+  return json;
+}
+function showDash(on){
+  $("loginCard").classList.toggle("hidden",!!on);
+  $("dashboard").classList.toggle("hidden",!on);
+}
+async function login(){
+  const msg=$("loginMsg"); msg.textContent="ログイン中...";
+  try{
+    const data=await call("login",{admin_id:$("adminId").value,password:$("adminPassword").value});
+    token=data.token; sessionStorage.setItem("superAdminToken",token);
+    $("adminLabel").textContent=`プレイヤーID：${data.admin_label} / 有効期限：約24時間`;
+    msg.textContent=""; showDash(true); await dashboard();
+  }catch(e){msg.textContent=e.message;msg.className="msg err"}
+}
+async function dashboard(){
+  try{
+    const data=await call("dashboard");
+    latestInviteCodes=data.invite_codes||[];
+    latestAdminCodes=data.admin_codes||[];
+    latestSelfUnissuedCodeStatus=data.self_unissued_code_status||{rows:[],summary:{total:0,any_issued:0,not_issued:0,invite_issued:0,admin_issued:0}};
+    latestAdminUnlockedPlayers=data.admin_unlocked_players||{rows:[],summary:{total:0}};
+    latestInviteUnlockedPlayers=data.invite_unlocked_players||{rows:[],summary:{total:0}};
+    latestIssueLinkSettings=data.issue_link_settings||latestIssueLinkSettings;
+    renderIssueLinkSettings(latestIssueLinkSettings);
+    renderCodes("inviteCodes",latestInviteCodes);
+    renderCodes("adminCodes",latestAdminCodes);
+    renderInviteUnlockedPlayers(latestInviteUnlockedPlayers);
+    renderAdminUnlockedPlayers(latestAdminUnlockedPlayers);
+    renderSelfUnissuedCodeStatus(latestSelfUnissuedCodeStatus);
+    latestUserAnalytics=data.user_analytics||{summary:{},by_grade:{},by_position:{},recent_users:[]};
+    latestAccessAnalytics=data.access_analytics||{summary:{},daily_access:{},pages:{},id_results:{},recent_access:[]};
+    renderUserAnalytics(latestUserAnalytics);
+    renderAccessAnalytics(latestAccessAnalytics);
+    renderLog("idAuditLog",data.id_audit_log||[]);
+    renderLog("adminAuditLog",data.admin_audit_log||[]);
+    if($("questionListTable")) loadQuestionList().catch(e=>{setHtml("questionListTable",`<p class="err">${esc(e.message)}</p>`);});
+    if($("questionVersionTable")) loadQuestionVersions().catch(()=>{});
+    if($("releaseVersionCurrent")) loadReleaseVersions().catch(()=>{});
+  }catch(e){
+    const msg=`<p class="err">管理データを読み込めませんでした：${esc(e.message)}</p>`;
+    setHtml("userAnalyticsSummary",msg);
+    setHtml("accessAnalyticsSummary",msg);
+    setHtml("inviteCodes",msg);
+    setHtml("inviteUnlockedTable",msg);
+    setHtml("adminCodes",msg);
+    setHtml("adminUnlockedTable",msg);
+    setHtml("selfUnissuedCodeTable",msg);
+    throw e;
+  }
+}
+
+function releaseTypeLabel(v){return v==="major"?"メジャー":(v==="minor"?"マイナー":"パッチ")}
+function releaseHelpTip(text){return `<span class="help-tip" title="${esc(text)}">?</span>`}
+function releaseTh(label,help){return `${esc(label)}${releaseHelpTip(help)}`}
+function releasePlainTh(label){return esc(label)}
+function releaseVersionParts(v){
+  const m=String(v||"").trim().match(/^v(\d+)\.(\d+)\.(\d+)$/);
+  return m?[Number(m[1]),Number(m[2]),Number(m[3])]:[0,0,0];
+}
+function compareReleaseVersionsLatestFirst(a,b){
+  const av=releaseVersionParts(a&&a.public_version);
+  const bv=releaseVersionParts(b&&b.public_version);
+  for(let i=0;i<3;i++){
+    if(av[i]!==bv[i]) return bv[i]-av[i];
+  }
+  const ad=String((a&&a.released_at)||"");
+  const bd=String((b&&b.released_at)||"");
+  if(ad!==bd) return bd.localeCompare(ad);
+  const ac=String((a&&a.created_at)||"");
+  const bc=String((b&&b.created_at)||"");
+  if(ac!==bc) return bc.localeCompare(ac);
+  return String((b&&b.id)||"").localeCompare(String((a&&a.id)||""));
+}
+function normalizeReleaseVersionRows(rows){
+  return Array.isArray(rows)?rows.slice().sort(compareReleaseVersionsLatestFirst):[];
+}
+async function loadReleaseVersions(){
+  try{
+    const data=await call("release_versions");
+    latestReleaseVersions=data;
+    renderReleaseVersions(data);
+    resetReleaseVersionForm(false);
+  }catch(e){
+    setHtml("releaseVersionCurrent",`<p class="err">${esc(e.message)}</p>`);
+  }
+}
+function renderReleaseVersions(data){
+  const rows=normalizeReleaseVersionRows(data.versions||[]);
+  data.versions=rows;
+  const current=rows.find(v=>v.is_current)||rows[0]||{};
+  const internal=data.internal||{};
+  setHtml("releaseVersionCurrent",`<table><tbody>
+    <tr><th>${releasePlainTh("現在のユーザー向けバージョン")}</th><td><b>${esc(data.current_public_version||current.public_version||"v1.0.0")}</b></td></tr>
+    <tr><th>${releasePlainTh("内部バージョン")}</th><td>${esc(internal.app_version||"")}</td></tr>
+    <tr><th>${releasePlainTh("cache_version")}</th><td>${esc(internal.cache_version||"")}</td></tr>
+    <tr><th>${releasePlainTh("更新日")}</th><td>${esc(internal.updated_at||"")}</td></tr>
+    <tr><th>${releasePlainTh("本番パス")}</th><td>${esc(internal.start_url||"")} / ${esc(internal.scope||"")}</td></tr>
+    <tr><th>${releasePlainTh("内部変更概要")}</th><td>${esc(internal.change_summary||"")}</td></tr>
+  </tbody></table>`);
+  setHtml("releaseVersionRules",`<table><thead><tr><th>${releasePlainTh("種別")}</th><th>${releasePlainTh("例")}</th><th>${releasePlainTh("判断基準")}</th></tr></thead><tbody>${(data.rules||[]).map(r=>`<tr><td>${esc(r.label)}</td><td>${esc(r.example)}</td><td>${esc(r.description)}</td></tr>`).join("")}</tbody></table>`);
+  setHtml("releaseVersionTable",rows.length?`<table><thead><tr><th>現在</th><th>表示</th><th>公開日</th><th>ユーザー向け</th><th>種別</th><th>タイトル/内容</th><th>内部</th><th>操作</th></tr></thead><tbody>${rows.map(v=>`<tr>
+    <td>${v.is_current?"公開中":""}</td><td>${v.visible?"表示":"非表示"}</td><td>${esc(v.released_at||"")}</td><td><b>${esc(v.public_version||"")}</b></td><td>${releaseTypeLabel(v.release_type)}</td>
+    <td><b>${esc(v.title||"")}</b><br><span class="muted">${esc(v.public_summary||"")}</span><br><small>${esc(v.admin_note||"")}</small></td>
+    <td>${esc(v.internal_version||"")}<br><small>${esc(v.cache_version||"")}</small></td>
+    <td><button class="secondary" type="button" onclick='editReleaseVersion(${JSON.stringify(v).replace(/'/g,"&#39;")})'>編集</button> <button class="danger" type="button" onclick="deleteReleaseVersion('${esc(v.id||"")}')">削除</button></td>
+  </tr>`).join("")}</tbody></table>`:'<p class="muted">更新履歴はまだありません。</p>');
+}
+function resetReleaseVersionForm(clearMsg=true){
+  const internal=(latestReleaseVersions&&latestReleaseVersions.internal)||{};
+  setText("releaseVersionId","");
+  if($("releaseVersionId"))$("releaseVersionId").value="";
+  if($("releasePublicVersion"))$("releasePublicVersion").value="";
+  if($("releaseType"))$("releaseType").value="patch";
+  if($("releaseDate"))$("releaseDate").value=new Date().toISOString().slice(0,10);
+  if($("releaseTitle"))$("releaseTitle").value="";
+  if($("releaseInternalVersion"))$("releaseInternalVersion").value=internal.app_version||"";
+  if($("releaseCacheVersion"))$("releaseCacheVersion").value=internal.cache_version||"";
+  if($("releasePublicSummary"))$("releasePublicSummary").value="";
+  if($("releaseAdminNote"))$("releaseAdminNote").value="";
+  if($("releaseVisible"))$("releaseVisible").checked=true;
+  if($("releaseCurrent"))$("releaseCurrent").checked=false;
+  if(clearMsg)setText("releaseVersionMsg","");
+}
+function editReleaseVersion(v){
+  if($("releaseVersionId"))$("releaseVersionId").value=v.id||"";
+  if($("releasePublicVersion"))$("releasePublicVersion").value=v.public_version||"";
+  if($("releaseType"))$("releaseType").value=v.release_type||"patch";
+  if($("releaseDate"))$("releaseDate").value=(v.released_at||"").slice(0,10);
+  if($("releaseTitle"))$("releaseTitle").value=v.title||"";
+  if($("releaseInternalVersion"))$("releaseInternalVersion").value=v.internal_version||"";
+  if($("releaseCacheVersion"))$("releaseCacheVersion").value=v.cache_version||"";
+  if($("releasePublicSummary"))$("releasePublicSummary").value=v.public_summary||"";
+  if($("releaseAdminNote"))$("releaseAdminNote").value=v.admin_note||"";
+  if($("releaseVisible"))$("releaseVisible").checked=!!v.visible;
+  if($("releaseCurrent"))$("releaseCurrent").checked=!!v.is_current;
+  setText("releaseVersionMsg","編集中です。内容を確認して保存してください。");
+}
+async function saveReleaseVersion(){
+  const payload={
+    id:$("releaseVersionId")?$("releaseVersionId").value:"",
+    public_version:$("releasePublicVersion").value,
+    release_type:$("releaseType").value,
+    released_at:$("releaseDate").value,
+    title:$("releaseTitle").value,
+    internal_version:$("releaseInternalVersion").value,
+    cache_version:$("releaseCacheVersion").value,
+    public_summary:$("releasePublicSummary").value,
+    admin_note:$("releaseAdminNote").value,
+    visible:$("releaseVisible").checked,
+    is_current:$("releaseCurrent").checked
+  };
+  setText("releaseVersionMsg","保存中...");
+  try{
+    const data=await call("release_version_save",payload);
+    latestReleaseVersions=data;
+    renderReleaseVersions(data);
+    resetReleaseVersionForm(false);
+    setText("releaseVersionMsg",data.message||"保存しました。");
+  }catch(e){setText("releaseVersionMsg",e.message)}
+}
+async function deleteReleaseVersion(id){
+  if(!id||!confirm("このバージョン履歴を削除しますか？"))return;
+  try{
+    const data=await call("release_version_delete",{id});
+    latestReleaseVersions=data;
+    renderReleaseVersions(data);
+    setText("releaseVersionMsg",data.message||"削除しました。");
+  }catch(e){alert(e.message)}
+}
+
+function featurePills(features){
+  return (features||[]).map(f=>`<span class="pill">${esc(f)}</span>`).join("");
+}
+
+function csvEscape(v){
+  const s=String(v??"");
+  return /[",\n\r]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;
+}
+function downloadCsv(filename, rows){
+  const csv=rows.map(row=>row.map(csvEscape).join(",")).join("\r\n");
+  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+function downloadCodeCsv(type){
+  const rows=type==="admin"?latestAdminCodes:latestInviteCodes;
+  if(!rows.length){alert("ダウンロードできるデータがありません。");return;}
+  const header=["type","enabled","label","self_issued","owner_player_id","invite_id","hash_prefix","features","max_uses","used_count","created_at","issued_at","disabled_at","disabled_reason"];
+  const body=rows.map(r=>[
+    r.type||type,
+    r.enabled?"enabled":"disabled",
+    r.label||"",
+    r.self_issued?"1":"0",
+    r.owner_player_id||"",
+    r.plain_code||"",
+    r.hash_prefix||"",
+    Array.isArray(r.features)?r.features.join("|"):"",
+    r.max_uses??"",
+    r.used_count??"",
+    r.created_at||"",
+    r.issued_at||"",
+    r.disabled_at||"",
+    r.disabled_reason||""
+  ]);
+  const date=new Date().toISOString().slice(0,10).replace(/-/g,"");
+  downloadCsv(`yakyu_yarouze_${type}_codes_${date}.csv`,[header,...body]);
+}
+
+
+function summaryPill(label,value){
+  return `<div class="pill" style="font-size:14px;padding:8px 12px"><b>${esc(label)}</b>：${esc(value)}</div>`;
+}
+function objectTable(obj, emptyText="データがありません。"){
+  const entries=Object.entries(obj||{});
+  if(!entries.length)return `<p class="muted">${emptyText}</p>`;
+  return `<table><thead><tr><th>項目</th><th>数</th></tr></thead><tbody>`+
+    entries.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("")+`</tbody></table>`;
+}
+
+function valueForSort(row,key){
+  if(key==="correct_count"||key==="play_count"||key==="best_score"||key==="average_score")return Number(row&&row[key]||0);
+  return String((row&&row[key])||"");
+}
+function compareRowsByKey(a,b,key,dir){
+  const av=valueForSort(a,key), bv=valueForSort(b,key);
+  let cmp=0;
+  if(typeof av==="number"&&typeof bv==="number")cmp=av-bv;
+  else{
+    if(av && !bv)cmp=1;
+    else if(!av && bv)cmp=-1;
+    else cmp=String(av).localeCompare(String(bv));
+  }
+  if(cmp===0)cmp=String(a&&a.player_id||"").localeCompare(String(b&&b.player_id||""));
+  return dir==="desc"?-cmp:cmp;
+}
+function sortedPlayerAdminRows(rows){
+  const state=playerAdminSortState||{key:"last_played_at",dir:"desc"};
+  return [...(rows||[])].sort((a,b)=>compareRowsByKey(a,b,state.key,state.dir));
+}
+function sortPlayerAdminList(key,dir){
+  playerAdminSortState={key,dir};
+  renderPlayerAdminList(latestPlayers||[]);
+}
+function sortedUserAnalyticsRows(rows){
+  const state=userAnalyticsSortState||{key:"last_played_at",dir:"desc"};
+  return [...(rows||[])].sort((a,b)=>compareRowsByKey(a,b,state.key,state.dir));
+}
+function sortUserAnalytics(key,dir){
+  userAnalyticsSortState={key,dir};
+  renderUserAnalytics(latestUserAnalytics||{summary:{},by_grade:{},by_position:{},recent_users:[]});
+}
+function sortStateLabel(state){
+  const labels={last_login_at:"最終ログイン",last_played_at:"最終プレイ",correct_count:"クリア問題数"};
+  return `現在：${labels[state.key]||state.key} ${state.dir==="asc"?"早い/少ない順":"遅い/多い順"}`;
+}
+function renderUserAnalytics(data){
+  try{
+    const safeData=data||{summary:{},by_grade:{},by_position:{},recent_users:[]};
+    const s=safeData.summary||{};
+    setHtml("userAnalyticsSummary",[
+      summaryPill("登録ユーザー",s.registered_users??0),
+      summaryPill("プレイ済みユーザー",s.played_users??0),
+      summaryPill("総プレイ数",s.total_plays??0),
+      summaryPill("7日以内アクティブ",s.active_users_7d??0),
+      summaryPill("30日以内アクティブ",s.active_users_30d??0)
+    ].join(""));
+    setHtml("userAnalyticsByGrade",objectTable(safeData.by_grade||{},"プレイデータがまだありません。"));
+    setHtml("userAnalyticsByPosition",objectTable(safeData.by_position||{},"プレイデータがまだありません。"));
+    const rows=Array.isArray(safeData.recent_users)?safeData.recent_users:[];
+    const displayRows=sortedUserAnalyticsRows(rows);
+    const sortInfo=$("userAnalyticsSortInfo");
+    if(sortInfo)sortInfo.textContent=sortStateLabel(userAnalyticsSortState);
+    if(!displayRows.length){
+      setHtml("userAnalyticsTable",'<p class="muted">ユーザーデータがまだありません。ログインまたはプレイが発生するとここに表示されます。</p>');
+      return;
+    }
+    setHtml("userAnalyticsTable",`<table><thead><tr><th>プレイヤーID</th><th>登録</th><th>最終ログイン</th><th>最終プレイ</th><th>回数</th><th>クリア問題数</th><th>最高点</th><th>平均点</th><th>学年</th><th>守備位置</th><th>表示</th><th>端末</th><th>OS</th><th>ブラウザ</th><th>機能</th></tr></thead><tbody>`+
+      displayRows.map(r=>`<tr>
+        <td>${esc(r.player_id)}</td>
+        <td>${esc(r.registered_at)}</td>
+        <td>${esc(r.last_login_at)}</td>
+        <td>${esc(r.last_played_at)}</td>
+        <td>${esc(r.play_count)}</td>
+        <td><b>${esc(r.correct_count||0)}問</b></td>
+        <td>${esc(r.best_score)}</td>
+        <td>${esc(r.average_score)}</td>
+        <td>${esc((r.grades||[]).join("|"))}</td>
+        <td>${esc((r.positions||[]).join("|"))}</td>
+        <td>${esc(r.display_mode||"")}</td>
+        <td>${esc(r.device_type||"")}</td>
+        <td>${esc(r.os||"")}</td>
+        <td>${esc(r.browser||"")}</td>
+        <td>${featurePills(r.features||[])}</td>
+      </tr>`).join("")+`</tbody></table>`);
+  }catch(e){
+    setHtml("userAnalyticsSummary",`<p class="err">ユーザー分析の表示でエラーが発生しました：${esc(e.message)}</p>`);
+  }
+}
+function renderAccessAnalytics(data){
+  try{
+    const safeData=data||{summary:{},daily_access:{},pages:{},id_results:{},recent_access:[]};
+    const s=safeData.summary||{};
+    setHtml("accessAnalyticsSummary",[
+      summaryPill("総アクセスイベント",s.total_access_events??0),
+      summaryPill("ユニーク端末",s.unique_clients??0),
+      summaryPill("ID監査イベント",s.id_audit_events??0),
+      summaryPill("ID失敗系",s.id_failures??0)
+    ].join(""));
+    setHtml("accessDailyTable",objectTable(safeData.daily_access||{},"アクセスログがまだありません。"));
+    setHtml("accessPageTable",objectTable(safeData.pages||{},"アクセスログがまだありません。"));
+    setHtml("accessDisplayModeTable",objectTable(safeData.display_modes||{},"端末情報がまだありません。"));
+    setHtml("accessDeviceTypeTable",objectTable(safeData.device_types||{},"端末情報がまだありません。"));
+    setHtml("accessOsTable",objectTable(safeData.os_counts||{},"端末情報がまだありません。"));
+    setHtml("accessBrowserTable",objectTable(safeData.browser_counts||{},"端末情報がまだありません。"));
+    setHtml("idResultTable",objectTable(safeData.id_results||{},"プレイヤーID登録ログがまだありません。"));
+    renderLog("accessRecentTable",Array.isArray(safeData.recent_access)?safeData.recent_access:[]);
+  }catch(e){
+    setHtml("accessAnalyticsSummary",`<p class="err">アクセス解析の表示でエラーが発生しました：${esc(e.message)}</p>`);
+  }
+}
+function downloadUserAnalyticsCsv(){
+  const rows=(latestUserAnalytics&&latestUserAnalytics.recent_users)||[];
+  if(!rows.length){alert("ダウンロードできるユーザーデータがありません。");return;}
+  const header=["player_id","registered_at","last_login_at","last_played_at","play_count","correct_count","best_score","average_score","grades","positions","display_mode","device_type","os","browser","platform","features"];
+  const body=rows.map(r=>[
+    r.player_id||"",r.registered_at||"",r.last_login_at||"",r.last_played_at||"",r.play_count??"",r.correct_count??0,r.best_score??"",r.average_score??"",
+    Array.isArray(r.grades)?r.grades.join("|"):"",
+    Array.isArray(r.positions)?r.positions.join("|"):"",
+    r.display_mode||"",
+    r.device_type||"",
+    r.os||"",
+    r.browser||"",
+    r.platform||"",
+    Array.isArray(r.features)?r.features.join("|"):""
+  ]);
+  const date=new Date().toISOString().slice(0,10).replace(/-/g,"");
+  downloadCsv(`yakyu_yarouze_user_analytics_${date}.csv`,[header,...body]);
+}
+function downloadAccessLogCsv(){
+  const rows=(latestAccessAnalytics&&latestAccessAnalytics.recent_access)||[];
+  if(!rows.length){alert("ダウンロードできるアクセスログがありません。");return;}
+  const header=Object.keys(rows[0]||{});
+  const body=rows.map(r=>header.map(k=>r[k]??""));
+  const date=new Date().toISOString().slice(0,10).replace(/-/g,"");
+  downloadCsv(`yakyu_yarouze_access_log_${date}.csv`,[header,...body]);
+}
+
+
+function renderRequestNoticeSettings(settings){
+  const s=settings||{};
+  const enabled=$("requestNoticeEnabled");
+  const emails=$("requestNoticeEmails");
+  const from=$("requestNoticeFrom");
+  if(enabled)enabled.checked=!!s.enabled;
+  if(emails)emails.value=Array.isArray(s.emails)?s.emails.join("\n"):"";
+  if(from)from.value=s.from_email||"no-reply@realemotionfactory.com";
+  const msg=$("requestNoticeMessage");
+  if(msg)msg.textContent=s.updated_at?`最終更新：${s.updated_at} / ${s.updated_by||"-"}`:"";
+}
+async function loadRequestNoticeSettings(){
+  const data=await call("request_notification_get");
+  renderRequestNoticeSettings(data.settings||{});
+}
+async function saveRequestNoticeSettings(){
+  const enabled=!!($("requestNoticeEnabled")&&$("requestNoticeEnabled").checked);
+  const emails_text=$("requestNoticeEmails")?$("requestNoticeEmails").value:"";
+  const from_email=$("requestNoticeFrom")?$("requestNoticeFrom").value:"";
+  const subject=$("requestNoticeSubject")?$("requestNoticeSubject").value:"";
+  const data=await call("request_notification_save",{enabled,emails_text,from_email,subject});
+  renderRequestNoticeSettings(data.settings||{});
+  setText("requestNoticeMessage",data.message||"保存しました。");
+}
+async function testRequestNoticeEmail(){
+  const data=await call("request_notification_test");
+  setText("requestNoticeMessage",data.message||"テスト送信を実行しました。");
+}
+
+function requestStatusClass(status){
+  if(status==="修正反映")return "status-fixed";
+  if(status==="対応不可")return "status-rejected";
+  if(status==="取消済み")return "status-cancelled";
+  return "status-pending";
+}
+function requestTypeLabel(v){return ({add:"問題追加",delete:"問題削除"}[v]||v||"-");}
+function requestPositionLabel(v){return ({BASIC:"基本動作",P:"ピッチャー",C:"キャッチャー","1B":"ファースト","2B":"セカンド",SS:"ショート","3B":"サード",LF:"レフト",CF:"センター",RF:"ライト",ALL:"全ポジション"}[v]||v||"-");}
+function requestGradeLabel(v){return ({"2":"3年生以下","3":"3年生","4":"4年生","5":"5年生","6":"6年生",all:"全学年"}[v]||v||"-");}
+function renderRequestAdminSummary(summary){
+  const s=summary||{};
+  setHtml("requestAdminSummary",[
+    summaryPill("総件数",s.total??0),
+    summaryPill("検討中",s["検討中"]??0),
+    summaryPill("修正反映",s["修正反映"]??0),
+    summaryPill("対応不可",s["対応不可"]??0),
+    summaryPill("取消済み",s["取消済み"]??0)
+  ].join(""));
+}
+function renderRequestAdminTable(rows){
+  latestRequests=Array.isArray(rows)?rows:[];
+  if(!latestRequests.length){
+    setHtml("requestAdminTable",'<p class="muted">要望データはまだありません。</p>');
+    return;
+  }
+  const statusOptions=["検討中","修正反映","対応不可"];
+  setHtml("requestAdminTable",`<table><thead><tr><th>ID</th><th>日時</th><th>送信ID</th><th>分類</th><th>タイトル/詳細</th><th>ステータス</th><th>処理メモ</th><th>操作</th></tr></thead><tbody>`+
+    latestRequests.map(r=>{
+      const id=String(r.id||"");
+      const st=r.status||"検討中";
+      const isCancelled=st==="取消済み";
+      const select=isCancelled?"":`<select data-request-status="${esc(id)}">${statusOptions.map(opt=>`<option value="${esc(opt)}" ${opt===st?"selected":""}>${esc(opt)}</option>`).join("")}</select>`;
+      const statusCell=isCancelled
+        ? `<span class="pill ${requestStatusClass(st)}">取消済み</span><br><span class="muted">送信者により取り消し</span>`
+        : `<span class="pill ${requestStatusClass(st)}">${esc(st)}</span><br>${select}`;
+      const noteCell=isCancelled
+        ? `<span class="muted">${esc(r.handled_note||"送信者によって取り消し済み")}</span><br><span class="muted">${esc(r.handled_at||"")}</span>`
+        : `<textarea data-request-note="${esc(id)}" style="width:220px;min-height:72px;box-sizing:border-box" placeholder="処理メモ">${esc(r.handled_note||"")}</textarea><br><span class="muted">${esc(r.handled_at||"")}</span>`;
+      const actionCell=isCancelled
+        ? `<button class="small danger" onclick="deleteRequestAdmin('${esc(id)}')">削除</button>`
+        : `<button class="small" onclick="updateRequestStatus('${esc(id)}')">更新</button><button class="small danger" onclick="deleteRequestAdmin('${esc(id)}')">削除</button>`;
+      return `<tr>
+        <td><code>${esc(id)}</code></td>
+        <td>${esc(r.submitted_at||"")}</td>
+        <td>${esc(String(r.player_id||"").replace(/^'/,""))}</td>
+        <td>${esc(requestTypeLabel(r.request_type))}<br>${esc(requestGradeLabel(r.grade))}<br>${esc(requestPositionLabel(r.position))}</td>
+        <td><b>${esc(r.title||"無題")}</b><br><span class="muted">${esc(r.detail||"")}</span></td>
+        <td>${statusCell}</td>
+        <td>${noteCell}</td>
+        <td class="row">${actionCell}</td>
+      </tr>`;
+    }).join("")+`</tbody></table>`);
+}
+async function loadRequestAdminList(){
+  const box=$("requestAdminTable");
+  if(box)box.innerHTML='<p class="muted">読み込み中です。</p>';
+  const data=await call("request_list");
+  renderRequestAdminSummary(data.summary||{});
+  renderRequestAdminTable(data.requests||[]);
+}
+async function updateRequestStatus(id){
+  const statusEl=document.querySelector(`[data-request-status="${CSS.escape(id)}"]`);
+  const noteEl=document.querySelector(`[data-request-note="${CSS.escape(id)}"]`);
+  const status=statusEl?statusEl.value:"検討中";
+  const note=noteEl?noteEl.value:"";
+  if(!confirm(`要望ID ${id} のステータスを「${status}」に変更しますか？`))return;
+  try{
+    const data=await call("request_update_status",{request_id:id,status,note});
+    setText("requestAdminMessage",data.message||"更新しました。");
+    await loadRequestAdminList();
+  }catch(e){alert(e.message);}
+}
+async function deleteRequestAdmin(id){
+  if(!confirm(`要望ID ${id} を完全に削除します。よろしいですか？`))return;
+  try{
+    const data=await call("request_delete",{request_id:id});
+    setText("requestAdminMessage",data.message||"削除しました。");
+    await loadRequestAdminList();
+  }catch(e){alert(e.message);}
+}
+
+
+
+
+async function loadPlayerAdminList(){
+  const box=$("playerAdminTable");
+  if(!box)return;
+  box.innerHTML='<p class="muted">ユーザー一覧を読み込み中です。</p>';
+  try{
+    const data=await call("player_list",{query:($("playerAdminSearchInput")&&$("playerAdminSearchInput").value)||""});
+    latestPlayers=data.players||[];
+    if($("playerAdminInfo"))$("playerAdminInfo").textContent=`表示 ${latestPlayers.length}件 / 全${data.total}件`;
+    renderPlayerAdminList(latestPlayers);
+  }catch(e){
+    box.innerHTML=`<p class="err">ユーザー一覧を読み込めませんでした：${esc(e.message)}</p>`;
+  }
+}
+function renderPlayerAdminList(rows){
+  const box=$("playerAdminTable");
+  if(!box)return;
+  const displayRows=sortedPlayerAdminRows(rows||[]);
+  const info=$("playerAdminSortInfo");
+  if(info)info.textContent=sortStateLabel(playerAdminSortState);
+  if(!displayRows.length){
+    box.innerHTML='<p class="muted">登録ユーザーがまだありません。</p>';
+    return;
+  }
+  box.innerHTML=`<table><thead><tr><th>状態</th><th>プレイヤーID</th><th>登録</th><th>最終ログイン</th><th>最終プレイ</th><th>回数</th><th>クリア問題数</th><th>最高/平均</th><th>学年</th><th>守備位置</th><th>プレイヤーID変更</th><th>停止情報</th><th>操作</th></tr></thead><tbody>`+
+    displayRows.map(p=>{
+      const changeCount=Number(p.id_change_count||0);
+      const changeClass=changeCount>=5?'id-change-hot':'';
+      const latest=(p.id_change_history||[])[0]||null;
+      return `<tr class="${changeClass}">
+      <td>${p.status==="suspended"?'<span class="pill danger">停止中</span>':'<span class="pill ok">利用可</span>'}</td>
+      <td><code>${esc(p.player_id)}</code></td>
+      <td>${esc(p.created_at||"")}</td>
+      <td>${esc(p.last_login_at||"")}</td>
+      <td>${esc(p.last_played_at||"")}</td>
+      <td>${esc(p.play_count??0)}</td>
+      <td><b>${esc(p.correct_count??0)}問</b></td>
+      <td>${esc(p.best_score??0)} / ${esc(p.average_score??0)}</td>
+      <td>${esc((p.grades||[]).join("|"))}</td>
+      <td>${esc((p.positions||[]).join("|"))}</td>
+      <td><span class="${changeCount>=5?'pill danger':'pill'}">${changeCount}回</span><br>${esc(p.id_change_last_at||"")}${latest?`<br><span class="muted">${esc(latest.old_player_id)} → ${esc(latest.new_player_id)}</span>`:""}<br><button class="small secondary" type="button" onclick="showPlayerIdChangeHistory('${esc(p.player_id)}')">履歴</button></td>
+      <td>${p.status==="suspended"?`停止:${esc(p.suspended_at||"")}<br>理由:${esc(p.suspend_reason||"")}`:""}</td>
+      <td>${p.status==="suspended"
+        ? `<button class="small" type="button" onclick="setPlayerStatus('${esc(p.player_id)}','active')">再開</button>`
+        : `<button class="small danger" type="button" onclick="setPlayerStatus('${esc(p.player_id)}','suspended')">利用停止</button>`}
+      </td>
+    </tr>`}).join("")+`</tbody></table>`;
+}
+async function showPlayerIdChangeHistory(playerId){
+  const box=$("playerIdChangeHistoryDetail");
+  if(!box)return;
+  box.style.display="block";
+  box.innerHTML='<p class="muted">プレイヤーID変更履歴を読み込み中です。</p>';
+  try{
+    const data=await call("player_id_change_history",{player_id:playerId});
+    const rows=data.history||[];
+    if(!rows.length){
+      box.innerHTML=`<h3>プレイヤーID変更履歴：${esc(playerId)}</h3><p class="muted">履歴はありません。</p>`;
+      return;
+    }
+    box.innerHTML=`<div class="row" style="justify-content:space-between"><h3>プレイヤーID変更履歴：${esc(playerId)}</h3><button class="secondary small" type="button" onclick="$('playerIdChangeHistoryDetail').style.display='none'">閉じる</button></div>`+
+      `<table><thead><tr><th>日時</th><th>変更前</th><th>変更後</th><th>結果</th><th>メッセージ</th></tr></thead><tbody>`+
+      rows.map(r=>`<tr><td>${esc(r.changed_at)}</td><td><code>${esc(r.old_player_id)}</code></td><td><code>${esc(r.new_player_id)}</code></td><td>${esc(r.result)}</td><td>${esc(r.message)}</td></tr>`).join("")+
+      `</tbody></table>`;
+  }catch(e){
+    box.innerHTML=`<p class="err">履歴を読み込めませんでした：${esc(e.message)}</p>`;
+  }
+}
+async function setPlayerStatus(playerId,status){
+  let reason="";
+  if(status==="suspended"){
+    reason=prompt(`プレイヤーID「${playerId}」をゲーム利用停止にします。理由を入力してください。`,"");
+    if(reason===null)return;
+  }else{
+    if(!confirm(`プレイヤーID「${playerId}」のゲーム利用を再開しますか？`))return;
+  }
+  try{
+    const data=await call("player_set_status",{player_id:playerId,status,reason});
+    alert(data.message||"更新しました。");
+    await loadPlayerAdminList();
+  }catch(e){
+    alert(e.message||"更新できませんでした。");
+  }
+}
+
+async function loadQuestionVersions(){
+  const box=$("questionVersionTable");
+  if(!box)return;
+  box.innerHTML='<p class="muted">変更履歴を読み込み中です。</p>';
+  try{
+    const data=await call("question_versions");
+    latestQuestionVersions=data.versions||[];
+    renderQuestionVersions(latestQuestionVersions);
+  }catch(e){
+    box.innerHTML=`<p class="err">変更履歴を読み込めませんでした：${esc(e.message)}</p>`;
+  }
+}
+function renderQuestionVersions(rows){
+  const box=$("questionVersionTable");
+  if(!box)return;
+  if(!rows.length){
+    box.innerHTML='<p class="muted">まだ問題の追加・修正・削除履歴はありません。</p>';
+    return;
+  }
+  box.innerHTML=`<table><thead><tr><th>日時</th><th>操作</th><th>問題ID</th><th>管理者</th><th>変更項目</th><th>バックアップ</th><th>操作</th></tr></thead><tbody>`+
+    rows.map(v=>`<tr>
+      <td>${esc(v.at)}</td>
+      <td>${esc(v.action)}</td>
+      <td><code>${esc(v.question_id)}</code></td>
+      <td>${esc(v.admin_label)}</td>
+      <td>${esc((v.changed_fields||[]).join(", "))}</td>
+      <td>${esc(v.backup_file||"")}</td>
+      <td class="row">
+        <button class="small" type="button" onclick="showQuestionVersionDetail('${esc(v.version_id)}')">詳細</button>
+        ${v.backup_file?`<button class="small danger" type="button" onclick="restoreQuestionVersion('${esc(v.version_id)}')">この変更前へ復元</button>`:""}
+      </td>
+    </tr>`).join("")+`</tbody></table>`;
+}
+function shortJsonPreview(obj){
+  if(obj===null||obj===undefined)return '<span class="muted">なし</span>';
+  const s=JSON.stringify(obj,null,2);
+  return `<pre style="white-space:pre-wrap;max-height:260px;overflow:auto;background:#fff;border:1px solid #dbe3ee;border-radius:10px;padding:10px">${esc(s)}</pre>`;
+}
+async function showQuestionVersionDetail(versionId){
+  const box=$("questionVersionDetail");
+  if(!box)return;
+  box.style.display="block";
+  box.innerHTML='<p class="muted">詳細を読み込み中です。</p>';
+  try{
+    const data=await call("question_version_get",{version_id:versionId});
+    const v=data.version||{};
+    box.innerHTML=`<h4>変更詳細：${esc(v.version_id||"")}</h4>
+      <p><b>日時：</b>${esc(v.at||"")} / <b>操作：</b>${esc(v.action||"")} / <b>問題ID：</b>${esc(v.question_id||"")} / <b>管理者：</b>${esc(v.admin_label||"")}</p>
+      <p><b>バックアップ：</b>${esc(v.backup_file||"")}</p>
+      <p><b>変更項目：</b>${esc((v.changed_fields||[]).join(", "))}</p>
+      <details open><summary>変更前</summary>${shortJsonPreview(v.before)}</details>
+      <details><summary>変更後</summary>${shortJsonPreview(v.after)}</details>`;
+  }catch(e){
+    box.innerHTML=`<p class="err">詳細を読み込めませんでした：${esc(e.message)}</p>`;
+  }
+}
+async function restoreQuestionVersion(versionId){
+  const row=latestQuestionVersions.find(v=>v.version_id===versionId);
+  const label=row?`${row.at} / ${row.action} / ${row.question_id}`:versionId;
+  const warn=`この操作は questions.json 全体を「${label}」の変更前状態へ戻します。\n現在の questions.json も復元前バックアップとして保存されます。\n本当に復元しますか？`;
+  if(!confirm(warn))return;
+  const msg=$("questionVersionMessage");
+  if(msg){msg.textContent="復元中です...";msg.className="msg";}
+  try{
+    const data=await call("question_restore_version",{version_id:versionId});
+    if(msg){msg.textContent=data.message||"復元しました。";msg.className="msg ok";}
+    await loadQuestionList();
+    await loadQuestionVersions();
+    renderAdminQuestionPreview(null);
+    $("questionEditingId").value="";
+    $("questionJsonEditor").value="";
+  }catch(e){
+    if(msg){msg.textContent=e.message;msg.className="msg err";}
+    else alert(e.message);
+  }
+}
+
+
+function updateQuestionPositionFilterVisibility(){
+  const wrap=$("questionPositionFilterWrap");
+  const type=$("questionTypeFilter")?$("questionTypeFilter").value:"";
+  if(!wrap)return;
+  wrap.style.display=(type===""||type==="defense")?"block":"none";
+  if(type!==""&&type!=="defense"&&$("questionPositionFilter"))$("questionPositionFilter").value="";
+}
+
+async function loadQuestionList(){
+  const box=$("questionListTable");
+  if(!box)return;
+  box.innerHTML='<p class="muted">読み込み中...</p>';
+  try{
+    await loadQuestionOptions();
+    updateQuestionPositionFilterVisibility();
+    const data=await call("question_list",{query:$("questionSearchInput").value||"",type:$("questionTypeFilter").value||"",position:($("questionPositionFilter")&&$("questionPositionFilter").value)||""});
+    latestQuestions=data.questions||[];
+    $("questionListInfo").textContent=`全${data.total}問 / 表示${data.filtered}問`;
+    renderQuestionList(latestQuestions);
+    await loadDraftQuestionPanel();
+  }catch(e){
+    box.innerHTML=`<p class="err">${esc(e.message)}</p>`;
+  }
+}
+
+async function loadDraftQuestionPanel(){
+  const panel=$("draftQuestionPanel");
+  const box=$("draftQuestionList");
+  if(!panel||!box)return;
+  try{
+    const data=await call("question_list",{query:"",type:"",position:""});
+    latestDraftQuestionRows=data.questions||[];
+    renderDraftQuestionPanel(latestDraftQuestionRows);
+  }catch(e){
+    panel.style.display="block";
+    box.innerHTML=`<p class="err">下書き中の新規問題を読み込めませんでした：${esc(e.message||"")}</p>`;
+  }
+}
+
+function stageSortValue(stage){
+  const order={"BASIC":0,"EMPTY":1,"BR":2,"1B":3,"2B":4,"3B":5,"1B2B":6,"1B3B":7,"2B3B":8,"1B2B3B":9,"none":10};
+  return Object.prototype.hasOwnProperty.call(order,stage)?order[stage]:99;
+}
+function idSortValue(id){
+  const m=String(id||"").match(/^([A-Z]+)(\d+)$/);
+  if(!m)return [String(id||""),0];
+  return [m[1],Number(m[2])];
+}
+function compareQuestionRows(a,b,key){
+  let av,bv;
+  if(key==="grade"){
+    av=Number(a.grade||0); bv=Number(b.grade||0);
+    if(av!==bv)return av-bv;
+    return compareQuestionRows(a,b,"id");
+  }
+  if(key==="stage"){
+    av=stageSortValue(a.stage); bv=stageSortValue(b.stage);
+    if(av!==bv)return av-bv;
+    return compareQuestionRows(a,b,"id");
+  }
+  if(key==="outs"){
+    av=Number(a.outs||0); bv=Number(b.outs||0);
+    if(av!==bv)return av-bv;
+    return compareQuestionRows(a,b,"id");
+  }
+  if(key==="status"){
+    const order={published:0,draft:1,disabled:2};
+    av=order[a.status||"published"] ?? 99;
+    bv=order[b.status||"published"] ?? 99;
+    if(av!==bv)return av-bv;
+    return compareQuestionRows(a,b,"id");
+  }
+  const ia=idSortValue(a.id), ib=idSortValue(b.id);
+  if(ia[0]!==ib[0])return ia[0].localeCompare(ib[0]);
+  return ia[1]-ib[1];
+}
+function sortedQuestionRows(rows){
+  const sorted=[...(rows||[])].sort((a,b)=>compareQuestionRows(a,b,questionSortKey||"id"));
+  if(!questionSortAsc)sorted.reverse();
+  return sorted;
+}
+function sortQuestionList(key){
+  if(questionSortKey===key){
+    questionSortAsc=!questionSortAsc;
+  }else{
+    questionSortKey=key;
+    questionSortAsc=true;
+  }
+  renderQuestionList(latestQuestions||[]);
+}
+function sortLabel(key){
+  const labels={id:"ID順",grade:"学年別",stage:"走者別",outs:"アウトカウント別",status:"公開状態"};
+  return labels[key]||key;
+}
+
+function questionStatusLabel(status){
+  if(status==="draft")return "下書き";
+  if(status==="disabled")return "停止";
+  return "公開";
+}
+function questionStatusPill(status){
+  const st=["draft","disabled","published"].includes(status)?status:"published";
+  return `<span class="pill status-${st}">${esc(questionStatusLabel(st))}</span>`;
+}
+function renderDraftQuestionPanel(rows){
+  const panel=$("draftQuestionPanel");
+  const box=$("draftQuestionList");
+  if(!panel||!box)return;
+  const drafts=(rows||[]).filter(r=>(r.status||"published")==="draft");
+  if(!drafts.length){
+    panel.style.display="none";
+    box.innerHTML='<p class="muted">下書き中の新規問題はありません。</p>';
+    return;
+  }
+  panel.style.display="block";
+  box.innerHTML=`<table><thead><tr><th>ID</th><th>状態</th><th>種別</th><th>学年</th><th>タグ/状況</th><th>操作</th></tr></thead><tbody>`+
+    drafts.map(r=>`<tr>
+      <td><code>${esc(r.id)}</code></td>
+      <td>${questionStatusPill(r.status)}</td>
+      <td>${esc(r.type)}</td>
+      <td>${esc(r.grade)}</td>
+      <td><b>${esc(r.ball_tag||"")}</b><br><span class="muted">${esc(String(r.situation||"").slice(0,80))}</span></td>
+      <td class="row"><button class="small" type="button" onclick="loadQuestionEditor('${esc(r.id)}')">編集</button><button class="small" type="button" onclick="publishQuestionsFromList(['${esc(r.id)}'])">公開</button></td>
+    </tr>`).join("")+`</tbody></table>`;
+}
+async function publishQuestionsFromList(ids){
+  if(!Array.isArray(ids)||!ids.length)return;
+  if(!confirm(`${ids.length}件の下書き問題を通知なしで公開します。よろしいですか？`))return;
+  try{
+    await call("question_publish_selected",{question_ids:ids});
+    await loadQuestionList();
+    if(typeof loadNewQuestionNoticeCandidates==="function")loadNewQuestionNoticeCandidates().catch(()=>{});
+  }catch(e){alert(e.message||"公開できませんでした。");}
+}
+function downloadTextFile(filename, text, mime){
+  const blob=new Blob([text],{type:mime||"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download=filename||"download.txt";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function exportQuestionCsv(scope){
+  const out=$("questionExportMessage");
+  if(out){out.className="msg";out.textContent="CSVを作成中です...";}
+  try{
+    const payload={scope:scope||"all"};
+    if(scope==="filtered"){
+      payload.query=($("questionSearchInput")&&$("questionSearchInput").value)||"";
+      payload.type=($("questionTypeFilter")&&$("questionTypeFilter").value)||"";
+      payload.position=($("questionPositionFilter")&&$("questionPositionFilter").value)||"";
+    }
+    const data=await call("question_csv_export",payload);
+    downloadTextFile(data.filename||"questions_export.csv", data.csv||"", "text/csv;charset=utf-8");
+    if(out){out.className="msg ok";out.textContent=`CSVを作成しました：${data.count||0}件`;}
+  }catch(e){
+    if(out){out.className="msg err";out.textContent=e.message||"CSVエクスポートに失敗しました。";}
+  }
+}
+
+let latestQuestionCsvText="";
+let latestQuestionCsvPreview=null;
+let latestQuestionCsvFileName="";
+function readFileAsText(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(String(reader.result||""));
+    reader.onerror=()=>reject(new Error("CSVファイルを読み込めませんでした。"));
+    reader.readAsText(file,"UTF-8");
+  });
+}
+function renderQuestionCsvPreview(data){
+  latestQuestionCsvPreview=data;
+  const box=$("questionCsvPreviewBox");
+  const msg=$("questionCsvImportMessage");
+  if(!box)return;
+  const sum=data.summary||{};
+  const errors=data.errors||[];
+  const mismatches=data.game_config_mismatches||[];
+  if(msg){
+    msg.className=errors.length?"msg err":"msg ok";
+    msg.textContent=`新規${sum.new||0}件 / 更新${sum.update||0}件 / 変更なし${sum.unchanged||0}件 / エラー${sum.error||0}件`;
+  }
+  let html="";
+  if(errors.length){
+    html+=`<div class="msg err"><b>読み込みエラー・警告</b><ul>${errors.slice(0,30).map(e=>`<li>${esc(e.line?e.line+"行目：":"")}${esc(e.message||"")}<br><span class="muted">${esc(e.hint||"")}</span></li>`).join("")}</ul></div>`;
+  }
+  if(mismatches.length){
+    html+=`<div class="msg notice-msg"><b>game_config.jsonのズレ</b><ul>${mismatches.map(m=>`<li>${esc(m.field)}：現在 ${esc(m.current)} / 実データ ${esc(m.actual)} - ${esc(m.message||"")}</li>`).join("")}</ul><div class="muted">反映時に「ズレを表示して修正する」を選ぶと、問題数カウントを自動補正します。</div></div>`;
+  }
+  const items=[...(data.items||[])].sort((a,b)=>{
+    const order={new:0,update:1,error:2,unchanged:3};
+    const ao=Object.prototype.hasOwnProperty.call(order,a.change_kind)?order[a.change_kind]:9;
+    const bo=Object.prototype.hasOwnProperty.call(order,b.change_kind)?order[b.change_kind]:9;
+    if(ao!==bo)return ao-bo;
+    return Number(a.line||0)-Number(b.line||0);
+  });
+  if(!items.length){box.innerHTML=html+'<p class="muted">読み込み対象がありません。</p>';return;}
+  html+=`<table><thead><tr><th>反映</th><th>行</th><th>判定</th><th>ID</th><th>状態</th><th>種別</th><th>学年</th><th>タイトル/メッセージ</th></tr></thead><tbody>`+
+    items.map(it=>{
+      const can=(it.change_kind==="new"||it.change_kind==="update");
+      const checked=can?"checked":"";
+      const disabled=can?"":"disabled";
+      const errs=(it.errors||[]).map(e=>`${e.message||""} ${e.hint||""}`).join(" / ");
+      return `<tr>
+        <td><input type="checkbox" class="question-csv-row-check" value="${esc(it.row_key)}" ${checked} ${disabled}></td>
+        <td>${esc(it.line)}</td>
+        <td>${esc(it.change_label||it.change_kind)}</td>
+        <td><code>${esc(it.proposed_id||it.id||"")}</code>${it.id===""?'<br><span class="muted">候補ID</span>':''}</td>
+        <td>${questionStatusPill(it.status)}</td>
+        <td>${esc(it.type||"")}</td>
+        <td>${esc(it.grade||"")}</td>
+        <td><b>${esc(it.title||"")}</b><br><span class="muted">${esc(it.message||errs||"")}</span></td>
+      </tr>`;
+    }).join("")+`</tbody></table>`;
+  box.innerHTML=html;
+}
+async function previewQuestionCsvImport(){
+  const input=$("questionCsvImportFile");
+  const msg=$("questionCsvImportMessage");
+  try{
+    if(!input||!input.files||!input.files[0])throw new Error("CSVファイルを選択してください。");
+    latestQuestionCsvFileName=input.files[0].name||"";
+    latestQuestionCsvText=await readFileAsText(input.files[0]);
+    if(msg){msg.className="msg";msg.textContent="CSVを解析中です...";}
+    const data=await call("question_csv_preview",{csv:latestQuestionCsvText});
+    renderQuestionCsvPreview(data);
+  }catch(e){
+    if(msg){msg.className="msg err";msg.textContent=e.message||"CSVを読み込めませんでした。";}
+  }
+}
+async function applyQuestionCsvImport(){
+  const msg=$("questionCsvImportMessage");
+  try{
+    if(!latestQuestionCsvText)throw new Error("先にCSVを読み込んで確認してください。");
+    const selected=[...document.querySelectorAll(".question-csv-row-check:checked")].map(el=>el.value);
+    if(!selected.length)throw new Error("反映対象の行を選択してください。");
+    const fix=($("questionCsvFixGameConfig")&&$("questionCsvFixGameConfig").value)==="1";
+    const mismatchCount=(latestQuestionCsvPreview&&latestQuestionCsvPreview.game_config_mismatches||[]).length;
+    const warn=`${selected.length}件を反映します。\n反映前にquestions.jsonとgame_config.jsonを自動バックアップします。${mismatchCount?`\ngame_configのズレ ${mismatchCount}件：${fix?"自動修正します":"修正しません"}`:""}\nよろしいですか？`;
+    if(!confirm(warn))return;
+    if(msg){msg.className="msg";msg.textContent="CSVを反映中です...";}
+    const data=await call("question_csv_apply",{csv:latestQuestionCsvText,file_name:latestQuestionCsvFileName,selected_row_keys:selected,fix_game_config:fix});
+    if(msg){msg.className="msg ok";msg.textContent=`${data.message||"CSVを反映しました。"} 追加${data.added||0}件 / 更新${data.updated||0}件 / バックアップ：${data.backup_file||""}`;}
+    await loadQuestionList();
+    await loadQuestionBackups();
+    if(typeof loadNewQuestionNoticeCandidates==="function")await loadNewQuestionNoticeCandidates();
+    if(typeof loadScheduledNotices==="function")await loadScheduledNotices();
+  }catch(e){
+    if(msg){msg.className="msg err";msg.textContent=e.message||"CSV反映に失敗しました。";}
+  }
+}
+async function loadQuestionBackups(){
+  const box=$("questionBackupList");
+  const msg=$("questionBackupMessage");
+  if(box)box.innerHTML='<p class="muted">読み込み中...</p>';
+  try{
+    const data=await call("question_backup_list");
+    const rows=data.backups||[];
+    if(!rows.length){if(box)box.innerHTML='<p class="muted">バックアップはまだありません。</p>';return;}
+    if(box)box.innerHTML=`<table><thead><tr><th>作成日時</th><th>ファイル</th><th>サイズ</th><th>操作</th></tr></thead><tbody>`+
+      rows.map(r=>`<tr><td>${esc(r.mtime||"")}</td><td><code>${esc(r.file||"")}</code></td><td>${esc(r.size||0)} bytes</td><td><button class="small" type="button" onclick="restoreQuestionBackup('${esc(r.id)}')">復元</button> <button class="small danger" type="button" onclick="deleteQuestionBackup('${esc(r.id)}')">削除</button></td></tr>`).join("")+`</tbody></table>`;
+    if(msg){msg.className="msg";msg.textContent=`${rows.length}件のバックアップがあります。`;}
+  }catch(e){
+    if(box)box.innerHTML=`<p class="err">${esc(e.message||"バックアップ一覧を取得できませんでした。")}</p>`;
+  }
+}
+async function restoreQuestionBackup(id){
+  const msg=$("questionBackupMessage");
+  if(!confirm("選択したバックアップに復元します。復元前の現在データも自動バックアップします。よろしいですか？"))return;
+  try{
+    const data=await call("question_backup_restore",{backup_id:id});
+    if(msg){msg.className="msg ok";msg.textContent=data.message||"復元しました。";}
+    await loadQuestionList();
+    await loadQuestionBackups();
+    if(typeof loadNewQuestionNoticeCandidates==="function")await loadNewQuestionNoticeCandidates();
+    if(typeof loadScheduledNotices==="function")await loadScheduledNotices();
+  }catch(e){
+    if(msg){msg.className="msg err";msg.textContent=e.message||"復元に失敗しました。";}
+  }
+}
+
+async function deleteQuestionBackup(id){
+  const msg=$("questionBackupMessage");
+  if(!confirm("選択した問題バックアップを削除します。削除後はこのバックアップから復元できません。よろしいですか？"))return;
+  try{
+    const data=await call("question_backup_delete",{backup_id:id});
+    if(msg){msg.className="msg ok";msg.textContent=data.message||"バックアップを削除しました。";}
+    await loadQuestionBackups();
+  }catch(e){
+    if(msg){msg.className="msg err";msg.textContent=e.message||"バックアップ削除に失敗しました。";}
+  }
+}
+
+function questionOutsDisplay(r){
+  if(r&&String(r.outs_scope||"").toLowerCase()==="common")return "共通";
+  return r&&r.outs!==undefined&&r.outs!==null&&r.outs!=="" ? String(r.outs) : "未設定";
+}
+function renderQuestionList(rows){
+  const box=$("questionListTable");
+  const sortInfo=$("questionSortInfo");
+  const displayRows=sortedQuestionRows(rows||[]);
+  if(sortInfo)sortInfo.textContent=`現在：${sortLabel(questionSortKey)} ${questionSortAsc?"昇順":"降順"}`;
+  renderDefenseQuestionCountAudit(rows||[]);
+  if(!displayRows.length){box.innerHTML='<p class="muted">該当する問題はありません。</p>';return;}
+  box.innerHTML=`<table><thead><tr><th>ID</th><th>状態</th><th>種別</th><th>学年</th><th>走者</th><th>アウト</th><th>タグ/状況</th><th>操作</th></tr></thead><tbody>`+
+    displayRows.slice(0,500).map(r=>`<tr>
+      <td><code>${esc(r.id)}</code></td>
+      <td>${questionStatusPill(r.status)}</td>
+      <td>${esc(r.type)}</td>
+      <td>${esc(r.grade)}</td>
+      <td>${esc(r.stage)}</td>
+      <td>${esc(questionOutsDisplay(r))}</td>
+      <td><b>${esc(r.ball_tag)}</b><br><span class="muted">${esc(String(r.situation||"").slice(0,90))}</span></td>
+      <td><button class="small" type="button" onclick="loadQuestionEditor('${esc(r.id)}')">編集</button></td>
+    </tr>`).join("")+`</tbody></table>`;
+}
+
+const DEFENSE_COUNT_POSITIONS=[
+  ["P","ピッチャー"],["C","キャッチャー"],["1B","ファースト"],["2B","セカンド"],["SS","ショート"],["3B","サード"],["LF","レフト"],["CF","センター"],["RF","ライト"]
+];
+const DEFENSE_COUNT_GRADES=[3,4,5,6];
+function rowIsPublishedQuestion(r){return (r&&String(r.status||"published")==="published");}
+function rowIsEligibleForSelectedGrade(r,g){
+  if(!r)return false;
+  const qg=Number(r.grade||0);
+  if(!Number.isFinite(qg)||qg<=0)return false;
+  if(qg>g+1)return false;
+  if(r.min_grade!==undefined&&r.min_grade!==null&&r.min_grade!==""&&g<Number(r.min_grade))return false;
+  if(r.max_grade!==undefined&&r.max_grade!==null&&r.max_grade!==""&&g>Number(r.max_grade))return false;
+  return true;
+}
+function rowOutsBuckets(r){
+  if(r&&String(r.outs_scope||"").toLowerCase()==="common")return [0,1,2];
+  const n=Number(r&&r.outs);
+  return Number.isInteger(n)&&n>=0&&n<=2 ? [n] : [];
+}
+function renderDefenseQuestionCountAudit(rows){
+  const summary=$("questionCountAuditSummary");
+  const box=$("questionCountAuditTable");
+  if(!summary||!box)return;
+  const allRows=Array.isArray(rows)?rows:[];
+  const defenseRows=allRows.filter(r=>rowIsPublishedQuestion(r)&&r.type==="defense");
+  if(!defenseRows.length){
+    summary.textContent="公開中の守備問題が見つかりません。";
+    box.innerHTML="";
+    return;
+  }
+  const zero=[];
+  const low=[];
+  const tableRows=[];
+  DEFENSE_COUNT_GRADES.forEach(g=>{
+    DEFENSE_COUNT_POSITIONS.forEach(([pos,label])=>{
+      const unique=new Set();
+      const counts={0:0,1:0,2:0};
+      defenseRows.forEach(r=>{
+        const positions=Array.isArray(r.positions)?r.positions:[];
+        if(!positions.includes(pos))return;
+        if(!rowIsEligibleForSelectedGrade(r,g))return;
+        unique.add(r.id);
+        rowOutsBuckets(r).forEach(o=>{counts[o]=(counts[o]||0)+1;});
+      });
+      [0,1,2].forEach(o=>{
+        if((counts[o]||0)===0)zero.push(`${g}年生 ${label} ${o}アウト`);
+        else if((counts[o]||0)<3)low.push(`${g}年生 ${label} ${o}アウト=${counts[o]}件`);
+      });
+      tableRows.push({grade:g,pos,label,total:unique.size,o0:counts[0]||0,o1:counts[1]||0,o2:counts[2]||0});
+    });
+  });
+  const issueText=zero.length?`0件あり：${zero.slice(0,6).join("、")}${zero.length>6?" ほか"+(zero.length-6)+"件":""}`:`0件の組み合わせはありません。`;
+  summary.innerHTML=`公開中の守備問題 ${defenseRows.length}問を集計。${esc(issueText)}${low.length?` <span class="muted">3件未満：${esc(low.length)}箇所</span>`:""}`;
+  box.innerHTML=`<table><thead><tr><th>学年</th><th>守備位置</th><th>0アウト候補</th><th>1アウト候補</th><th>2アウト候補</th><th>使用可能問題数</th></tr></thead><tbody>`+
+    tableRows.map(r=>`<tr class="${(r.o0===0||r.o1===0||r.o2===0)?"row-warn":""}">
+      <td>${esc(r.grade)}年生</td><td>${esc(r.label)}</td>
+      <td>${countCellHtml(r.o0)}</td><td>${countCellHtml(r.o1)}</td><td>${countCellHtml(r.o2)}</td><td>${esc(r.total)}</td>
+    </tr>`).join("")+`</tbody></table>`+
+    `<div class="muted" style="margin-top:6px">※使用可能問題数は重複なしの問題ID数です。アウト候補数はcommon問題を各アウト枠に数えるため、合計とは一致しない場合があります。</div>`;
+}
+function countCellHtml(n){
+  const cls=n===0?"err":(n<3?"warn":"");
+  return cls?`<span class="${cls}"><b>${esc(n)}</b></span>`:esc(n);
+}
+
+const QF_POSITIONS=[
+  ["P","ピッチャー"],["C","キャッチャー"],["1B","ファースト"],["2B","セカンド"],["SS","ショート"],["3B","サード"],["LF","レフト"],["CF","センター"],["RF","ライト"],["BASIC","基本動作"]
+];
+const QF_RUNNERS=[["1B","一塁"],["2B","二塁"],["3B","三塁"]];
+const QF_BALL_PATHS=[
+  "pickoff_1b","pickoff_2b","pickoff_3b","pitcher_grounder","first_grounder","second_grounder","short_grounder","third_grounder","catcher_grounder",
+  "first_base","first_second_gap_grounder","second_short_gap_grounder","third_short_gap_grounder","left_single","center_single","right_single",
+  "left_center_gap","right_center_gap","left_fly","center_fly","right_fly","passed_ball_back_center","wild_pitch_near_catcher","unknown_to_pitcher"
+];
+const BALL_PATH_LABELS={
+  pickoff_1b:"一塁牽制",
+  pickoff_2b:"二塁牽制",
+  pickoff_3b:"三塁牽制",
+  pitcher_grounder:"ピッチャーゴロ",
+  first_grounder:"ファーストゴロ",
+  second_grounder:"セカンドゴロ",
+  short_grounder:"ショートゴロ",
+  third_grounder:"サードゴロ",
+  catcher_grounder:"キャッチャー前ゴロ",
+  first_base:"一塁方向",
+  first_second_gap_grounder:"一二塁間のゴロ",
+  second_short_gap_grounder:"二遊間のゴロ",
+  third_short_gap_grounder:"三遊間のゴロ",
+  left_single:"レフト前ヒット",
+  center_single:"センター前ヒット",
+  right_single:"ライト前ヒット",
+  left_center_gap:"左中間",
+  right_center_gap:"右中間",
+  left_fly:"レフトフライ",
+  center_fly:"センターフライ",
+  right_fly:"ライトフライ",
+  passed_ball_back_center:"捕逸・後方中央",
+  wild_pitch_near_catcher:"ワイルドピッチ・捕手前",
+  unknown_to_pitcher:"ピッチャー位置"
+};
+function fillSelectOptions(sel, values, labels={}, includeBlank=true){
+  if(!sel)return;
+  sel.innerHTML=(includeBlank?'<option value="">選択してください</option>':'')+
+    values.map(v=>`<option value="${esc(v)}">${esc(labels[v]||v)}</option>`).join("");
+}
+async function loadQuestionOptions(){
+  if(latestQuestionOptions.loaded)return latestQuestionOptions;
+  try{
+    const data=await call("question_options");
+    latestQuestionOptions={
+      loaded:true,
+      themes:data.themes||[],
+      theme_labels:data.theme_labels||{},
+      ball_tags:data.ball_tags||[],
+      prompt_templates:data.prompt_templates||[]
+    };
+  }catch(e){
+    latestQuestionOptions={loaded:true,themes:[],theme_labels:{},ball_tags:[],prompt_templates:[
+      "あなたの守備位置ならどうする？最も良い判断を選んでください。",
+      "この場面で、君ならどう判断する？",
+      "打った後、あなたはどう走る？最も良い判断を選んでください。"
+    ]};
+  }
+  refreshRuleBasedSelects();
+  return latestQuestionOptions;
+}
+function refreshRuleBasedSelects(){
+  fillExistingOrNewSelect($("qf_theme_select"),latestQuestionOptions.themes||[],latestQuestionOptions.theme_labels||{});
+  fillExistingOrNewSelect($("qf_ball_tag_select"),latestQuestionOptions.ball_tags||[],{});
+  fillExistingOrNewSelect($("qf_prompt_template"),latestQuestionOptions.prompt_templates||[]);
+}
+function fillExistingOrNewSelect(sel, values, labels={}){
+  if(!sel)return;
+  const current=sel.value;
+  sel.innerHTML='<option value="">選択してください</option>'+
+    values.map(v=>`<option value="${esc(v)}">${esc(labels[v]?labels[v]+" / "+v:v)}</option>`).join("")+
+    '<option value="__new__">新規追加</option>';
+  if(current)sel.value=current;
+}
+function existingOrNewValue(selectId,newId){
+  const sel=$(selectId);
+  if(!sel)return "";
+  return sel.value==="__new__"?($(newId).value||"").trim():sel.value;
+}
+function setExistingOrNew(selectId,newWrapId,newId,value,options=[]){
+  const sel=$(selectId), wrap=$(newWrapId), input=$(newId);
+  if(!sel)return;
+  if(value && !options.includes(value)){
+    sel.value="__new__";
+    if(input)input.value=value;
+  }else{
+    sel.value=value||"";
+    if(input)input.value="";
+  }
+  if(wrap)wrap.classList.toggle("active",sel.value==="__new__");
+  updateThemeLabel();
+}
+function updateNewFieldVisibility(){
+  $("qf_theme_new_wrap").classList.toggle("active",$("qf_theme_select").value==="__new__");
+  $("qf_ball_tag_new_wrap").classList.toggle("active",$("qf_ball_tag_select").value==="__new__");
+  $("qf_prompt_custom_wrap").classList.toggle("active",$("qf_prompt_template").value==="__new__");
+  updateThemeLabel();
+}
+function updateThemeLabel(){
+  const box=$("qf_theme_label");
+  if(!box)return;
+  const v=$("qf_theme_select").value;
+  if(v==="__new__"){
+    box.textContent="新しいテーマ名を右の入力欄に入れてください。";
+  }else if(v){
+    box.textContent=latestQuestionOptions.theme_labels&&latestQuestionOptions.theme_labels[v]?`意味：${latestQuestionOptions.theme_labels[v]}`:"";
+  }else{
+    box.textContent="";
+  }
+}
+function updateBallPathLabel(){
+  const box=$("qf_ball_path_label");
+  const sel=$("qf_ball_path");
+  if(!box||!sel)return;
+  const v=sel.value;
+  box.textContent=v?(BALL_PATH_LABELS[v]?`意味：${BALL_PATH_LABELS[v]} / ${v}`:v):"";
+}
+function checkedValues(containerId){
+  return [...document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`)].map(x=>x.value);
+}
+function setCheckedValues(containerId, values){
+  const set=new Set(values||[]);
+  document.querySelectorAll(`#${containerId} input[type="checkbox"]`).forEach(x=>{x.checked=set.has(x.value)});
+}
+function initQuestionFormControls(){
+  const posBox=$("qf_positions");
+  if(posBox&&!posBox.dataset.ready){
+    posBox.innerHTML=QF_POSITIONS.map(([v,l])=>`<label><input type="checkbox" value="${v}"> ${l}</label>`).join("");
+    posBox.dataset.ready="1";
+  }
+  const runBox=$("qf_visual_runners");
+  if(runBox&&!runBox.dataset.ready){
+    runBox.innerHTML=QF_RUNNERS.map(([v,l])=>`<label><input type="checkbox" value="${v}"> ${l}</label>`).join("");
+    runBox.dataset.ready="1";
+  }
+  refreshRuleBasedSelects();
+  fillSelectOptions($("qf_ball_path"),QF_BALL_PATHS,BALL_PATH_LABELS,true);
+  fillSelectOptions($("qf_ball_holder"),QF_POSITIONS.map(x=>x[0]),Object.fromEntries(QF_POSITIONS),true);
+  fillSelectOptions($("qf_target_position"),QF_POSITIONS.map(x=>x[0]),Object.fromEntries(QF_POSITIONS),true);
+  updateBallPathLabel();
+  document.querySelectorAll("#questionFormEditor input,#questionFormEditor select,#questionFormEditor textarea").forEach(el=>{
+    if(!el.dataset.bound){
+      el.addEventListener("input",()=>{syncFormToJson();validateQuestionEditor();});
+      el.addEventListener("change",()=>{
+        if(el.id==="qf_theme_select"||el.id==="qf_ball_tag_select"||el.id==="qf_prompt_template")updateNewFieldVisibility();
+        if(el.id==="qf_ball_path")updateBallPathLabel();
+        if(el.id==="qf_type"){
+          updateQuestionFormVisibility();
+          if(questionEditorMode==="new")ensureNewQuestionIdForSelectedType();
+        }
+        if(el.closest("#qf_positions")||el.id==="qf_type")renderChoiceFormFromCurrent();
+        syncFormToJson();
+        validateQuestionEditor();
+      });
+      el.dataset.bound="1";
+    }
+  });
+}
+
+
+function setQuestionIdentityMode(mode){
+  questionEditorMode=mode;
+  const idEl=$("qf_id");
+  const typeEl=$("qf_type");
+  const copyBtn=$("questionCopyBtn");
+  if(idEl){
+    idEl.readOnly=true;
+    idEl.disabled=true;
+    idEl.title="IDは自動発行専用です。手入力では変更できません。";
+  }
+  if(typeEl){
+    typeEl.disabled=(mode==="existing"||mode==="copy");
+    typeEl.title=(mode==="existing"||mode==="copy")?"既存問題またはコピー元の種別は変更できません。":"新規作成では種別変更に合わせてIDを再発行します。";
+  }
+  if(copyBtn)copyBtn.disabled=(mode!=="existing");
+}
+async function ensureNewQuestionIdForSelectedType(){
+  if(questionEditorMode!=="new")return;
+  const type=$("qf_type").value;
+  if(!["attack","defense","basic"].includes(type)){
+    $("qf_id").value="";
+    syncFormToJson(false);
+    validateQuestionEditor();
+    return;
+  }
+  const rows=await loadAllQuestionsForIdIssue();
+  const nextId=nextQuestionIdForType(type,rows);
+  $("qf_id").value=nextId;
+  syncFormToJson(false);
+  validateQuestionEditor();
+}
+
+function updateQuestionFormVisibility(){
+  const type=$("qf_type")?$("qf_type").value:"";
+  const isAttack=type==="attack";
+  const isDefense=type==="defense";
+  const isBasic=type==="basic";
+  document.querySelectorAll(".type-defense-only").forEach(el=>el.classList.toggle("type-hidden",!isDefense));
+  document.querySelectorAll(".type-attack-only").forEach(el=>el.classList.toggle("type-hidden",!isAttack));
+  const choicesHeading=$("choicesHeading");
+  if(choicesHeading){
+    if(isDefense)choicesHeading.innerHTML='守備位置別の選択肢 <span class="help-tip" title="選んだ守備位置ごとに3点・1点・0点の3択を作ります。">?</span>';
+    else choicesHeading.innerHTML='選択肢 <span class="help-tip" title="3点・1点・0点の3択を作ります。">?</span>';
+  }
+}
+
+function choiceTemplate(){
+  return [
+    {text:"",score:3,explain:""},
+    {text:"",score:1,explain:""},
+    {text:"",score:0,explain:""}
+  ];
+}
+function setFormFromQuestion(q, mode="existing"){
+  initQuestionFormControls();
+  setQuestionIdentityMode(mode);
+  $("qf_id").value=q.id||"";
+  $("qf_type").value=q.type||"";
+  const statusEl=$("qf_status");
+  if(statusEl){
+    const st=["published","draft","disabled"].includes(q._status)?q._status:(mode==="new"||mode==="copy"?"draft":"published");
+    statusEl.value=st;
+  }
+  updateQuestionFormVisibility();
+  $("qf_grade").value=q.grade!==undefined?String(q.grade):"";
+  $("qf_stage").value=q.stage||"";
+  $("qf_outs").value=String(q.outs_scope||"").toLowerCase()==="common"?"common":(q.outs!==undefined?String(q.outs):"");
+  $("qf_inning").value=q.inning||"";
+  setExistingOrNew("qf_theme_select","qf_theme_new_wrap","qf_theme_new",q.theme||"",latestQuestionOptions.themes||[]);
+  setExistingOrNew("qf_ball_tag_select","qf_ball_tag_new_wrap","qf_ball_tag_new",q.ball_tag||"",latestQuestionOptions.ball_tags||[]);
+  $("qf_situation").value=q.situation||"";
+  setExistingOrNew("qf_prompt_template","qf_prompt_custom_wrap","qf_prompt_custom",q.prompt||"",latestQuestionOptions.prompt_templates||[]);
+  $("qf_role").value=q.role||"";
+  $("qf_runner").value=q.runner||"";
+  const visual=q.visual||{};
+  setCheckedValues("qf_visual_runners",Array.isArray(visual.runners)?visual.runners:[]);
+  $("qf_batter_runner").value=visual.batter_runner===true?"true":visual.batter_runner===false?"false":"";
+  $("qf_ball_path").value=visual.ball_path||"";
+  updateBallPathLabel();
+  $("qf_ball_holder").value=visual.ball_holder||"";
+  $("qf_target_position").value=visual.target_position||"";
+  let positions=[];
+  if(Array.isArray(q.positions))positions=q.positions;
+  else if(q.choices_by_position)positions=Object.keys(q.choices_by_position);
+  setCheckedValues("qf_positions",positions);
+  renderChoiceForm(q);
+  syncFormToJson(false);
+  validateQuestionEditor();
+}
+function renderChoiceFormFromCurrent(){
+  let q={};
+  try{q=JSON.parse($("questionJsonEditor").value||"{}")}catch(e){}
+  renderChoiceForm(q);
+}
+function renderChoiceRows(prefix, choices){
+  const rows=choices&&choices.length?choices:choiceTemplate();
+  const ordered=[3,1,0].map(score=>rows.find(c=>Number(c.score)===score)||{text:"",score,explain:""});
+  return ordered.map((c,i)=>`<div class="choice-block" data-choice-index="${i}" data-score="${c.score}">
+    <div class="choice-row"><label>点数*<span class="help-tip" title="選択肢の得点です。必ず3点・1点・0点を1つずつ設定します。">?</span></label><select class="qf_choice_score" required>
+      <option value="">選択してください</option><option value="3" ${Number(c.score)===3?'selected':''}>3点 正解</option><option value="1" ${Number(c.score)===1?'selected':''}>1点 惜しい</option><option value="0" ${Number(c.score)===0?'selected':''}>0点 不正解</option>
+    </select></div>
+    <label>選択肢テキスト*<span class="help-tip" title="子どもが選ぶ行動文です。短く自然な行動表現にします。">?</span><textarea class="qf_choice_text" rows="2" required>${esc(c.text||"")}</textarea></label>
+    <label>解説*<span class="help-tip" title="その選択肢が正解・惜しい・不正解である理由です。">?</span><textarea class="qf_choice_explain" rows="2" required>${esc(c.explain||"")}</textarea></label>
+  </div>`).join("");
+}
+function renderChoiceForm(q={}){
+  const box=$("qf_choices");
+  if(!box)return;
+  const type=$("qf_type").value||q.type||"";
+  if(type==="defense"){
+    const positions=checkedValues("qf_positions");
+    const cbp=q.choices_by_position||{};
+    box.innerHTML=positions.length?positions.map(pos=>`<div class="pos-choice-block" data-pos="${esc(pos)}">
+      <div class="pos-choice-title">${esc(Object.fromEntries(QF_POSITIONS)[pos]||pos)} の選択肢</div>
+      ${renderChoiceRows(pos,cbp[pos]||choiceTemplate())}
+    </div>`).join(""):'<p class="err">守備問題は守備位置を1つ以上選択してください。</p>';
+  }else{
+    box.innerHTML=renderChoiceRows("choices",q.choices||choiceTemplate());
+  }
+  box.querySelectorAll("input,select,textarea").forEach(el=>{
+    el.addEventListener("input",()=>{syncFormToJson();validateQuestionEditor();});
+    el.addEventListener("change",()=>{syncFormToJson();validateQuestionEditor();});
+  });
+}
+function collectChoiceRows(container){
+  return [...container.querySelectorAll(".choice-block")].map(block=>({
+    text:block.querySelector(".qf_choice_text").value,
+    score:Number(block.querySelector(".qf_choice_score").value),
+    explain:block.querySelector(".qf_choice_explain").value
+  }));
+}
+
+function runnersFromStageClient(stage){
+  if(stage==="1B")return ["1B"];
+  if(stage==="2B")return ["2B"];
+  if(stage==="3B")return ["3B"];
+  if(stage==="1B2B")return ["1B","2B"];
+  if(stage==="1B3B")return ["1B","3B"];
+  if(stage==="2B3B")return ["2B","3B"];
+  if(stage==="1B2B3B")return ["1B","2B","3B"];
+  return [];
+}
+
+function questionFromForm(){
+  const type=$("qf_type").value;
+  const outsValue=$("qf_outs").value;
+  const q={
+    id:$("qf_id").value.trim(),
+    type,
+    grade:Number($("qf_grade").value),
+    theme:existingOrNewValue("qf_theme_select","qf_theme_new"),
+    stage:$("qf_stage").value,
+    inning:$("qf_inning").value.trim()||"追加",
+    ball_tag:existingOrNewValue("qf_ball_tag_select","qf_ball_tag_new"),
+    situation:$("qf_situation").value.trim(),
+    prompt:existingOrNewValue("qf_prompt_template","qf_prompt_custom"),
+    visual:{
+      runners:checkedValues("qf_visual_runners"),
+      batter_runner:$("qf_batter_runner").value==="true",
+      ball_path:$("qf_ball_path").value
+    },
+    correction_policy:"locked"
+  };
+  if(outsValue==="common")q.outs_scope="common";
+  else if(outsValue!=="")q.outs=Number(outsValue);
+  if($("qf_ball_holder").value)q.visual.ball_holder=$("qf_ball_holder").value;
+  if($("qf_target_position").value)q.visual.target_position=$("qf_target_position").value;
+  if(type==="attack"){
+    if($("qf_role").value.trim())q.role=$("qf_role").value.trim();
+    if($("qf_runner").value.trim())q.runner=$("qf_runner").value.trim();
+  }
+  if(type==="defense"){
+    q.positions=checkedValues("qf_positions").filter(v=>v!=="BASIC");
+    q.choices_by_position={};
+    document.querySelectorAll("#qf_choices .pos-choice-block").forEach(posBlock=>{
+      const pos=posBlock.dataset.pos;
+      q.choices_by_position[pos]=collectChoiceRows(posBlock);
+    });
+  }else{
+    q.choices=collectChoiceRows($("qf_choices"));
+  }
+  Object.keys(q).forEach(k=>{if(q[k]===""||q[k]===null||Number.isNaN(q[k]))delete q[k]});
+  return q;
+}
+function syncFormToJson(validate=true){
+  try{
+    const q=questionFromForm();
+    $("questionJsonEditor").value=JSON.stringify(q,null,2);
+    renderAdminQuestionPreview(q);
+    if(validate)validateQuestionEditor();
+  }catch(e){}
+}
+function toggleAdvancedJson(){
+  const el=$("questionJsonEditor");
+  el.style.display=el.style.display==="none"?"block":"none";
+  if(el.style.display==="block")el.focus();
+}
+
+
+const ADMIN_PREVIEW_C={
+  bases:{home:[960,858],first:[1360,684],second:[960,496],third:[560,684]},
+  fielders:{P:[960,690],C:[960,930],"1B":[1400,650],"2B":[1160,525],SS:[760,525],"3B":[520,650],LF:[330,310],CF:[960,210],RF:[1590,310]},
+  runners:{"1B":[1300,610],"2B":[880,520],"3B":[620,720],BR:[1110,800]}
+};
+const ADMIN_PREVIEW_POS_LABELS={P:"投",C:"捕","1B":"一","2B":"二",SS:"遊","3B":"三",LF:"左",CF:"中",RF:"右",BASIC:"基本"};
+function adminPlayTarget(play){const map={"unknown_to_pitcher":"P","pitcher_grounder":"P","pitcher_fly":"P","pitcher":"P","second_grounder":"2B","second_fly":"2B","first_grounder":"1B","first_fly":"1B","first_base":"1B","short_grounder":"SS","short_fly":"SS","short_liner":"SS","third_fly":"3B","center_single":"CF","center_fly":"CF","center_shallow":"CF","passed_ball":"C","passed_ball_back_diagonal":"C","passed_ball_back_center":"C","passed_ball_back_3b_side":"C","wild_pitch_near_catcher":"C","one_bounce_before_home":"C","one_bounce_front_catcher":"C","one_bounce_feet_catcher":"C","home_throw":"C","home_throw_backstop":"C","outfield_home_throw_cf":"C","catcher_grounder":"C","catcher_fly":"C","pickoff":"P","pickoff_1b":"1B","pickoff_2b":"2B","pickoff_3b":"3B","pickoff_1b_overthrow_foul_deep":"1B","pickoff_2b_overthrow_center_deep":"2B","pickoff_3b_overthrow_foul_deep":"3B","throw_1b_over_high":"1B","left_single":"LF","left_line":"LF","left_fly":"LF","left_shallow":"LF","left_center_gap":"LF","right_line":"RF","right_fly":"RF","right_shallow":"RF","right_single":"RF","right_center_gap":"RF","bunt":"P","squeeze_bunt":"P","third_grounder":"3B","first_second_gap_grounder":"1B","first_second_gap_fly":"1B","second_short_gap_grounder":"SS","third_short_gap_grounder":"3B","third_short_gap_fly":"3B"};return map[play]||"P"}
+function adminIsLinerLike(q){const p=String((q.visual&&q.visual.ball_path)||"");const story=`${q.ball_tag||""} ${q.situation||""} ${q.prompt||""} ${q.theme||""}`;return /liner|ライナー/.test(p)||/ライナー/.test(story)}
+function adminIsFlyLike(q){const p=String((q.visual&&q.visual.ball_path)||"");const story=`${q.ball_tag||""} ${q.situation||""} ${q.prompt||""} ${q.theme||""}`;return /fly|フライ|飛球/.test(p)||/フライ|飛球/.test(story)}
+function adminIsGroundLike(q){const p=String(((q.visual||{}).ball_path)||"");const t=String(q.ball_tag||"");return /ground|ゴロ|bunt|バント/.test(p)||/ゴロ|バント/.test(t)}
+function adminShouldHideBallPath(q,hx,hy,tx,ty){const theme=String(q.theme||"");const tag=String(q.ball_tag||"");const story=`${tag} ${q.situation||""} ${q.prompt||""}`;const staticThemes=["steal","pitcher_pitch_location_vs_bunt","pitcher_avoid_low_wild_pitch_runner_on_third","pitcher_pitch_selection_by_batting_order","pitcher_balk_rule_judgment","pickoff_after_return","low_grade_catcher_safe_steal_throw_setup","catcher_steal_second_throw"];if((q.visual&&q.visual.hide_ball_path)||staticThemes.includes(theme)||/盗塁/.test(tag))return true;if(q.visual&&q.visual.ball_holder==="P"&&q.visual.target_position==="P"){const prePitchToPitcher=/気配|構え|投球動作|投げる前|まだピッチャーは投げていない|セットポジション|準備をしている|準備している/.test(story);const actualBattedBall=/打球|打った|打ち上げた|転がった|捕球|フライ|ゴロ|ライナー/.test(story);if(prePitchToPitcher&&!actualBattedBall)return true}if(/まだ本塁へ返球は来ていない|本塁を離れた/.test(story))return true;if(hx===tx&&hy===ty)return true;if(/まだピッチャーは投げていない|投げる前|セットポジション|構えを見せている|構えている|準備をしている|準備している|近くの野手が持っている/.test(story))return true;return false}
+function adminBallPathSvg(q,hx,hy,tx,ty){if(adminShouldHideBallPath(q,hx,hy,tx,ty))return "";if(adminIsLinerLike(q)){const cx=(hx+tx)/2;const lift=Math.max(45,Math.min(95,Math.abs(hx-tx)*0.10+Math.abs(hy-ty)*0.08));const cy=Math.min(hy,ty)-lift;return `<path d="M${hx} ${hy} Q ${cx} ${cy} ${tx} ${ty}" fill="none" stroke="#ffd400" stroke-width="8" stroke-dasharray="16 12" marker-end="url(#arrow)"/>`}if(adminIsFlyLike(q)){const cx=(hx+tx)/2;const lift=Math.max(130,Math.min(230,Math.abs(hx-tx)*0.18+Math.abs(hy-ty)*0.16));const cy=Math.min(hy,ty)-lift;return `<path d="M${hx} ${hy} Q ${cx} ${cy} ${tx} ${ty}" fill="none" stroke="#ffd400" stroke-width="8" stroke-dasharray="20 14" marker-end="url(#arrow)"/>`}return `<line x1="${hx}" y1="${hy}" x2="${tx}" y2="${ty}" stroke="#ffd400" stroke-width="8" stroke-dasharray="${adminIsGroundLike(q)?'8 10':'20 14'}" marker-end="url(#arrow)"/>`}
+function adminBallTargetDotSvg(q,tx,ty){
+  const play=String((((q||{}).visual||{}).ball_path)||"");
+  if(!play)return "";
+  return `<g class="ballTargetDotLayer" pointer-events="none"><circle cx="${tx}" cy="${ty}" r="18" fill="#e53935" opacity="0.95" stroke="#fff" stroke-width="5"/><circle cx="${tx}" cy="${ty}" r="6" fill="#fff" opacity="0.95"/></g>`;
+}
+function adminBallEndpoints(q){const play=String(((q.visual||{}).ball_path)||"");const target=adminPlayTarget(play);let [sx,sy]=ADMIN_PREVIEW_C.bases.home;let [tx,ty]=ADMIN_PREVIEW_C.fielders[target]||ADMIN_PREVIEW_C.bases.first;const backstopCenter=[960,1035],backstopSlightDiagonal=[1015,1025],backstopThirdBaseSide=[900,1030],nearCatcher=[960,965],oneBounceBeforeHome=[960,825],oneBounceFrontCatcher=[960,900],oneBounceFeetCatcher=[960,925],firstFoulDeep=[1510,735],firstOverHigh=[1500,610],secondCenterDeep=[960,360],thirdFoulDeep=[410,735];const thirdShortGap=[(ADMIN_PREVIEW_C.fielders["3B"][0]+ADMIN_PREVIEW_C.fielders.SS[0])/2,(ADMIN_PREVIEW_C.fielders["3B"][1]+ADMIN_PREVIEW_C.fielders.SS[1])/2];const secondShortGap=[(ADMIN_PREVIEW_C.fielders["2B"][0]+ADMIN_PREVIEW_C.fielders.SS[0])/2,(ADMIN_PREVIEW_C.fielders["2B"][1]+ADMIN_PREVIEW_C.fielders.SS[1])/2];const firstSecondGap=[(ADMIN_PREVIEW_C.fielders["1B"][0]+ADMIN_PREVIEW_C.fielders["2B"][0])/2,(ADMIN_PREVIEW_C.fielders["1B"][1]+ADMIN_PREVIEW_C.fielders["2B"][1])/2];if(play==="passed_ball_back_diagonal"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=backstopSlightDiagonal}else if(play==="passed_ball_back_center"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=backstopCenter}else if(play==="passed_ball_back_3b_side"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=backstopThirdBaseSide}else if(play==="wild_pitch_near_catcher"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=nearCatcher}else if(play==="one_bounce_before_home"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=oneBounceBeforeHome}else if(play==="one_bounce_front_catcher"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=oneBounceFrontCatcher}else if(play==="one_bounce_feet_catcher"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=oneBounceFeetCatcher}else if(play==="pickoff_1b_overthrow_foul_deep"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=firstFoulDeep}else if(play==="pickoff_2b_overthrow_center_deep"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=secondCenterDeep}else if(play==="pickoff_3b_overthrow_foul_deep"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=thirdFoulDeep}else if(play==="throw_1b_over_high"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=firstOverHigh}else if(play==="home_throw_backstop"){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;[tx,ty]=backstopCenter}else if(play==="outfield_home_throw_cf"){[sx,sy]=ADMIN_PREVIEW_C.fielders.CF;[tx,ty]=ADMIN_PREVIEW_C.fielders.C}else if(play==="first_second_gap_grounder"||play==="first_second_gap_fly"){[tx,ty]=firstSecondGap}else if(play==="second_short_gap_grounder"){[tx,ty]=secondShortGap}else if(play==="third_short_gap_grounder"||play==="third_short_gap_fly"){[tx,ty]=thirdShortGap}else if(play==="right_center_gap"){tx=(ADMIN_PREVIEW_C.fielders.CF[0]+ADMIN_PREVIEW_C.fielders.RF[0])/2;ty=(ADMIN_PREVIEW_C.fielders.CF[1]+ADMIN_PREVIEW_C.fielders.RF[1])/2}else if(play==="left_center_gap"){tx=(ADMIN_PREVIEW_C.fielders.LF[0]+ADMIN_PREVIEW_C.fielders.CF[0])/2;ty=(ADMIN_PREVIEW_C.fielders.LF[1]+ADMIN_PREVIEW_C.fielders.CF[1])/2}if(/^pickoff_/.test(play)&&!/overthrow/.test(play)){[sx,sy]=ADMIN_PREVIEW_C.fielders.P;if(target==="1B")[tx,ty]=ADMIN_PREVIEW_C.bases.first;else if(target==="2B")[tx,ty]=ADMIN_PREVIEW_C.bases.second;else if(target==="3B")[tx,ty]=ADMIN_PREVIEW_C.bases.third}return {sx,sy,tx,ty}}
+function adminFieldViewBox(){return window.innerWidth<=720?"260 120 1400 860":"0 0 1920 1080"}
+function adminEscapeXml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+function adminBaseSvg(key){const [x,y]=ADMIN_PREVIEW_C.bases[key];if(key==="home")return `<polygon points="${x-22},${y-10} ${x+22},${y-10} ${x+30},${y+2} ${x},${y+22} ${x-30},${y+2}" fill="#fff" stroke="#ddd" stroke-width="3"/>`;return `<polygon points="${x},${y-16} ${x+30},${y} ${x},${y+16} ${x-30},${y}" fill="#fff" stroke="#ddd" stroke-width="3"/>`}
+function adminRunnerLabel(r,q){if(q&&q.type==="attack"){if(q.stage===r)return "自分";if(r==="BR"&&q.stage==="BR")return "自分"}return r==="1B"?"一塁ランナー":r==="2B"?"二塁ランナー":r==="3B"?"三塁ランナー":"打者走者"}
+function adminSideColorFor(q,kind,code){const isOffense=(kind==="runner"||code==="BR"||code==="BATTER");if(!q)return "blue";if(q.type==="attack")return isOffense?"red":"blue";return isOffense?"blue":"red"}
+function adminSpriteHrefFor(q,kind,code,label){const color=adminSideColorFor(q,kind,code);if(kind==="fielder"&&code==="C")return `assets/sprite_catcher_${color}.webp?v=820`;if(kind==="fielder")return `assets/sprite_fielder_${color}.webp?v=820`;if(code==="BATTER")return `assets/sprite_batter_${color}.webp?v=820`;if(code==="BR")return `assets/sprite_batterrunner_${color}.webp?v=820`;if(label==="自分"){if(q&&q.stage==="1B")return `assets/sprite_runner1_${color}.webp?v=820`;if(q&&q.stage==="2B")return `assets/sprite_runner2_${color}.webp?v=820`;if(q&&q.stage==="3B")return `assets/sprite_runner3_${color}.webp?v=820`;}if(code==="1B")return `assets/sprite_runner1_${color}.webp?v=820`;if(code==="2B")return `assets/sprite_runner2_${color}.webp?v=820`;if(code==="3B")return `assets/sprite_runner3_${color}.webp?v=820`;return `assets/sprite_runner1_${color}.webp?v=820`}
+function adminIsBattedBallSituation(q){const txt=`${q.ball_tag||""} ${q.situation||""} ${q.theme||""}`;if(/牽制|偽投|ワイルドピッチ|暴投|捕逸|パスボール/.test(txt))return false;if(/構え|投球動作に入った|投げていない|投げる前|セットに入った/.test(txt))return false;return /ヒット|ゴロ|フライ|ライナー|打球|打った|転がった|打ち上げた/.test(txt)}
+function adminShouldShowBatter(q){if(!q||q.type!=="attack")return false;if(q.stage==="BR")return false;return !adminIsBattedBallSituation(q)}
+function adminShouldShowBatterRunner(q){if(!q||q.type!=="attack")return false;return q.stage==="BR"||adminIsBattedBallSituation(q)}
+function adminBatterDisplayOptions(q){const theme=String((q&&q.theme)||"");const visual=(q&&q.visual)||{};const batterHanded=String(visual.batter_handed||"");const isLeft=batterHanded==="L"||/left_handed|left_batter_shift/.test(theme)||/左打者|左バッター/.test(`${q&&q.ball_tag||""} ${q&&q.situation||""}`);return isLeft?{x:1010,y:850,flipX:true}:{x:910,y:850,flipX:false}}
+function adminPlayerSvg(q,x,y,label,kind,code,opts={}){const href=adminSpriteHrefFor(q,kind,code,label);const isCatcher=kind==="fielder"&&code==="C";const imgW=isCatcher?94:88;const imgH=isCatcher?118:110;const ix=x-imgW/2;const iy=y-78;const labelText=adminEscapeXml(label);const emph=labelText==="自分";const labelSvg=emph?`<g><rect x="${x-52}" y="${y+52}" width="104" height="44" rx="10" fill="#fff" stroke="#d60000" stroke-width="5"/><text x="${x}" y="${y+84}" text-anchor="middle" font-size="34" font-weight="900" fill="#d60000" stroke="#fff" stroke-width="2" paint-order="stroke">自分</text></g>`:`<text x="${x}" y="${y+68}" text-anchor="middle" class="svgLabel">${labelText}</text>`;const imageTransform=opts.flipX?` transform="translate(${2*x} 0) scale(-1 1)"`:"";return `<g filter="url(#shadow)" class="playerLayer" data-sprite="${href}"><image href="${href}" x="${ix}" y="${iy}" width="${imgW}" height="${imgH}" preserveAspectRatio="xMidYMid meet"${imageTransform}/>${labelSvg}</g>`}
+function makeAdminGameFieldSvg(q){const runners=(q.visual&&q.visual.runners)||[];const hasBR=!!(q&&((((q.visual&&q.visual.batter_runner===true)&&(q.stage==="BR"||adminIsBattedBallSituation(q)))||(q.type==="attack"&&adminShouldShowBatterRunner(q)))));const {sx,sy,tx,ty}=adminBallEndpoints(q);const fielderDrawOrder=["LF","CF","RF","SS","2B","3B","P","1B","C"];const showBatter=!!(!hasBR&&((q.visual&&q.visual.show_batter)||adminShouldShowBatter(q)));const batterOpts=adminBatterDisplayOptions(q);const playersSvg=`${fielderDrawOrder.map(p=>adminPlayerSvg(q,ADMIN_PREVIEW_C.fielders[p][0],ADMIN_PREVIEW_C.fielders[p][1],ADMIN_PREVIEW_POS_LABELS[p]||p,"fielder",p)).join("")}${runners.map(r=>adminPlayerSvg(q,ADMIN_PREVIEW_C.runners[r][0],ADMIN_PREVIEW_C.runners[r][1],adminRunnerLabel(r,q),"runner",r)).join("")}${hasBR?adminPlayerSvg(q,ADMIN_PREVIEW_C.runners.BR[0],ADMIN_PREVIEW_C.runners.BR[1],"打者走者","runner","BR"):""}${showBatter?adminPlayerSvg(q,batterOpts.x,batterOpts.y,"バッター","runner","BATTER",batterOpts):""}`;const arrowSvg=adminBallPathSvg(q,sx,sy,tx,ty);const targetDotSvg=adminBallTargetDotSvg(q,tx,ty);return `<svg viewBox="${adminFieldViewBox()}" role="img" aria-label="ゲームと同じ野球場プレビュー"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#ffd400"/></marker><filter id="shadow"><feDropShadow dx="2" dy="3" stdDeviation="2" flood-opacity=".35"/></filter></defs><rect width="1920" height="1080" fill="#7dbb59"/><path d="M960 880 L1390 680 L960 480 L530 680 Z" fill="#c98745"/><circle cx="960" cy="690" r="95" fill="#c98745"/><path d="M960 880 L1390 680 M960 880 L530 680" fill="none" stroke="#fff" stroke-width="8"/><path d="M960 880 L1750 520 M960 880 L170 520" stroke="#fff" stroke-width="6"/>${adminBaseSvg("home")}${adminBaseSvg("first")}${adminBaseSvg("second")}${adminBaseSvg("third")}<g class="playersLayer">${playersSvg}</g><g class="ballPathLayer" pointer-events="none">${arrowSvg}${targetDotSvg}</g><style>.svgLabel{font:700 28px sans-serif;paint-order:stroke;stroke:#fff;stroke-width:6px;fill:#111}.ballPathLayer{isolation:isolate}
+    .csv-admin-section{margin-top:14px;padding-top:14px;border-top:1px solid #dbe3ee}
+    .csv-admin-section:first-of-type{border-top:none}
+    .csv-import-control-row input[type="file"]{max-width:520px}
+</style></svg>`}
+function renderAdminQuestionPreview(q){const box=$("questionVisualPreview");if(!box)return;if(!q){box.innerHTML='<h3>フィールド表示プレビュー</h3><div class="muted">左の一覧から問題を選択すると、ここに実際のゲームと同じフィールド表示を出します。</div>';return}const v=q.visual||{};const runners=Array.isArray(v.runners)?v.runners:[];box.innerHTML=`<h3>フィールド表示プレビュー：${esc(q.id||"")}</h3><div class="admin-game-field-wrap">${makeAdminGameFieldSvg(q)}</div><div class="preview-meta"><b>${esc(q.ball_tag||"")}</b><br>${esc(q.situation||"")}<br>runners=${esc(JSON.stringify(runners))} / batter_runner=${esc(String(!!v.batter_runner))} / ball_path=${esc(BALL_PATH_LABELS[v.ball_path] ? BALL_PATH_LABELS[v.ball_path] + " / " + v.ball_path : (v.ball_path||""))} / ball_holder=${esc(v.ball_holder||"")} / target_position=${esc(v.target_position||"")}</div>`}
+
+function showQuestionEditorPanel(){
+  const panel=$("questionEditorPanel");
+  const grid=$("questionSplitGrid");
+  if(panel)panel.style.display="block";
+  if(grid)grid.classList.remove("list-full");
+}
+function hideQuestionEditorPanel(){
+  const panel=$("questionEditorPanel");
+  const grid=$("questionSplitGrid");
+  if(panel)panel.style.display="none";
+  if(grid)grid.classList.add("list-full");
+}
+
+async function loadQuestionEditor(id){
+  showQuestionEditorPanel();
+  await loadQuestionOptions();
+  const msg=$("questionEditMessage");
+  msg.textContent="読み込み中...";
+  msg.className="msg";
+  try{
+    const data=await call("question_get",{id});
+    currentLoadedQuestion=JSON.parse(JSON.stringify(data.question||{}));
+    if(data.status)currentLoadedQuestion._status=data.status;
+    $("questionEditingId").value=data.question.id||"";
+    $("questionJsonEditor").value=JSON.stringify(data.question,null,2);
+    const formQuestion=Object.assign({}, data.question, {_status:data.status||"published"});
+    setFormFromQuestion(formQuestion,"existing");
+    renderAdminQuestionPreview(data.question);
+    msg.textContent="読み込みました。";
+    msg.className="msg ok";
+  }catch(e){
+    msg.textContent=e.message;
+    msg.className="msg err";
+  }
+}
+
+function questionPrefixForType(type){
+  if(type==="attack")return "A";
+  if(type==="basic")return "B";
+  return "D";
+}
+function nextQuestionIdForType(type, rows){
+  const prefix=questionPrefixForType(type);
+  let max=0;
+  (rows||[]).forEach(r=>{
+    const id=String(r.id||"");
+    const m=id.match(new RegExp("^"+prefix+"(\\d+)$"));
+    if(m)max=Math.max(max,Number(m[1]||0));
+  });
+  const next=max+1;
+  return prefix+String(next).padStart(3,"0");
+}
+async function loadAllQuestionsForIdIssue(){
+  try{
+    const data=await call("question_list",{query:"",type:""});
+    latestAllQuestionsForId=data.questions||[];
+  }catch(e){
+    latestAllQuestionsForId=latestQuestions||[];
+  }
+  return latestAllQuestionsForId;
+}
+function buildNewQuestionTemplate(type,id){
+  if(type==="attack"){
+    return {
+      id,
+      type:"attack",
+      grade:3,
+      theme:"new_question",
+      stage:"1B",
+      inning:"追加",
+      outs:0,
+      ball_tag:"新規攻撃問題",
+      situation:"ここに攻撃時の問題文を入力してください。",
+      prompt:"打った後、あなたはどう走る？最も良い判断を選んでください。",
+      role:"走者",
+      runner:"一塁走者",
+      visual:{runners:["1B"],batter_runner:false,ball_path:"unknown_to_pitcher",ball_holder:"P",target_position:"P"},
+      choices:[
+        {text:"正解の選択肢",score:3,explain:"正解の理由"},
+        {text:"1点の選択肢",score:1,explain:"惜しい理由"},
+        {text:"0点の選択肢",score:0,explain:"間違いの理由"}
+      ],
+      correction_policy:"locked"
+    };
+  }
+  if(type==="basic"){
+    return {
+      id,
+      type:"basic",
+      grade:2,
+      theme:"basic_rule",
+      stage:"BASIC",
+      inning:"追加",
+      outs:0,
+      ball_tag:"新規基本問題",
+      situation:"ここに基本動作・基本ルールの問題文を入力してください。",
+      prompt:"この場面で、あなたはどう動く？最も良い判断を選んでください。",
+      visual:{runners:[],batter_runner:false,ball_path:"unknown_to_pitcher",ball_holder:"P",target_position:"P"},
+      choices:[
+        {text:"正解の選択肢",score:3,explain:"正解の理由"},
+        {text:"1点の選択肢",score:1,explain:"惜しい理由"},
+        {text:"0点の選択肢",score:0,explain:"間違いの理由"}
+      ],
+      correction_policy:"locked"
+    };
+  }
+  if(type==="defense"){
+    return {
+      id,
+      type:"defense",
+      grade:3,
+      theme:"new_question",
+      stage:"1B",
+      inning:"追加",
+      outs:0,
+      ball_tag:"新規守備問題",
+      situation:"ここに守備時の問題文を入力してください。",
+      prompt:"あなたの守備位置ならどうする？最も良い判断を選んでください。",
+      visual:{runners:["1B"],batter_runner:false,ball_path:"pickoff_1b",ball_holder:"P",target_position:"1B"},
+      choices_by_position:{
+        "1B":[
+          {text:"正解の選択肢",score:3,explain:"正解の理由"},
+          {text:"1点の選択肢",score:1,explain:"惜しい理由"},
+          {text:"0点の選択肢",score:0,explain:"間違いの理由"}
+        ]
+      },
+      positions:["1B"],
+      correction_policy:"locked"
+    };
+  }
+  return {
+    id:"",
+    type:"",
+    grade:3,
+    theme:"new_question",
+    stage:"1B",
+    inning:"追加",
+    outs:0,
+    ball_tag:"新規問題",
+    situation:"ここに問題文を入力してください。",
+    prompt:"この場面で、あなたはどう動く？最も良い判断を選んでください。",
+    visual:{runners:["1B"],batter_runner:false,ball_path:"unknown_to_pitcher",ball_holder:"P",target_position:"P"},
+    choices:[
+      {text:"正解の選択肢",score:3,explain:"正解の理由"},
+      {text:"1点の選択肢",score:1,explain:"惜しい理由"},
+      {text:"0点の選択肢",score:0,explain:"間違いの理由"}
+    ],
+    correction_policy:"locked"
+  };
+}
+
+async function newQuestionTemplate(){
+  showQuestionEditorPanel();
+  await loadQuestionOptions();
+  const selectedType=($("questionTypeFilter")&&$("questionTypeFilter").value)||"";
+  const rows=await loadAllQuestionsForIdIssue();
+  const nextId=selectedType?nextQuestionIdForType(selectedType,rows):"";
+  const template=buildNewQuestionTemplate(selectedType,nextId);
+  currentLoadedQuestion=null;
+  $("questionEditingId").value="";
+  setFormFromQuestion(template,"new");
+  renderAdminQuestionPreview(template);
+  if(selectedType){
+    $("questionEditMessage").textContent=`新規テンプレイトを作成しました。種別「${selectedType}」の仮IDは現在の発行ルールに基づく次番号「${nextId}」です。IDは変更できません。`;
+  }else{
+    $("questionEditMessage").textContent="新規テンプレイトを作成しました。種別を選ぶと、現在の発行ルールに基づく次番号IDを自動発行します。IDは変更できません。";
+  }
+  $("questionEditMessage").className="msg";
+}
+function requiredScoreSetClient(choices){
+  if(!Array.isArray(choices)||choices.length!==3)return false;
+  const scores=[];
+  for(const c of choices){
+    if(!c||typeof c!=="object")return false;
+    if(!String(c.text||"").trim())return false;
+    if(!String(c.explain||"").trim())return false;
+    if(c.score===undefined||c.score===null)return false;
+    scores.push(Number(c.score));
+  }
+  scores.sort((a,b)=>a-b);
+  return scores.join(",")==="0,1,3";
+}
+function validateQuestionObjectClient(q){
+  if(!q||typeof q!=="object")return "問題データはJSONオブジェクトである必要があります。";
+  if(!String(q.id||"").trim())return "id は必須です。";
+  if(!/^[a-zA-Z0-9_-]+$/.test(String(q.id)))return "id に使用できない文字があります。";
+  if(!["attack","defense","basic"].includes(q.type))return "type は attack / defense / basic から選択してください。";
+  if(!(Number(q.grade)>=2&&Number(q.grade)<=6))return "grade は2〜6で必須です。";
+  if(!String(q.stage||"").trim())return "stage（判断対象・出題分類）は必須です。";
+  const hasOuts=q.outs!==undefined&&q.outs!==null&&String(q.outs)!=="";
+  const isCommonOutsScope=String(q.outs_scope||"").toLowerCase()==="common";
+  const requiresOuts=["attack","defense"].includes(String(q.type||""));
+  if(String(q.outs_scope||"")!==""&&!isCommonOutsScope)return "outs_scope は common のみ指定できます。";
+  if(hasOuts&&isCommonOutsScope)return "outs と outs_scope: common は同時に指定できません。";
+  if(requiresOuts&&!hasOuts&&!isCommonOutsScope)return "攻撃・守備問題ではアウト条件が必須です。0・1・2、またはアウト共通を選択してください。";
+  if(hasOuts&&![0,1,2].includes(Number(q.outs)))return "outs は0・1・2のいずれかにしてください。アウト数に依存しない問題はアウト共通を選択してください。";
+  if(!String(q.ball_tag||"").trim())return "ball_tag は必須です。";
+  if(!String(q.situation||"").trim())return "situation（問題文）は必須です。";
+  if(!String(q.prompt||"").trim())return "prompt は必須です。";
+  if(String(q.situation||"").includes("0アウト")||String(q.prompt||"").includes("0アウト"))return "表記ルール：0アウトではなく「ノーアウト」を使用してください。";
+  if(String(q.situation||"").includes("送球しよう")||String(q.prompt||"").includes("送球しよう"))return "表現ルール：「送球しよう」は避け、自然な行動表現にしてください。";
+  if(!q.visual||typeof q.visual!=="object")return "visual は必須です。";
+  if(!Array.isArray(q.visual.runners))return "visual.runners は配列で必須です。";
+  if(q.visual.batter_runner!==true&&q.visual.batter_runner!==false)return "visual.batter_runner は必須です。表示する/表示しないを選択してください。";
+  if(!String(q.visual.ball_path||"").trim())return "visual.ball_path は必須です。";
+  const allowed=["P","C","1B","2B","SS","3B","LF","CF","RF","BASIC"];
+  if(q.type==="defense"){
+    if(!q.choices_by_position||typeof q.choices_by_position!=="object")return "守備問題は choices_by_position が必須です。";
+    if(Array.isArray(q.positions)){
+      for(const pos of q.positions){
+        if(!allowed.includes(pos))return `positions に不正な守備位置があります：${pos}`;
+      }
+    }
+    for(const [pos,choices] of Object.entries(q.choices_by_position)){
+      if(!allowed.includes(pos))return `choices_by_position に不正な守備位置があります：${pos}`;
+      if(!requiredScoreSetClient(choices))return `各守備位置の選択肢は3個、点数は3/1/0、text/explain必須です：${pos}`;
+    }
+  }else{
+    if(!requiredScoreSetClient(q.choices))return "選択肢は3個、点数は3/1/0、text/explain必須です。";
+  }
+  if(q.type==="attack"&&!q.runner&&!q.role)return "攻撃問題は runner または role を入力してください。";
+  return "";
+}
+function validateQuestionEditor(){
+  syncFormToJson(false);
+  const btn=$("questionSaveBtn");
+  const msg=$("questionRuleMessage");
+  if(!btn||!msg)return false;
+  let ok=false;
+  try{
+    const q=JSON.parse($("questionJsonEditor").value||"{}");
+    const err=validateQuestionObjectClient(q);
+    if(err){
+      msg.textContent="保存不可：" + err;
+      msg.className="msg err";
+      ok=false;
+    }else{
+      msg.textContent="保存可能：必須項目と基本ルールを満たしています。";
+      msg.className="msg ok";
+      ok=true;
+    }
+  }catch(e){
+    msg.textContent="保存不可：JSON形式が正しくありません。";
+    msg.className="msg err";
+    ok=false;
+  }
+  btn.disabled=!ok;
+  return ok;
+}
+
+async function copyEditingQuestion(){
+  showQuestionEditorPanel();
+  const msg=$("questionEditMessage");
+  try{
+    let base=currentLoadedQuestion;
+    if(!base||!base.id){
+      try{base=JSON.parse($("questionJsonEditor").value||"{}");}catch(e){}
+    }
+    if(!base||!base.id){alert("コピーする既存問題を先に読み込んでください。");return;}
+    const type=base.type;
+    if(!["attack","defense","basic"].includes(type)){alert("コピー元の種別が不正です。");return;}
+    const rows=await loadAllQuestionsForIdIssue();
+    const nextId=nextQuestionIdForType(type,rows);
+    const copied=JSON.parse(JSON.stringify(base));
+    copied.id=nextId;
+    // コピーは新規追加扱いにするため、編集元IDを空にする
+    $("questionEditingId").value="";
+    currentLoadedQuestion=null;
+    setFormFromQuestion(copied,"copy");
+    renderAdminQuestionPreview(copied);
+    msg.textContent=`問題ID ${base.id} をコピーしました。新規IDは ${nextId} です。IDと種別は固定し、内容を確認して保存してください。`;
+    msg.className="msg ok";
+  }catch(e){
+    msg.textContent=e.message||"コピーに失敗しました。";
+    msg.className="msg err";
+  }
+}
+
+async function saveQuestionFromEditor(){
+  const msg=$("questionEditMessage");
+  if(!validateQuestionEditor())return;
+  try{
+    const question=JSON.parse($("questionJsonEditor").value);
+    const original_id=$("questionEditingId").value||"";
+    const statusEl=$("qf_status");
+    const status=statusEl&&["published","draft","disabled"].includes(statusEl.value)?statusEl.value:"published";
+    if(!confirm(`問題ID ${question.id} を保存します。よろしいですか？`))return;
+    const data=await call("question_save",{question,original_id,status});
+    $("questionEditingId").value=data.id||question.id||"";
+    currentLoadedQuestion=question;
+    setQuestionIdentityMode("existing");
+    msg.textContent=data.message||"保存しました。";
+    msg.className="msg ok";
+    await loadQuestionList();
+    await loadQuestionVersions();
+    renderAdminQuestionPreview(null);
+    hideQuestionEditorPanel();
+  }catch(e){
+    msg.textContent=e.message||"JSON形式または保存処理に問題があります。";
+    msg.className="msg err";
+  }
+}
+async function deleteEditingQuestion(){
+  const id=$("questionEditingId").value;
+  const msg=$("questionEditMessage");
+  if(!id){alert("削除対象の問題を左の一覧から読み込んでください。");return;}
+  if(!confirm(`問題ID ${id} を削除します。自動バックアップは作成されますが、よろしいですか？`))return;
+  try{
+    const data=await call("question_delete",{id});
+    $("questionEditingId").value="";
+    $("questionJsonEditor").value="";
+    currentLoadedQuestion=null;
+    setQuestionIdentityMode("none");
+    renderAdminQuestionPreview(null);
+    hideQuestionEditorPanel();
+    validateQuestionEditor();
+    msg.textContent=data.message||"削除しました。";
+    msg.className="msg ok";
+    await loadQuestionList();
+    await loadQuestionVersions();
+    renderAdminQuestionPreview(null);
+    hideQuestionEditorPanel();
+  }catch(e){
+    msg.textContent=e.message;
+    msg.className="msg err";
+  }
+}
+
+function codeSortTime(row){
+  return row.last_used_at || row.first_used_at || row.created_at || "";
+}
+function sortedCodeRows(type, rows){
+  const sorted=[...(rows||[])];
+  const mode=codeSortState[type]||"default";
+  if(mode==="used_asc" || mode==="used_desc"){
+    sorted.sort((a,b)=>{
+      const au=codeSortTime(a), bu=codeSortTime(b);
+      if(au && !bu) return -1;
+      if(!au && bu) return 1;
+      const cmp=String(au).localeCompare(String(bu));
+      if(cmp!==0) return mode==="used_asc" ? cmp : -cmp;
+      return String(a.hash_prefix||"").localeCompare(String(b.hash_prefix||""));
+    });
+  }
+  return sorted;
+}
+function sortCodeList(type,mode){
+  codeSortState[type]=mode;
+  renderCodes(type==="admin"?"adminCodes":"inviteCodes", type==="admin"?latestAdminCodes:latestInviteCodes);
+}
+function codeSortLabel(type){
+  const mode=codeSortState[type]||"default";
+  if(mode==="used_asc")return "現在：利用日 早い順";
+  if(mode==="used_desc")return "現在：利用日 遅い順";
+  return "現在：作成日 新しい順";
+}
+function renderUsedBy(details){
+  const list=Array.isArray(details)?details:[];
+  if(!list.length)return '<span class="muted">未利用</span>';
+  return list.map(x=>`<div><b>${esc(x.used_at||"")}</b><br><code>${esc(x.player_id||"")}</code></div>`).join('<hr style="border:none;border-top:1px solid #e5e7eb;margin:6px 0">');
+}
+
+
+
+function issueDistributionBaseUrl(){
+  const url=new URL(window.location.href);
+  url.pathname=url.pathname.replace(/admin\.html.*$/,'');
+  url.search=''; url.hash='';
+  return url.toString();
+}
+function issueDistributionUrl(type,key){
+  key=String(key||'').trim();
+  if(!key)return '';
+  const url=new URL(issueDistributionBaseUrl());
+  url.searchParams.set('openExternalBrowser','1');
+  if(type==='admin'){
+    url.searchParams.set('issue','admin');
+    url.searchParams.set('admin_key',key);
+  }else{
+    url.searchParams.set('issue','invite');
+    url.searchParams.set('invite_key',key);
+  }
+  return url.toString();
+}
+function renderIssueLinkSettings(settings){
+  latestIssueLinkSettings=settings||{invite_key:'',admin_key:''};
+  if($('issueInviteKey'))$('issueInviteKey').value=latestIssueLinkSettings.invite_key||'';
+  if($('issueAdminKey'))$('issueAdminKey').value=latestIssueLinkSettings.admin_key||'';
+  updateIssueDistributionUrlDisplay();
+}
+function updateIssueDistributionUrlDisplay(){
+  const inviteKey=$('issueInviteKey')?$('issueInviteKey').value:'';
+  const adminKey=$('issueAdminKey')?$('issueAdminKey').value:'';
+  const inviteUrl=issueDistributionUrl('invite',inviteKey);
+  const adminUrl=issueDistributionUrl('admin',adminKey);
+  if($('inviteIssueDistributionUrl'))$('inviteIssueDistributionUrl').textContent=inviteUrl||'未設定';
+  if($('adminIssueDistributionUrl'))$('adminIssueDistributionUrl').textContent=adminUrl||'未設定';
+}
+function randomIssueLinkKey(prefix){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+  let s=prefix+'-';
+  const arr=new Uint32Array(16);
+  if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(arr);else for(let i=0;i<arr.length;i++)arr[i]=Math.floor(Math.random()*100000);
+  for(let i=0;i<16;i++)s+=chars[arr[i]%chars.length];
+  return s;
+}
+function generateIssueLinkKey(type){
+  const id=type==='admin'?'issueAdminKey':'issueInviteKey';
+  if($(id))$(id).value=randomIssueLinkKey(type==='admin'?'admin':'invite');
+  updateIssueDistributionUrlDisplay();
+}
+async function saveIssueLinkSettings(){
+  const msg=$('issueLinkSettingsMsg');
+  if(msg){msg.textContent='保存中です...';msg.className='msg';}
+  try{
+    const data=await call('issue_link_settings_save',{invite_key:$('issueInviteKey').value,admin_key:$('issueAdminKey').value});
+    latestIssueLinkSettings=data.settings||{};
+    renderIssueLinkSettings(latestIssueLinkSettings);
+    if(msg){msg.textContent=data.message||'取得URL設定を保存しました。';msg.className='msg ok';}
+  }catch(e){if(msg){msg.textContent=e.message;msg.className='msg err';}}
+}
+async function copyIssueDistributionUrl(type){
+  const key=type==='admin'?($('issueAdminKey')&&$('issueAdminKey').value):($('issueInviteKey')&&$('issueInviteKey').value);
+  const url=issueDistributionUrl(type,key);
+  if(!url){alert('先にキーを設定・保存してください。');return;}
+  try{await navigator.clipboard.writeText(url);alert('URLをコピーしました。');}
+  catch(e){window.prompt('このURLをコピーしてください。',url);}
+}
+['issueInviteKey','issueAdminKey'].forEach(id=>setTimeout(()=>{const el=$(id);if(el)el.addEventListener('input',updateIssueDistributionUrlDisplay);},0));
+
+
+
+function renderInviteUnlockedPlayers(data){
+  const rows=Array.isArray(data&&data.rows)?data.rows:[];
+  const summary=(data&&data.summary)||{total:rows.length};
+  latestInviteUnlockedPlayers={rows,summary};
+  setHtml("inviteUnlockedSummary",[
+    summaryPill("招待ID付与済み",summary.total??rows.length)
+  ].join(""));
+  const box=$("inviteUnlockedTable");
+  if(!box)return;
+  if(!rows.length){box.innerHTML='<p class="muted">招待IDによって機能が解放されているプレイヤーIDはありません。</p>';return;}
+  box.innerHTML=`<table><thead><tr><th>状態</th><th>プレイヤーID</th><th>解放機能</th><th>解放日時</th><th>ID hash</th><th>登録日</th><th>最終ログイン</th><th>最終プレイ</th><th>解放機能</th><th>操作</th></tr></thead><tbody>`+
+    rows.map(r=>`<tr>
+      <td><span class="pill enabled">付与済み</span></td>
+      <td><code>${esc(r.player_id||"")}</code></td>
+      <td>${featurePills(r.invite_features||[])}</td>
+      <td>${esc(r.unlocked_at||r.updated_at||"")}</td>
+      <td><code>${esc((r.id_hash_prefixes||[]).join('|'))}</code></td>
+      <td>${esc(r.registered_at||"")}</td>
+      <td>${esc(r.last_login_at||"")}</td>
+      <td>${esc(r.last_played_at||"")}</td>
+      <td><button class="small danger" type="button" onclick="revokeInviteFeatures('${esc(r.player_id||"")}')">権限解除</button></td>
+    </tr>`).join("")+`</tbody></table>`;
+}
+async function loadInviteUnlockedPlayers(){
+  try{
+    const data=await call('invite_unlocked_players',{query:($('inviteUnlockedSearchInput')&&$('inviteUnlockedSearchInput').value)||''});
+    renderInviteUnlockedPlayers(data);
+  }catch(e){setHtml('inviteUnlockedTable',`<p class="err">${esc(e.message)}</p>`);}
+}
+async function revokeInviteFeatures(playerId){
+  const reason=prompt(`${playerId} の招待ID由来の機能を解除します。理由を入力してください。`,`招待ID付与の取り消し`);
+  if(reason===null)return;
+  if(!confirm(`${playerId} の招待ID由来の機能を解除します。よろしいですか？`))return;
+  try{
+    const data=await call('revoke_invite_features',{player_id:playerId,reason});
+    alert(data.message||'招待ID由来の機能を解除しました。');
+    renderInviteUnlockedPlayers(data.invite_unlocked_players||{rows:[],summary:{total:0}});
+    await dashboard();
+  }catch(e){alert(e.message);}
+}
+function downloadInviteUnlockedCsv(){
+  const rows=(latestInviteUnlockedPlayers&&latestInviteUnlockedPlayers.rows)||[];
+  if(!rows.length){alert('招待ID付与済みIDはありません。');return;}
+  const header=['player_id','invite_features','unlocked_at','updated_at','id_hash_prefixes','registered_at','last_login_at','last_played_at','player_status','all_flags'];
+  const body=rows.map(r=>[
+    r.player_id||'',Array.isArray(r.invite_features)?r.invite_features.join('|'):'',r.unlocked_at||'',r.updated_at||'',Array.isArray(r.id_hash_prefixes)?r.id_hash_prefixes.join('|'):'',r.registered_at||'',r.last_login_at||'',r.last_played_at||'',r.player_status||'',Array.isArray(r.all_flags)?r.all_flags.join('|'):''
+  ]);
+  const date=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  downloadCsv(`yakyu_yarouze_invite_unlocked_ids_${date}.csv`,[header,...body]);
+}
+
+function renderAdminUnlockedPlayers(data){
+  const rows=Array.isArray(data&&data.rows)?data.rows:[];
+  const summary=(data&&data.summary)||{total:rows.length};
+  latestAdminUnlockedPlayers={rows,summary};
+  setHtml("adminUnlockedSummary",[
+    summaryPill("管理者機能解放済み",summary.total??rows.length)
+  ].join(""));
+  const box=$("adminUnlockedTable");
+  if(!box)return;
+  if(!rows.length){box.innerHTML='<p class="muted">管理者機能が解放されているプレイヤーIDはありません。</p>';return;}
+  box.innerHTML=`<table><thead><tr><th>状態</th><th>プレイヤーID</th><th>解放日時</th><th>取得元</th><th>ID hash</th><th>登録日</th><th>最終ログイン</th><th>最終プレイ</th><th>解放機能</th><th>操作</th></tr></thead><tbody>`+
+    rows.map(r=>`<tr>
+      <td><span class="pill enabled">解放済み</span></td>
+      <td><code>${esc(r.player_id||"")}</code></td>
+      <td>${esc(r.unlocked_at||r.updated_at||"")}</td>
+      <td>${esc(r.source_type||"")}</td>
+      <td><code>${esc(r.id_hash_prefix||"")}</code></td>
+      <td>${esc(r.registered_at||"")}</td>
+      <td>${esc(r.last_login_at||"")}</td>
+      <td>${esc(r.last_played_at||"")}</td>
+      <td>${esc(Array.isArray(r.all_flags)?r.all_flags.join(', '):'')}</td>
+      <td><button class="small danger" type="button" onclick="revokeAdminMode('${esc(r.player_id||"")}')">全機能解除</button></td>
+    </tr>`).join("")+`</tbody></table>`;
+}
+async function loadAdminUnlockedPlayers(){
+  try{
+    const data=await call('admin_unlocked_players',{query:($('adminUnlockedSearchInput')&&$('adminUnlockedSearchInput').value)||''});
+    renderAdminUnlockedPlayers(data);
+  }catch(e){setHtml('adminUnlockedTable',`<p class="err">${esc(e.message)}</p>`);}
+}
+async function revokeAdminMode(playerId){
+  const reason=prompt(`${playerId} の管理者ID由来を含む全機能を解除し、player_features.json から対象データを削除します。理由を入力してください。`,`コーチ・監督として確認できないため`);
+  if(reason===null)return;
+  if(!confirm(`${playerId} の管理者ID由来を含む全機能を解除します。間違いプレイチェック・引継ぎ機能なども無効になり、player_features.json から対象データを削除します。よろしいですか？`))return;
+  try{
+    const data=await call('revoke_admin_mode',{player_id:playerId,reason});
+    alert(data.message||'管理者ID由来を含む全機能を解除しました。');
+    renderAdminUnlockedPlayers(data.admin_unlocked_players||{rows:[],summary:{total:0}});
+    await dashboard();
+  }catch(e){alert(e.message);}
+}
+function downloadAdminUnlockedCsv(){
+  const rows=(latestAdminUnlockedPlayers&&latestAdminUnlockedPlayers.rows)||[];
+  if(!rows.length){alert('管理者機能解放済みIDはありません。');return;}
+  const header=['player_id','feature','unlocked_at','updated_at','source_type','id_hash_prefix','registered_at','last_login_at','last_played_at','player_status','all_flags'];
+  const body=rows.map(r=>[
+    r.player_id||'',r.feature||'admin_mode',r.unlocked_at||'',r.updated_at||'',r.source_type||'',r.id_hash_prefix||'',r.registered_at||'',r.last_login_at||'',r.last_played_at||'',r.player_status||'',Array.isArray(r.all_flags)?r.all_flags.join('|'):''
+  ]);
+  const date=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  downloadCsv(`yakyu_yarouze_admin_mode_unlocked_ids_${date}.csv`,[header,...body]);
+}
+
+function renderSelfUnissuedCodeStatus(data){
+  const rows=Array.isArray(data&&data.rows)?data.rows:[];
+  const summary=(data&&data.summary)||{total:rows.length,any_issued:0,not_issued:rows.length,invite_issued:0,admin_issued:0};
+  latestSelfUnissuedCodeStatus={rows,summary};
+  setHtml("selfUnissuedCodeSummary",[
+    summaryPill("登録ID",summary.total??rows.length),
+    summaryPill("取得済みID",summary.any_issued??0),
+    summaryPill("招待ID取得済み",summary.invite_issued??0),
+    summaryPill("管理者ID取得済み",summary.admin_issued??0),
+    summaryPill("未取得ID",summary.not_issued??rows.length)
+  ].join(""));
+  const box=$("selfUnissuedCodeTable");
+  if(!box)return;
+  if(!rows.length){box.innerHTML='<p class="muted">招待ID/管理者IDを未取得の登録IDはありません。取得済みIDは上の招待ID一覧・管理者ID一覧で確認してください。</p>';return;}
+  box.innerHTML=`<table><thead><tr><th>取得状況</th><th>プレイヤーID</th><th>登録日</th><th>最終ログイン</th><th>最終プレイ</th><th>ユーザー状態</th></tr></thead><tbody>`+
+    rows.map(r=>`<tr>
+      <td><span class="pill disabled">未取得</span></td>
+      <td><code>${esc(r.player_id||"")}</code></td>
+      <td>${esc(r.registered_at||"")}</td>
+      <td>${esc(r.last_login_at||"")}</td>
+      <td>${esc(r.last_played_at||"")}</td>
+      <td>${esc(r.status||"")}</td>
+    </tr>`).join("")+`</tbody></table>`;
+}
+function downloadSelfUnissuedCodeCsv(){
+  const data = latestSelfUnissuedCodeStatus;
+  const rows=(data&&data.rows)||[];
+  if(!rows.length){alert("未取得IDはありません。");return;}
+  const header=["player_id","registered_at","last_login_at","last_played_at","player_status","invite_admin_status"];
+  const body=rows.map(r=>[
+    r.player_id||"",r.registered_at||"",r.last_login_at||"",r.last_played_at||"",r.status||"","not_issued"
+  ]);
+  const date=new Date().toISOString().slice(0,10).replace(/-/g,"");
+  downloadCsv(`yakyu_yarouze_invite_admin_not_issued_ids_${date}.csv`,[header,...body]);
+}
+
+function renderCodes(id,rows){
+  const type=id==="adminCodes"?"admin":"invite";
+  const displayRows=sortedCodeRows(type, rows||[]);
+  const info=$(type==="admin"?"adminSortInfo":"inviteSortInfo");
+  if(info)info.textContent=codeSortLabel(type);
+  if(!displayRows.length){$(id).innerHTML='<p class="muted">データがありません。</p>';return}
+  $(id).innerHTML=`<table><thead><tr><th>利用登録日 / 利用ID</th><th>状態</th><th>種別</th><th>ラベル</th><th>本人取得</th><th>取得者</th><th>招待ID</th><th>hash</th><th>機能</th><th>上限/使用</th><th>作成</th><th>停止</th><th>操作</th></tr></thead><tbody>`+
+    displayRows.map(r=>`<tr>
+      <td>${renderUsedBy(r.used_by_details)}</td>
+      <td><span class="pill ${r.enabled?'enabled':'disabled'}">${r.enabled?'有効':'停止'}</span></td>
+      <td>${esc(r.type)}</td>
+      <td>${esc(r.label)}</td>
+      <td>${r.self_issued?'<span class="pill enabled">本人取得</span>':'<span class="muted">管理追加</span>'}</td>
+      <td>${esc(r.owner_player_id||"")}</td>
+      <td>${r.plain_code?`<code>${esc(r.plain_code)}</code>`:'<span class="muted">-</span>'}</td>
+      <td><code>${esc(r.hash_prefix)}</code></td>
+      <td>${featurePills(r.features)}</td>
+      <td>${esc(r.max_uses)} / ${esc(r.used_count)}</td>
+      <td>${esc(r.created_at)}</td>
+      <td>${esc(r.disabled_at||'')}<br><span class="muted">${esc(r.disabled_reason||'')}</span></td>
+      <td class="row">
+        ${r.enabled?`<button class="small danger" onclick="disableCode('${esc(r.type)}','${esc(r.hash_prefix)}')">停止</button>`:`<button class="small" onclick="enableCode('${esc(r.type)}','${esc(r.hash_prefix)}')">再有効化</button>`}
+        <button class="small danger" onclick="deleteCode('${esc(r.type)}','${esc(r.hash_prefix)}')">削除</button>
+      </td>
+    </tr>`).join("")+`</tbody></table>`;
+}
+function renderLog(id,rows){
+  if(!rows.length){$(id).innerHTML='<p class="muted">ログはまだありません。</p>';return}
+  const keys=Object.keys(rows[0]||{});
+  $(id).innerHTML=`<table><thead><tr>${keys.map(k=>`<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>`+
+    rows.map(r=>`<tr>${keys.map(k=>`<td>${esc(r[k])}</td>`).join("")}</tr>`).join("")+`</tbody></table>`;
+}
+async function addCode(){
+  const type=$("newType").value;
+  const features=[...document.querySelectorAll(".featureBox:checked")].map(x=>x.value);
+  if(type==="admin" && !features.includes("admin_mode")) features.push("admin_mode");
+  try{
+    const data=await call("add_code",{type,label:$("newLabel").value,max_uses:Number($("newMaxUses").value||1),features});
+    $("newCodeBox").innerHTML=`<div class="new-code"><b>新規${type==="admin"?"管理者ID":"招待ID"}</b><br><code>${esc(data.code)}</code><br><span class="muted">このプレイヤーIDはこの画面で一度だけ表示されます。必ず控えてください。</span></div>`;
+    await dashboard();
+  }catch(e){alert(e.message)}
+}
+async function disableCode(type,prefix){
+  const reason=prompt("停止理由を入力してください","不正利用の疑い");
+  if(reason===null)return;
+  try{await call("disable_code",{type,hash_prefix:prefix,reason});await dashboard()}catch(e){alert(e.message)}
+}
+async function enableCode(type,prefix){
+  if(!confirm("このプレイヤーIDを再有効化しますか？"))return;
+  try{await call("enable_code",{type,hash_prefix:prefix});await dashboard()}catch(e){alert(e.message)}
+}
+async function deleteCode(type,prefix){
+  if(!confirm("このプレイヤーIDを完全に削除します。よろしいですか？"))return;
+  try{await call("delete_code",{type,hash_prefix:prefix});await dashboard()}catch(e){alert(e.message)}
+}
+async function logout(){
+  try{await call("logout")}catch(e){}
+  sessionStorage.removeItem("superAdminToken"); try{localStorage.removeItem("superAdminToken");}catch(e){} token=""; showDash(false);
+}
+$("loginBtn").addEventListener("click",login);
+$("refreshBtn").addEventListener("click",()=>dashboard().catch(e=>alert(e.message)));
+$("logoutBtn").addEventListener("click",logout);
+$("addCodeBtn").addEventListener("click",addCode);
+$("newType").addEventListener("change",e=>{
+  const admin=e.target.value==="admin";
+  document.querySelector('.featureBox[value="admin_mode"]').checked=admin;
+});
+function switchAdminTab(tabId){
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("active",p.id===tabId));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===tabId));
+  try{localStorage.setItem("superAdminActiveTab",tabId);}catch(e){}
+  if(tabId==="tab-admin-notice"){ bindAdminNoticePreview(); initScheduledNoticeForm(); loadScheduledNotices().catch(()=>{}); loadPushNoticeHistory().catch(()=>{}); }
+  if(tabId==="tab-player-management")loadPlayerAdminList().catch(()=>{});
+  if(tabId==="tab-request-management"){
+    loadRequestNoticeSettings().catch(e=>{setText("requestNoticeMessage",e.message);});
+    loadRequestAdminList().catch(e=>{setHtml("requestAdminTable",`<p class="err">${esc(e.message)}</p>`);});
+  }
+  if(tabId==="tab-user-analytics")renderUserAnalytics(latestUserAnalytics||{summary:{},by_grade:{},by_position:{},recent_users:[]});
+  if(tabId==="tab-access-analytics")renderAccessAnalytics(latestAccessAnalytics||{summary:{},daily_access:{},pages:{},id_results:{},recent_access:[]});
+  if(tabId==="tab-version-management")loadReleaseVersions().catch(e=>{setHtml("releaseVersionCurrent",`<p class="err">${esc(e.message)}</p>`);});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".tab-btn").forEach(b=>b.addEventListener("click",()=>switchAdminTab(b.dataset.tab)));
+// v666: お知らせ通知を最高位管理者画面の最初のページにする
+localStorage.setItem("superAdminActiveTab","tab-admin-notice");
+bindAdminNoticePreview();
+switchAdminTab("tab-admin-notice");
+if(token){showDash(true);dashboard().catch(()=>{sessionStorage.removeItem("superAdminToken"); try{localStorage.removeItem("superAdminToken");}catch(e){} showDash(false);});}
+else showDash(false);
+
+async function sendPushTest(){
+  const out=$("pushTestResult");
+  if(out)out.textContent="送信中...";
+  try{
+    const data=await call("send_push_test",{
+      title:($("pushTestTitle")&&$("pushTestTitle").value)||"野球やろうぜ！",
+      body:($("pushTestBody")&&$("pushTestBody").value)||"テスト通知です"
+    });
+    if(out)out.textContent=`送信処理完了：成功 ${data.sent||0} / 失敗 ${data.failed||0}${data.message?"｜"+data.message:""}`;
+  }catch(e){
+    if(out)out.textContent=`送信できませんでした：${e.message}`;
+  }
+}
+
+
+async function sendAdminNoticePush(){
+  const out=$("adminNoticePushResult");
+  const title=(($("noticePushTitle")&&$("noticePushTitle").value)||"").trim();
+  const body=(($("noticePushBody")&&$("noticePushBody").value)||"").trim();
+  const url=(($("noticePushUrl")&&$("noticePushUrl").value)||"./").trim();
+  const target=(($("noticePushTarget")&&$("noticePushTarget").value)||"all").trim();
+  if(!title){ if(out){out.className="msg err";out.textContent="通知タイトルを入力してください。";} return; }
+  if(!body){ if(out){out.className="msg err";out.textContent="通知本文を入力してください。";} return; }
+  if(!confirm("通知許可済みユーザーへお知らせ通知を送信します。よろしいですか？"))return;
+  if(out){out.className="msg";out.textContent="送信中...";}
+  try{
+    const data=await call("send_admin_notice",{title,body,url,target});
+    if(out){
+      out.className=data.failed? "msg err":"msg ok";
+      out.textContent=`送信処理完了：成功 ${data.sent||0} / 失敗 ${data.failed||0}${data.message?"｜"+data.message:""}`;
+    }
+    await loadPushNoticeHistory();
+  }catch(e){
+    if(out){out.className="msg err";out.textContent=`送信できませんでした：${e.message}`;}
+  }
+}
+
+function initScheduledNoticeForm(){
+  const hourEl=$("scheduledNoticeHour");
+  if(hourEl && !hourEl.dataset.inited){
+    hourEl.innerHTML=Array.from({length:24},(_,i)=>`<option value="${i}">${String(i).padStart(2,"0")}:00</option>`).join("");
+    const now=new Date();
+    hourEl.value=String(now.getHours());
+    hourEl.dataset.inited="1";
+  }
+  const dateEl=$("scheduledNoticeDate");
+  if(dateEl && !dateEl.value){
+    const d=new Date();
+    const y=d.getFullYear();
+    const m=String(d.getMonth()+1).padStart(2,"0");
+    const day=String(d.getDate()).padStart(2,"0");
+    dateEl.value=`${y}-${m}-${day}`;
+  }
+}
+function scheduledStatusLabel(status){
+  if(status==="sent")return "配信済み";
+  if(status==="failed")return "配信失敗";
+  if(status==="cancelled")return "取消";
+  return "未配信";
+}
+function scheduledStatusClass(status){
+  if(status==="sent")return "ok";
+  if(status==="failed")return "err";
+  return "";
+}
+function clearScheduledNoticeForm(){
+  initScheduledNoticeForm();
+  if($("scheduledNoticeId"))$("scheduledNoticeId").value="";
+  if($("scheduledNoticeTitle"))$("scheduledNoticeTitle").value="";
+  if($("scheduledNoticeBody"))$("scheduledNoticeBody").value="";
+  if($("scheduledNoticeUrl"))$("scheduledNoticeUrl").value="./";
+  const out=$("scheduledNoticeResult");
+  if(out){out.className="msg notice-msg";out.textContent="配信日・時刻を指定してスケジュール登録できます。";}
+}
+async function saveScheduledNotice(){
+  initScheduledNoticeForm();
+  const out=$("scheduledNoticeResult");
+  const payload={
+    id:(($("scheduledNoticeId")&&$("scheduledNoticeId").value)||"").trim(),
+    title:(($("scheduledNoticeTitle")&&$("scheduledNoticeTitle").value)||"").trim(),
+    body:(($("scheduledNoticeBody")&&$("scheduledNoticeBody").value)||"").trim(),
+    url:(($("scheduledNoticeUrl")&&$("scheduledNoticeUrl").value)||"./").trim(),
+    delivery_date:(($("scheduledNoticeDate")&&$("scheduledNoticeDate").value)||"").trim(),
+    delivery_hour:parseInt((($("scheduledNoticeHour")&&$("scheduledNoticeHour").value)||"0"),10)
+  };
+  if(!payload.title){if(out){out.className="msg notice-msg err";out.textContent="通知タイトルを入力してください。";}return;}
+  if(!payload.body){if(out){out.className="msg notice-msg err";out.textContent="通知本文を入力してください。";}return;}
+  if(!payload.delivery_date){if(out){out.className="msg notice-msg err";out.textContent="配信日を入力してください。";}return;}
+  if(out){out.className="msg notice-msg";out.textContent="保存中...";}
+  try{
+    const data=await call("scheduled_notice_save",payload);
+    if(out){out.className="msg notice-msg ok";out.textContent=data.message||"スケジュール通知を保存しました。";}
+    clearScheduledNoticeForm();
+    await loadScheduledNotices();
+  }catch(e){
+    if(out){out.className="msg notice-msg err";out.textContent="保存できませんでした："+e.message;}
+  }
+}
+function editScheduledNotice(id){
+  const rows=window.__scheduledNoticeRows||[];
+  const r=rows.find(x=>x.id===id);
+  if(!r)return;
+  initScheduledNoticeForm();
+  if($("scheduledNoticeId"))$("scheduledNoticeId").value=r.id||"";
+  if($("scheduledNoticeTitle"))$("scheduledNoticeTitle").value=r.title||"";
+  if($("scheduledNoticeBody"))$("scheduledNoticeBody").value=r.body||"";
+  if($("scheduledNoticeUrl"))$("scheduledNoticeUrl").value=r.url||"./";
+  if($("scheduledNoticeDate"))$("scheduledNoticeDate").value=r.delivery_date||"";
+  if($("scheduledNoticeHour"))$("scheduledNoticeHour").value=String(r.delivery_hour||0);
+  const out=$("scheduledNoticeResult");
+  if(out){out.className="msg notice-msg";out.textContent="編集中です。内容を変更して登録ボタンを押してください。";}
+  const card=$("scheduledNoticeCard");
+  if(card)card.scrollIntoView({behavior:"smooth",block:"start"});
+}
+async function deleteScheduledNotice(id){
+  if(!confirm("このスケジュール通知を削除します。よろしいですか？"))return;
+  const out=$("scheduledNoticeResult");
+  try{
+    await call("scheduled_notice_delete",{id});
+    if(out){out.className="msg notice-msg ok";out.textContent="スケジュール通知を削除しました。";}
+    await loadScheduledNotices();
+  }catch(e){
+    if(out){out.className="msg notice-msg err";out.textContent="削除できませんでした："+e.message;}
+  }
+}
+async function loadScheduledNotices(){
+  initScheduledNoticeForm();
+  const box=$("scheduledNoticeTable");
+  if(box)box.innerHTML='<p class="muted">読み込み中です。</p>';
+  try{
+    const data=await call("scheduled_notice_list",{});
+    const rows=data.items||[];
+    window.__scheduledNoticeRows=rows;
+    if(!box)return;
+    if(!rows.length){box.innerHTML='<p class="muted">スケジュール通知はまだ登録されていません。</p>';return;}
+    box.innerHTML=`<table><thead><tr><th>配信日時</th><th>状態</th><th>種別</th><th>タイトル</th><th>本文</th><th>URL</th><th>結果</th><th>操作</th></tr></thead><tbody>`+
+      rows.map(r=>`<tr>`+
+        `<td>${esc((r.scheduled_at||"").slice(0,16))}</td>`+
+        `<td><span class="pill ${scheduledStatusClass(r.status)}">${esc(r.status_label||scheduledStatusLabel(r.status))}</span></td>`+
+        `<td>${esc(r.title||"")}</td>`+
+        `<td>${esc(r.body||"")}</td>`+
+        `<td>${esc(r.url||"./")}</td>`+
+        `<td>${esc(r.sent_at||"")}${r.sent_at?"<br>":""}成功 ${esc(r.sent||0)} / 失敗 ${esc(r.failed||0)}${r.message?"<br>"+esc(r.message):""}</td>`+
+        `<td><button class="secondary small" type="button" onclick="editScheduledNotice('${esc(r.id||"")}')">編集</button> <button class="danger small" type="button" onclick="deleteScheduledNotice('${esc(r.id||"")}')">削除</button></td>`+
+        `</tr>`).join("")+
+      `</tbody></table>`;
+  }catch(e){
+    if(box)box.innerHTML=`<p class="err">スケジュール一覧を読み込めませんでした：${esc(e.message)}</p>`;
+  }
+}
+
+async function loadPushNoticeHistory(){
+  const box=$("adminNoticeHistoryTable");
+  if(box)box.innerHTML='<p class="muted">読み込み中です。</p>';
+  try{
+    const data=await call("list_push_notices",{});
+    const rows=data.history||[];
+    if(!box)return;
+    if(!rows.length){
+      box.innerHTML='<p class="muted">送信履歴はまだありません。</p>';
+      return;
+    }
+    box.innerHTML=`<table><thead><tr><th>日時</th><th>タイトル</th><th>本文</th><th>対象</th><th>成功</th><th>失敗</th><th>結果</th></tr></thead><tbody>`+
+      rows.map(r=>`<tr><td>${esc(r.sent_at||"")}</td><td>${esc(r.title||"")}</td><td>${esc(r.body||"")}</td><td>${esc(r.target||"all")}</td><td>${esc(r.sent||0)}</td><td>${esc(r.failed||0)}</td><td>${esc(r.message||"")}</td></tr>`).join("")+
+      `</tbody></table>`;
+  }catch(e){
+    if(box)box.innerHTML=`<p class="err">履歴を読み込めませんでした：${esc(e.message)}</p>`;
+  }
+}
+
+
+function updateAdminNoticePreview(){
+  const titleEl=$("noticePushTitle");
+  const bodyEl=$("noticePushBody");
+  const urlEl=$("noticePushUrl");
+  const previewTitle=$("noticePreviewTitle");
+  const previewBody=$("noticePreviewBody");
+  const previewUrl=$("noticePreviewUrl");
+  if(previewTitle) previewTitle.textContent=(titleEl&&titleEl.value.trim())||"野球やろうぜ！";
+  if(previewBody) previewBody.textContent=(bodyEl&&bodyEl.value.trim())||"ここに通知本文のプレビューが表示されます。";
+  if(previewUrl) previewUrl.textContent='URL: '+(((urlEl&&urlEl.value.trim())||'./'));
+}
+function bindAdminNoticePreview(){
+  ["noticePushTitle","noticePushBody","noticePushUrl","noticePushKind"].forEach(id=>{
+    const el=$(id);
+    if(el && !el.dataset.previewBound){
+      el.addEventListener('input', updateAdminNoticePreview);
+      el.addEventListener('change', updateAdminNoticePreview);
+      el.dataset.previewBound='1';
+    }
+  });
+  const kindEl=$("noticePushKind");if(kindEl&&!kindEl.dataset.noticeKindBound){kindEl.addEventListener("change",toggleNoticeKindUI);kindEl.dataset.noticeKindBound="1";}
+  updateAdminNoticePreview();
+  toggleNoticeKindUI();
+}
+
+
+function toggleNoticeKindUI(){
+  const kind=(($("noticePushKind")&&$("noticePushKind").value)||"admin_notice");
+  const rankingPanel=$("rankingNoticeSettingsPanel");
+  const scheduleCard=$("scheduledNoticeCard");
+  const newQuestionPanel=$("newQuestionNoticePanel");
+  const noticeLayout=document.querySelector(".notice-layout");
+  if(rankingPanel)rankingPanel.style.display=kind==="ranking_notice"?"block":"none";
+  if(scheduleCard)scheduleCard.style.display=kind==="admin_notice"?"block":"none";
+  if(newQuestionPanel)newQuestionPanel.style.display=kind==="new_question_notice"?"block":"none";
+  if(noticeLayout)noticeLayout.style.display=(kind==="ranking_notice"||kind==="new_question_notice")?"none":"grid";
+  if(kind==="new_question_notice"){initNewQuestionNoticeForm();loadNewQuestionNoticeCandidates().catch(()=>{});}
+
+  if(kind==="ranking_notice"){
+    if($("noticePushTitle"))$("noticePushTitle").value="週間ランキング更新！";
+    if($("noticePushBody"))$("noticePushBody").value="今週の1〜3位ランキングが更新されました。ランキングを確認してみよう！";
+    if($("noticePushUrl"))$("noticePushUrl").value="./?open=ranking";
+    loadRankingNoticeSettings().catch(()=>{});
+  }else if(kind==="review_notice"){
+    if($("noticePushTitle"))$("noticePushTitle").value="復習しよう！";
+    if($("noticePushBody"))$("noticePushBody").value="前回間違えたプレイをマイページから確認できます。";
+    if($("noticePushUrl"))$("noticePushUrl").value="./?open=mypage";
+  }else if(kind==="new_question_notice"){
+    if($("noticePushTitle"))$("noticePushTitle").value="新しい問題を追加しました";
+    if($("noticePushBody"))$("noticePushBody").value="新しい判断問題を追加しました。練習前に確認してみよう！";
+    if($("noticePushUrl"))$("noticePushUrl").value="./";
+  }else{
+    if($("noticePushUrl"))$("noticePushUrl").value="./";
+  }
+
+  updateAdminNoticePreview();
+}
+
+let latestNewQuestionNoticeItems=[];
+function initNewQuestionNoticeForm(){
+  const hourEl=$("newQuestionNoticeHour");
+  if(hourEl && !hourEl.dataset.inited){
+    hourEl.innerHTML=Array.from({length:24},(_,h)=>`<option value="${h}">${String(h).padStart(2,"0")}:00</option>`).join("");
+    hourEl.dataset.inited="1";
+  }
+  const dateEl=$("newQuestionNoticeDate");
+  if(dateEl && !dateEl.value) dateEl.value=new Date().toISOString().slice(0,10);
+}
+function selectedNewQuestionIds(){
+  return Array.from(document.querySelectorAll('.new-question-check:checked')).map(el=>el.value).filter(Boolean);
+}
+function readableQuestionTypeLabel(v){
+  const key=String(v||"").toLowerCase();
+  if(key==="basic")return "基礎";
+  if(key==="attack")return "攻撃";
+  if(key==="defense")return "守備";
+  return String(v||"-");
+}
+function readableQuestionGradeLabel(v){
+  const n=String(v??"").trim();
+  if(n==="2"||n==="2年"||n==="3年生以下")return "三年生以下";
+  if(n==="3")return "3年生";
+  if(n==="4")return "4年生";
+  if(n==="5")return "5年生";
+  if(n==="6")return "6年生";
+  return n||"-";
+}
+function readableQuestionTag(row){
+  let tag=(row.ball_tag&&row.ball_tag!=="-")?row.ball_tag:((row.tag&&row.tag!=="-")?row.tag:(row.theme_label||row.theme||"-"));
+  if(tag==="basic_baserunning_slide"||tag==="baserunning_slide"||tag==="slide")tag="スライディング";
+  return tag||"-";
+}
+function newQuestionNoticeLine(row){
+  const type=row.type_label||readableQuestionTypeLabel(row.type);
+  const grade=row.grade_label||readableQuestionGradeLabel(row.grade);
+  const tag=readableQuestionTag(row);
+  return `種別：${type} / 学年：${grade} / タグ：${tag}`;
+}
+function buildNewQuestionNoticeText(ids){
+  const rows=latestNewQuestionNoticeItems.filter(x=>ids.includes(x.id));
+  if(rows.length===1){
+    return {title:"新しい問題が追加されました", body:`新しい問題が追加されました。\n${newQuestionNoticeLine(rows[0])}`};
+  }
+  const lines=rows.slice(0,10).map((r,i)=>`${i+1}. ${newQuestionNoticeLine(r)}`);
+  const more=rows.length>10?`\nほか${rows.length-10}問`:"";
+  return {title:"新しい問題が追加されました", body:`新しい問題が${rows.length}問追加されました。\n${lines.join("\n")}${more}`};
+}
+async function loadNewQuestionNoticeCandidates(){
+  const box=$("newQuestionNoticeList");
+  if(box)box.innerHTML='<p class="muted">読み込み中です。</p>';
+  try{
+    const data=await call("new_question_notice_candidates",{});
+    latestNewQuestionNoticeItems=data.items||[];
+    renderNewQuestionNoticeCandidates();
+  }catch(e){
+    if(box)box.innerHTML=`<p class="err">新規問題リストを読み込めませんでした：${esc(e.message)}</p>`;
+  }
+}
+function renderNewQuestionNoticeCandidates(){
+  const box=$("newQuestionNoticeList");
+  const rows=latestNewQuestionNoticeItems||[];
+  if(!box)return;
+  if(!rows.length){box.innerHTML='<p class="muted">新規問題候補はありません。</p>';return;}
+  box.innerHTML=`<table><thead><tr><th>選択</th><th>スケジュール日時</th><th>追加日時</th><th>ID</th><th>状態</th><th>種別</th><th>学年</th><th>タグ</th><th>通知状態</th></tr></thead><tbody>`+
+    rows.map(r=>{
+      const scheduledAt=r.scheduled_delivery_at||r.scheduled_at||"";
+      const scheduledHtml=scheduledAt?`<span>${esc(scheduledAt)}</span>`:`<span class="scheduled-at-empty">未設定</span>`;
+      const tag=readableQuestionTag(r);
+      return `<tr><td><input class="new-question-check" type="checkbox" value="${esc(r.id||"")}" ${r.status==="disabled"?'disabled':''}></td><td class="scheduled-at-cell">${scheduledHtml}</td><td>${esc(r.added_at||"")}</td><td>${esc(r.id||"")}</td><td>${esc(r.status_label||"")}</td><td>${esc(r.type||"")}</td><td>${esc(r.grade||"")}</td><td><b>${esc(tag)}</b></td><td>${esc(r.notice_status||"unscheduled")}</td></tr>`;
+    }).join("")+
+    `</tbody></table>`;
+}
+async function saveNewQuestionScheduledNotice(){
+  initNewQuestionNoticeForm();
+  const out=$("newQuestionNoticeResult");
+  const ids=selectedNewQuestionIds();
+  if(!ids.length){if(out){out.className="msg err";out.textContent="通知する新規問題を選択してください。";}return;}
+  const date=(($("newQuestionNoticeDate")&&$("newQuestionNoticeDate").value)||"").trim();
+  const hour=parseInt((($("newQuestionNoticeHour")&&$("newQuestionNoticeHour").value)||"0"),10);
+  const text=buildNewQuestionNoticeText(ids);
+  if(out){out.className="msg";out.textContent="登録中...";}
+  try{
+    const data=await call("scheduled_notice_save",{kind:"new_question_notice",title:text.title,body:text.body,url:"./",delivery_date:date,delivery_hour:hour,question_ids:ids,publish_on_send:true});
+    if(out){out.className="msg ok";out.textContent=data.message||"新規問題通知をスケジュール登録しました。";}
+    await loadNewQuestionNoticeCandidates();
+    await loadScheduledNotices();
+  }catch(e){if(out){out.className="msg err";out.textContent="登録できませんでした："+e.message;}}
+}
+async function unscheduleSelectedNewQuestions(){
+  const out=$("newQuestionNoticeResult");
+  const ids=selectedNewQuestionIds();
+  if(!ids.length){if(out){out.className="msg err";out.textContent="スケジュール解除する問題を選択してください。";}return;}
+  if(!confirm("選択した問題の未配信通知スケジュールを解除します。よろしいですか？"))return;
+  if(out){out.className="msg";out.textContent="解除中...";}
+  try{
+    const data=await call("new_question_unschedule_selected",{question_ids:ids});
+    if(out){out.className="msg ok";out.textContent=data.message||"スケジュールを解除しました。";}
+    await loadNewQuestionNoticeCandidates();
+    await loadScheduledNotices();
+  }catch(e){if(out){out.className="msg err";out.textContent="解除できませんでした："+e.message;}}
+}
+async function publishSelectedDraftQuestions(){
+  const out=$("newQuestionNoticeResult");
+  const ids=selectedNewQuestionIds();
+  if(!ids.length){if(out){out.className="msg err";out.textContent="公開する問題を選択してください。";}return;}
+  if(!confirm("選択した問題を通知せず公開します。よろしいですか？"))return;
+  if(out){out.className="msg";out.textContent="公開中...";}
+  try{
+    const data=await call("question_publish_selected",{question_ids:ids});
+    if(out){out.className="msg ok";out.textContent=data.message||"公開しました。";}
+    await loadNewQuestionNoticeCandidates();
+  }catch(e){if(out){out.className="msg err";out.textContent="公開できませんでした："+e.message;}}
+}
+
+async function loadRankingNoticeSettings(){
+  const out=$("rankingNoticeSettingsResult");
+  try{
+    const data=await call("get_push_notification_settings",{});
+    const s=(data.settings&&data.settings.ranking_notice)||{};
+    if($("rankingNoticeEnabled"))$("rankingNoticeEnabled").value=s.enabled?"1":"0";
+    if($("rankingAggregateDay"))$("rankingAggregateDay").value=s.aggregate_day||"sunday";
+    if($("rankingAggregateTime"))$("rankingAggregateTime").value=s.aggregate_time||"00:00";
+    if($("rankingDeliveryDay"))$("rankingDeliveryDay").value=s.delivery_day||"monday";
+    if($("rankingDeliveryTime"))$("rankingDeliveryTime").value=s.delivery_time||"18:00";
+    if(out){out.className="msg notice-msg ok";out.textContent="ランキング通知設定を読み込みました。";}
+  }catch(e){
+    if(out){out.className="msg notice-msg err";out.textContent="ランキング通知設定を読み込めませんでした："+e.message;}
+  }
+}
+async function saveRankingNoticeSettings(){
+  const out=$("rankingNoticeSettingsResult");
+  const settings={
+    ranking_notice:{
+      enabled:(($("rankingNoticeEnabled")&&$("rankingNoticeEnabled").value)==="1"),
+      ranking_type:"weekly_total",
+      aggregate_day:(($("rankingAggregateDay")&&$("rankingAggregateDay").value)||"sunday"),
+      aggregate_time:(($("rankingAggregateTime")&&$("rankingAggregateTime").value)||"00:00"),
+      delivery_day:(($("rankingDeliveryDay")&&$("rankingDeliveryDay").value)||"monday"),
+      delivery_time:(($("rankingDeliveryTime")&&$("rankingDeliveryTime").value)||"18:00")
+    }
+  };
+  if(out){out.className="msg notice-msg";out.textContent="保存中...";}
+  try{
+    const data=await call("save_push_notification_settings",{settings});
+    if(out){out.className="msg notice-msg ok";out.textContent=data.message||"ランキング通知設定を保存しました。";}
+  }catch(e){
+    if(out){out.className="msg notice-msg err";out.textContent="保存できませんでした："+e.message;}
+  }
+}
+async function aggregateWeeklyRankingNow(){
+  const out=$("rankingNoticeSettingsResult");
+  if(out){out.className="msg notice-msg";out.textContent="週間ランキングを集計中...";}
+  try{
+    const data=await call("aggregate_weekly_ranking",{});
+    if(out){out.className="msg notice-msg ok";out.textContent=`集計完了：${data.week_key||""} / 変更 ${data.changed?"あり":"なし"} / 上位 ${data.top3_count||0}件`;}
+  }catch(e){
+    if(out){out.className="msg notice-msg err";out.textContent="集計できませんでした："+e.message;}
+  }
+}
+async function sendWeeklyRankingNoticeNow(){
+  const out=$("rankingNoticeSettingsResult");
+  if(!confirm("週間ランキング通知を今すぐ送信します。よろしいですか？"))return;
+  if(out){out.className="msg notice-msg";out.textContent="ランキング通知を送信中...";}
+  try{
+    const data=await call("send_weekly_ranking_notice",{force:true});
+    if(out){out.className=data.failed?"msg notice-msg err":"msg notice-msg ok";out.textContent=`送信処理完了：成功 ${data.sent||0} / 失敗 ${data.failed||0}${data.message?"｜"+data.message:""}`;}
+    await loadPushNoticeHistory();
+  }catch(e){
+    if(out){out.className="msg notice-msg err";out.textContent="送信できませんでした："+e.message;}
+  }
+}
+
+</script>
+</body>
+</html>

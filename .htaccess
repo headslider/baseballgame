@@ -1,0 +1,50 @@
+# PWA manifest / JSON charset settings
+AddType application/manifest+json .webmanifest
+AddType application/json .json
+AddCharset UTF-8 .webmanifest .json .js .css .html
+
+<IfModule mod_headers.c>
+  <Files "manifest.webmanifest">
+    Header set Content-Type "application/manifest+json; charset=UTF-8"
+  </Files>
+</IfModule>
+
+# Basic Auth for admin screen only.
+# .htpasswd file must exist on CORESERVER:
+# /virtual/ref/.htpasswd_yakyu_admin
+<Files "admin.html">
+  AuthType Basic
+  AuthName "Yakyu Yarouze Admin Production"
+  AuthUserFile /virtual/ref/.htpasswd_yakyu_admin
+  Require valid-user
+</Files>
+
+# Direct web access protection for non-public operational files.
+<Files "cron_weekly_ranking_runner.sh">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</Files>
+
+<Files "composer.json">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</Files>
+
+# Block direct access to operational / internal text files.
+# Do not block .json globally because game_config.json and manifest-related JSON must remain readable.
+<FilesMatch "\.(md|log|csv|txt)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</FilesMatch>

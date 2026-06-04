@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>管理者ID取得｜野球やろうぜ！</title>
+<link rel="manifest" href="manifest.webmanifest">
+<script>
+(function(){
+  var ua = navigator.userAgent || '';
+  var lower = ua.toLowerCase();
+  var isInApp = /line|instagram|fbav|fban|fb_iab|twitter|tiktok|musical_ly|micromessenger|gsa|yahoojapan/i.test(ua) || lower.indexOf('; wv') !== -1 || lower.indexOf(' wv)') !== -1;
+  if (isInApp) document.documentElement.classList.add('in-app-browser');
+})();
+
+</script>
+<style>
+:root{--blue:#1d4ed8;--ink:#0f172a;--muted:#64748b;--bg:#f8fafc;--card:#fff;--border:#dbe4f0;--warn:#fff7ed;--warn-border:#fed7aa;--ok:#ecfdf5;--err:#fef2f2}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}.wrap{max-width:760px;margin:0 auto;padding:24px 16px}.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(15,23,42,.08)}h1{font-size:1.55rem;margin:0 0 8px}.lead{color:var(--muted);margin:0 0 16px}.notice{background:var(--warn);border:1px solid var(--warn-border);border-radius:14px;padding:12px;margin:14px 0}.notice strong{color:#9a3412}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:12px;font-size:16px}button{border:0;border-radius:999px;padding:12px 18px;font-weight:700;background:var(--blue);color:#fff;cursor:pointer}button.secondary{background:#e2e8f0;color:#0f172a}.result{margin-top:14px}.codebox{background:var(--ok);border:1px solid #bbf7d0;border-radius:14px;padding:14px}.codebox code{display:block;font-size:1.3rem;font-weight:800;word-break:break-all;margin:6px 0}.err{background:var(--err);border:1px solid #fecaca;border-radius:14px;padding:12px;color:#991b1b}.muted{color:var(--muted);font-size:.92rem}.actions{margin-top:16px}.toplink{display:inline-block;margin-top:16px;color:var(--blue);text-decoration:none}.mailbox{margin-top:12px;border-top:1px dashed #bbf7d0;padding-top:12px}.mailbox label{display:block;font-weight:700;margin-bottom:6px}.mailbox .mailrow{display:flex;gap:8px;flex-wrap:wrap}.mailbox .mailrow input{flex:1 1 260px}.mailbox .mailrow button{flex:0 0 auto}.mailstatus{margin-top:8px;font-size:.92rem}.privacy-note{display:block;margin-top:8px;color:var(--muted);font-size:.9rem}.check{display:flex;gap:8px;align-items:flex-start;margin-top:12px}.check input{width:auto;margin-top:6px}
+.app-browser-warning{display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;padding:14px;margin:14px 0;color:#9a3412}.app-browser-warning strong{display:block;margin-bottom:6px}.in-app-browser .app-browser-warning{display:block}.in-app-browser .issue-area{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="card">
+    <h1>管理者ID取得</h1>
+    <p class="lead">このページは、指導者・運用担当者だけが管理者IDを取得するためのページです。</p>
+    <div class="app-browser-warning"><strong>アプリ内ブラウザでは開けません</strong>LINEやSNSアプリ内ブラウザでは、本人確認・ID取得・保存が不安定になる場合があるため、このページは表示できません。Safari / Chrome / Edgeで開き直してください。</div>
+    <div class="issue-area">
+    <div class="notice"><strong>重要：</strong>管理者IDを取得する人は、自分の名前が分かる形でプレイヤーIDに反映してください。後日、名前がコーチ・監督として存在確認できない場合は、管理者機能を停止する場合があります。<br>登録例) toriyabe-G</div>
+    <label>現在のプレイヤーID
+      <input id="playerId" placeholder="ログイン済みのプレイヤーIDを自動表示します">
+    </label>
+    <label class="check"><input id="ack" type="checkbox"><span>上記の注意事項を確認し、機能停止となる可能性を理解しました。</span></label>
+    <div class="actions row">
+      <button id="issueBtn" type="button">管理者IDを取得する</button>
+      <button class="secondary" id="copyBtn" type="button" style="display:none">コピー</button>
+    </div>
+    <div id="message" class="result muted">プレイヤーIDと注意事項を確認して「管理者IDを取得する」を押してください。</div>
+    <div id="result" class="result"></div>
+    <div id="emailBox" class="mailbox" style="display:none">
+      <label for="emailInput">メールでIDを保管する</label>
+      <div class="mailrow">
+        <input id="emailInput" type="email" inputmode="email" autocomplete="email" placeholder="メールアドレスを入力">
+        <button id="sendEmailBtn" type="button">メール送信</button>
+      </div>
+      <div id="emailStatus" class="mailstatus muted">メールアドレスはこちらで一切保管しません。</div>
+    </div>
+    </div>
+    <a class="toplink" href="./">ゲームトップへ戻る</a>
+  </section>
+</div>
+<script>
+const ISSUE_PAGE_PARAMS=new URLSearchParams(window.location.search||"");
+function getCookieValue(name){return document.cookie.split(';').map(x=>x.trim()).find(x=>x.startsWith(name+'='))?.slice(name.length+1)||''}
+function setCookieValue(name,value,days){const max=days*24*60*60;document.cookie=`${name}=${encodeURIComponent(value)}; max-age=${max}; path=/; SameSite=Lax`}
+function generateClientToken(){if(window.crypto&&crypto.getRandomValues){const a=new Uint32Array(4);crypto.getRandomValues(a);return [...a].map(x=>x.toString(36)).join('-')}return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`}
+function getClientToken(){const storageKey='baseballClientToken';const cookieKey='baseballClientToken';const queryToken=ISSUE_PAGE_PARAMS.get('client_token')||ISSUE_PAGE_PARAMS.get('ct')||'';let token='';try{token=localStorage.getItem(storageKey)||''}catch(e){}const cookieToken=decodeURIComponent(getCookieValue(cookieKey)||'');if(queryToken){token=queryToken;try{localStorage.setItem(storageKey,token)}catch(e){}}else if(!token&&cookieToken){token=cookieToken;try{localStorage.setItem(storageKey,token)}catch(e){}}if(!token){token=generateClientToken();try{localStorage.setItem(storageKey,token)}catch(e){}}if(!cookieToken||cookieToken!==token)setCookieValue(cookieKey,token,400);return token}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+const player=document.getElementById('playerId');try{const queryPlayer=ISSUE_PAGE_PARAMS.get('player_id')||ISSUE_PAGE_PARAMS.get('pid')||'';player.value=queryPlayer||localStorage.getItem('baseballPlayerId')||'';if(queryPlayer)localStorage.setItem('baseballPlayerId',queryPlayer)}catch(e){}
+let currentCode='';
+const issueLinkKey=ISSUE_PAGE_PARAMS.get('admin_key')||ISSUE_PAGE_PARAMS.get('issue_key')||'';
+document.getElementById('issueBtn').addEventListener('click',async()=>{
+  const pid=(player.value||'').trim();
+  const ack=document.getElementById('ack').checked;
+  const msg=document.getElementById('message');
+  const result=document.getElementById('result');
+  result.innerHTML=''; currentCode=''; document.getElementById('copyBtn').style.display='none'; document.getElementById('emailBox').style.display='none'; document.getElementById('emailStatus').textContent='メールアドレスはこちらで一切保管しません。'; document.getElementById('emailStatus').className='mailstatus muted';
+  if(!pid){msg.textContent='先にゲームトップでプレイヤーIDを登録・ログインしてください。';return}
+  if(!ack){msg.textContent='管理者ID取得前に注意事項へチェックしてください。';return}
+  if(!issueLinkKey){msg.textContent='ID取得用キーが不足しています。管理者から案内されたURLを開き直してください。';return}
+  msg.textContent='本人確認中です...';
+  try{
+    const res=await fetch('api/self_issue_code.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'admin',player_id:pid,client_token:getClientToken(),ack_admin_name_rule:ack,issue_link_key:issueLinkKey})});
+    const json=await res.json().catch(()=>({ok:false,message:'通信結果を読めませんでした。'}));
+    if(!res.ok||!json.ok){result.innerHTML=`<div class="err">${esc(json.message||'管理者IDを取得できませんでした。')}</div>`;msg.textContent='';return}
+    currentCode=json.code||'';
+    result.innerHTML=currentCode?`<div class="codebox"><b>${esc(json.message||'管理者IDを取得しました。')}</b><code>${esc(currentCode)}</code><span class="muted">※注意:スクリーンショットを撮るかこのIDをコピーして無くさないように控えてください。もしくは下のフォームからメールアドレスを入力してメールでIDを保管してください。メールアドレスはこちらで一切保管しません。</span></div>`:`<div class="err">取得済みIDがあります。表示できない場合は管理者に確認してください。</div>`;
+    document.getElementById('copyBtn').style.display=currentCode?'inline-block':'none';
+    document.getElementById('emailBox').style.display=currentCode?'block':'none';
+    msg.textContent='';
+  }catch(e){msg.textContent='通信エラーで管理者IDを取得できませんでした。'}
+});
+document.getElementById('copyBtn').addEventListener('click',async()=>{if(!currentCode)return;try{await navigator.clipboard.writeText(currentCode);alert('コピーしました。')}catch(e){alert('コピーできませんでした。画面のIDを手動でコピーしてください。')}});
+
+document.getElementById('sendEmailBtn').addEventListener('click',async()=>{
+  const email=(document.getElementById('emailInput').value||'').trim();
+  const status=document.getElementById('emailStatus');
+  if(!currentCode){status.textContent='管理者IDを先に取得してください。';status.className='mailstatus err';return;}
+  if(!email){status.textContent='メールアドレスを入力してください。';status.className='mailstatus err';return;}
+  status.textContent='メール送信中です...';status.className='mailstatus muted';
+  try{
+    const res=await fetch('api/send_issue_code_email.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'admin',email:email,code:currentCode,player_id:(player.value||'').trim()})});
+    const json=await res.json().catch(()=>({ok:false,message:'通信結果を読めませんでした。'}));
+    if(!res.ok||!json.ok){status.textContent=json.message||'メール送信に失敗しました。';status.className='mailstatus err';return;}
+    status.textContent=json.message||'メールを送信しました。メールアドレスはこちらで一切保管しません。';status.className='mailstatus muted';
+  }catch(e){status.textContent='通信エラーでメール送信できませんでした。';status.className='mailstatus err';}
+});
+</script>
+</body>
+</html>

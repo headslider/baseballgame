@@ -1,0 +1,24 @@
+# Runtime / operation data
+scores/*
+!scores/.htaccess
+!scores/.keep
+!scores/release_versions.json
+
+# Request runtime data
+requests/*
+!requests/.keep
+
+# Production flags
+production_hold_enabled.flag
+
+# Logs / backups / archives
+*.log
+*.bak
+*.backup
+*.zip
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

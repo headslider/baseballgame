@@ -1,0 +1,5 @@
+# Protect draft/non-public question data.
+# Game clients must use api/get_game_questions.php instead of direct questions.json access.
+<Files "questions.json">
+  Deny from all
+</Files>
