@@ -1,0 +1,139 @@
+name: Deploy baseballgame to CORESERVER
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "本番へ反映する場合は true。false の場合は dry-run のみ。"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+concurrency:
+  group: baseballgame-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Dry-run deploy by FTPS
+        if: ${{ github.event.inputs.apply != 'true' }}
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.CORESERVER_FTP_SERVER }}
+          username: ${{ secrets.CORESERVER_FTP_USERNAME }}
+          password: ${{ secrets.CORESERVER_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./
+          server-dir: ${{ secrets.CORESERVER_FTP_SERVER_DIR }}
+          dry-run: true
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            README.md
+            DEPLOY.md
+            HANDOVER.md
+            **/*.zip
+            **/*.bak
+            **/*.tmp
+            desktop.ini
+            production_hold_enabled.flag
+            requests/**
+            scores/access_log.csv
+            scores/admin_audit_log.csv
+            scores/admin_sessions.json
+            scores/admin_codes.json
+            scores/cron_weekly_ranking_runner.log
+            scores/cron_weekly_ranking_runner_state.json
+            scores/id_attempts.json
+            scores/id_audit_log.csv
+            scores/invite_codes.json
+            scores/issue_link_settings.json
+            scores/mistake_review.json
+            scores/new_question_import_history.json
+            scores/notice_duplicate_guard.json
+            scores/player_features.json
+            scores/player_registry.csv
+            scores/player_suspensions.json
+            scores/push_notification_settings.json
+            scores/question_backups/**
+            scores/question_csv_import_history.json
+            scores/question_status.json
+            scores/question_versions.json
+            scores/request_notification_settings.json
+            scores/scheduled_notifications.json
+            scores/score_log.csv
+            scores/super_admin_login_attempts.json
+            scores/super_admins.json
+            scores/weekly_ranking_snapshot.json
+
+      - name: Apply deploy by FTPS
+        if: ${{ github.event.inputs.apply == 'true' }}
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.CORESERVER_FTP_SERVER }}
+          username: ${{ secrets.CORESERVER_FTP_USERNAME }}
+          password: ${{ secrets.CORESERVER_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./
+          server-dir: ${{ secrets.CORESERVER_FTP_SERVER_DIR }}
+          dry-run: false
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            README.md
+            DEPLOY.md
+            HANDOVER.md
+            **/*.zip
+            **/*.bak
+            **/*.tmp
+            desktop.ini
+            production_hold_enabled.flag
+            requests/**
+            scores/access_log.csv
+            scores/admin_audit_log.csv
+            scores/admin_sessions.json
+            scores/admin_codes.json
+            scores/cron_weekly_ranking_runner.log
+            scores/cron_weekly_ranking_runner_state.json
+            scores/id_attempts.json
+            scores/id_audit_log.csv
+            scores/invite_codes.json
+            scores/issue_link_settings.json
+            scores/mistake_review.json
+            scores/new_question_import_history.json
+            scores/notice_duplicate_guard.json
+            scores/player_features.json
+            scores/player_registry.csv
+            scores/player_suspensions.json
+            scores/push_notification_settings.json
+            scores/question_backups/**
+            scores/question_csv_import_history.json
+            scores/question_status.json
+            scores/question_versions.json
+            scores/request_notification_settings.json
+            scores/scheduled_notifications.json
+            scores/score_log.csv
+            scores/super_admin_login_attempts.json
+            scores/super_admins.json
+            scores/weekly_ranking_snapshot.json
+
+      - name: Post deploy note
+        if: ${{ github.event.inputs.apply == 'true' }}
+        run: |
+          echo "Deploy finished. Check https://www.realemotionfactory.com/baseball/ manually."
