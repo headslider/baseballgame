@@ -1,0 +1,72 @@
+name: Deploy TEST
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-test-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-test:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'codex/')
+    runs-on: ubuntu-latest
+    environment: baseball_test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate PHP syntax
+        run: |
+          find . -name "*.php" \
+            -not -path "./vendor/*" \
+            -not -path "./scores/*" \
+            -not -path "./requests/*" \
+            -print0 | xargs -0 -n1 php -l
+
+      - name: Validate JSON
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+
+          skipped_parts = {".git", ".github", ".codex", "scores", "requests", "vendor"}
+          for path in pathlib.Path(".").rglob("*.json"):
+              if any(part in skipped_parts for part in path.parts):
+                  continue
+              with path.open("r", encoding="utf-8") as f:
+                  json.load(f)
+              print("OK", path)
+          PY
+
+      - name: Validate operational data is excluded from Git changes
+        run: |
+          if git ls-files | grep -E '^(scores|requests)/' ; then
+            echo "::error::scores/ or requests/ is tracked by Git. Operational data must not be deployed from repository."
+            exit 1
+          fi
+          echo "OK: scores/ and requests/ are not tracked."
+
+      - name: Deploy to baseball_test
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.CORESERVER_FTP_SERVER }}
+          username: ${{ secrets.CORESERVER_FTP_USERNAME }}
+          password: ${{ secrets.CORESERVER_FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: ${{ secrets.CORESERVER_FTP_TEST_DIR }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/.codex/**
+            **/scores/**
+            **/requests/**
