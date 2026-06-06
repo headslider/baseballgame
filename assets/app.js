@@ -1854,6 +1854,32 @@ function setPushMessage(text,ok=false){
   el.className=ok?"settings-message success":"settings-message";
   el.style.display=text?"block":"";
 }
+async function syncExistingPushSubscriptionIfNeeded(sub,force=false){
+  if(!sub||!STATE.loggedIn||!STATE.playerId)return {ok:false,skipped:true,message:"not ready"};
+  const key="baseballLastPushSubscriptionSync";
+  const now=Date.now();
+  if(!force){
+    try{
+      const last=parseInt(localStorage.getItem(key)||"0",10)||0;
+      if(now-last<12*60*60*1000)return {ok:true,skipped:true,message:"recently synced"};
+    }catch(e){}
+  }
+  const res=await fetch("api/save_push_subscription.php",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      player_id:STATE.playerId,
+      subscription:sub,
+      client_token:getClientToken(),
+      user_agent:navigator.userAgent||""
+    })
+  });
+  const data=await res.json().catch(()=>({ok:false,error:"invalid json"}));
+  if(!res.ok||!data.ok)throw new Error(data.error||data.message||"save failed");
+  try{localStorage.setItem(key,String(now));}catch(e){}
+  return data;
+}
+
 async function refreshPushStatus(){
   updatePushSectionAvailability();
   const guide=$("pushFirstGuide");
@@ -1870,7 +1896,18 @@ async function refreshPushStatus(){
   try{
     const reg=await navigator.serviceWorker.ready;
     const sub=await reg.pushManager.getSubscription();
-    updatePushStatusText(sub?"通知オン":(Notification.permission==="granted"?"許可済み・未購読":"未設定"));
+    if(sub){
+      updatePushStatusText("通知オン（サーバー確認中）");
+      try{
+        await syncExistingPushSubscriptionIfNeeded(sub,false);
+        updatePushStatusText("通知オン");
+      }catch(syncErr){
+        console.warn("push subscription sync failed",syncErr);
+        updatePushStatusText("通知オン・再登録が必要");
+      }
+    }else{
+      updatePushStatusText(Notification.permission==="granted"?"許可済み・未購読":"未設定");
+    }
     if(guide)guide.style.display=sub?"none":"block";
   }catch(e){
     updatePushStatusText("確認できません");
@@ -1934,18 +1971,7 @@ async function enablePushNotifications(){
       });
     }
 
-    const res=await fetch("api/save_push_subscription.php",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        player_id:STATE.playerId,
-        subscription:sub,
-        client_token:getClientToken(),
-        user_agent:navigator.userAgent||""
-      })
-    });
-    const data=await res.json().catch(()=>({ok:false,error:"invalid json"}));
-    if(!res.ok||!data.ok)throw new Error(data.error||data.message||"save failed");
+    await syncExistingPushSubscriptionIfNeeded(sub,true);
 
     updatePushStatusText("通知オン");
     const guide=$("pushFirstGuide");if(guide)guide.style.display="none";

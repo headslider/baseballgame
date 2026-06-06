@@ -268,6 +268,7 @@
             </div>
             <button class="secondary" type="button" onclick="loadNewQuestionNoticeCandidates()">新規問題リストを再読み込み</button>
           </div>
+          <div id="newQuestionNoticeSummary" class="msg notice-msg">新規問題リストの状態を読み込み中です。</div>
           <div id="newQuestionNoticeList" class="table-wrap" style="margin-top:10px"><p class="muted">新規問題リストを読み込み中です。</p></div>
           <div class="notice-form-wrap" style="margin-top:14px">
             <div class="grid-2" style="margin:0 0 8px">
@@ -323,6 +324,7 @@
               <button class="primary-action" type="button" onclick="sendAdminNoticePush()">お知らせ通知を送信</button>
               <button class="secondary" type="button" onclick="loadPushNoticeHistory()">送信履歴を再読み込み</button>
             </div>
+            <div id="pushSubscriptionStatus" class="msg notice-msg">Push購読端末数を確認中です。</div>
             <div id="adminNoticePushResult" class="msg notice-msg">通知タイトル・本文を入力して送信してください。</div>
           </div>
 
@@ -882,7 +884,7 @@
           <label>更新種別<span class="help-tip" title="メジャー=大きなシステム変更、マイナー=機能追加や修正、パッチ=問題追加や軽微な修正です。">?</span><select id="releaseType"><option value="major">メジャー：v2.0.0</option><option value="minor">マイナー：v1.1.0</option><option value="patch">パッチ：v1.0.1</option></select></label>
           <label>公開日<span class="help-tip" title="ユーザー向け更新履歴に表示する日付です。通常は公開日または配信日を入れます。">?</span><input id="releaseDate" type="date"></label>
           <label>タイトル<span class="help-tip" title="更新履歴の見出しです。ユーザーに分かりやすい短いタイトルにします。">?</span><input id="releaseTitle" placeholder="例：正式公開版"></label>
-          <label>内部バージョン<span class="help-tip" title="開発・検証・ZIP識別用のバージョンです。ユーザーには基本表示しません。例：v762-test / v824-production。">?</span><input id="releaseInternalVersion" readonly></label>
+          <label>内部バージョン<span class="help-tip" title="開発・検証・ZIP識別用のバージョンです。ユーザーには基本表示しません。例：v762-test / v756-production。">?</span><input id="releaseInternalVersion" readonly></label>
           <label>cache_version<span class="help-tip" title="PWA / Service Worker のキャッシュ更新用識別名です。変更すると端末が新しいJS/CSS等を取得しやすくなります。">?</span><input id="releaseCacheVersion" readonly></label>
         </div>
         <div class="release-text-grid">
@@ -3009,7 +3011,7 @@ function switchAdminTab(tabId){
   document.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("active",p.id===tabId));
   document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===tabId));
   try{localStorage.setItem("superAdminActiveTab",tabId);}catch(e){}
-  if(tabId==="tab-admin-notice"){ bindAdminNoticePreview(); initScheduledNoticeForm(); loadScheduledNotices().catch(()=>{}); loadPushNoticeHistory().catch(()=>{}); }
+  if(tabId==="tab-admin-notice"){ bindAdminNoticePreview(); initScheduledNoticeForm(); loadScheduledNotices().catch(()=>{}); loadPushNoticeHistory().catch(()=>{}); loadPushSubscriptionStatus().catch(()=>{}); }
   if(tabId==="tab-player-management")loadPlayerAdminList().catch(()=>{});
   if(tabId==="tab-request-management"){
     loadRequestNoticeSettings().catch(e=>{setText("requestNoticeMessage",e.message);});
@@ -3060,6 +3062,7 @@ async function sendAdminNoticePush(){
       out.textContent=`送信処理完了：成功 ${data.sent||0} / 失敗 ${data.failed||0}${data.message?"｜"+data.message:""}`;
     }
     await loadPushNoticeHistory();
+    await loadPushSubscriptionStatus();
   }catch(e){
     if(out){out.className="msg err";out.textContent=`送信できませんでした：${e.message}`;}
   }
@@ -3176,6 +3179,24 @@ async function loadScheduledNotices(){
       `</tbody></table>`;
   }catch(e){
     if(box)box.innerHTML=`<p class="err">スケジュール一覧を読み込めませんでした：${esc(e.message)}</p>`;
+  }
+}
+
+async function loadPushSubscriptionStatus(){
+  const box=$("pushSubscriptionStatus");
+  if(box){box.className="msg notice-msg";box.textContent="Push購読端末数を確認中です。";}
+  try{
+    const data=await call("push_subscription_status",{});
+    const s=data.stats||{};
+    const active=Number(s.active||0), total=Number(s.total||0), invalid=Number(s.invalid||0), inactive=Number(s.inactive||0), players=Number(s.active_players||0);
+    if(box){
+      box.className=active>0?"msg notice-msg ok":"msg notice-msg err";
+      box.textContent=active>0
+        ? `Push購読端末：有効 ${active}件 / 登録 ${total}件 / プレイヤー ${players}件`
+        : `Push購読端末：有効 0件 / 登録 ${total}件 / 無効 ${invalid}件 / 停止 ${inactive}件。端末側が通知オンでも、サーバー購読が無い場合は対象0件になります。対象端末で通知設定を再登録してください。`;
+    }
+  }catch(e){
+    if(box){box.className="msg notice-msg err";box.textContent="Push購読端末数を確認できませんでした："+e.message;}
   }
 }
 
@@ -3312,14 +3333,36 @@ async function loadNewQuestionNoticeCandidates(){
   try{
     const data=await call("new_question_notice_candidates",{});
     latestNewQuestionNoticeItems=data.items||[];
+    renderNewQuestionNoticeSummary(data.meta||{});
     renderNewQuestionNoticeCandidates();
   }catch(e){
     if(box)box.innerHTML=`<p class="err">新規問題リストを読み込めませんでした：${esc(e.message)}</p>`;
   }
 }
+function renderNewQuestionNoticeSummary(meta){
+  const box=$("newQuestionNoticeSummary");
+  if(!box)return;
+  const total=Number(meta.total_history||0);
+  const displayed=Number(meta.displayed||0);
+  const closed=Number(meta.auto_closed||0);
+  const hiddenSent=Number(meta.hidden_sent_schedule||0);
+  const hiddenPublished=Number(meta.hidden_published||0);
+  const hiddenNotified=Number(meta.hidden_notified||0);
+  box.className="msg notice-msg ok";
+  box.textContent=`新規問題通知候補：表示 ${displayed}件 / 履歴 ${total}件 / 自動処理済み補正 ${closed}件 / 配信済み非表示 ${hiddenSent}件 / 公開済み非表示 ${hiddenPublished}件 / 通知済み非表示 ${hiddenNotified}件`;
+}
+function isVisibleNewQuestionNoticeRow(r){
+  const status=String(r.status||"").toLowerCase();
+  const statusLabel=String(r.status_label||"");
+  const notice=String(r.notice_status||"unscheduled").toLowerCase();
+  if(notice==="notified")return false;
+  if(status==="disabled")return false;
+  if((status==="published"||statusLabel==="公開")&&notice!=="scheduled")return false;
+  return true;
+}
 function renderNewQuestionNoticeCandidates(){
   const box=$("newQuestionNoticeList");
-  const rows=latestNewQuestionNoticeItems||[];
+  const rows=(latestNewQuestionNoticeItems||[]).filter(isVisibleNewQuestionNoticeRow);
   if(!box)return;
   if(!rows.length){box.innerHTML='<p class="muted">新規問題候補はありません。</p>';return;}
   box.innerHTML=`<table><thead><tr><th>選択</th><th>スケジュール日時</th><th>追加日時</th><th>ID</th><th>状態</th><th>種別</th><th>学年</th><th>タグ</th><th>通知状態</th></tr></thead><tbody>`+
