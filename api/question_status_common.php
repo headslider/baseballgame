@@ -1,15 +1,10 @@
 <?php
 require_once __DIR__ . '/feature_common.php';
 
-function question_status_file_path() {
-    return feature_scores_dir() . '/question_status.json';
-}
-function question_known_ids_file_path() {
-    return feature_scores_dir() . '/known_question_ids.json';
-}
-function new_question_history_file_path() {
-    return feature_scores_dir() . '/new_question_import_history.json';
-}
+function question_status_file_path() { return feature_scores_dir() . '/question_status.json'; }
+function question_known_ids_file_path() { return feature_scores_dir() . '/known_question_ids.json'; }
+function new_question_history_file_path() { return feature_scores_dir() . '/new_question_import_history.json'; }
+
 function question_status_read_db() {
     $db = read_json_file_safe(question_status_file_path(), ['statuses'=>[], 'updated_at'=>'']);
     if (!isset($db['statuses']) || !is_array($db['statuses'])) $db['statuses'] = [];
@@ -20,9 +15,7 @@ function question_status_write_db($db) {
     $db['updated_at'] = date('Y-m-d H:i:s');
     return write_json_file_locked(question_status_file_path(), $db);
 }
-function question_status_valid($status) {
-    return in_array($status, ['draft','published','disabled'], true) ? $status : 'published';
-}
+function question_status_valid($status) { return in_array($status, ['draft','published','disabled'], true) ? $status : 'published'; }
 function question_status_get($id) {
     $db = question_status_read_db();
     $id = trim((string)$id);
@@ -37,9 +30,8 @@ function question_status_set_many($ids, $status) {
     }
     question_status_write_db($db);
 }
-function questions_data_file_path_for_status() {
-    return __DIR__ . '/../data/questions.json';
-}
+
+function questions_data_file_path_for_status() { return __DIR__ . '/../data/questions.json'; }
 function question_status_load_questions() {
     $file = questions_data_file_path_for_status();
     $json = json_decode(is_file($file) ? file_get_contents($file) : '[]', true);
@@ -73,9 +65,6 @@ function question_grade_label_for_notice($grade) {
     return $g !== '' ? $g : '-';
 }
 function question_tag_for_notice($q) {
-    // 通知・管理画面のタグ表示は、問題管理で実際に利用している ball_tag を最優先にする。
-    // ただし、過去にCSVから取り込んだ履歴では tag が '-' のまま、かつ問題側に theme だけが残る場合があるため、
-    // 代表的な theme はユーザー向けの短いタグ名へ変換して表示する。
     foreach (['ball_tag','tag','theme_label'] as $k) {
         $v = trim((string)($q[$k] ?? ''));
         if ($v !== '' && $v !== '-') return $v;
@@ -83,22 +72,20 @@ function question_tag_for_notice($q) {
     $theme = trim((string)($q['theme'] ?? ''));
     if ($theme !== '' && $theme !== '-') {
         $map = [
-            'basic_baserunning_slide' => 'スライディング',
-            'baserunning_slide' => 'スライディング',
-            'slide' => 'スライディング',
+            'basic_baserunning_slide'=>'スライディング',
+            'baserunning_slide'=>'スライディング',
+            'slide'=>'スライディング',
         ];
         return $map[$theme] ?? $theme;
     }
     $title = trim((string)($q['title'] ?? ''));
     if ($title !== '' && strpos($title, ' / ') !== false) {
         $first = trim(explode(' / ', $title, 2)[0]);
-        if ($first !== '' && $first !== '-') {
-            if ($first === 'basic_baserunning_slide') return 'スライディング';
-            return $first;
-        }
+        if ($first !== '' && $first !== '-') return $first === 'basic_baserunning_slide' ? 'スライディング' : $first;
     }
     return '-';
 }
+
 function new_question_history_read_db() {
     $db = read_json_file_safe(new_question_history_file_path(), ['items'=>[], 'updated_at'=>'']);
     if (!isset($db['items']) || !is_array($db['items'])) $db['items'] = [];
@@ -118,6 +105,7 @@ function known_question_ids_write($ids) {
     $ids = array_values(array_unique(array_filter(array_map('strval', $ids), function($v){ return trim($v) !== ''; })));
     return write_json_file_locked(question_known_ids_file_path(), ['ids'=>$ids, 'updated_at'=>date('Y-m-d H:i:s')]);
 }
+
 function new_question_history_record_questions($questions, $source='manual', $admin_label='') {
     $hist = new_question_history_read_db();
     $existing = [];
@@ -127,8 +115,7 @@ function new_question_history_record_questions($questions, $source='manual', $ad
     foreach ($questions as $q) {
         if (!is_array($q)) continue;
         $id = trim((string)($q['id'] ?? ''));
-        if ($id === '') continue;
-        if (isset($existing[$id])) continue;
+        if ($id === '' || isset($existing[$id])) continue;
         $item = [
             'id'=>$id,
             'title'=>question_title_for_notice($q),
@@ -171,9 +158,7 @@ function sync_new_question_candidates($admin_label='') {
     }
     $known_set = array_fill_keys($known['ids'], true);
     $new = [];
-    foreach ($current_ids as $id) {
-        if (empty($known_set[$id])) $new[] = $by_id[$id];
-    }
+    foreach ($current_ids as $id) if (empty($known_set[$id])) $new[] = $by_id[$id];
     if ($new) {
         question_status_set_many(array_map(function($q){ return $q['id'] ?? ''; }, $new), 'draft');
         new_question_history_record_questions($new, 'detected', $admin_label);
@@ -195,22 +180,22 @@ function new_question_notice_candidates($admin_label='') {
     }
     $items = [];
     $hist_changed = false;
-    foreach ($hist['items'] as $idx => $it) {
+    foreach ($hist['items'] as $idx=>$it) {
         $id = (string)($it['id'] ?? '');
         if ($id === '') continue;
         $q = $by_id[$id] ?? ($by_id[strtoupper($id)] ?? []);
         $status = question_status_get($id);
         $notice_status = (string)($it['notice_status'] ?? 'unscheduled');
-
-        // 新規問題追加通知の通常一覧は、これから処理する問題だけを表示する。
-        // 配信済み・通知せず公開済み・公開済みの未通知履歴は実務上まぎらわしいため非表示にする。
-        // 予約済みの問題だけは確認・解除のため、公開状態に関わらず表示する。
         if ($notice_status === 'notified') continue;
         if ($status === 'disabled') continue;
-        if ($status === 'published' && $notice_status !== 'scheduled') continue;
-
+        if ($status === 'published' && $notice_status !== 'scheduled') {
+            $hist['items'][$idx]['notice_status'] = 'notified';
+            if (empty($hist['items'][$idx]['notified_at'])) $hist['items'][$idx]['notified_at'] = date('Y-m-d H:i:s');
+            $hist['items'][$idx]['auto_closed_reason'] = 'published_without_pending_schedule';
+            $hist_changed = true;
+            continue;
+        }
         $current_tag = is_array($q) ? question_tag_for_notice($q) : '-';
-        // questions.json 側で取得できない場合でも、履歴のtitle/theme相当から補完する。
         if ($current_tag === '-' || $current_tag === '') {
             $current_tag = question_tag_for_notice([
                 'ball_tag'=>$it['ball_tag'] ?? '',
@@ -223,21 +208,14 @@ function new_question_notice_candidates($admin_label='') {
         $stored_tag = trim((string)($it['tag'] ?? ''));
         $stored_ball_tag = trim((string)($it['ball_tag'] ?? ''));
         $display_tag = '-';
-        if ($current_tag !== '' && $current_tag !== '-') {
-            $display_tag = $current_tag;
-        } elseif ($stored_ball_tag !== '' && $stored_ball_tag !== '-') {
-            $display_tag = $stored_ball_tag;
-        } elseif ($stored_tag !== '' && $stored_tag !== '-') {
-            $display_tag = $stored_tag;
-        }
-
-        // 古い履歴で tag が '-' のまま残っていても、現在の questions.json の ball_tag で補完して保存し直す。
+        if ($current_tag !== '' && $current_tag !== '-') $display_tag = $current_tag;
+        elseif ($stored_ball_tag !== '' && $stored_ball_tag !== '-') $display_tag = $stored_ball_tag;
+        elseif ($stored_tag !== '' && $stored_tag !== '-') $display_tag = $stored_tag;
         if ($display_tag !== '-' && (($hist['items'][$idx]['tag'] ?? '') !== $display_tag || empty($hist['items'][$idx]['ball_tag']) || $hist['items'][$idx]['ball_tag'] === '-')) {
             $hist['items'][$idx]['tag'] = $display_tag;
             $hist['items'][$idx]['ball_tag'] = $display_tag;
             $hist_changed = true;
         }
-
         $items[] = array_merge($it, [
             'status'=>$status,
             'status_label'=>($status === 'draft' ? '下書き' : ($status === 'disabled' ? '停止' : '公開')),
@@ -248,7 +226,7 @@ function new_question_notice_candidates($admin_label='') {
         ]);
     }
     if ($hist_changed) new_question_history_write_db($hist);
-    usort($items, function($a, $b){ return strcmp($b['added_at'] ?? '', $a['added_at'] ?? ''); });
+    usort($items, function($a,$b){ return strcmp($b['added_at'] ?? '', $a['added_at'] ?? ''); });
     return $items;
 }
 function mark_new_questions_scheduled($ids, $schedule_id, $scheduled_delivery_at='') {
