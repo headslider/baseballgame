@@ -52,6 +52,7 @@ jobs:
             production_hold_enabled.flag
             requests/**
             scores/**
+            vendor/**
 
       - name: Apply deploy by FTPS
         if: ${{ github.event.inputs.apply == 'true' }}
@@ -80,6 +81,7 @@ jobs:
             production_hold_enabled.flag
             requests/**
             scores/**
+            vendor/**
 
       - name: Post deploy note
         if: ${{ github.event.inputs.apply == 'true' }}
