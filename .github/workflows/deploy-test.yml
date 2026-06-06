@@ -61,6 +61,8 @@ jobs:
           server: ${{ secrets.CORESERVER_FTP_SERVER }}
           username: ${{ secrets.CORESERVER_FTP_USERNAME }}
           password: ${{ secrets.CORESERVER_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
           local-dir: ./
           server-dir: ${{ secrets.CORESERVER_FTP_TEST_DIR }}
           exclude: |
@@ -70,3 +72,4 @@ jobs:
             **/.codex/**
             **/scores/**
             **/requests/**
+            **/vendor/**
