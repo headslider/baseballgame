@@ -200,6 +200,15 @@ function new_question_notice_candidates($admin_label='') {
         if ($id === '') continue;
         $q = $by_id[$id] ?? ($by_id[strtoupper($id)] ?? []);
         $status = question_status_get($id);
+        $notice_status = (string)($it['notice_status'] ?? 'unscheduled');
+
+        // 新規問題追加通知の通常一覧は、これから処理する問題だけを表示する。
+        // 配信済み・通知せず公開済み・公開済みの未通知履歴は実務上まぎらわしいため非表示にする。
+        // 予約済みの問題だけは確認・解除のため、公開状態に関わらず表示する。
+        if ($notice_status === 'notified') continue;
+        if ($status === 'disabled') continue;
+        if ($status === 'published' && $notice_status !== 'scheduled') continue;
+
         $current_tag = is_array($q) ? question_tag_for_notice($q) : '-';
         // questions.json 側で取得できない場合でも、履歴のtitle/theme相当から補完する。
         if ($current_tag === '-' || $current_tag === '') {
