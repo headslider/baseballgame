@@ -2058,9 +2058,8 @@ if ($action === 'send_weekly_ranking_notice') {
 
 
 if ($action === 'new_question_notice_candidates') {
-    $meta = [];
-    $items = new_question_notice_candidates($session['label'] ?? '最高位管理者', $meta);
-    admin_json(200, ['ok'=>true,'items'=>$items,'meta'=>$meta]);
+    $items = new_question_notice_candidates($session['label'] ?? '最高位管理者');
+    admin_json(200, ['ok'=>true,'items'=>$items]);
 }
 
 if ($action === 'question_publish_selected') {
@@ -2135,11 +2134,6 @@ if ($action === 'send_admin_notice') {
 
 if ($action === 'list_push_notices') {
     admin_json(200, ['ok'=>true,'history'=>read_push_notice_history_admin()]);
-}
-
-if ($action === 'push_subscription_status') {
-    require_once __DIR__ . '/send_push_notification.php';
-    admin_json(200, ['ok'=>true,'stats'=>push_subscription_stats()]);
 }
 
 if ($action === 'send_push_test') {

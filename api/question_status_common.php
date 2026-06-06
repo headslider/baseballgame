@@ -181,43 +181,10 @@ function sync_new_question_candidates($admin_label='') {
     }
     return $new;
 }
-function new_question_notice_sent_question_id_set() {
-    $set = [];
-    $scores = feature_scores_dir();
-    $files = [
-        $scores . '/scheduled_notifications.json',
-        $scores . '/push_notice_history.json'
-    ];
-    foreach ($files as $file) {
-        if (!is_file($file)) continue;
-        $db = json_decode(file_get_contents($file), true);
-        $rows = [];
-        if (isset($db['items']) && is_array($db['items'])) $rows = $db['items'];
-        elseif (isset($db['history']) && is_array($db['history'])) $rows = $db['history'];
-        foreach ($rows as $row) {
-            if (!is_array($row)) continue;
-            if (($row['kind'] ?? '') !== 'new_question_notice') continue;
-            $status = strtolower((string)($row['status'] ?? ''));
-            $sentAt = trim((string)($row['sent_at'] ?? ''));
-            // 成功0件でもCRON/手動送信処理が実行済みなら、新規問題通知としては処理済みにする。
-            if ($status !== 'sent' && $sentAt === '') continue;
-            $ids = isset($row['question_ids']) && is_array($row['question_ids']) ? $row['question_ids'] : [];
-            foreach ($ids as $id) {
-                $id = trim((string)$id);
-                if ($id !== '') {
-                    $set[$id] = true;
-                    $set[strtoupper($id)] = true;
-                }
-            }
-        }
-    }
-    return $set;
-}
-function new_question_notice_candidates($admin_label='', &$meta=null) {
+function new_question_notice_candidates($admin_label='') {
     sync_new_question_candidates($admin_label);
     $hist = new_question_history_read_db();
     $questions = question_status_load_questions();
-    $sentQuestionIds = new_question_notice_sent_question_id_set();
     $by_id = [];
     foreach ($questions as $q) {
         $qid = trim((string)($q['id'] ?? ''));
@@ -226,54 +193,35 @@ function new_question_notice_candidates($admin_label='', &$meta=null) {
             $by_id[strtoupper($qid)] = $q;
         }
     }
+
     $items = [];
     $hist_changed = false;
-    $counts = [
-        'total_history'=>0,
-        'displayed'=>0,
-        'auto_closed'=>0,
-        'hidden_notified'=>0,
-        'hidden_disabled'=>0,
-        'hidden_published'=>0,
-        'hidden_sent_schedule'=>0,
-    ];
-    $now = date('Y-m-d H:i:s');
+
     foreach ($hist['items'] as $idx => $it) {
-        if (!is_array($it)) continue;
-        $counts['total_history']++;
-        $id = trim((string)($it['id'] ?? ''));
+        $id = (string)($it['id'] ?? '');
         if ($id === '') continue;
+
         $q = $by_id[$id] ?? ($by_id[strtoupper($id)] ?? []);
         $status = question_status_get($id);
-        $notice_status = strtolower(trim((string)($it['notice_status'] ?? 'unscheduled')));
+        $notice_status = trim((string)($it['notice_status'] ?? 'unscheduled'));
         if ($notice_status === '') $notice_status = 'unscheduled';
-        $notifiedAt = trim((string)($it['notified_at'] ?? ''));
-        $sentAlready = !empty($sentQuestionIds[$id]) || !empty($sentQuestionIds[strtoupper($id)]);
+        $notified_at = trim((string)($it['notified_at'] ?? ''));
 
-        $autoCloseReason = '';
-        if ($notice_status === 'notified') {
-            $counts['hidden_notified']++;
-            continue;
-        }
-        if ($status === 'disabled') {
-            $counts['hidden_disabled']++;
-            continue;
-        }
-        if ($sentAlready) {
-            $autoCloseReason = 'sent_schedule_or_history';
-            $counts['hidden_sent_schedule']++;
-        } elseif ($notifiedAt !== '' && $notice_status !== 'scheduled') {
-            $autoCloseReason = 'notified_at_exists';
-        } elseif ($status === 'published' && $notice_status !== 'scheduled') {
-            $autoCloseReason = 'published_without_pending_schedule';
-            $counts['hidden_published']++;
-        }
-        if ($autoCloseReason !== '') {
+        // 新規問題追加通知の一覧は「これから通知・公開する問題」だけを出す。
+        // 既に公開済み、通知済み、通知済み時刻が残っている履歴は、過去の履歴として処理済みに寄せて非表示にする。
+        if ($notice_status === 'notified') continue;
+        if ($status === 'disabled') continue;
+
+        if ($notice_status !== 'scheduled' && ($status === 'published' || $notified_at !== '')) {
             $hist['items'][$idx]['notice_status'] = 'notified';
-            if (empty($hist['items'][$idx]['notified_at'])) $hist['items'][$idx]['notified_at'] = $now;
-            $hist['items'][$idx]['auto_closed_reason'] = $autoCloseReason;
+            if (empty($hist['items'][$idx]['notified_at'])) {
+                $hist['items'][$idx]['notified_at'] = date('Y-m-d H:i:s');
+            }
+            $hist['items'][$idx]['scheduled_notice_id'] = $hist['items'][$idx]['scheduled_notice_id'] ?? '';
+            $hist['items'][$idx]['auto_closed_reason'] = $status === 'published'
+                ? 'published_without_pending_schedule'
+                : 'already_has_notified_at';
             $hist_changed = true;
-            $counts['auto_closed']++;
             continue;
         }
 
@@ -309,17 +257,15 @@ function new_question_notice_candidates($admin_label='', &$meta=null) {
         $items[] = array_merge($it, [
             'status'=>$status,
             'status_label'=>($status === 'draft' ? '下書き' : ($status === 'disabled' ? '停止' : '公開')),
-            'notice_status'=>$notice_status,
             'type_label'=>($it['type_label'] ?? question_type_label_for_notice($q['type'] ?? ($it['type'] ?? ''))),
             'grade_label'=>($it['grade_label'] ?? question_grade_label_for_notice($q['grade'] ?? ($it['grade'] ?? ''))),
             'tag'=>$display_tag,
             'ball_tag'=>$display_tag,
         ]);
     }
+
     if ($hist_changed) new_question_history_write_db($hist);
     usort($items, function($a, $b){ return strcmp($b['added_at'] ?? '', $a['added_at'] ?? ''); });
-    $counts['displayed'] = count($items);
-    $meta = $counts;
     return $items;
 }
 function mark_new_questions_scheduled($ids, $schedule_id, $scheduled_delivery_at='') {

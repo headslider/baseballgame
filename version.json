@@ -1,15 +1,12 @@
 {
-  "app_version": "v825-production",
-  "cache_version": "yakyu-yarouze-v825-production",
-  "updated_at": "2026-06-06",
-  "notes": "v825: 新規問題追加通知リストの公開済み/処理済み履歴を自動補正して非表示化し、Push購読端末数の見える化と既存購読の自動再登録を追加。",
+  "app_version": "v824-production",
+  "cache_version": "yakyu-yarouze-v824-production",
+  "updated_at": "2026-06-05",
+  "notes": "v824: A430/A433/A436/A439（一塁三塁で本塁返球時の一塁ランナー判断）の0点選択肢を「本塁へ送球されたのを確認して、二塁へ進めるか狙う」に修正。",
   "environment": "baseball",
   "start_url": "/baseball/",
   "scope": "/baseball/",
   "changes": [
-    "v825: 新規問題追加通知リストで公開済み/配信済み/通知処理済みの履歴を自動補正し、通常一覧から除外。",
-    "v825: 管理画面にPush購読端末数を表示し、購読端末が0件の場合は通知対象0件の理由を明示。",
-    "v825: 端末側でPush購読が残っている場合、設定画面表示時にサーバーへ購読情報を自動再登録。",
     "v824: A430/A433/A436/A439で、0点選択肢を「本塁へ送球されたのを確認して、二塁へ進めるか狙う」に修正。",
     "v823: A430/A433/A436/A439（一塁三塁で本塁返球時の一塁ランナー判断）で、正解を「二塁に全力で走る」、1点を「三塁ランナーを見てから走る」に修正。",
     "v822: 管理画面の守備問題数チェックを問題一覧の下、問題CSV管理の上に移動。",
@@ -53,11 +50,10 @@
   ],
   "build_note": "v793 production build: validate pending invite/admin issue keys against current issue_link_settings before displaying issue buttons.",
   "change_summary": "v800: 未取得ID一覧を発行台帳だけでなく player_features.json の招待ID付与済み・管理者機能解放済み状態とも照合。",
-  "previous_version": "v824-production",
+  "previous_version": "v823-production",
   "public_version": "v1.0.0",
   "public_version_rule": "ユーザー向け公開バージョンはセマンティックバージョンで管理。システム構造・大きな仕様変更はメジャー、機能追加・修正はマイナー、問題追加・軽微な内容追加はパッチ。",
   "change_log": [
-    "v825: 新規問題追加通知履歴の完全整理とPush購読状態の見える化を追加。",
     "v800: 招待ID/管理者ID 未取得ID一覧で、invite_codes/admin_codes の self_issued だけでなく、player_features.json の招待ID付与済み・管理者機能解放済み状態も取得済み扱いにして、付与済み一覧との整合性を修正。",
     "v799: ID未登録・未ログイン状態では招待ID/管理者ID取得ボタンを表示しない。",
     "v798: モバイル/タブレットでは招待ID/管理者ID取得ボタンをPWAトップ画面のみ表示。PCは従来通り通常ブラウザでも取得可能。",
@@ -72,5 +68,5 @@
     "v784: 招待IDまたは管理者IDで mistake_review が解放された場合、プレイヤー別設定が未作成なら間違いプレイチェックを初回からONにする。",
     "v784: 招待ID/管理者IDの手入力紐づけ直後も、間違いプレイチェックをONにして保存する。"
   ],
-  "summary": "新規問題通知履歴補正とPush購読状態の見える化"
+  "summary": "一塁三塁の一塁ランナー走塁判断を修正"
 }
