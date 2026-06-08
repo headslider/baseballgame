@@ -22,10 +22,10 @@
             "bottom": "defense",
             "description": "各表は攻撃問題3問、各裏は守備問題3問"
         },
-        "questionPoolTotal": 600,
-        "attackQuestionPool": 227,
-        "defenseQuestionPool": 325,
-        "note": "v352: 出題スロットをデータ到達性ベースに動的化。未到達問題を解消。 \/ v397: 攻撃・守備の内野フライ問題を追加。 \/ v802: 攻撃・守備のouts\/outs_scope整備、外野低学年問題追加、未監査outs空欄を出題候補外にするロジックへ更新。 \/ v803: D008を5年生以上の出題対象へ変更。",
+        "questionPoolTotal": 603,
+        "attackQuestionPool": 228,
+        "defenseQuestionPool": 327,
+        "note": "v352: 出題スロットをデータ到達性ベースに動的化。未到達問題を解消。 / v397: 攻撃・守備の内野フライ問題を追加。 / v802: 攻撃・守備のouts/outs_scope整備、外野低学年問題追加、未監査outs空欄を出題候補外にするロジックへ更新。 / v803: D008を5年生以上の出題対象へ変更。",
         "basicQuestionPool": 48
     },
     "positions": {
@@ -142,7 +142,7 @@
         "high_grade_fly_halfway": "4年生以上は、可能であれば戻れる範囲でハーフウェイを選択肢に入れる"
     },
     "ui": {
-        "topBackgroundImage": "assets\/top_background.webp",
+        "topBackgroundImage": "assets/top_background.webp",
         "halfInningTransitionTitle": [
             "攻撃開始",
             "守備開始"
@@ -207,8 +207,8 @@
         "enabled": true,
         "description": "捕球ミス・握り直し・返球体勢が悪い時は安全策を優先する問題を追加"
     },
-    "questionPoolTotal": 600,
-    "attackQuestionPool": 227,
-    "defenseQuestionPool": 325,
+    "questionPoolTotal": 603,
+    "attackQuestionPool": 228,
+    "defenseQuestionPool": 327,
     "basicQuestionPool": 48
 }

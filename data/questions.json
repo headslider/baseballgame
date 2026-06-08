@@ -14199,7 +14199,7 @@
                 }
             ]
         },
-        "revision_note": "v142: catcher choices adjusted for 6-4-3 double play role: field instructions, home plate cover\/backup, next-play readiness.",
+        "revision_note": "v142: catcher choices adjusted for 6-4-3 double play role: field instructions, home plate cover/backup, next-play readiness.",
         "correction_policy": "locked"
     },
     {
@@ -21234,7 +21234,7 @@
                 {
                     "text": "捕球後すぐにステップして、中継へ素早く返球する",
                     "score": 3,
-                    "explain": "右中間\/左中間を抜ける打球では、捕球後すぐにステップして中継へ素早く返し、追加進塁を防ぐ。"
+                    "explain": "右中間/左中間を抜ける打球では、捕球後すぐにステップして中継へ素早く返し、追加進塁を防ぐ。"
                 },
                 {
                     "text": "捕球後にゆっくり中継へ返球する",
@@ -21697,7 +21697,7 @@
                 {
                     "text": "捕球後すぐにステップして、中継へ素早く返球する",
                     "score": 3,
-                    "explain": "右中間\/左中間を抜ける打球では、捕球後すぐにステップして中継へ素早く返し、追加進塁を防ぐ。"
+                    "explain": "右中間/左中間を抜ける打球では、捕球後すぐにステップして中継へ素早く返し、追加進塁を防ぐ。"
                 },
                 {
                     "text": "捕球後にゆっくり中継へ返球する",
@@ -21714,7 +21714,7 @@
                 {
                     "text": "捕球後すぐにステップして、中継へ素早く返球する",
                     "score": 3,
-                    "explain": "右中間\/左中間を抜ける打球では、捕球後すぐにステップして中継へ素早く返し、追加進塁を防ぐ。"
+                    "explain": "右中間/左中間を抜ける打球では、捕球後すぐにステップして中継へ素早く返し、追加進塁を防ぐ。"
                 },
                 {
                     "text": "捕球後にゆっくり中継へ返球する",
@@ -22495,7 +22495,7 @@
                 {
                     "text": "捕球後すぐにステップして、中継へ素早く返球する",
                     "score": 3,
-                    "explain": "右中間\/左中間を抜ける打球では、捕球後すぐにステップして中継へ素早く返し、追加進塁を防ぐ。"
+                    "explain": "右中間/左中間を抜ける打球では、捕球後すぐにステップして中継へ素早く返し、追加進塁を防ぐ。"
                 },
                 {
                     "text": "捕球後にゆっくり中継へ返球する",
@@ -22512,7 +22512,7 @@
                 {
                     "text": "捕球後すぐにステップして、中継へ素早く返球する",
                     "score": 3,
-                    "explain": "右中間\/左中間を抜ける打球では、捕球後すぐにステップして中継へ素早く返し、追加進塁を防ぐ。"
+                    "explain": "右中間/左中間を抜ける打球では、捕球後すぐにステップして中継へ素早く返し、追加進塁を防ぐ。"
                 },
                 {
                     "text": "捕球後にゆっくり中継へ返球する",
@@ -44892,7 +44892,7 @@
             ]
         },
         "correction_policy": "locked",
-        "addition_note": "D252\/D362など高学年カバー系から低学年向けに整理",
+        "addition_note": "D252/D362など高学年カバー系から低学年向けに整理",
         "reuse_source_id": "D252"
     },
     {
@@ -44988,7 +44988,7 @@
             ]
         },
         "correction_policy": "locked",
-        "addition_note": "D255\/ND034など一塁後方カバー系から低学年向けに整理",
+        "addition_note": "D255/ND034など一塁後方カバー系から低学年向けに整理",
         "reuse_source_id": "D255"
     },
     {
@@ -45036,7 +45036,7 @@
             ]
         },
         "correction_policy": "locked",
-        "addition_note": "D325\/D333など高学年セカンドゴロカバー系から低学年向けに整理",
+        "addition_note": "D325/D333など高学年セカンドゴロカバー系から低学年向けに整理",
         "reuse_source_id": "D325"
     },
     {
@@ -45084,7 +45084,7 @@
             ]
         },
         "correction_policy": "locked",
-        "addition_note": "D324\/D326など高学年ショートゴロカバー系から低学年向けに整理",
+        "addition_note": "D324/D326など高学年ショートゴロカバー系から低学年向けに整理",
         "reuse_source_id": "D324"
     },
     {
@@ -45180,7 +45180,7 @@
             ]
         },
         "correction_policy": "locked",
-        "addition_note": "D324\/D326など高学年ショートゴロカバー系から低学年向けに整理",
+        "addition_note": "D324/D326など高学年ショートゴロカバー系から低学年向けに整理",
         "reuse_source_id": "D324"
     },
     {
@@ -45228,7 +45228,7 @@
             ]
         },
         "correction_policy": "locked",
-        "addition_note": "D323\/D334など高学年サードゴロカバー系から低学年向けに整理",
+        "addition_note": "D323/D334など高学年サードゴロカバー系から低学年向けに整理",
         "reuse_source_id": "D323"
     },
     {
@@ -45278,5 +45278,134 @@
         "correction_policy": "locked",
         "addition_note": "三塁牽制時のベースカバー問題を低学年向けに新規化",
         "reuse_source_id": null
+    },
+    {
+        "id": "A530",
+        "type": "attack",
+        "grade": 4,
+        "role": "自分",
+        "runner": "自分",
+        "stage": "1B",
+        "theme": "dropped_third_strike",
+        "ball_tag": "2アウト一塁の振り逃げ",
+        "situation": "2アウト、ランナー一塁。打者が三振したが、キャッチャーがボールを落とし、打者走者が一塁へ走り出した。",
+        "prompt": "あなたは一塁ランナー。どうする？",
+        "choices": [
+            {
+                "text": "全力で二塁に進塁する",
+                "score": 3,
+                "explain": "2アウトでは一塁にランナーがいても振り逃げが成立する。打者走者が一塁へ走るので、一塁ランナーは二塁へ進む。"
+            },
+            {
+                "text": "一塁に投げるのを見て二塁に走る",
+                "score": 1,
+                "explain": "二塁へ進む判断は合っているが、送球を見てからでは遅れやすい。"
+            },
+            {
+                "text": "一塁に留まる",
+                "score": 0,
+                "explain": "打者走者が一塁へ走るため、一塁に留まると進塁できない。"
+            }
+        ],
+        "visual": {
+            "play": "2アウト一塁の振り逃げ",
+            "ball_path": "passed_ball",
+            "runners": [
+                "1B"
+            ],
+            "batter_runner": true,
+            "target_position": "C",
+            "show_batter": false,
+            "ball_holder": "C"
+        },
+        "variant": 1,
+        "outs": 2,
+        "correction_policy": "locked"
+    },
+    {
+        "id": "D972",
+        "type": "defense",
+        "grade": 5,
+        "position": "C",
+        "role": "キャッチャー",
+        "theme": "dropped_third_strike",
+        "ball_tag": "2アウト一塁の振り逃げ",
+        "situation": "2アウト、ランナー一塁。打者が三振したが、キャッチャーがボールを落としてしまい、打者走者が一塁へ走り出した。",
+        "prompt": "キャッチャーはどうする？",
+        "choices": [
+            {
+                "text": "一塁に投げる",
+                "score": 3,
+                "explain": "2アウトでは一塁にランナーがいても振り逃げが成立する。打者走者を一塁でアウトにする。"
+            },
+            {
+                "text": "二塁に投げる",
+                "score": 1,
+                "explain": "二塁でもフォースアウトを狙えるが、基本は打者走者を一塁でアウトにする。"
+            },
+            {
+                "text": "ランナーがいるから振り逃げは成立しないので投げない",
+                "score": 0,
+                "explain": "2アウトでは一塁にランナーがいても振り逃げは成立するため、投げない判断は誤り。"
+            }
+        ],
+        "visual": {
+            "play": "2アウト一塁の振り逃げ",
+            "ball_path": "passed_ball",
+            "runners": [
+                "1B"
+            ],
+            "batter_runner": true,
+            "target_position": "C",
+            "show_batter": false,
+            "ball_holder": "C"
+        },
+        "variant": 1,
+        "outs": 2,
+        "correction_policy": "locked"
+    },
+    {
+        "id": "D973",
+        "type": "defense",
+        "grade": 5,
+        "position": "C",
+        "role": "キャッチャー",
+        "theme": "dropped_third_strike",
+        "ball_tag": "2アウト満塁の振り逃げ",
+        "situation": "2アウト、満塁。打者が三振したが、キャッチャーがボールを落としてしまい、打者走者が一塁へ走り出した。",
+        "prompt": "キャッチャーはどうする？",
+        "choices": [
+            {
+                "text": "本塁を踏む",
+                "score": 3,
+                "explain": "満塁で打者走者が一塁へ走るため、三塁ランナーは本塁へ押し出される。本塁を踏めばフォースアウトにできる。"
+            },
+            {
+                "text": "一塁に投げる",
+                "score": 1,
+                "explain": "一塁でもアウトを狙えるが、本塁を踏む方が近く安全。"
+            },
+            {
+                "text": "三塁ランナーにタッチする",
+                "score": 0,
+                "explain": "満塁では本塁がフォースプレイになるため、タッチではなく本塁を踏むのがよい。"
+            }
+        ],
+        "visual": {
+            "play": "2アウト満塁の振り逃げ",
+            "ball_path": "passed_ball",
+            "runners": [
+                "1B",
+                "2B",
+                "3B"
+            ],
+            "batter_runner": true,
+            "target_position": "C",
+            "show_batter": false,
+            "ball_holder": "C"
+        },
+        "variant": 1,
+        "outs": 2,
+        "correction_policy": "locked"
     }
 ]
