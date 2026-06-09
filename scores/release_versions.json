@@ -1,56 +1,75 @@
 {
-    "current_public_version": "v1.0.2",
-    "versions": [
-        {
-            "id": "rel_20260603_144859_9b5c",
-            "public_version": "v1.0.2",
-            "internal_version": "v822-production",
-            "cache_version": "yakyu-yarouze-v822-production",
-            "release_type": "patch",
-            "released_at": "2026-06-03",
-            "title": "アップデート",
-            "public_summary": "問題の出題順、外野守備問題、間違いプレイチェック機能を改善しました。\n\nアウトカウント順により自然に問題が出るようになり、外野の捕球・返球・カバー判断の問題も追加・調整しました。",
-            "admin_note": "v822-production。\nouts\/outs_scope整理、攻撃・守備のアウト順出題調整、外野問題追加、外野返球選択肢修正、学年制限調整、間違いプレイチェック最新問題追従、PWA管理者モード表示調整、管理画面の守備問題数チェック追加。\n問題数600問。攻撃227、守備325、基本48。",
-            "visible": true,
-            "is_current": true,
-            "created_at": "2026-06-03 14:48:59",
-            "updated_at": "2026-06-03 14:49:17",
-            "updated_by": "最高位管理者"
-        },
-        {
-            "id": "rel_20260602_234327_7bc0",
-            "public_version": "v1.0.1",
-            "internal_version": "v812-production",
-            "cache_version": "yakyu-yarouze-v812-production",
-            "release_type": "patch",
-            "released_at": "2026-06-02",
-            "title": "アップデート",
-            "public_summary": "問題の出題順、外野守備問題、間違いプレイチェック機能を改善しました。\n\n攻撃・守備の問題がアウトカウント順に出題されやすくなり、外野の捕球・返球・カバー判断の問題を追加・調整しました。\n\nまた、過去に間違えた問題が更新された場合でも、間違いプレイチェックでは現在の正しい問題内容・正解に合わせて確認できるようにしました。",
-            "admin_note": "v800以降の主な更新内容。\n\n・攻撃問題にoutsを補完し、ランダム抽出後にアウトカウント順で表示されるように調整。\n・守備問題のoutsを精査し、数値outsとouts_scope: commonを整理。\n・outs未設定問題が無条件に全アウト枠へ入る仕様を廃止し、common指定問題のみ全アウト対応に変更。\n・同一ゲーム内で同じ問題IDが重複しにくいよう、出題ロジックに重複ガードを追加。\n・低学年向け外野問題を追加し、LF\/CF\/RFの捕球、後方移動、カバー、中継返球問題を補強。\n・外野返球問題の選択肢を全面確認し、無理な本塁遠投を正解にしない形へ修正。\n・外野トンネル問題、フライ捕球後の返球準備、左中間・右中間、センター前・ライト前・レフト前返球問題の選択肢を調整。\n・D008、スクイズ関連、クリーンナップ関連問題を5年生以上に限定。\n・「ハーフウェー」を「ハーフウェイ」に統一し、一塁線・三塁線の表記を修正。\n・ネガティブすぎる選択肢表現を、最初から誤答と分かりにくい自然な表現へ調整。\n・管理画面の問題作成・編集・CSVインポートで、outsまたはouts_scope、visual必須項目のチェックを強化。\n・basic問題はouts必須対象から除外。\n・間違いプレイチェック機能を改善し、問題更新後は最新の問題文・正解・解説に追従して表示するよう修正。\n・問題数は600問。攻撃227問、守備325問、基本48問。\n・内部バージョンはv812-production、cache_versionはyakyu-yarouze-v812-production。",
-            "visible": false,
-            "is_current": false,
-            "created_at": "2026-06-02 23:43:27",
-            "updated_at": "2026-06-03 14:50:59",
-            "updated_by": "最高位管理者"
-        },
-        {
-            "id": "rel_20260529_v100",
-            "public_version": "v1.0.0",
-            "internal_version": "v800-production",
-            "cache_version": "yakyu-yarouze-v800-production",
-            "release_type": "major",
-            "released_at": "2026-05-29",
-            "title": "正式公開版",
-            "public_summary": "少年野球シミュレーター「野球やろうぜ！」を正式公開しました。問題数579問、ランキング、マイページ、PWAインストール、お知らせ機能に対応しています。",
-            "admin_note": "v799-productionをリリース後修正基準として反映。ID未登録・未ログイン状態では招待ID\/管理者ID取得ボタンを表示しない。",
-            "visible": false,
-            "is_current": false,
-            "created_at": "2026-05-29 00:00:00",
-            "updated_at": "2026-06-02 23:48:01",
-            "updated_by": "最高位管理者",
-            "admin_memo": "v781-productionへ更新。招待ID\/管理者ID取得後の保管案内文を変更し、メール送信によるID保管に対応。\nv782: 管理者機能解除時に全機能を無効化し、player_features.jsonから対象IDデータを削除する仕様へ変更。\nv783: 招待IDまたは管理者ID由来の機能が既に設定済みの場合、受け取りボタンを非表示化。\nv784: 招待IDまたは管理者IDで間違いプレイチェックが解放された場合、初回からONになるよう修正。\nv785: 招待ID\/管理者ID保管メールの本文なし表示を防ぐため、CORESERVER\/qmail互換の複数行プレーンテキスト送信形式へ修正。\nv799: ログイン済みプレイヤーIDが存在しない限り、招待ID\/管理者ID取得ボタンを表示しない仕様に整理。\nv800-production: 招待ID\/管理者ID 未取得ID一覧の整合性修正。"
-        }
-    ],
-    "internal_version": "v799-production",
-    "cache_version": "yakyu-yarouze-v799-production"
+  "current_public_version": "v1.0.2",
+  "internal": {
+    "app_version": "v829-production",
+    "cache_version": "yakyu-yarouze-v829-production",
+    "updated_at": "2026-06-09T00:00:00+09:00",
+    "start_url": "/baseball/",
+    "scope": "/baseball/",
+    "change_summary": "603問版の完全意味照合済み問題データ、管理画面JSONエクスポート、完全照合用JSONマスターを反映。"
+  },
+  "rules": [
+    {
+      "type": "major",
+      "label": "メジャー",
+      "example": "v2.0.0",
+      "description": "大きな仕様変更・構造変更・互換性に影響する更新。"
+    },
+    {
+      "type": "minor",
+      "label": "マイナー",
+      "example": "v1.1.0",
+      "description": "機能追加・管理機能追加・運用改善などの更新。"
+    },
+    {
+      "type": "patch",
+      "label": "パッチ",
+      "example": "v1.0.1",
+      "description": "問題追加、文言修正、軽微な不具合修正、データ修正。"
+    }
+  ],
+  "versions": [
+    {
+      "id": "v1.0.2-20260609-v829",
+      "public_version": "v1.0.2",
+      "release_type": "patch",
+      "released_at": "2026-06-09",
+      "title": "問題データ完全照合・JSONエクスポート対応",
+      "public_summary": "問題文・選択肢・タグ表記を見直し、問題データを更新しました。ゲーム内容の安定性を高めるため、管理画面の問題データ出力も改善しました。",
+      "admin_note": "603問版を基準に、IDだけでなくsituation/ball_tag/theme/positions/choicesを照合。A530/D972/D973を含む。出題停止はD280/D291/D292/D307/D352/D353。管理画面に完全照合用JSONと出題用questions.jsonのエクスポートUIを追加。admin.htmlはadmin_json_export_ui.js?v=829でキャッシュバスト。",
+      "internal_version": "v829-production",
+      "cache_version": "yakyu-yarouze-v829-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-09T00:00:00+09:00"
+    },
+    {
+      "id": "v1.0.1-20260609-v828",
+      "public_version": "v1.0.1",
+      "release_type": "patch",
+      "released_at": "2026-06-09",
+      "title": "問題データ修正・管理画面JSON出力準備",
+      "public_summary": "問題データの表記と内容を修正しました。",
+      "admin_note": "緊急FTP反映前の603問版修正。管理画面JSONエクスポートUI v828対応。",
+      "internal_version": "v828-production",
+      "cache_version": "yakyu-yarouze-v828-production",
+      "visible": false,
+      "is_current": false,
+      "created_at": "2026-06-09T00:00:00+09:00"
+    },
+    {
+      "id": "v1.0.0-20260603-v822",
+      "public_version": "v1.0.0",
+      "release_type": "major",
+      "released_at": "2026-06-03",
+      "title": "正式公開版",
+      "public_summary": "少年野球シミュレーター「野球やろうぜ！」の正式公開版です。",
+      "admin_note": "v822-production。本番安定版。問題数600問（攻撃227、守備325、基本48）。",
+      "internal_version": "v822-production",
+      "cache_version": "yakyu-yarouze-v822-production",
+      "visible": true,
+      "is_current": false,
+      "created_at": "2026-06-03T00:00:00+09:00"
+    }
+  ]
 }

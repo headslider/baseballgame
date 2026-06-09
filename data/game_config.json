@@ -1,214 +1,221 @@
 {
-    "game": {
-        "title": "少年野球シミュレーター「野球やろうぜ！」",
-        "teams": [
-            "ファイターズ",
-            "パイレーツ"
-        ],
-        "innings": 3,
-        "outsPerHalf": 3,
-        "questionsPerGame": 18,
-        "attackQuestionsPerGame": 9,
-        "defenseQuestionsPerGame": 9,
-        "maxScore": 54,
-        "runnerProgressionPerHalf": [
-            "1B",
-            "2B",
-            "3B_HOME"
-        ],
-        "outCountSource": "question_outs_or_outs_scope_common",
-        "halfInningTypeRule": {
-            "top": "attack",
-            "bottom": "defense",
-            "description": "各表は攻撃問題3問、各裏は守備問題3問"
-        },
-        "questionPoolTotal": 603,
-        "attackQuestionPool": 228,
-        "defenseQuestionPool": 327,
-        "note": "v352: 出題スロットをデータ到達性ベースに動的化。未到達問題を解消。 / v397: 攻撃・守備の内野フライ問題を追加。 / v802: 攻撃・守備のouts/outs_scope整備、外野低学年問題追加、未監査outs空欄を出題候補外にするロジックへ更新。 / v803: D008を5年生以上の出題対象へ変更。",
-        "basicQuestionPool": 48
+  "game": {
+    "title": "少年野球シミュレーター「野球やろうぜ！」",
+    "teams": [
+      "ファイターズ",
+      "パイレーツ"
+    ],
+    "innings": 3,
+    "outsPerHalf": 3,
+    "questionsPerGame": 18,
+    "attackQuestionsPerGame": 9,
+    "defenseQuestionsPerGame": 9,
+    "maxScore": 54,
+    "runnerProgressionPerHalf": [
+      "1B",
+      "2B",
+      "3B_HOME"
+    ],
+    "outCountSource": "question_outs_or_outs_scope_common",
+    "halfInningTypeRule": {
+      "top": "attack",
+      "bottom": "defense",
+      "description": "各表は攻撃問題3問、各裏は守備問題3問"
     },
-    "positions": {
-        "P": "ピッチャー",
-        "C": "キャッチャー",
-        "1B": "ファースト",
-        "2B": "セカンド",
-        "SS": "ショート",
-        "3B": "サード",
-        "LF": "レフト",
-        "CF": "センター",
-        "RF": "ライト"
-    },
-    "rendering": {
-        "method": "fixed-coordinate-svg-canvas",
-        "fielderGloveHand": "left",
-        "fielderHeadgear": "cap",
-        "runnerHeadgear": "helmet",
-        "allFieldersAlwaysVisible": true,
-        "runnerOrientation": {
-            "1B": "faces_batter",
-            "2B": "faces_batter",
-            "3B": "faces_home"
-        },
-        "directAiGeneratedFieldImages": false
-    },
-    "coordinates": {
-        "bases": {
-            "home": [
-                960,
-                880
-            ],
-            "first": [
-                1390,
-                680
-            ],
-            "second": [
-                960,
-                480
-            ],
-            "third": [
-                530,
-                680
-            ]
-        },
-        "fielders": {
-            "P": [
-                960,
-                690
-            ],
-            "C": [
-                960,
-                930
-            ],
-            "1B": [
-                1420,
-                650
-            ],
-            "2B": [
-                1160,
-                525
-            ],
-            "SS": [
-                760,
-                525
-            ],
-            "3B": [
-                500,
-                650
-            ],
-            "LF": [
-                330,
-                310
-            ],
-            "CF": [
-                960,
-                210
-            ],
-            "RF": [
-                1590,
-                310
-            ]
-        },
-        "runners": {
-            "1B": [
-                1300,
-                610
-            ],
-            "2B": [
-                880,
-                520
-            ],
-            "3B": [
-                620,
-                720
-            ],
-            "BR": [
-                1110,
-                800
-            ]
-        }
-    },
-    "attack_running_rules": {
-        "run": [
-            "盗塁サイン → ランナーは次の塁に迷わず走る",
-            "2アウトかつフォースプレイ → 全力で次のベースまで走る",
-            "バッターが打ってゴロ → 走る",
-            "野手やピッチャーが暴投 → 走る"
-        ],
-        "return": [
-            "フライ・ライナー → 基本戻る、落としたら走る",
-            "牽制 → 戻る"
-        ],
-        "high_grade_fly_halfway": "4年生以上は、可能であれば戻れる範囲でハーフウェイを選択肢に入れる"
-    },
-    "ui": {
-        "topBackgroundImage": "assets/top_background.webp",
-        "halfInningTransitionTitle": [
-            "攻撃開始",
-            "守備開始"
-        ]
-    },
-    "visual_ball_path_targets": {
-        "steal_1b": "1B",
-        "steal_2b": "2B",
-        "ground_1b": "SS",
-        "ground_2b": "2B",
-        "ground_3b": "2B",
-        "wild_1b": "C",
-        "wild_2b": "C",
-        "wild_3b": "C",
-        "pickoff_1b": "1B",
-        "fly_1b": "RF",
-        "fly_3b": "LF",
-        "liner_2b": "SS",
-        "twoout_hit_2b": "CF",
-        "twoout_3b": "SS",
-        "squeeze_3b": "P",
-        "br_line": "1B",
-        "short_grounder": "SS",
-        "bunt_first": "1B",
-        "middle_grounder": "SS",
-        "center_single": "CF",
-        "passed_ball": "C",
-        "infield_fly": "SS",
-        "home_throw": "2B",
-        "outfield_fly": "CF",
-        "third_grounder": "3B",
-        "right_line": "RF",
-        "left_single": "LF",
-        "right_center_deep": "RF",
-        "bunt": "P",
-        "passed_ball_back_diagonal": "C",
-        "passed_ball_back_center": "C",
-        "passed_ball_back_3b_side": "C",
-        "wild_pitch_near_catcher": "C",
-        "one_bounce_before_home": "C",
-        "one_bounce_front_catcher": "C",
-        "one_bounce_feet_catcher": "C",
-        "pickoff_1b_overthrow_foul_deep": "1B",
-        "pickoff_2b_overthrow_center_deep": "2B",
-        "pickoff_3b_overthrow_foul_deep": "3B",
-        "throw_1b_over_high": "1B",
-        "home_throw_backstop": "C",
-        "outfield_home_throw_cf": "C"
-    },
-    "defense_choice_rules": {
-        "ball_holder_only": "ボール保持者のみ送球・捕球後のプレイ選択肢を持つ",
-        "off_ball_players": "ボールを持っていない選手はカバー、ベース確認、バックアップ、声かけのみ",
-        "impossible_choices_removed": true
-    },
-    "defense_cover_curriculum": {
-        "grade3": "基本のベースカバー、送球後方バックアップ",
-        "grade4": "悪送球カバー、中継と後方カバー",
-        "grade5": "ダブルプレイ時の連動、三塁・本塁送球カバー",
-        "grade6": "バントローテーション、長打時の中継、スクイズ時の連動"
-    },
-    "defense_safety_scenarios": {
-        "enabled": true,
-        "description": "捕球ミス・握り直し・返球体勢が悪い時は安全策を優先する問題を追加"
-    },
-    "questionPoolTotal": 603,
+    "questionPoolTotal": 597,
     "attackQuestionPool": 228,
-    "defenseQuestionPool": 327,
+    "defenseQuestionPool": 321,
+    "note": "v352: 出題スロットをデータ到達性ベースに動的化。未到達問題を解消。 / v397: 攻撃・守備の内野フライ問題を追加。 / v802: 攻撃・守備のouts/outs_scope整備、外野低学年問題追加、未監査outs空欄を出題候補外にするロジックへ更新。 / v803: D008を5年生以上の出題対象へ変更。 / 20260609: CSV監査で確定した守備問題文・選択肢修正を反映。確認済み重複問題を出題停止。 / 20260609-strict: 全問題に対して確定済み表記ルールを再適用。攻撃問題・タグを含め、走者→ランナー、冒頭ランナー表記、塁組み合わせ表記を厳格化。 / 20260609-603-strict: 603問版ベースで確定済み表記ルールを全問題・タグに再適用。A530/D972/D973を含む。 / 20260609-perfect-semantic-cleanup: IDだけでなく situation/ball_tag/theme/positions を照合し、CSV表示カラム・raw_json・選択肢の意味不一致を再修正。 / v829: 603問版の完全意味照合済み問題データ、管理画面JSONエクスポートUI、完全照合用questions_admin_master.jsonをGit/ローカル同期用に整理。",
     "basicQuestionPool": 48
+  },
+  "positions": {
+    "P": "ピッチャー",
+    "C": "キャッチャー",
+    "1B": "ファースト",
+    "2B": "セカンド",
+    "SS": "ショート",
+    "3B": "サード",
+    "LF": "レフト",
+    "CF": "センター",
+    "RF": "ライト"
+  },
+  "rendering": {
+    "method": "fixed-coordinate-svg-canvas",
+    "fielderGloveHand": "left",
+    "fielderHeadgear": "cap",
+    "runnerHeadgear": "helmet",
+    "allFieldersAlwaysVisible": true,
+    "runnerOrientation": {
+      "1B": "faces_batter",
+      "2B": "faces_batter",
+      "3B": "faces_home"
+    },
+    "directAiGeneratedFieldImages": false
+  },
+  "coordinates": {
+    "bases": {
+      "home": [
+        960,
+        880
+      ],
+      "first": [
+        1390,
+        680
+      ],
+      "second": [
+        960,
+        480
+      ],
+      "third": [
+        530,
+        680
+      ]
+    },
+    "fielders": {
+      "P": [
+        960,
+        690
+      ],
+      "C": [
+        960,
+        930
+      ],
+      "1B": [
+        1420,
+        650
+      ],
+      "2B": [
+        1160,
+        525
+      ],
+      "SS": [
+        760,
+        525
+      ],
+      "3B": [
+        500,
+        650
+      ],
+      "LF": [
+        330,
+        310
+      ],
+      "CF": [
+        960,
+        210
+      ],
+      "RF": [
+        1590,
+        310
+      ]
+    },
+    "runners": {
+      "1B": [
+        1300,
+        610
+      ],
+      "2B": [
+        880,
+        520
+      ],
+      "3B": [
+        620,
+        720
+      ],
+      "BR": [
+        1110,
+        800
+      ]
+    }
+  },
+  "attack_running_rules": {
+    "run": [
+      "盗塁サイン → ランナーは次の塁に迷わず走る",
+      "2アウトかつフォースプレイ → 全力で次のベースまで走る",
+      "バッターが打ってゴロ → 走る",
+      "野手やピッチャーが暴投 → 走る"
+    ],
+    "return": [
+      "フライ・ライナー → 基本戻る、落としたら走る",
+      "牽制 → 戻る"
+    ],
+    "high_grade_fly_halfway": "4年生以上は、可能であれば戻れる範囲でハーフウェイを選択肢に入れる"
+  },
+  "ui": {
+    "topBackgroundImage": "assets/top_background.webp",
+    "halfInningTransitionTitle": [
+      "攻撃開始",
+      "守備開始"
+    ]
+  },
+  "visual_ball_path_targets": {
+    "steal_1b": "1B",
+    "steal_2b": "2B",
+    "ground_1b": "SS",
+    "ground_2b": "2B",
+    "ground_3b": "2B",
+    "wild_1b": "C",
+    "wild_2b": "C",
+    "wild_3b": "C",
+    "pickoff_1b": "1B",
+    "fly_1b": "RF",
+    "fly_3b": "LF",
+    "liner_2b": "SS",
+    "twoout_hit_2b": "CF",
+    "twoout_3b": "SS",
+    "squeeze_3b": "P",
+    "br_line": "1B",
+    "short_grounder": "SS",
+    "bunt_first": "1B",
+    "middle_grounder": "SS",
+    "center_single": "CF",
+    "passed_ball": "C",
+    "infield_fly": "SS",
+    "home_throw": "2B",
+    "outfield_fly": "CF",
+    "third_grounder": "3B",
+    "right_line": "RF",
+    "left_single": "LF",
+    "right_center_deep": "RF",
+    "bunt": "P",
+    "passed_ball_back_diagonal": "C",
+    "passed_ball_back_center": "C",
+    "passed_ball_back_3b_side": "C",
+    "wild_pitch_near_catcher": "C",
+    "one_bounce_before_home": "C",
+    "one_bounce_front_catcher": "C",
+    "one_bounce_feet_catcher": "C",
+    "pickoff_1b_overthrow_foul_deep": "1B",
+    "pickoff_2b_overthrow_center_deep": "2B",
+    "pickoff_3b_overthrow_foul_deep": "3B",
+    "throw_1b_over_high": "1B",
+    "home_throw_backstop": "C",
+    "outfield_home_throw_cf": "C"
+  },
+  "defense_choice_rules": {
+    "ball_holder_only": "ボール保持者のみ送球・捕球後のプレイ選択肢を持つ",
+    "off_ball_players": "ボールを持っていない選手はカバー、ベース確認、バックアップ、声かけのみ",
+    "impossible_choices_removed": true
+  },
+  "defense_cover_curriculum": {
+    "grade3": "基本のベースカバー、送球後方バックアップ",
+    "grade4": "悪送球カバー、中継と後方カバー",
+    "grade5": "ダブルプレイ時の連動、三塁・本塁送球カバー",
+    "grade6": "バントローテーション、長打時の中継、スクイズ時の連動"
+  },
+  "defense_safety_scenarios": {
+    "enabled": true,
+    "description": "捕球ミス・握り直し・返球体勢が悪い時は安全策を優先する問題を追加"
+  },
+  "questionPoolTotal": 597,
+  "attackQuestionPool": 228,
+  "defenseQuestionPool": 321,
+  "basicQuestionPool": 48,
+  "question_count": 597,
+  "question_counts": {
+    "attack": 228,
+    "defense": 321,
+    "basic": 48,
+    "total": 597
+  }
 }
