@@ -1,13 +1,13 @@
 {
-  "app_version": "v830-production",
-  "cache_version": "yakyu-yarouze-v830-production",
-  "public_version": "v1.0.3",
+  "app_version": "v834-production",
+  "cache_version": "yakyu-yarouze-v834-production",
+  "public_version": "v1.0.7",
   "updated_at": "2026-06-09T00:00:00+09:00",
   "release_date": "2026-06-09",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "管理画面のバージョン管理で、更新履歴の編集・表示切替・削除が保存されない問題を修正。専用APIと補助UIを追加。",
+  "change_summary": "バックホーム表記を廃止し、本塁返球・本塁送球へ厳格統一。ホーム送球も本塁送球へ統一。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
