@@ -1,13 +1,13 @@
 {
-  "app_version": "v829-production",
-  "cache_version": "yakyu-yarouze-v829-production",
-  "public_version": "v1.0.2",
+  "app_version": "v830-production",
+  "cache_version": "yakyu-yarouze-v830-production",
+  "public_version": "v1.0.3",
   "updated_at": "2026-06-09T00:00:00+09:00",
   "release_date": "2026-06-09",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "603問版の問題データを完全意味照合済みへ更新。管理画面に完全照合用JSONエクスポート機能を追加。Git/ローカル同期用のバージョンデータを生成。",
+  "change_summary": "管理画面のバージョン管理で、更新履歴の編集・表示切替・削除が保存されない問題を修正。専用APIと補助UIを追加。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
