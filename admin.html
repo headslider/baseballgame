@@ -125,6 +125,12 @@
     .csv-admin-section{margin-top:14px;padding-top:14px;border-top:1px solid #dbe3ee}
     .csv-admin-section:first-of-type{border-top:none}
     .csv-import-control-row input[type="file"]{max-width:520px}
+    .admin-question-test-panel{border:1px solid #dbe3ee;background:#f8fafc;border-radius:14px;padding:12px;margin-top:12px}
+    .admin-question-test-panel h3{margin:0 0 4px}
+    .admin-question-test-panel .row{align-items:flex-end}
+    .admin-question-test-panel label{min-width:150px}
+    .admin-question-test-panel input,.admin-question-test-panel select{width:100%;box-sizing:border-box;background:#fff}
+    .admin-question-test-message{margin-top:8px}
     /* バージョン管理：フォーム崩れ防止 */
     #tab-version-management .version-form-card{overflow:hidden}
     #tab-version-management .form-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;align-items:end}
@@ -598,6 +604,29 @@
           </label>
           <button type="button" onclick="loadQuestionList()">検索</button>
           <button class="secondary" type="button" onclick="newQuestionTemplate()">新規問題テンプレイト</button>
+        </div>
+        <div class="admin-question-test-panel">
+          <h3>指定IDテストプレイ</h3>
+          <div class="muted">指定した問題を実ゲーム画面で確認します。スコア・ランキングには反映されません。</div>
+          <div class="row" style="margin-top:8px">
+            <label>問題ID<br><input id="adminTestQuestionIdInput" placeholder="例：D330"></label>
+            <label>守備位置<br>
+              <select id="adminTestPositionSelect">
+                <option value="">指定なし</option>
+                <option value="P">P / ピッチャー</option>
+                <option value="C">C / キャッチャー</option>
+                <option value="1B">1B / ファースト</option>
+                <option value="2B">2B / セカンド</option>
+                <option value="3B">3B / サード</option>
+                <option value="SS">SS / ショート</option>
+                <option value="LF">LF / レフト</option>
+                <option value="CF">CF / センター</option>
+                <option value="RF">RF / ライト</option>
+              </select>
+            </label>
+            <button type="button" onclick="startAdminQuestionTestPlay()">テストプレイ開始</button>
+          </div>
+          <div id="adminQuestionTestMessage" class="muted admin-question-test-message"></div>
         </div>
 
         <div id="questionListInfo" class="muted" style="margin-top:8px"></div>
@@ -1693,6 +1722,107 @@ function questionStatusPill(status){
   const st=["draft","disabled","published"].includes(status)?status:"published";
   return `<span class="pill status-${st}">${esc(questionStatusLabel(st))}</span>`;
 }
+function normalizeAdminTestQuestionId(v){
+  return String(v||"").trim().toUpperCase().replace(/[^A-Z0-9_-]/g,"").slice(0,24);
+}
+function normalizeAdminTestPosition(v){
+  const pos=String(v||"").trim().toUpperCase();
+  return ["P","C","1B","2B","3B","SS","LF","CF","RF"].includes(pos)?pos:"";
+}
+function findLatestQuestionById(id){
+  const key=normalizeAdminTestQuestionId(id);
+  return (latestQuestions||[]).find(q=>normalizeAdminTestQuestionId(q.id)===key) ||
+    (latestDraftQuestionRows||[]).find(q=>normalizeAdminTestQuestionId(q.id)===key) ||
+    (latestAllQuestionsForId||[]).find(q=>normalizeAdminTestQuestionId(q.id)===key) ||
+    null;
+}
+function setAdminQuestionTestMessage(text,isError=false){
+  const msg=$("adminQuestionTestMessage");
+  if(!msg)return;
+  msg.textContent=text||"";
+  msg.className=`${isError?"err":"muted"} admin-question-test-message`;
+}
+function adminQuestionTestPositions(q){
+  if(!q || q.type!=="defense")return [];
+  if(Array.isArray(q.positions)&&q.positions.length)return q.positions.map(normalizeAdminTestPosition).filter(Boolean);
+  if(typeof q.position==="string"&&q.position)return q.position.split("|").map(normalizeAdminTestPosition).filter(Boolean);
+  if(q.choices_by_position&&typeof q.choices_by_position==="object")return Object.keys(q.choices_by_position).map(normalizeAdminTestPosition).filter(Boolean);
+  if(q.raw_json&&q.raw_json.choices_by_position&&typeof q.raw_json.choices_by_position==="object")return Object.keys(q.raw_json.choices_by_position).map(normalizeAdminTestPosition).filter(Boolean);
+  return [];
+}
+function issueAdminQuestionTestPermit(questionId,position){
+  const nonce=`${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  const permit={questionId,position,nonce,issuedAt:Date.now(),tokenHint:String(token||"").slice(0,12)};
+  localStorage.setItem("baseballAdminQuestionTestPermit",JSON.stringify(permit));
+  return nonce;
+}
+function openAdminQuestionTestPlay(questionId,position){
+  const nonce=issueAdminQuestionTestPermit(questionId,position);
+  const params=new URLSearchParams({admin_test:"1",admin_test_question_id:questionId,admin_test_nonce:nonce});
+  if(position)params.set("admin_test_position",position);
+  window.open(`index.html?${params.toString()}`,"_blank","noopener");
+}
+async function startAdminQuestionTestPlay(){
+  const id=normalizeAdminTestQuestionId($("adminTestQuestionIdInput")&&$("adminTestQuestionIdInput").value);
+  const selectedPos=normalizeAdminTestPosition($("adminTestPositionSelect")&&$("adminTestPositionSelect").value);
+  if(!token){
+    setAdminQuestionTestMessage("管理画面へログインしてから起動してください。",true);
+    return;
+  }
+  if(!id){
+    setAdminQuestionTestMessage("問題IDを入力してください。",true);
+    return;
+  }
+  let q=findLatestQuestionById(id);
+  if(!q){
+    await loadAllQuestionsForIdIssue();
+    q=findLatestQuestionById(id);
+  }
+  if(q&&q.type==="defense"){
+    const positions=adminQuestionTestPositions(q);
+    if(positions.length>1&&!selectedPos){
+      setAdminQuestionTestMessage(`${id} は複数ポジション対象です。守備位置を選んでから開始してください。`,true);
+      const sel=$("adminTestPositionSelect");
+      if(sel)sel.focus();
+      return;
+    }
+    const pos=selectedPos || positions[0] || "";
+    if(positions.length&&pos&&!positions.includes(pos)){
+      setAdminQuestionTestMessage(`${id} は ${pos} の対象問題ではありません。対象：${positions.join(" / ")}`,true);
+      return;
+    }
+    openAdminQuestionTestPlay(id,pos);
+    setAdminQuestionTestMessage(`${id}${pos?` / ${pos}`:""} のテストプレイを開きました。`);
+    return;
+  }
+  openAdminQuestionTestPlay(id,selectedPos);
+  setAdminQuestionTestMessage(`${id}${selectedPos?` / ${selectedPos}`:""} のテストプレイを開きました。`);
+}
+async function prepareAdminQuestionTestFromRow(id){
+  let q=findLatestQuestionById(id);
+  if(!q){
+    await loadAllQuestionsForIdIssue();
+    q=findLatestQuestionById(id);
+  }
+  const input=$("adminTestQuestionIdInput");
+  const sel=$("adminTestPositionSelect");
+  const cleanId=normalizeAdminTestQuestionId(id);
+  if(input)input.value=cleanId;
+  if(q&&q.type==="defense"){
+    const positions=adminQuestionTestPositions(q);
+    if(positions.length===1){
+      if(sel)sel.value=positions[0];
+      startAdminQuestionTestPlay();
+      return;
+    }
+    if(sel)sel.value="";
+    setAdminQuestionTestMessage(`${cleanId} は複数ポジション対象です。守備位置を選んで「テストプレイ開始」を押してください。`,true);
+    if(sel)sel.focus();
+    return;
+  }
+  if(sel)sel.value="";
+  startAdminQuestionTestPlay();
+}
 function renderDraftQuestionPanel(rows){
   const panel=$("draftQuestionPanel");
   const box=$("draftQuestionList");
@@ -1903,7 +2033,7 @@ function renderQuestionList(rows){
       <td>${esc(r.stage)}</td>
       <td>${esc(questionOutsDisplay(r))}</td>
       <td><b>${esc(r.ball_tag)}</b><br><span class="muted">${esc(String(r.situation||"").slice(0,90))}</span></td>
-      <td><button class="small" type="button" onclick="loadQuestionEditor('${esc(r.id)}')">編集</button></td>
+      <td class="row"><button class="small" type="button" onclick="loadQuestionEditor('${esc(r.id)}')">編集</button><button class="small secondary" type="button" onclick="prepareAdminQuestionTestFromRow('${esc(r.id)}')">テスト</button></td>
     </tr>`).join("")+`</tbody></table>`;
 }
 

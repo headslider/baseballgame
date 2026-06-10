@@ -7402,3 +7402,7 @@ body.screen-game-active #screen-title .stadium-bg{
   .issue-key-buttons{display:grid;grid-template-columns:1fr}
   .issue-key-button{width:100%}
 }
+/* v838: admin-only single question test play banner */
+.admin-question-test-banner{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#fff8d8;color:#5b4100;border:2px solid #e3bd45;border-radius:12px;padding:10px 14px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.16)}
+.admin-question-test-banner span{font-size:14px;font-weight:800}
+@media(max-width:700px){.admin-question-test-banner{align-items:flex-start;flex-direction:column}.admin-question-test-banner span{font-size:12px}}
