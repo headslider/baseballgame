@@ -1,5 +1,43 @@
 
-const STATE={questions:[],config:null,sequence:[],current:0,score:0,attackScore:0,defenseScore:0,logs:[],playerId:"",grade:3,position:"SS",loggedIn:false,progress:{},timer:null,questionStartedAt:0,questionAnswered:false,adminMode:false,mistakeReviewEnabled:false,featureFlags:{},featureStatus:null};
+const STATE={questions:[],config:null,sequence:[],current:0,score:0,attackScore:0,defenseScore:0,logs:[],playerId:"",grade:3,position:"SS",loggedIn:false,progress:{},timer:null,questionStartedAt:0,questionAnswered:false,adminMode:false,adminQuestionTestMode:false,adminQuestionTestInfo:null,mistakeReviewEnabled:false,featureFlags:{},featureStatus:null};
+const ADMIN_QUESTION_TEST_POSITIONS=["P","C","1B","2B","3B","SS","LF","CF","RF"];
+function normalizeAdminQuestionTestId(v){
+  return String(v||"").trim().toUpperCase().replace(/[^A-Z0-9_-]/g,"").slice(0,24);
+}
+function normalizeAdminQuestionTestPosition(v){
+  const pos=String(v||"").trim().toUpperCase();
+  return ADMIN_QUESTION_TEST_POSITIONS.includes(pos)?pos:"";
+}
+function readAdminQuestionTestRequest(){
+  const params=new URLSearchParams(location.search||"");
+  const questionId=normalizeAdminQuestionTestId(params.get("admin_test_question_id"));
+  if(params.get("admin_test")!=="1"||!questionId)return null;
+  return {
+    questionId,
+    position:normalizeAdminQuestionTestPosition(params.get("admin_test_position")),
+    nonce:String(params.get("admin_test_nonce")||"").trim()
+  };
+}
+function consumeAdminQuestionTestPermit(req){
+  if(!req||!req.questionId||!req.nonce)return false;
+  try{
+    const raw=localStorage.getItem("baseballAdminQuestionTestPermit")||"";
+    const permit=raw?JSON.parse(raw):null;
+    localStorage.removeItem("baseballAdminQuestionTestPermit");
+    if(!permit||typeof permit!=="object")return false;
+    if(Date.now()-Number(permit.issuedAt||0)>5*60*1000)return false;
+    if(String(permit.nonce||"")!==req.nonce)return false;
+    if(normalizeAdminQuestionTestId(permit.questionId)!==req.questionId)return false;
+    const permitPos=normalizeAdminQuestionTestPosition(permit.position);
+    if((permitPos||"")!==(req.position||""))return false;
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+function isAdminQuestionTestMode(){
+  return !!(STATE.adminQuestionTestMode || window.ADMIN_QUESTION_TEST_MODE);
+}
 const GRADE_STEPS=[3,4,5,6];
 const GRADE_CLEAR_SCORE=40;
 const GRADE_TIME_LIMITS={3:30,4:25,5:20,6:15};
@@ -232,13 +270,13 @@ function stageLabel(s){return s==="BASIC"?"基本動作":s==="none"?"走者な�
 function outsLabel(n){return Number(n)===0?"ノーアウト":`${n}アウト`}
 
 function timeLimitForCurrentGrade(){
-  if(STATE.adminMode)return 0;
+  if(STATE.adminMode||isAdminQuestionTestMode())return 0;
   return GRADE_TIME_LIMITS[Number(STATE.grade)]||0;
 }
 function gradeMenuLabel(g, locked=false){
   const n=Number(g);
   const base=n<=2?"3年生以下":`${n}年生`;
-  const time=STATE.adminMode?"制限時間なし":((GRADE_TIME_LIMITS[n]||0)>0?`制限時間${GRADE_TIME_LIMITS[n]}秒`:"制限時間なし");
+  const time=(STATE.adminMode||isAdminQuestionTestMode())?"制限時間なし":((GRADE_TIME_LIMITS[n]||0)>0?`制限時間${GRADE_TIME_LIMITS[n]}秒`:"制限時間なし");
   return `${base}（${time}）${locked?"（ロック中）":""}`;
 }
 function setTimerProgress({active=false,remainingSec=0,totalSec=0,danger=false,labelText=""}={}){
@@ -519,6 +557,13 @@ function syncMistakeReviewToggleUI(){
   if(toggle)toggle.checked=!!(STATE.mistakeReviewEnabled || STATE.adminMode);
 }
 function updateAdminModeUI(){
+  if(isAdminQuestionTestMode()){
+    document.body.classList.add("admin-mode-on","mistake-review-on");
+    updateLoginUI();
+    updateGradeOptions();
+    renderAdminQuestionTestBanner();
+    return;
+  }
   const canAdmin=canUseAdminMode();
   STATE.adminMode=canAdmin;
   localStorage.setItem("adminMode",canAdmin?"1":"0");
@@ -1218,7 +1263,7 @@ async function ensureQuestionsLoaded(forceReload=false){
     // 非公開（下書き）・停止の問題をゲームに出さないため、
     // ゲーム本体では data/questions.json を直接読まず、サーバー側で公開問題だけに絞ったAPIを読む。
     // APIが読めない場合は安全側に倒し、未フィルタのquestions.jsonへフォールバックしない。
-    questionLoadPromise=fetch("api/get_game_questions.php?v=797",{cache:"no-store"})
+    questionLoadPromise=fetch("api/get_game_questions.php?v=838",{cache:"no-store"})
       .then(r=>{if(!r.ok)throw new Error("published questions fetch failed");return r.json();})
       .then(data=>{
         if(!data||data.ok!==true||!Array.isArray(data.questions))throw new Error("published questions payload invalid");
@@ -1228,6 +1273,121 @@ async function ensureQuestionsLoaded(forceReload=false){
       .catch(e=>{questionLoadPromise=null;STATE.questions=[];throw e;});
   }
   return questionLoadPromise;
+}
+async function fetchJsonNoStore(url){
+  const res=await fetch(url,{cache:"no-store"});
+  if(!res.ok)throw new Error(`${url} fetch failed`);
+  return res.json();
+}
+function normalizeAdminMasterQuestionRow(row){
+  if(!row||typeof row!=="object")return row;
+  const raw=row.raw_json&&typeof row.raw_json==="object"?row.raw_json:row;
+  const positions=Array.isArray(raw.positions)?raw.positions:(typeof row.position==="string"?row.position.split("|").map(normalizeAdminQuestionTestPosition).filter(Boolean):raw.positions);
+  return {
+    ...raw,
+    id:raw.id||row.id,
+    status:row.status||raw.status||"published",
+    positions
+  };
+}
+async function loadAdminQuestionTestQuestions(){
+  try{
+    const data=await fetchJsonNoStore("data/questions_admin_master.json?v=838");
+    if(Array.isArray(data))return data.map(normalizeAdminMasterQuestionRow);
+    if(data&&Array.isArray(data.questions))return data.questions.map(normalizeAdminMasterQuestionRow);
+    throw new Error("admin master payload invalid");
+  }catch(e){
+    console.warn("admin master questions fallback",e);
+    const data=await fetchJsonNoStore("data/questions.json?v=838");
+    if(Array.isArray(data))return data;
+    if(data&&Array.isArray(data.questions))return data.questions;
+    throw new Error("questions payload invalid");
+  }
+}
+function adminQuestionTestPositions(q){
+  if(!q||q.type!=="defense")return [];
+  if(Array.isArray(q.positions)&&q.positions.length)return q.positions.map(normalizeAdminQuestionTestPosition).filter(Boolean);
+  if(q.choices_by_position&&typeof q.choices_by_position==="object")return Object.keys(q.choices_by_position).map(normalizeAdminQuestionTestPosition).filter(Boolean);
+  return [];
+}
+function makeAdminQuestionTestSequence(q,position){
+  const testQuestion={...q};
+  testQuestion.inning="管理者テスト";
+  testQuestion.outs=hasNumericOuts(testQuestion)?Number(testQuestion.outs):(hasCommonOutsScope(testQuestion)?0:0);
+  testQuestion.stage=testQuestion.stage || (testQuestion.type==="basic"?"BASIC":"none");
+  testQuestion.requiredType=testQuestion.type||"admin_test";
+  return [testQuestion];
+}
+function renderAdminQuestionTestBanner(){
+  let banner=$("adminQuestionTestBanner");
+  if(!isAdminQuestionTestMode()){
+    if(banner)banner.style.display="none";
+    document.body.classList.remove("admin-question-test-on");
+    return;
+  }
+  if(!banner){
+    banner=document.createElement("div");
+    banner.id="adminQuestionTestBanner";
+    banner.className="admin-question-test-banner";
+    const gameShell=$("gameShell");
+    if(gameShell)gameShell.insertBefore(banner,gameShell.firstChild);
+    else document.body.prepend(banner);
+  }
+  const info=STATE.adminQuestionTestInfo||{};
+  const pos=info.position?` / ${info.position}`:"";
+  banner.innerHTML=`<b>管理者テストプレイ中：${escapeHtml(info.questionId||"")}${escapeHtml(pos)}</b><span>※スコア・ランキング・間違い記録には反映されません</span>`;
+  banner.style.display="flex";
+  document.body.classList.add("admin-question-test-on");
+}
+async function startAdminQuestionTest(req){
+  const ok=consumeAdminQuestionTestPermit(req);
+  if(!ok){
+    alert("管理者テストプレイを開始できません。管理画面から起動してください。");
+    return false;
+  }
+  window.ADMIN_QUESTION_TEST_MODE=true;
+  window.ADMIN_QUESTION_TEST_INFO={questionId:req.questionId,position:req.position||""};
+  STATE.adminQuestionTestMode=true;
+  STATE.adminQuestionTestInfo=window.ADMIN_QUESTION_TEST_INFO;
+  STATE.adminMode=true;
+  localStorage.setItem("adminMode","1");
+  try{
+    showGameDataLoading("管理者テスト用の問題データを読み込んでいます。");
+    const questions=await loadAdminQuestionTestQuestions();
+    const q=questions.find(x=>normalizeAdminQuestionTestId(x&&x.id)===req.questionId);
+    if(!q)throw new Error(`指定IDの問題が見つかりません：${req.questionId}`);
+    if(q.type==="defense"){
+      const positions=adminQuestionTestPositions(q);
+      const pos=req.position || (positions.length===1?positions[0]:"");
+      if(!pos)throw new Error(`${req.questionId} は守備位置を指定してください。対象：${positions.join(" / ")||"未設定"}`);
+      if(positions.length&&!positions.includes(pos))throw new Error(`${req.questionId} は ${pos} の対象問題ではありません。対象：${positions.join(" / ")}`);
+      STATE.position=pos;
+      STATE.adminQuestionTestInfo.position=pos;
+      window.ADMIN_QUESTION_TEST_INFO.position=pos;
+    }else{
+      STATE.position=req.position||"BASIC";
+    }
+    STATE.grade=Number(q.grade||3);
+    STATE.questions=questions;
+    STATE.sequence=makeAdminQuestionTestSequence(q,STATE.position);
+    STATE.current=0;
+    STATE.score=0;
+    STATE.attackScore=0;
+    STATE.defenseScore=0;
+    STATE.logs=[];
+    hideGameDataLoading();
+    show("screen-game");
+    renderAdminQuestionTestBanner();
+    renderQuestion();
+    trackAccessEvent("admin_question_test_start",`id=${req.questionId};position=${STATE.position}`);
+    return true;
+  }catch(e){
+    hideGameDataLoading();
+    console.error(e);
+    alert(e.message||"管理者テストプレイを開始できませんでした。");
+    show("screen-title");
+    return false;
+  }
 }
 
 async function init(){
@@ -1239,7 +1399,7 @@ async function init(){
   // 問題データ questions.json はゲーム開始時に遅延読み込みする。
   let cfg={positions:{}};
   try{
-    cfg=await fetch("data/game_config.json?v=797").then(r=>r.json());
+    cfg=await fetch("data/game_config.json?v=838").then(r=>r.json());
   }catch(e){
     console.warn("game config load failed",e);
   }
@@ -1332,6 +1492,8 @@ async function init(){
   updateRequestMenuVisibility();
   updatePushSectionAvailability();
   document.body.classList.add("screen-title-active");
+  const adminTestReq=readAdminQuestionTestRequest();
+  if(adminTestReq)await startAdminQuestionTest(adminTestReq);
 }
 
 function normalizeSimilarText(v){
@@ -2279,6 +2441,7 @@ function renderMistakeReviewSection(){
   box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4>間違えた問題一覧</h4>${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}${unavailableHtml}</div>`;
 }
 function recordMistakeReview(q,choice,score){
+  if(isAdminQuestionTestMode())return;
   if(!isMistakeReviewEnabled() || !STATE.playerId || !q)return;
   const correct=correctChoiceForQuestion(q);
   const correctText=(correct&&correct.text)||"";
@@ -3888,17 +4051,21 @@ function finishGame(){
   $("rank").textContent=r;
   const didClear=STATE.score>=GRADE_CLEAR_SCORE&&STATE.grade>=3;
   const nextGrade=Math.min(6,STATE.grade+1);
-  const adminMsg=STATE.adminMode?`<p class="unlock-note locked">管理者用モードのため、この結果は保存・ランキング反映・学年解放されません。</p>`:"";
-  const unlockMsg=isBasic
-    ?`<p class="unlock-note">基本動作モード完了！10問の基本問題をくり返し練習しよう。</p>`
-    :(didClear?(STATE.grade<6?`<p class="unlock-note">${GRADE_CLEAR_SCORE}点以上達成！この学年をクリアしました。次回から同じ守備位置で${nextGrade}年生が選べます。</p>`:`<p class="unlock-note">${GRADE_CLEAR_SCORE}点以上達成！この守備位置の6年生をクリアしました。</p>`):`<p class="unlock-note locked">${GRADE_CLEAR_SCORE}点以上で次の学年が開放されます。もう一度チャレンジしよう！</p>`);
+  const adminMsg=isAdminQuestionTestMode()
+    ?`<p class="unlock-note locked">管理者テストプレイのため、この結果はスコア・ランキング・間違い記録・学年解放に反映されません。</p>`
+    :(STATE.adminMode?`<p class="unlock-note locked">管理者用モードのため、この結果は保存・ランキング反映・学年解放されません。</p>`:"");
+  const unlockMsg=isAdminQuestionTestMode()
+    ?`<p class="unlock-note locked">指定IDテストは1問確認用です。回答内容は通常成績に保存されません。</p>`
+    :(isBasic
+      ?`<p class="unlock-note">基本動作モード完了！10問の基本問題をくり返し練習しよう。</p>`
+      :(didClear?(STATE.grade<6?`<p class="unlock-note">${GRADE_CLEAR_SCORE}点以上達成！この学年をクリアしました。次回から同じ守備位置で${nextGrade}年生が選べます。</p>`:`<p class="unlock-note">${GRADE_CLEAR_SCORE}点以上達成！この守備位置の6年生をクリアしました。</p>`):`<p class="unlock-note locked">${GRADE_CLEAR_SCORE}点以上で次の学年が開放されます。もう一度チャレンジしよう！</p>`));
   $("breakdown").innerHTML=isBasic?`<p>基本動作：${STATE.score}/${maxScore}点</p>${adminMsg}${unlockMsg}`:`<p>攻撃：${STATE.attackScore}/27点　守備：${STATE.defenseScore}/27点</p>${adminMsg}${unlockMsg}`;
-  $("answerLog").innerHTML=STATE.logs.map(l=>`<div class="logrow"><b>${escapeHtml(l.inning)}</b><span>${escapeHtml(outsLabel(l.outs))} ${escapeHtml(stageLabel(l.stage))}<br>${STATE.adminMode?`${escapeHtml(l.id)}：`:"選択："}${rubyHtml(l.selected)}<br><small>${rubyHtml(l.explain)}${l.answer_time_ms?`　回答時間：${(Number(l.answer_time_ms)/1000).toFixed(1)}秒`:""}</small></span><b>${escapeHtml(l.score)}点</b></div>`).join("");
+  $("answerLog").innerHTML=STATE.logs.map(l=>`<div class="logrow"><b>${escapeHtml(l.inning)}</b><span>${escapeHtml(outsLabel(l.outs))} ${escapeHtml(stageLabel(l.stage))}<br>${(STATE.adminMode||isAdminQuestionTestMode())?`${escapeHtml(l.id)}：`:"選択："}${rubyHtml(l.selected)}<br><small>${rubyHtml(l.explain)}${l.answer_time_ms?`　回答時間：${(Number(l.answer_time_ms)/1000).toFixed(1)}秒`:""}</small></span><b>${escapeHtml(l.score)}点</b></div>`).join("");
   setScoreSaveNotice("",false);
   saveScore().then(data=>{
     if(data&&data.ok){
       setScoreSaveNotice("",false);
-      if(didClear){
+      if(didClear&&!isAdminQuestionTestMode()){
         const unlock=markGradeCompleted(STATE.position,STATE.grade);
         if(unlock){
           showUnlockAnimation(unlock);
@@ -3922,7 +4089,23 @@ function setScoreSaveNotice(message,isError=false){
   box.style.display=message?"block":"none";
 }
 
-async function saveScore(){if(STATE.adminMode){console.info("admin mode: score save skipped");return {ok:false,adminMode:true}}try{const res=await fetch("api/save_score.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({player_id:STATE.playerId,client_token:getClientToken(),grade:STATE.grade,position:STATE.position,total_score:STATE.score,attack_score:STATE.attackScore,defense_score:STATE.defenseScore,max_score:maxScoreForCurrentGame(),logs:STATE.logs})});return await res.json()}catch(e){console.warn("score save skipped",e);return {ok:false,error:"score_save_failed"}}}
+async function saveScore(){
+  if(isAdminQuestionTestMode()){
+    console.info("[admin-test] score save skipped");
+    return {ok:false,adminMode:true,adminQuestionTest:true};
+  }
+  if(STATE.adminMode){
+    console.info("admin mode: score save skipped");
+    return {ok:false,adminMode:true};
+  }
+  try{
+    const res=await fetch("api/save_score.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({player_id:STATE.playerId,client_token:getClientToken(),grade:STATE.grade,position:STATE.position,total_score:STATE.score,attack_score:STATE.attackScore,defense_score:STATE.defenseScore,max_score:maxScoreForCurrentGame(),logs:STATE.logs})});
+    return await res.json();
+  }catch(e){
+    console.warn("score save skipped",e);
+    return {ok:false,error:"score_save_failed"};
+  }
+}
 const C={bases:{home:[960,858],first:[1360,684],second:[960,496],third:[560,684]},fielders:{P:[960,690],C:[960,930],"1B":[1400,650],"2B":[1160,525],SS:[760,525],"3B":[520,650],LF:[330,310],CF:[960,210],RF:[1590,310]},runners:{"1B":[1300,610],"2B":[880,520],"3B":[620,720],BR:[1110,800]}};
 function labelForPos(p){if(p==="BASIC")return "基本動作";return STATE.config.positions[p]||p}
 
@@ -4320,6 +4503,7 @@ function mergeMistakeReviewData(localData,serverData){
   return merged;
 }
 async function syncMistakesToServer(silent=true){
+  if(isAdminQuestionTestMode())return null;
   if(!isMistakeReviewEnabled() || !STATE.playerId)return null;
   const data=loadMistakeReview(STATE.playerId);
   try{

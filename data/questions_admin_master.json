@@ -38221,8 +38221,8 @@
             },
             {
               "text": "打球判断して一塁へ送球する",
-              "score": 3,
-              "explain": "この場面で一番確実にアウトや次のプレイにつながる判断。"
+              "score": 1,
+              "explain": "一塁送球でもアウトを取れる可能性はあるが、2アウト満塁では近い二塁フォースアウトを選ぶ判断が分かりやすい。"
             },
             {
               "text": "本塁へ送球する",
@@ -38310,7 +38310,7 @@
         "choices_sha256": "e035e290281016c7f5481aa47d09bd82728eb2ccd88b6ee271cfd82e523708e4"
       },
       "semantic_signature_sha256": "85046cf8d996f0d5980a84c0b9e0cfbd14d54e6b3aec7dde7f48c69b9fbcdf07",
-      "raw_json_sha256": "8f71e80ad4cfb21ed2c4dc568c8264577d48d15d4d0c6ae4db1b229f6144fd31"
+      "raw_json_sha256": "9c2e30e7dd84e50e86a01fd86e9548f9804080059876f8e9354120f88e06fcd9"
     },
     {
       "id": "D331",
