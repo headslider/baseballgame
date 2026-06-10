@@ -38198,19 +38198,19 @@
           ],
           "2B": [
             {
-              "text": "二塁ベースに入って送球を待つ",
+              "text": "二塁ベースで送球を待つ",
               "score": 3,
-              "explain": "2アウト満塁でセカンドが二塁に入れば、ショートからの送球で二塁フォースアウトを取れる。"
+              "explain": "セカンドが二塁に入っている場面なので、二塁ベースで送球を受けてフォースアウトを取る。"
             },
             {
               "text": "一塁へ送球するよう声をかける",
               "score": 1,
-              "explain": "一塁でもアウトは取れるが、二塁に入れる場面では二塁フォースアウトが近い。"
+              "explain": "一塁でもアウトは取れるが、二塁に入っている場面では二塁フォースアウトが近い。"
             },
             {
               "text": "打球を追いかける",
               "score": 0,
-              "explain": "ショートゴロでは二塁ベースに入り、フォースアウトの送球を受ける準備をする。"
+              "explain": "ショートゴロでは、セカンドは二塁ベースで送球を待つ場面。打球を追うと二塁フォースアウトが取れない。"
             }
           ],
           "SS": [
@@ -38307,10 +38307,10 @@
         "visual_ball_path": "short_grounder",
         "visual_ball_holder": "SS",
         "visual_target_position": "SS",
-        "choices_sha256": "1987e3111f0b9e8b60922b94657fe4f0054bb19edd695059816032983caa62c1"
+        "choices_sha256": "f7ab52518178050cf225f42d0ac9de09ef594145505f9218b9ec285f757c9a32"
       },
-      "semantic_signature_sha256": "e72a8120a283ed87abd12fb354bfe1cac02cb051d45d1c96370525bf614cf4d9",
-      "raw_json_sha256": "b31c5c9aebdd86d0b2606f9be8a5e8b9e2cfc541aeeaf1d4aad426ab6c8a6afa"
+      "semantic_signature_sha256": "df71d5b57267b158a56c2795aa93aac734a4f70a4b9df1ca9c59792234bf875c",
+      "raw_json_sha256": "52131dce636e5a16bb057f5b95d0e333c50c2e52fd668cd67a0d5e89918a31fa"
     },
     {
       "id": "D331",
@@ -74145,6 +74145,6 @@
   "audit": {
     "alignment_issue_count": 0,
     "alignment_issues": [],
-    "master_sha256": "5bcd10c05f92271ec46dd69578799c3bc85424bd827a2a4b6966a2a4d6eb2535"
+    "master_sha256": "f4a9b33978b9f0566437adb8b7bfb6f4b93000ee985f25ea6aca7de6c4c3cff5"
   }
 }
