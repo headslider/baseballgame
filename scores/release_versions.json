@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.17",
+  "current_public_version": "v1.1.18",
   "internal": {
-    "app_version": "v856-production",
-    "cache_version": "yakyu-yarouze-v856-production",
+    "app_version": "v857-production",
+    "cache_version": "yakyu-yarouze-v857-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの結果画面で点数・解説・ランキング・操作ボタンが画面内に収まるよう調整。"
+    "change_summary": "野球博士チャレンジの問題データを final_candidate_v10 の307問プールへ更新。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.18-20260620-v857",
+      "public_version": "v1.1.18",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジ問題データ更新",
+      "public_summary": "野球博士チャレンジの問題プールを final_candidate_v10 の307問データへ更新しました。",
+      "admin_note": "v857-production更新。data/quiz_master_questions.json と assets/quiz_master_questions.js を quiz_master_questions_final_candidate_v10.json の307問プールへ同期。20問制限はかけず、各レベルの全問題を出題プールとして扱う。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v857-production",
+      "cache_version": "yakyu-yarouze-v857-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.17-20260620-v856",
       "public_version": "v1.1.17",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v856-production",
       "cache_version": "yakyu-yarouze-v856-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },

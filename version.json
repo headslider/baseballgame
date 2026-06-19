@@ -1,13 +1,13 @@
 {
-  "app_version": "v856-production",
-  "cache_version": "yakyu-yarouze-v856-production",
-  "public_version": "v1.1.17",
+  "app_version": "v857-production",
+  "cache_version": "yakyu-yarouze-v857-production",
+  "public_version": "v1.1.18",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの結果画面で点数・解説・ランキング・操作ボタンが画面内に収まるよう調整。",
+  "change_summary": "野球博士チャレンジの問題データを final_candidate_v10 の307問プールへ更新。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

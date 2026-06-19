@@ -1,5 +1,5 @@
 /* PWA Service Worker for 野球やろうぜ！ */
-const CACHE_VERSION = 'yakyu-yarouze-v856-production';
+const CACHE_VERSION = 'yakyu-yarouze-v857-production';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -11,8 +11,8 @@ const STATIC_ASSETS = [
   './manifest.webmanifest',
   './api/issue_manifest.php',
   './version.json',
-  './assets/styles.css?v=856',
-  './assets/app.js?v=856',
+  './assets/styles.css?v=857',
+  './assets/app.js?v=857',
   './assets/top_background.webp',
   './assets/top_title_mobile.webp',
   './assets/top_title_pc.webp',
@@ -20,7 +20,7 @@ const STATIC_ASSETS = [
   './assets/quiz_master_logo.webp',
   './assets/quiz_master_icon.webp',
   './assets/quiz_master_chair.webp',
-  './assets/quiz_master_questions.js?v=856',
+  './assets/quiz_master_questions.js?v=857',
   './data/quiz_master_questions.json',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',
