@@ -52,11 +52,26 @@ jobs:
       - name: Validate operational data is excluded from Git changes
         run: |
           git fetch origin main
-          if git diff --name-only origin/main...HEAD | grep -E '^(scores|requests|vendor)/' ; then
-            echo "::error::scores/, requests/, or vendor/ changed in this PR. Operational data must not be deployed from repository."
+          if git diff --name-only origin/main...HEAD | grep -E '^(scores|requests|vendor)/' | grep -v '^scores/release_versions\.json$' ; then
+            echo "::error::scores/, requests/, or vendor/ changed in this PR. Operational data must not be deployed from repository. Only scores/release_versions.json is allowed for PWA version metadata."
             exit 1
           fi
-          echo "OK: this PR does not change scores/, requests/, or vendor/."
+          echo "OK: this PR does not change operational scores/, requests/, or vendor/ data."
+
+      - name: Prepare deploy package
+        run: |
+          rm -rf deploy-package
+          mkdir -p deploy-package
+          rsync -a ./ deploy-package/ \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude '.codex/' \
+            --exclude 'deploy-package/' \
+            --exclude 'scores/' \
+            --exclude 'requests/' \
+            --exclude 'vendor/'
+          mkdir -p deploy-package/scores
+          cp scores/release_versions.json deploy-package/scores/release_versions.json
 
       - name: Deploy to baseball_test
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
@@ -66,7 +81,7 @@ jobs:
           password: ${{ secrets.CORESERVER_FTP_PASSWORD }}
           protocol: ftp
           port: 21
-          local-dir: ./
+          local-dir: ./deploy-package/
           server-dir: ${{ secrets.CORESERVER_FTP_TEST_DIR }}
           exclude: |
             **/.git*

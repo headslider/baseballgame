@@ -177,6 +177,105 @@ function backup_questions_admin($reason='') {
 function save_questions_admin($questions) {
     return write_json_file_locked(questions_file_path_admin(), $questions);
 }
+function quiz_master_questions_file_admin() {
+    return __DIR__ . '/../data/quiz_master_questions.json';
+}
+function quiz_master_questions_js_file_admin() {
+    return __DIR__ . '/../assets/quiz_master_questions.js';
+}
+function load_quiz_master_payload_admin() {
+    $file = quiz_master_questions_file_admin();
+    $raw = is_file($file) ? file_get_contents($file) : '{}';
+    $json = json_decode($raw ?: '{}', true);
+    if (!is_array($json)) $json = [];
+    if (!isset($json['questions']) || !is_array($json['questions'])) {
+        $json = ['meta'=>['title'=>'野球博士チャレンジ'],'questions'=>[]];
+    }
+    if (!isset($json['meta']) || !is_array($json['meta'])) $json['meta'] = [];
+    return $json;
+}
+function backup_quiz_master_questions_admin($reason='') {
+    $src = quiz_master_questions_file_admin();
+    $dir = feature_scores_dir() . '/question_backups';
+    if (!is_dir($dir)) @mkdir($dir, 0755, true);
+    $id = date('Ymd_His') . '_' . bin2hex(random_bytes(3));
+    $safe_reason = preg_replace('/[^a-zA-Z0-9_\-]/','', (string)$reason);
+    $dst = $dir . '/quiz_master_questions_' . $id . ($safe_reason !== '' ? '_' . $safe_reason : '') . '.json';
+    if (is_file($src)) @copy($src, $dst);
+    return ['id'=>$id,'path'=>$dst,'file'=>basename($dst),'reason'=>$safe_reason];
+}
+function write_text_file_locked_admin($file, $text) {
+    $dir = dirname($file);
+    if (!is_dir($dir)) @mkdir($dir, 0755, true);
+    $fp = fopen($file, 'c+');
+    if (!$fp) return false;
+    if (!flock($fp, LOCK_EX)) { fclose($fp); return false; }
+    ftruncate($fp, 0);
+    rewind($fp);
+    $ok = fwrite($fp, $text) !== false;
+    fflush($fp);
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    return $ok;
+}
+function save_quiz_master_payload_admin($payload) {
+    if (!isset($payload['meta']) || !is_array($payload['meta'])) $payload['meta'] = [];
+    if (!isset($payload['questions']) || !is_array($payload['questions'])) $payload['questions'] = [];
+    $payload['meta']['question_count'] = count($payload['questions']);
+    $payload['meta']['updated_at'] = date('Y-m-d H:i:s');
+    $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | (defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0));
+    if ($json === false) return false;
+    $js = 'window.QUIZ_MASTER_QUESTIONS = ' . json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | (defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0)) . ";\n";
+    if (!write_text_file_locked_admin(quiz_master_questions_file_admin(), $json . "\n")) return false;
+    return write_text_file_locked_admin(quiz_master_questions_js_file_admin(), $js);
+}
+function normalize_quiz_master_question_id_admin($id) {
+    return strtoupper(preg_replace('/[^A-Z0-9_-]/', '', (string)$id));
+}
+function normalize_quiz_master_question_admin($q) {
+    $choices = [];
+    if (isset($q['choices']) && is_array($q['choices'])) {
+        foreach ($q['choices'] as $choice) $choices[] = trim((string)$choice);
+    }
+    return [
+        'id'=>normalize_quiz_master_question_id_admin($q['id'] ?? ''),
+        'level'=>intval($q['level'] ?? 0),
+        'level_name'=>trim((string)($q['level_name'] ?? '')),
+        'category'=>trim((string)($q['category'] ?? '')),
+        'question'=>trim((string)($q['question'] ?? '')),
+        'choices'=>$choices,
+        'answer'=>intval($q['answer'] ?? -1),
+        'explanation'=>trim((string)($q['explanation'] ?? '')),
+        'source_note'=>trim((string)($q['source_note'] ?? '')),
+        'overlap_check'=>trim((string)($q['overlap_check'] ?? '')),
+        'quality_note'=>trim((string)($q['quality_note'] ?? ''))
+    ];
+}
+function validate_quiz_master_question_admin($q, $existing_ids, $original_id='') {
+    if (!preg_match('/^BQ\d+$/', $q['id'] ?? '')) return 'IDは BQ + 数字で入力してください。例：BQ601';
+    if (($original_id === '' || $original_id !== ($q['id'] ?? '')) && !empty($existing_ids[$q['id'] ?? ''])) return '同じIDの問題がすでにあります。';
+    if (intval($q['level'] ?? 0) < 1 || intval($q['level'] ?? 0) > 10) return 'level は 1〜10 で入力してください。';
+    if (($q['category'] ?? '') === '') return 'category を入力してください。';
+    if (($q['question'] ?? '') === '') return 'question を入力してください。';
+    if (!isset($q['choices']) || !is_array($q['choices']) || count($q['choices']) !== 3) return 'choices は3個必要です。';
+    foreach ($q['choices'] as $choice) {
+        if (trim((string)$choice) === '') return '選択肢に空欄があります。';
+    }
+    if (intval($q['answer'] ?? -1) < 0 || intval($q['answer'] ?? -1) > 2) return 'answer は 0=A、1=B、2=C のいずれかです。';
+    if (($q['explanation'] ?? '') === '') return 'explanation は必須です。';
+    return '';
+}
+function quiz_master_question_public_row_admin($q) {
+    return [
+        'id'=>$q['id'] ?? '',
+        'level'=>intval($q['level'] ?? 0),
+        'level_name'=>$q['level_name'] ?? '',
+        'category'=>$q['category'] ?? '',
+        'question'=>$q['question'] ?? '',
+        'answer'=>intval($q['answer'] ?? -1),
+        'explanation'=>$q['explanation'] ?? ''
+    ];
+}
 function question_versions_file_admin() {
     return feature_scores_dir() . '/question_versions.json';
 }
@@ -2191,6 +2290,118 @@ if ($action === 'player_set_status') {
         'message'=>$msg . ' player=' . $player_id . ($reason !== '' ? ' reason=' . $reason : '')
     ]);
     admin_json(200, ['ok'=>true,'message'=>$msg,'player_id'=>$player_id,'status'=>$status]);
+}
+
+if ($action === 'quiz_master_question_list') {
+    $payload = load_quiz_master_payload_admin();
+    $questions = array_map('normalize_quiz_master_question_admin', $payload['questions'] ?? []);
+    $query = mb_strtolower(trim((string)($data['query'] ?? '')));
+    $level = intval($data['level'] ?? 0);
+    $category = trim((string)($data['category'] ?? ''));
+    $rows = [];
+    $categories = [];
+    $level_counts = [];
+    foreach ($questions as $q) {
+        if (($q['category'] ?? '') !== '') $categories[$q['category']] = true;
+        $lv = intval($q['level'] ?? 0);
+        if ($lv >= 1 && $lv <= 10) $level_counts[$lv] = ($level_counts[$lv] ?? 0) + 1;
+        if ($level && $lv !== $level) continue;
+        if ($category !== '' && ($q['category'] ?? '') !== $category) continue;
+        if ($query !== '') {
+            $hay = mb_strtolower(($q['id'] ?? '') . ' ' . ($q['category'] ?? '') . ' ' . ($q['question'] ?? '') . ' ' . implode(' ', $q['choices'] ?? []) . ' ' . ($q['explanation'] ?? ''));
+            if (mb_strpos($hay, $query) === false) continue;
+        }
+        $rows[] = quiz_master_question_public_row_admin($q);
+    }
+    usort($rows, function($a,$b){
+        if (($a['level'] ?? 0) !== ($b['level'] ?? 0)) return ($a['level'] ?? 0) <=> ($b['level'] ?? 0);
+        return strcmp((string)($a['id'] ?? ''), (string)($b['id'] ?? ''));
+    });
+    ksort($categories);
+    ksort($level_counts);
+    admin_json(200, [
+        'ok'=>true,
+        'questions'=>$rows,
+        'total'=>count($questions),
+        'filtered'=>count($rows),
+        'categories'=>array_keys($categories),
+        'level_counts'=>$level_counts,
+        'meta'=>$payload['meta'] ?? []
+    ]);
+}
+
+if ($action === 'quiz_master_question_get') {
+    $id = normalize_quiz_master_question_id_admin($data['id'] ?? '');
+    if ($id === '') admin_json(400, ['ok'=>false,'message'=>'問題IDが必要です。']);
+    $payload = load_quiz_master_payload_admin();
+    foreach (($payload['questions'] ?? []) as $q) {
+        if (normalize_quiz_master_question_id_admin($q['id'] ?? '') === $id) {
+            admin_json(200, ['ok'=>true,'question'=>normalize_quiz_master_question_admin($q)]);
+        }
+    }
+    admin_json(404, ['ok'=>false,'message'=>'問題が見つかりません。']);
+}
+
+if ($action === 'quiz_master_question_save') {
+    $question = normalize_quiz_master_question_admin($data['question'] ?? []);
+    $original_id = normalize_quiz_master_question_id_admin($data['original_id'] ?? '');
+    if ($original_id !== '' && $question['id'] !== $original_id) {
+        admin_json(400, ['ok'=>false,'message'=>'既存問題のIDは変更できません。']);
+    }
+    $payload = load_quiz_master_payload_admin();
+    $questions = array_map('normalize_quiz_master_question_admin', $payload['questions'] ?? []);
+    $ids = [];
+    foreach ($questions as $q) $ids[$q['id'] ?? ''] = true;
+    $error = validate_quiz_master_question_admin($question, $ids, $original_id);
+    if ($error !== '') admin_json(400, ['ok'=>false,'message'=>$error]);
+    if ($question['level_name'] === '') $question['level_name'] = '第' . $question['level'] . '問';
+    $backup = backup_quiz_master_questions_admin('save_' . ($original_id ?: $question['id']));
+    $found = false;
+    foreach ($questions as $i=>$q) {
+        if (($q['id'] ?? '') === $original_id) {
+            $questions[$i] = $question;
+            $found = true;
+            break;
+        }
+    }
+    if (!$found) $questions[] = $question;
+    usort($questions, function($a,$b){
+        if (($a['level'] ?? 0) !== ($b['level'] ?? 0)) return ($a['level'] ?? 0) <=> ($b['level'] ?? 0);
+        return strcmp((string)($a['id'] ?? ''), (string)($b['id'] ?? ''));
+    });
+    $payload['questions'] = $questions;
+    if (!save_quiz_master_payload_admin($payload)) admin_json(500, ['ok'=>false,'message'=>'野球博士チャレンジ問題データを保存できませんでした。']);
+    audit_log_admin_event([
+        'admin_label'=>$admin_label,
+        'action'=>'quiz_master_question_save',
+        'result'=>'success',
+        'target_type'=>'quiz_master_question',
+        'target_hash_prefix'=>$question['id'],
+        'message'=>($found?'updated ':'added ') . $question['id'] . ' backup=' . ($backup['file'] ?? '')
+    ]);
+    admin_json(200, ['ok'=>true,'message'=>($found?'野球博士問題を更新しました。':'野球博士問題を追加しました。'),'id'=>$question['id'],'backup_file'=>$backup['file'] ?? '']);
+}
+
+if ($action === 'quiz_master_question_delete') {
+    $id = normalize_quiz_master_question_id_admin($data['id'] ?? '');
+    if ($id === '') admin_json(400, ['ok'=>false,'message'=>'問題IDが必要です。']);
+    $payload = load_quiz_master_payload_admin();
+    $questions = array_map('normalize_quiz_master_question_admin', $payload['questions'] ?? []);
+    $before = count($questions);
+    $questions = array_values(array_filter($questions, function($q) use ($id) { return ($q['id'] ?? '') !== $id; }));
+    if (count($questions) === $before) admin_json(404, ['ok'=>false,'message'=>'問題が見つかりません。']);
+    $backup = backup_quiz_master_questions_admin('delete_' . $id);
+    $payload['questions'] = $questions;
+    if (!save_quiz_master_payload_admin($payload)) admin_json(500, ['ok'=>false,'message'=>'野球博士チャレンジ問題データを保存できませんでした。']);
+    audit_log_admin_event([
+        'admin_label'=>$admin_label,
+        'action'=>'quiz_master_question_delete',
+        'result'=>'success',
+        'target_type'=>'quiz_master_question',
+        'target_hash_prefix'=>$id,
+        'message'=>'deleted ' . $id . ' backup=' . ($backup['file'] ?? '')
+    ]);
+    admin_json(200, ['ok'=>true,'message'=>'野球博士問題を削除しました。','id'=>$id,'backup_file'=>$backup['file'] ?? '']);
 }
 
 if ($action === 'question_options') {

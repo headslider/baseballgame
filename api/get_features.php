@@ -21,10 +21,12 @@ if (!verify_player_client($player_id, $client_token)) {
 }
 
 $flags = feature_flags_for_player($player_id);
+$sources = function_exists('feature_sources_for_player') ? feature_sources_for_player($player_id) : [];
 echo json_encode([
     'ok'=>true,
     'player_id'=>$player_id,
     'flags'=>$flags,
+    'sources'=>$sources,
     'restricted_features'=>all_restricted_features(),
 ], JSON_UNESCAPED_UNICODE | $JSON_INVALID_UTF8_SUBSTITUTE_FLAG);
 ?>

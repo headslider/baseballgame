@@ -629,6 +629,59 @@
           <div id="adminQuestionTestMessage" class="muted admin-question-test-message"></div>
         </div>
 
+        <div id="quizMasterQuestionManageCard" class="card" style="margin-top:12px">
+          <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+            <div>
+              <h3 style="margin:0 0 4px">野球博士チャレンジ問題管理</h3>
+              <div class="muted">知識クイズ専用の問題を追加・修正・削除します。保存時に <code>data/quiz_master_questions.json</code> と <code>assets/quiz_master_questions.js</code> を同期し、変更前バックアップを作成します。</div>
+            </div>
+            <button class="secondary small" type="button" onclick="loadQuizMasterQuestionList()">野球博士問題を再読み込み</button>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <label>検索<br><input id="quizMasterQuestionSearch" placeholder="ID・カテゴリ・問題文・解説"></label>
+            <label>レベル<br><select id="quizMasterLevelFilter"><option value="">すべて</option><option value="1">第1問</option><option value="2">第2問</option><option value="3">第3問</option><option value="4">第4問</option><option value="5">第5問</option><option value="6">第6問</option><option value="7">第7問</option><option value="8">第8問</option><option value="9">第9問</option><option value="10">第10問</option></select></label>
+            <label>カテゴリ<br><select id="quizMasterCategoryFilter"><option value="">すべて</option></select></label>
+            <button type="button" onclick="loadQuizMasterQuestionList()">検索</button>
+            <button class="secondary" type="button" onclick="newQuizMasterQuestionTemplate()">新規野球博士問題</button>
+          </div>
+          <div id="quizMasterQuestionInfo" class="muted" style="margin-top:8px">野球博士問題を読み込み中です。</div>
+          <div class="split-grid list-full" style="margin-top:12px">
+            <div>
+              <h4 style="margin:0 0 8px">問題一覧</h4>
+              <div id="quizMasterQuestionTable" class="table-wrap"></div>
+            </div>
+            <div id="quizMasterQuestionEditor" style="display:none">
+              <h4 style="margin:0 0 8px">野球博士問題フォーム</h4>
+              <div class="question-form">
+                <div class="form-grid">
+                  <label>ID*<input id="qmq_id" placeholder="例：BQ601"></label>
+                  <label>レベル*<select id="qmq_level"><option value="">選択してください</option><option value="1">第1問</option><option value="2">第2問</option><option value="3">第3問</option><option value="4">第4問</option><option value="5">第5問</option><option value="6">第6問</option><option value="7">第7問</option><option value="8">第8問</option><option value="9">第9問</option><option value="10">第10問</option></select></label>
+                  <label>カテゴリ*<input id="qmq_category" placeholder="例：安全"></label>
+                  <label>正解*<select id="qmq_answer"><option value="0">A</option><option value="1">B</option><option value="2">C</option></select></label>
+                </div>
+                <label>問題文*<textarea id="qmq_question" rows="3"></textarea></label>
+                <div class="form-grid">
+                  <label>選択肢A*<textarea id="qmq_choice_0" rows="2"></textarea></label>
+                  <label>選択肢B*<textarea id="qmq_choice_1" rows="2"></textarea></label>
+                  <label>選択肢C*<textarea id="qmq_choice_2" rows="2"></textarea></label>
+                </div>
+                <label>解説*<textarea id="qmq_explanation" rows="3"></textarea></label>
+                <div class="form-grid">
+                  <label>source_note<input id="qmq_source_note"></label>
+                  <label>overlap_check<input id="qmq_overlap_check" placeholder="本編と重複しない知識問題"></label>
+                  <label>quality_note<input id="qmq_quality_note"></label>
+                </div>
+                <div class="notice-actions">
+                  <button id="quizMasterQuestionSaveBtn" type="button" onclick="saveQuizMasterQuestionFromEditor()">保存 / 追加</button>
+                  <button class="secondary" type="button" onclick="copyQuizMasterEditingQuestion()">コピー</button>
+                  <button class="danger" type="button" onclick="deleteQuizMasterEditingQuestion()">削除</button>
+                </div>
+                <div id="quizMasterQuestionMessage" class="msg"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="questionListInfo" class="muted" style="margin-top:8px"></div>
         <div id="draftQuestionPanel" class="card" style="display:none;margin-top:12px">
           <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
@@ -963,6 +1016,10 @@ let latestPlayers=[];
 let playerAdminSortState={key:"last_played_at",dir:"desc"};
 let userAnalyticsSortState={key:"last_played_at",dir:"desc"};
 let latestQuestions=[];
+let latestQuizMasterQuestions=[];
+let latestQuizMasterCategories=[];
+let currentQuizMasterQuestion=null;
+let quizMasterQuestionEditorMode="none";
 let latestDraftQuestionRows=[];
 let questionSortKey="id";
 let questionSortAsc=true;
@@ -1025,6 +1082,7 @@ async function dashboard(){
     renderLog("idAuditLog",data.id_audit_log||[]);
     renderLog("adminAuditLog",data.admin_audit_log||[]);
     if($("questionListTable")) loadQuestionList().catch(e=>{setHtml("questionListTable",`<p class="err">${esc(e.message)}</p>`);});
+    if($("quizMasterQuestionTable")) loadQuizMasterQuestionList().catch(e=>{setHtml("quizMasterQuestionTable",`<p class="err">${esc(e.message)}</p>`);});
     if($("questionVersionTable")) loadQuestionVersions().catch(()=>{});
     if($("releaseVersionCurrent")) loadReleaseVersions().catch(()=>{});
   }catch(e){
@@ -1624,6 +1682,187 @@ function updateQuestionPositionFilterVisibility(){
   if(!wrap)return;
   wrap.style.display=(type===""||type==="defense")?"block":"none";
   if(type!==""&&type!=="defense"&&$("questionPositionFilter"))$("questionPositionFilter").value="";
+}
+
+function normalizeQuizMasterAdminId(v){
+  return String(v||"").trim().toUpperCase().replace(/[^A-Z0-9_-]/g,"").slice(0,24);
+}
+function quizMasterLevelName(level){
+  const n=Number(level||0);
+  return n>=1&&n<=10?`第${n}問`:"";
+}
+function updateQuizMasterCategoryFilter(categories){
+  const sel=$("quizMasterCategoryFilter");
+  if(!sel)return;
+  const current=sel.value||"";
+  const rows=Array.isArray(categories)?categories:[];
+  sel.innerHTML='<option value="">すべて</option>'+rows.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  if(rows.includes(current))sel.value=current;
+}
+async function loadQuizMasterQuestionList(){
+  const box=$("quizMasterQuestionTable");
+  if(!box)return;
+  box.innerHTML='<p class="muted">読み込み中...</p>';
+  try{
+    const data=await call("quiz_master_question_list",{
+      query:($("quizMasterQuestionSearch")&&$("quizMasterQuestionSearch").value)||"",
+      level:($("quizMasterLevelFilter")&&$("quizMasterLevelFilter").value)||"",
+      category:($("quizMasterCategoryFilter")&&$("quizMasterCategoryFilter").value)||""
+    });
+    latestQuizMasterQuestions=data.questions||[];
+    latestQuizMasterCategories=data.categories||[];
+    updateQuizMasterCategoryFilter(latestQuizMasterCategories);
+    const counts=data.level_counts||{};
+    const countText=Array.from({length:10},(_,i)=>`${i+1}:${counts[String(i+1)]||counts[i+1]||0}`).join(" / ");
+    setText("quizMasterQuestionInfo",`全${data.total||0}問 / 表示${data.filtered||0}問 / レベル別 ${countText}`);
+    renderQuizMasterQuestionList(latestQuizMasterQuestions);
+  }catch(e){
+    box.innerHTML=`<p class="err">${esc(e.message)}</p>`;
+  }
+}
+function renderQuizMasterQuestionList(rows){
+  const box=$("quizMasterQuestionTable");
+  if(!box)return;
+  if(!rows||!rows.length){
+    box.innerHTML='<p class="muted">該当する野球博士問題はありません。</p>';
+    return;
+  }
+  box.innerHTML=`<table><thead><tr><th>ID</th><th>レベル</th><th>カテゴリ</th><th>問題文</th><th>正解</th><th>操作</th></tr></thead><tbody>`+
+    rows.map(q=>`<tr>
+      <td><code>${esc(q.id)}</code></td>
+      <td>${esc(q.level_name||quizMasterLevelName(q.level))}</td>
+      <td>${esc(q.category||"")}</td>
+      <td><b>${esc(String(q.question||"").slice(0,80))}</b><br><span class="muted">${esc(String(q.explanation||"").slice(0,80))}</span></td>
+      <td>${["A","B","C"][Number(q.answer)]||"-"}</td>
+      <td class="row"><button class="small" type="button" onclick="loadQuizMasterQuestionEditor('${esc(q.id)}')">編集</button><button class="small danger" type="button" onclick="deleteQuizMasterQuestionById('${esc(q.id)}')">削除</button></td>
+    </tr>`).join("")+`</tbody></table>`;
+}
+function nextQuizMasterQuestionId(){
+  let max=0;
+  (latestQuizMasterQuestions||[]).forEach(q=>{
+    const m=String(q.id||"").match(/^BQ(\d+)$/);
+    if(m)max=Math.max(max,Number(m[1]));
+  });
+  return `BQ${max+1}`;
+}
+function showQuizMasterQuestionEditor(show=true){
+  const panel=$("quizMasterQuestionEditor");
+  if(panel)panel.style.display=show?"block":"none";
+}
+function setQuizMasterQuestionMessage(text,ok=false){
+  const msg=$("quizMasterQuestionMessage");
+  if(!msg)return;
+  msg.textContent=text||"";
+  msg.className=`msg ${ok?"ok":(text?"err":"")}`;
+}
+function fillQuizMasterQuestionForm(q,mode){
+  currentQuizMasterQuestion=q||null;
+  quizMasterQuestionEditorMode=mode||"edit";
+  showQuizMasterQuestionEditor(true);
+  $("qmq_id").value=q&&q.id?q.id:"";
+  $("qmq_id").readOnly=mode==="edit";
+  $("qmq_level").value=q&&q.level?String(q.level):"";
+  $("qmq_category").value=q&&q.category?q.category:"";
+  $("qmq_answer").value=String(q&&Number.isFinite(Number(q.answer))?Number(q.answer):0);
+  $("qmq_question").value=q&&q.question?q.question:"";
+  const choices=Array.isArray(q&&q.choices)?q.choices:[];
+  for(let i=0;i<3;i++)$("qmq_choice_"+i).value=choices[i]||"";
+  $("qmq_explanation").value=q&&q.explanation?q.explanation:"";
+  $("qmq_source_note").value=q&&q.source_note?q.source_note:"";
+  $("qmq_overlap_check").value=q&&q.overlap_check?q.overlap_check:"本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題";
+  $("qmq_quality_note").value=q&&q.quality_note?q.quality_note:"";
+  setQuizMasterQuestionMessage("");
+}
+function newQuizMasterQuestionTemplate(){
+  const id=nextQuizMasterQuestionId();
+  fillQuizMasterQuestionForm({
+    id,
+    level:1,
+    level_name:"第1問",
+    category:"少年野球基礎",
+    question:"",
+    choices:["","",""],
+    answer:0,
+    explanation:"",
+    source_note:"",
+    overlap_check:"本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+    quality_note:""
+  },"new");
+}
+async function loadQuizMasterQuestionEditor(id){
+  try{
+    const data=await call("quiz_master_question_get",{id:normalizeQuizMasterAdminId(id)});
+    fillQuizMasterQuestionForm(data.question||{},"edit");
+  }catch(e){
+    alert(e.message||"野球博士問題を読み込めませんでした。");
+  }
+}
+function collectQuizMasterQuestionForm(){
+  const level=Number($("qmq_level").value||0);
+  return {
+    id:normalizeQuizMasterAdminId($("qmq_id").value),
+    level,
+    level_name:quizMasterLevelName(level),
+    category:($("qmq_category").value||"").trim(),
+    question:($("qmq_question").value||"").trim(),
+    choices:[0,1,2].map(i=>($("qmq_choice_"+i).value||"").trim()),
+    answer:Number($("qmq_answer").value||0),
+    explanation:($("qmq_explanation").value||"").trim(),
+    source_note:($("qmq_source_note").value||"").trim(),
+    overlap_check:($("qmq_overlap_check").value||"").trim(),
+    quality_note:($("qmq_quality_note").value||"").trim()
+  };
+}
+function validateQuizMasterQuestionClient(q){
+  if(!/^BQ\d+$/.test(q.id))return "IDは BQ + 数字で入力してください。";
+  if(q.level<1||q.level>10)return "レベルを選択してください。";
+  if(!q.category)return "カテゴリを入力してください。";
+  if(!q.question)return "問題文を入力してください。";
+  if(q.choices.length!==3||q.choices.some(c=>!c))return "選択肢A/B/Cをすべて入力してください。";
+  if(![0,1,2].includes(Number(q.answer)))return "正解を選択してください。";
+  if(!q.explanation)return "解説を入力してください。";
+  return "";
+}
+async function saveQuizMasterQuestionFromEditor(){
+  const q=collectQuizMasterQuestionForm();
+  const err=validateQuizMasterQuestionClient(q);
+  if(err){setQuizMasterQuestionMessage(err);return;}
+  const original=quizMasterQuestionEditorMode==="edit"&&currentQuizMasterQuestion?currentQuizMasterQuestion.id:"";
+  try{
+    setQuizMasterQuestionMessage("保存中...");
+    const data=await call("quiz_master_question_save",{question:q,original_id:original});
+    setQuizMasterQuestionMessage(`${data.message||"保存しました。"} バックアップ：${data.backup_file||""}`,true);
+    await loadQuizMasterQuestionList();
+    await loadQuizMasterQuestionEditor(data.id||q.id);
+  }catch(e){
+    setQuizMasterQuestionMessage(e.message||"保存できませんでした。");
+  }
+}
+function copyQuizMasterEditingQuestion(){
+  const q=collectQuizMasterQuestionForm();
+  q.id=nextQuizMasterQuestionId();
+  fillQuizMasterQuestionForm(q,"new");
+  setQuizMasterQuestionMessage("コピーしました。IDを確認して保存してください。",true);
+}
+async function deleteQuizMasterQuestionById(id){
+  const clean=normalizeQuizMasterAdminId(id);
+  if(!clean)return;
+  if(!confirm(`${clean} を削除します。\n保存前にバックアップを作成します。本当に削除しますか？`))return;
+  try{
+    const data=await call("quiz_master_question_delete",{id:clean});
+    alert(`${data.message||"削除しました。"}\nバックアップ：${data.backup_file||""}`);
+    if(currentQuizMasterQuestion&&currentQuizMasterQuestion.id===clean){
+      currentQuizMasterQuestion=null;
+      showQuizMasterQuestionEditor(false);
+    }
+    await loadQuizMasterQuestionList();
+  }catch(e){
+    alert(e.message||"削除できませんでした。");
+  }
+}
+function deleteQuizMasterEditingQuestion(){
+  const id=currentQuizMasterQuestion&&currentQuizMasterQuestion.id?currentQuizMasterQuestion.id:normalizeQuizMasterAdminId($("qmq_id").value);
+  deleteQuizMasterQuestionById(id);
 }
 
 async function loadQuestionList(){

@@ -243,6 +243,12 @@ function feature_flags_for_player($player_id) {
     $flags = $row['flags'] ?? [];
     return is_array($flags) ? $flags : [];
 }
+function feature_sources_for_player($player_id) {
+    $db = load_player_feature_db();
+    $row = $db['players'][$player_id] ?? [];
+    $sources = $row['sources'] ?? [];
+    return is_array($sources) ? $sources : [];
+}
 function player_has_feature($player_id, $feature) {
     $flags = feature_flags_for_player($player_id);
     return !empty($flags[$feature]);

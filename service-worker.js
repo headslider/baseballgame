@@ -1,5 +1,5 @@
 /* PWA Service Worker for 野球やろうぜ！ */
-const CACHE_VERSION = 'yakyu-yarouze-v838-production';
+const CACHE_VERSION = 'yakyu-yarouze-v855-production';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -11,11 +11,17 @@ const STATIC_ASSETS = [
   './manifest.webmanifest',
   './api/issue_manifest.php',
   './version.json',
-  './assets/styles.css?v=838',
-  './assets/app.js?v=838',
+  './assets/styles.css?v=855',
+  './assets/app.js?v=855',
   './assets/top_background.webp',
   './assets/top_title_mobile.webp',
   './assets/top_title_pc.webp',
+  './assets/quiz_master_bg.webp',
+  './assets/quiz_master_logo.webp',
+  './assets/quiz_master_icon.webp',
+  './assets/quiz_master_chair.webp',
+  './assets/quiz_master_questions.js?v=855',
+  './data/quiz_master_questions.json',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',
   './assets/icons/apple-touch-icon.png',
@@ -29,6 +35,7 @@ const STATIC_ASSETS = [
 
 const NETWORK_FIRST_PATTERNS = [
   /\/data\/game_config\.json(\?.*)?$/,
+  /\/data\/quiz_master_questions\.json(\?.*)?$/,
   /\/api\//,
   /\/admin\.html(\?.*)?$/
 ];
