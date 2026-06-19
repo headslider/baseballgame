@@ -51,8 +51,8 @@ const QUIZ_MASTER_DAILY_LIMIT=3;
 const QUIZ_MASTER_DAILY_LIMIT_ENABLED=false;
 const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=false;
 const QUIZ_MASTER_POINTS={1:10,2:20,3:40,4:80,5:160,6:240,7:360,8:540,9:810,10:1215};
-const QUIZ_MASTER_TIME_LIMITS={1:15,2:15,3:15,4:15,5:15,6:12,7:12,8:10,9:10,10:8};
-const QUIZ_MASTER_STATE={questions:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:15,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null};
+const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13};
+const QUIZ_MASTER_STATE={questions:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null};
 const INNING_SLOTS=[
   ["1回表",0,"1B","attack"],["1回表",1,"2B","attack"],["1回表",2,"3B","attack"],
   ["1回裏",0,"1B","defense"],["1回裏",1,"2B","defense"],["1回裏",2,"3B","defense"],
@@ -1517,9 +1517,30 @@ function clearQuizMasterTimer(){
     clearInterval(QUIZ_MASTER_STATE.timer);
     QUIZ_MASTER_STATE.timer=null;
   }
+  hideQuizMasterCountdown();
 }
 function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
 function quizMasterShell(){return document.querySelector(".quiz-master-shell")}
+function hideQuizMasterCountdown(){
+  const el=$("quizMasterCountdownOverlay");
+  if(!el)return;
+  el.classList.remove("show","danger");
+  el.textContent="";
+}
+function updateQuizMasterCountdown(){
+  const el=$("quizMasterCountdownOverlay");
+  if(!el)return;
+  const remaining=Math.max(0,Number(QUIZ_MASTER_STATE.remaining)||0);
+  if(QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating||remaining>10||remaining<=0){
+    hideQuizMasterCountdown();
+    return;
+  }
+  el.textContent=String(remaining);
+  el.classList.toggle("danger",remaining<=3);
+  el.classList.remove("show");
+  void el.offsetWidth;
+  el.classList.add("show");
+}
 function clearQuizMasterStageClasses(){
   const shell=quizMasterShell();
   if(shell)shell.classList.remove("quiz-master-round-intro","quiz-master-round-exit","quiz-master-starting");
@@ -1532,6 +1553,7 @@ function clearQuizMasterStageClasses(){
   if(tutorialOverlay)tutorialOverlay.classList.remove("show");
   const checkpointOverlay=$("quizMasterCheckpointOverlay");
   if(checkpointOverlay)checkpointOverlay.classList.remove("show");
+  hideQuizMasterCountdown();
 }
 function quizMasterPointForLevel(level){return QUIZ_MASTER_POINTS[Number(level)]||0}
 function quizMasterTimeForLevel(level){return QUIZ_MASTER_TIME_LIMITS[Number(level)]||15}
@@ -1664,9 +1686,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=857",
-    "./data/quiz_master_questions.json?v=857",
-    new URL("data/quiz_master_questions.json?v=857",document.baseURI).href
+    "data/quiz_master_questions.json?v=858",
+    "./data/quiz_master_questions.json?v=858",
+    new URL("data/quiz_master_questions.json?v=858",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1716,7 +1738,7 @@ async function startQuizMaster(){
     show("screen-title");
     return;
   }
-  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:15,answered:false,startedAt:Date.now(),questionStartedAt:0,logs:[],challenge:false,guestTest,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null});
+  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:20,answered:false,startedAt:Date.now(),questionStartedAt:0,logs:[],challenge:false,guestTest,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null});
   show("screen-quiz-master");
   updateQuizMasterDailyUI();
   setTextSafe("quizMasterQuestion","問題データを読み込み中...");
@@ -1803,6 +1825,7 @@ async function startQuizMasterRoundIntro(token){
   QUIZ_MASTER_STATE.animating=false;
   QUIZ_MASTER_STATE.questionStartedAt=Date.now();
   updateQuizMasterFiftyButton();
+  updateQuizMasterCountdown();
   QUIZ_MASTER_STATE.timer=setInterval(tickQuizMasterTimer,1000);
 }
 function selectQuizMasterChoice(idx){
@@ -1844,6 +1867,7 @@ function tickQuizMasterTimer(){
   if(QUIZ_MASTER_STATE.answered)return;
   QUIZ_MASTER_STATE.remaining-=1;
   setTextSafe("quizMasterTimer",String(Math.max(0,QUIZ_MASTER_STATE.remaining)));
+  updateQuizMasterCountdown();
   if(QUIZ_MASTER_STATE.remaining<=0){
     confirmQuizMasterChoice(true);
   }

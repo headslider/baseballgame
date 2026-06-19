@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.18",
+  "current_public_version": "v1.1.19",
   "internal": {
-    "app_version": "v857-production",
-    "cache_version": "yakyu-yarouze-v857-production",
+    "app_version": "v858-production",
+    "cache_version": "yakyu-yarouze-v858-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの問題データを final_candidate_v10 の307問プールへ更新。"
+    "change_summary": "野球博士チャレンジの制限時間を全問5秒延長し、残り10秒から中央カウントダウンを表示。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.19-20260620-v858",
+      "public_version": "v1.1.19",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジ タイマー演出調整",
+      "public_summary": "野球博士チャレンジの制限時間を全問5秒延長し、残り10秒から中央に大きなカウントダウンを表示するようにしました。残り3秒以下は赤く点滅します。",
+      "admin_note": "v858-production更新。QUIZ_MASTER_TIME_LIMITS を全レベル+5秒へ変更。残り10秒以下で quizMasterCountdownOverlay に中央数字を表示し、残り3秒以下は赤色点滅アニメーションを適用。回答・時間切れ・次問遷移時にカウント表示をクリア。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v858-production",
+      "cache_version": "yakyu-yarouze-v858-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.18-20260620-v857",
       "public_version": "v1.1.18",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v857-production",
       "cache_version": "yakyu-yarouze-v857-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },

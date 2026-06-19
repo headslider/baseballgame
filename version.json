@@ -1,13 +1,13 @@
 {
-  "app_version": "v857-production",
-  "cache_version": "yakyu-yarouze-v857-production",
-  "public_version": "v1.1.18",
+  "app_version": "v858-production",
+  "cache_version": "yakyu-yarouze-v858-production",
+  "public_version": "v1.1.19",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの問題データを final_candidate_v10 の307問プールへ更新。",
+  "change_summary": "野球博士チャレンジの制限時間を全問5秒延長し、残り10秒から中央カウントダウンを表示。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

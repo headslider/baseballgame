@@ -7776,6 +7776,28 @@ body.screen-quiz-master-active{
 .quiz-master-point-burst.show{
   animation:quizPointBurst 1.22s ease both;
 }
+.quiz-master-countdown-overlay{
+  position:fixed;
+  inset:0;
+  z-index:2147482600;
+  display:none;
+  place-items:center;
+  pointer-events:none;
+  color:#fff;
+  font-size:clamp(130px,22vw,320px);
+  font-weight:1000;
+  line-height:1;
+  text-shadow:0 0 18px rgba(125,215,255,.95),0 0 54px rgba(0,126,255,.88),0 8px 3px #000;
+}
+.quiz-master-countdown-overlay.show{
+  display:grid;
+  animation:quizMasterCountdownPop .34s ease-out both;
+}
+.quiz-master-countdown-overlay.danger{
+  color:#ff2323;
+  text-shadow:0 0 22px rgba(255,35,35,.96),0 0 64px rgba(255,0,0,.86),0 8px 3px #000;
+  animation:quizMasterCountdownPop .34s ease-out both,quizMasterCountdownBlink .42s steps(2,end) infinite;
+}
 .quiz-master-start-overlay{
   position:fixed;
   inset:0;
@@ -8182,6 +8204,14 @@ body.quiz-master-failed .quiz-master-shell{
   16%{opacity:1;transform:translate(-50%,-52%) scale(1.12)}
   58%{opacity:1;transform:translate(-50%,-54%) scale(1)}
   100%{opacity:0;transform:translate(-50%,-66%) scale(.9)}
+}
+@keyframes quizMasterCountdownPop{
+  0%{opacity:0;transform:scale(.72)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes quizMasterCountdownBlink{
+  0%,100%{opacity:1}
+  50%{opacity:.22}
 }
 @keyframes quizFailDim{
   from{filter:brightness(1)}
