@@ -1716,9 +1716,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=872",
-    "./data/quiz_master_questions.json?v=872",
-    new URL("data/quiz_master_questions.json?v=872",document.baseURI).href
+    "data/quiz_master_questions.json?v=873",
+    "./data/quiz_master_questions.json?v=873",
+    new URL("data/quiz_master_questions.json?v=873",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{

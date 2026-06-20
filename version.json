@@ -1,13 +1,13 @@
 {
-  "app_version": "v872-production",
-  "cache_version": "yakyu-yarouze-v872-production",
-  "public_version": "v1.1.33",
+  "app_version": "v873-production",
+  "cache_version": "yakyu-yarouze-v873-production",
+  "public_version": "v1.1.34",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "トップ画面の野球博士チャレンジNEW表示をボタン左端位置へ調整し、野球博士ランキングを外枠内スクロール表示に変更。マイページの野球博士成績を通常成績の下に配置し、点数表示色を調整。",
+  "change_summary": "トップ画面の野球博士チャレンジボタンのNEW表示を外付けからタイトル右側のインライン表示へ変更。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

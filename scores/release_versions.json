@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.33",
+  "current_public_version": "v1.1.34",
   "internal": {
-    "app_version": "v872-production",
-    "cache_version": "yakyu-yarouze-v872-production",
+    "app_version": "v873-production",
+    "cache_version": "yakyu-yarouze-v873-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "トップ画面の野球博士チャレンジNEW表示をボタン左端位置へ調整し、野球博士ランキングを外枠内スクロール表示に変更。マイページの野球博士成績を通常成績の下に配置し、点数表示色を調整。"
+    "change_summary": "トップ画面の野球博士チャレンジボタンのNEW表示を外付けからタイトル右側のインライン表示へ変更。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.34-20260620-v873",
+      "public_version": "v1.1.34",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジNEW表示位置調整",
+      "public_summary": "トップ画面の野球博士チャレンジボタンのNEW表示を、ボタン外側ではなくタイトル右側に表示するよう調整しました。",
+      "admin_note": "v873-production更新。quizMasterBtn 内に quiz-master-start-title / quiz-master-start-new を追加し、旧 quiz-master-start::before の外付けNEW表示を廃止。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v873-production",
+      "cache_version": "yakyu-yarouze-v873-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.33-20260620-v872",
       "public_version": "v1.1.33",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v872-production",
       "cache_version": "yakyu-yarouze-v872-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },
