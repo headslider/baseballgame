@@ -52,7 +52,7 @@ const QUIZ_MASTER_DAILY_LIMIT_ENABLED=false;
 const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=false;
 const QUIZ_MASTER_POINTS={1:10,2:20,3:40,4:80,5:160,6:240,7:360,8:540,9:810,10:1215};
 const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13};
-const QUIZ_MASTER_STATE={questions:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null};
+const QUIZ_MASTER_STATE={questions:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false};
 const INNING_SLOTS=[
   ["1回表",0,"1B","attack"],["1回表",1,"2B","attack"],["1回表",2,"3B","attack"],
   ["1回裏",0,"1B","defense"],["1回裏",1,"2B","defense"],["1回裏",2,"3B","defense"],
@@ -1553,6 +1553,8 @@ function clearQuizMasterStageClasses(){
   if(tutorialOverlay)tutorialOverlay.classList.remove("show");
   const checkpointOverlay=$("quizMasterCheckpointOverlay");
   if(checkpointOverlay)checkpointOverlay.classList.remove("show");
+  const fiftyOverlay=$("quizMasterFiftyConfirmOverlay");
+  if(fiftyOverlay)fiftyOverlay.classList.remove("show");
   hideQuizMasterCountdown();
 }
 function quizMasterPointForLevel(level){return QUIZ_MASTER_POINTS[Number(level)]||0}
@@ -1686,9 +1688,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=858",
-    "./data/quiz_master_questions.json?v=858",
-    new URL("data/quiz_master_questions.json?v=858",document.baseURI).href
+    "data/quiz_master_questions.json?v=859",
+    "./data/quiz_master_questions.json?v=859",
+    new URL("data/quiz_master_questions.json?v=859",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1738,7 +1740,7 @@ async function startQuizMaster(){
     show("screen-title");
     return;
   }
-  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:20,answered:false,startedAt:Date.now(),questionStartedAt:0,logs:[],challenge:false,guestTest,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null});
+  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:20,answered:false,startedAt:Date.now(),questionStartedAt:0,logs:[],challenge:false,guestTest,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false});
   show("screen-quiz-master");
   updateQuizMasterDailyUI();
   setTextSafe("quizMasterQuestion","問題データを読み込み中...");
@@ -1810,14 +1812,17 @@ async function startQuizMasterRoundIntro(token){
   choices.forEach(btn=>btn.classList.add("is-entering"));
   await wait(1250);
   if(token!==QUIZ_MASTER_STATE.roundToken||$("screen-quiz-master")?.classList.contains("active")===false)return;
-  if(shell)shell.classList.add("quiz-master-starting");
   const startOverlay=$("quizMasterStartOverlay");
-  if(startOverlay){
+  if(q.level===1&&startOverlay){
+    if(shell)shell.classList.add("quiz-master-starting");
     startOverlay.classList.remove("show");
     void startOverlay.offsetWidth;
     startOverlay.classList.add("show");
+    await wait(720);
+  }else{
+    if(startOverlay)startOverlay.classList.remove("show");
+    await wait(120);
   }
-  await wait(720);
   if(token!==QUIZ_MASTER_STATE.roundToken||$("screen-quiz-master")?.classList.contains("active")===false)return;
   clearQuizMasterStageClasses();
   const prefix=QUIZ_MASTER_STATE.guestTest?"テストプレイ / ":"";
@@ -1838,16 +1843,51 @@ function selectQuizMasterChoice(idx){
 function updateQuizMasterFiftyButton(){
   const btn=$("quizMasterFiftyBtn");
   if(!btn)return;
-  const unavailable=QUIZ_MASTER_STATE.fiftyUsed||QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating||!currentQuizMasterQuestion();
+  const unavailable=QUIZ_MASTER_STATE.fiftyUsed||QUIZ_MASTER_STATE.fiftyPromptOpen||QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating||!currentQuizMasterQuestion();
   btn.disabled=unavailable;
   btn.classList.toggle("is-used",QUIZ_MASTER_STATE.fiftyUsed);
   btn.innerHTML=QUIZ_MASTER_STATE.fiftyUsed?'50:50<br><small>使用済み</small>':'50:50<br><small>1回まで</small>';
 }
-function useQuizMasterFifty(){
+function askQuizMasterFiftyConfirm(){
+  return new Promise(resolve=>{
+    const overlay=$("quizMasterFiftyConfirmOverlay");
+    if(!overlay){resolve(false);return}
+    overlay.innerHTML='<div class="quiz-master-fifty-confirm-card" role="dialog" aria-modal="true" aria-label="50:50確認"><h2>50:50</h2><p>50:50は1度だけ間違えた問題を減らすことができます!<br>この問題で利用しますか?</p><div class="quiz-master-fifty-confirm-actions"><button type="button" class="primary" data-quiz-fifty="yes">はい</button><button type="button" class="secondary" data-quiz-fifty="no">いいえ</button></div></div>';
+    overlay.classList.add("show");
+    overlay.setAttribute("aria-hidden","false");
+    const done=answer=>{
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden","true");
+      overlay.innerHTML="";
+      resolve(answer);
+    };
+    overlay.querySelector('[data-quiz-fifty="yes"]')?.addEventListener("click",()=>done(true),{once:true});
+    overlay.querySelector('[data-quiz-fifty="no"]')?.addEventListener("click",()=>done(false),{once:true});
+  });
+}
+function resumeQuizMasterTimerAfterPrompt(){
+  if(QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating||QUIZ_MASTER_STATE.remaining<=0)return;
+  updateQuizMasterCountdown();
+  QUIZ_MASTER_STATE.timer=setInterval(tickQuizMasterTimer,1000);
+}
+async function useQuizMasterFifty(){
   const q=currentQuizMasterQuestion();
-  if(!q||QUIZ_MASTER_STATE.fiftyUsed||QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating)return;
+  if(!q||QUIZ_MASTER_STATE.fiftyUsed||QUIZ_MASTER_STATE.fiftyPromptOpen||QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating)return;
   const wrongIndexes=[0,1,2].filter(i=>i!==q.answer);
   if(!wrongIndexes.length)return;
+  QUIZ_MASTER_STATE.fiftyPromptOpen=true;
+  QUIZ_MASTER_STATE.animating=true;
+  clearQuizMasterTimer();
+  updateQuizMasterFiftyButton();
+  const accepted=await askQuizMasterFiftyConfirm();
+  QUIZ_MASTER_STATE.fiftyPromptOpen=false;
+  QUIZ_MASTER_STATE.animating=false;
+  if(!accepted){
+    resumeQuizMasterTimerAfterPrompt();
+    updateQuizMasterFiftyButton();
+    return;
+  }
+  if(QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.fiftyUsed||!currentQuizMasterQuestion())return;
   const hidden=wrongIndexes[Math.floor(Math.random()*wrongIndexes.length)];
   QUIZ_MASTER_STATE.fiftyUsed=true;
   QUIZ_MASTER_STATE.fiftyHidden=hidden;
@@ -1861,6 +1901,7 @@ function useQuizMasterFifty(){
     btn.classList.remove("is-selected");
   });
   setTextSafe("quizMasterMessage","50:50を使用しました。誤答を1つ消しました。");
+  resumeQuizMasterTimerAfterPrompt();
   updateQuizMasterFiftyButton();
 }
 function tickQuizMasterTimer(){
@@ -2021,9 +2062,9 @@ function renderQuizMasterResultDetail(message,cleared){
     el.textContent=message;
     return;
   }
-  const selectedLabel=review.timeout?"時間切れ":`${String.fromCharCode(65+review.selected)}. ${review.selectedText}`;
   const answerLabel=`${String.fromCharCode(65+review.answer)}. ${review.answerText}`;
-  el.innerHTML=`<p>${escapeHtml(message)}</p><div class="quiz-master-answer-review"><div><span>${review.timeout?"回答":"選んだ答え"}</span><b>${escapeHtml(selectedLabel)}</b></div><div><span>正解</span><b>${escapeHtml(answerLabel)}</b></div><p><span>理由</span>${escapeHtml(review.explanation||"この問題の解説は登録されていません。")}</p></div>`;
+  const selectedHtml=review.timeout?"":`<div><span>選んだ答え</span><b>${escapeHtml(`${String.fromCharCode(65+review.selected)}. ${review.selectedText}`)}</b></div>`;
+  el.innerHTML=`<p>${escapeHtml(message)}</p><div class="quiz-master-answer-review">${selectedHtml}<div><span>正解</span><b>${escapeHtml(answerLabel)}</b></div><p><span>理由</span>${escapeHtml(review.explanation||"この問題の解説は登録されていません。")}</p></div>`;
 }
 async function saveQuizMasterScore(cleared){
   if(STATE.adminMode||QUIZ_MASTER_STATE.guestTest||!STATE.loggedIn||!STATE.playerId)return;
@@ -2069,10 +2110,10 @@ function renderQuizMasterRanking(box,data,mode="result"){
   const summary=data&&data.summary?data.summary:{};
   const topRows=rows.slice(0,mode==="page"?20:10);
   const summaryHtml=mode==="page"?`<div class="quiz-master-ranking-summary"><span>参加者 <b>${escapeHtml(summary.total_players||0)}</b></span><span>プレイ数 <b>${escapeHtml(summary.total_plays||0)}</b></span><span>完全制覇 <b>${escapeHtml(summary.cleared_count||0)}</b></span></div>`:"";
-  const myHtml=myBest?`<div class="quiz-master-my-best"><span>あなたの最高記録</span><b>${escapeHtml(myBest.rank)}位 / ${escapeHtml(myBest.score)} pt</b><em>第${escapeHtml(myBest.reached_level)}問到達</em></div>`:"";
+  const myHtml=myBest?`<div class="quiz-master-my-best"><span>あなたの最高記録は</span><b>${escapeHtml(myBest.rank)}位 / ${escapeHtml(myBest.score)} pt</b><em>第${escapeHtml(myBest.reached_level)}問到達</em></div>`:"";
   const rankingHtml=topRows.length?`<ol>${topRows.map(r=>`<li class="${r.player_id===STATE.playerId?"me":""}"><span>${escapeHtml(r.rank)}位</span><b>${escapeHtml(r.player_id)}</b><em>${escapeHtml(r.score)} pt</em><small>第${escapeHtml(r.reached_level)}問 / ${escapeHtml(r.correct_count||0)}問正解</small></li>`).join("")}</ol>`:'<p>まだランキングはありません。</p>';
   const recentHtml=mode==="page"?`<div class="quiz-master-recent-title">最近のプレイ</div>${recent.length?`<ul class="quiz-master-recent-list">${recent.slice(0,10).map(r=>`<li><b>${escapeHtml(r.player_id)}</b><span>${escapeHtml(r.score)} pt</span><em>${escapeHtml(quizMasterResultReasonText(r.result_reason))}</em><small>${escapeHtml(r.played_at||"")}</small></li>`).join("")}</ul>`:'<p>最近のプレイはありません。</p>'}`:"";
-  box.innerHTML=`<div class="quiz-master-ranking-title">野球博士ランキング</div>${summaryHtml}${myHtml}${rankingHtml}${recentHtml}`;
+  box.innerHTML=`<div class="quiz-master-ranking-board"><div class="quiz-master-ranking-title">野球博士ランキング</div>${summaryHtml}${myHtml}${rankingHtml}${recentHtml}</div>`;
 }
 async function loadQuizMasterRanking(targetId="quizMasterRanking",mode="result"){
   const box=$(targetId);if(!box)return;

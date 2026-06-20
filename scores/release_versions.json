@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.19",
+  "current_public_version": "v1.1.20",
   "internal": {
-    "app_version": "v858-production",
-    "cache_version": "yakyu-yarouze-v858-production",
+    "app_version": "v859-production",
+    "cache_version": "yakyu-yarouze-v859-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの制限時間を全問5秒延長し、残り10秒から中央カウントダウンを表示。"
+    "change_summary": "野球博士チャレンジのヒント削除、50:50確認、ランキング枠、表示演出を調整。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.20-20260620-v859",
+      "public_version": "v1.1.20",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジ UI演出調整",
+      "public_summary": "野球博士チャレンジのヒントボタン削除、50:50利用確認、選択肢退場演出、ランキング枠表示、結果画面文言を調整しました。",
+      "admin_note": "v859-production更新。右上ヒントボタンを削除。50:50押下時に利用確認ダイアログを表示し、はい選択時のみ誤答1件を左へease-in-outで退場。カウントダウンの点滅を停止。選択肢配置を上寄せ。スタート表示を第1問のみへ変更。時間切れ結果で回答:時間切れを非表示。野球博士ランキングを枠内表示し、自己最高記録のラベルを順位の左側へ配置。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v859-production",
+      "cache_version": "yakyu-yarouze-v859-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.19-20260620-v858",
       "public_version": "v1.1.19",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v858-production",
       "cache_version": "yakyu-yarouze-v858-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },
