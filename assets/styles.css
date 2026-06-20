@@ -9260,8 +9260,12 @@ body.quiz-master-failed .quiz-master-shell{
     z-index:4 !important;
   }
   .quiz-master-count{
-    grid-column:3 / 4 !important;
-    justify-self:end !important;
+    position:absolute !important;
+    right:clamp(178px,10.5vw,218px) !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    justify-self:auto !important;
+    z-index:5 !important;
   }
   .quiz-master-exit{
     grid-column:4 / 5 !important;
