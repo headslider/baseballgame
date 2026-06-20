@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.32",
+  "current_public_version": "v1.1.33",
   "internal": {
-    "app_version": "v871-production",
-    "cache_version": "yakyu-yarouze-v871-production",
+    "app_version": "v872-production",
+    "cache_version": "yakyu-yarouze-v872-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジを招待ID登録済みプレイヤーID限定・1日3回制限に切り替え、招待ID機能へ追加。トップと遊び方にNEW表示を追加。"
+    "change_summary": "トップ画面の野球博士チャレンジNEW表示をボタン左端位置へ調整し、野球博士ランキングを外枠内スクロール表示に変更。マイページの野球博士成績を通常成績の下に配置し、点数表示色を調整。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.33-20260620-v872",
+      "public_version": "v1.1.33",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジNEW表示・ランキング・マイページ表示調整",
+      "public_summary": "トップ画面の野球博士チャレンジボタンのNEW表示位置、野球博士ランキングのスクロール、マイページ内の野球博士成績表示を調整しました。",
+      "admin_note": "v872-production更新。quiz-master-start::before の配置を右上から左端基準へ変更。野球博士ランキングページは外枠内でランキング本文をスクロールさせ、内側の quiz-master-ranking-board 枠を外して枠の重なりを軽減。マイページでは myPageQuizMaster を通常成績 myPageRecords の下へ移動し、quiz-master-mypage-summary / table の点数・文字色を調整。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v872-production",
+      "cache_version": "yakyu-yarouze-v872-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.32-20260620-v871",
       "public_version": "v1.1.32",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v871-production",
       "cache_version": "yakyu-yarouze-v871-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },

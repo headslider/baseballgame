@@ -7464,7 +7464,7 @@ body.screen-game-active #screen-title .stadium-bg{
 .quiz-master-start::before{
   content:"NEW!";
   position:absolute;
-  right:-10px;
+  left:0;
   top:-13px;
   z-index:2;
   display:inline-flex;
@@ -7472,6 +7472,7 @@ body.screen-game-active #screen-title .stadium-bg{
   justify-content:center;
   min-width:58px;
   padding:5px 9px;
+  transform:translateX(-10%);
   border-radius:999px;
   background:#e91c1c;
   color:#fff;
@@ -8039,8 +8040,8 @@ body.screen-quiz-master-active{
 }
 .quiz-master-ranking-page-card{
   max-width:980px;
-  max-height:none;
-  overflow:visible;
+  max-height:calc(100svh - 32px);
+  overflow:hidden;
   text-align:left;
 }
 .quiz-master-ranking-page-card .quiz-master-kicker,
@@ -8101,7 +8102,7 @@ body.screen-quiz-master-active{
   color:#fff;
 }
 .quiz-master-mypage-card{
-  margin-top:18px;
+  margin-top:20px;
   padding:16px;
   border-radius:14px;
   border:2px solid rgba(255,226,106,.72);
@@ -8119,10 +8120,20 @@ body.screen-quiz-master-active{
   margin-bottom:12px;
 }
 .quiz-master-mypage-summary b{
-  color:#ffe26a;
+  color:#0b3a75;
+  text-shadow:none;
 }
 .quiz-master-mypage-table{
   margin-top:12px;
+  background:rgba(0,12,30,.66);
+  border-color:rgba(216,233,255,.92);
+}
+.quiz-master-mypage-table td{
+  color:#fff;
+  background:rgba(0,9,28,.58);
+}
+.quiz-master-mypage-table td b{
+  color:#fff;
 }
 .quiz-master-ranking-title{
   color:#ffe26a;
@@ -9269,6 +9280,21 @@ body.quiz-master-failed .quiz-master-shell{
   border:2px solid rgba(255,226,106,.78);
   background:linear-gradient(180deg,rgba(4,20,48,.82),rgba(0,9,28,.9));
   box-shadow:0 0 24px rgba(255,226,106,.18),inset 0 0 22px rgba(0,126,255,.2);
+}
+.quiz-master-ranking-page-card #quizMasterRankingPage{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  padding-right:6px;
+  scrollbar-gutter:stable;
+  overscroll-behavior:contain;
+}
+.quiz-master-ranking-page-card .quiz-master-ranking-board{
+  margin-top:10px;
+  padding:0 4px 4px 0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
 }
 .quiz-master-my-best{
   grid-template-columns:auto minmax(0,1fr) auto;
