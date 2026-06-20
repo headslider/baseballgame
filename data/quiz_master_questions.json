@@ -1,9 +1,9 @@
 {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "final_candidate_v18_jsbb_gakudo_label_added",
+    "version": "final_candidate_v20_mizuno_name_fixed",
     "created_by": "ChatGPT",
-    "question_count": 300,
+    "question_count": 268,
     "answer_index_base": 0,
     "rules": [
       "通常学年別クイズと重複する守備判断・走塁判断・送球判断・カバーリング問題は含めない",
@@ -37,16 +37,16 @@
     "implementation_status": "Codex handoff candidate",
     "audit_step6": "2026-06-20 Step6 最終JSON実装監査完了。JSON構文、ID重複、level別件数、choices数、answer範囲、空欄、選択肢30文字以内、並び順を確認。",
     "level_question_counts": {
-      "1": 19,
+      "1": 16,
       "2": 18,
-      "3": 19,
-      "4": 20,
+      "3": 18,
+      "4": 19,
       "5": 19,
-      "6": 64,
-      "7": 57,
-      "8": 37,
-      "9": 24,
-      "10": 23
+      "6": 55,
+      "7": 46,
+      "8": 34,
+      "9": 22,
+      "10": 21
     },
     "audit_step5_5": "2026-06-20 一般野球のベース位置・寸法問題を第8問以降へ移動。第3問には学童向けグラウンド知識を補充。",
     "audit_step4_5": "2026-06-20 Step4.5 専門用語・カタカナ監査。オーバーユースけが等を小学生に分かる表現へ修正。",
@@ -114,7 +114,50 @@
       "BQ701",
       "BQ702",
       "BQ703"
-    ]
+    ],
+    "audit_step5_10": "2026-06-21 大会正式名称を省略しない方針へ修正。MIZUNO BASEBALL DREAM CUP Jr. Tournament関連の表記を正式名称へ統一。ユニフォーム規定や『大会ごとに確認』が答えになるような、明確な知識として役に立ちにくい問題を削除。",
+    "official_name_rule": [
+      "大会名・団体名・規定名は、一般的に定着した略称でない限り正式名称を使う",
+      "メーカー名だけで大会名を表さない",
+      "答えが『大会ごとに確認』『大会規定を確認』になる問題は原則作成しない",
+      "明確なルール・数値・禁止事項・許可事項として答えられる問題のみ採用する"
+    ],
+    "removed_ambiguous_tournament_or_uniform_ids": [
+      "BQ102",
+      "BQ106",
+      "BQ114",
+      "BQ303",
+      "BQ420",
+      "BQ602",
+      "BQ605",
+      "BQ612",
+      "BQ614",
+      "BQ616",
+      "BQ631",
+      "BQ642",
+      "BQ670",
+      "BQ671",
+      "BQ704",
+      "BQ709",
+      "BQ721",
+      "BQ722",
+      "BQ723",
+      "BQ727",
+      "BQ730",
+      "BQ742",
+      "BQ751",
+      "BQ752",
+      "BQ755",
+      "BQ808",
+      "BQ821",
+      "BQ826",
+      "BQ917",
+      "BQ921",
+      "BQ1021",
+      "BQ1024"
+    ],
+    "mizuno_official_name": "MIZUNOドリームカップジュニアトーナメント",
+    "audit_step5_11": "2026-06-21 ミズノ大会名称を 『MIZUNOドリームカップジュニアトーナメント』へ統一。"
   },
   "questions": [
     {
@@ -136,26 +179,6 @@
       "main_category": "用具",
       "middle_category": "用具知識",
       "small_category": "安全・手入れ"
-    },
-    {
-      "id": "BQ102",
-      "level": 1,
-      "level_name": "第1問",
-      "category": "少年野球基礎・安全用具",
-      "question": "野球ストッキングを履く理由として正しいものは？",
-      "choices": [
-        "足の保護とユニフォームとしての統一感を保つため",
-        "スパイク内のずれを減らし、足元を安定させるため",
-        "すり傷や日差しから脚を守り、見た目も整えるため"
-      ],
-      "answer": 0,
-      "explanation": "ストッキングは伝統的なユニフォーム要素であり、脚の保護にも関係します。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
     },
     {
       "id": "BQ103",
@@ -216,26 +239,6 @@
       "main_category": "用具",
       "middle_category": "バット",
       "small_category": "規格・特徴"
-    },
-    {
-      "id": "BQ106",
-      "level": 1,
-      "level_name": "第1問",
-      "category": "少年野球基礎・安全用具",
-      "question": "学童野球で投球数ルールが設けられるおもな目的は？",
-      "choices": [
-        "大会ごとの試合進行をそろえるため",
-        "登板機会を複数投手へ分散しやすくするため",
-        "肩や肘のけが予防のため"
-      ],
-      "answer": 2,
-      "explanation": "投球過多は成長期の肩肘に体への負担をかけます。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "学童ルール",
-      "middle_category": "選手保護",
-      "small_category": "投球数"
     },
     {
       "id": "BQ107",
@@ -353,26 +356,6 @@
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ114",
-      "level": 1,
-      "level_name": "第1問",
-      "category": "少年野球基礎・安全用具",
-      "question": "頭にボールが当たった後に確認が必要な理由は？",
-      "choices": [
-        "次打者の準備時間を確保するため",
-        "死球の記録を安打に変更する可能性があるため",
-        "見た目だけではわからない異常がある"
-      ],
-      "answer": 2,
-      "explanation": "頭部への衝撃後は、見た目では分かりにくい異常がないか慎重に確認する必要があります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
       "main_category": "基礎知識",
       "middle_category": "学童・少年野球",
       "small_category": "その他"
@@ -896,26 +879,6 @@
       "main_category": "基礎知識",
       "middle_category": "学童・少年野球",
       "small_category": "その他"
-    },
-    {
-      "id": "BQ303",
-      "level": 3,
-      "level_name": "第3問",
-      "category": "JSBB学童部規定",
-      "question": "学童の試合前に塁間を確認する理由は（JSBB学童部規定）？",
-      "choices": [
-        "大会ごとに距離が違うため",
-        "球場名で必ず同じため",
-        "ベース色で決まるため"
-      ],
-      "answer": 0,
-      "explanation": "学童では高学年・低学年や大会ごとに塁間が違う場合があります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない学童グラウンド知識問題",
-      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え / v18: JSBB学童部規定表記を追加",
-      "main_category": "学童ルール",
-      "middle_category": "JSBB学童部規定",
-      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ304",
@@ -1618,26 +1581,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ420",
-      "level": 4,
-      "level_name": "第4問",
-      "category": "ルール知識（非状況判断）",
-      "question": "大会要項を確認すべき理由として正しいものは？",
-      "choices": [
-        "チームの作戦を先に決めるため",
-        "審判の個人考え方を固定するため",
-        "大会特別ルールがある場合があるため"
-      ],
-      "answer": 2,
-      "explanation": "少年野球では公式ルールに加えて、大会ごとの特別ルールがある場合があります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ501",
       "level": 5,
       "level_name": "第5問",
@@ -2018,26 +1961,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ602",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "投手のサングラスルールで特に注意すべき点として正しいものは？",
-      "choices": [
-        "大会ごとの確認が必要なこと",
-        "帽子上の扱いも確認すること",
-        "ミラーレンズは使用できないこと"
-      ],
-      "answer": 2,
-      "explanation": "投手はサングラスを使用できますが、ミラーレンズは使用できません。",
-      "source_note": "JSBB FAQ サングラスの使うについて（令和5年より投手使う可、投手ミラーレンズ不可、野手は庇上可）",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 不自然な選択肢を修正 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "学童ルール",
-      "middle_category": "用具規定",
-      "small_category": "サングラス"
-    },
-    {
       "id": "BQ603",
       "level": 6,
       "level_name": "第6問",
@@ -2076,26 +1999,6 @@
       "main_category": "学童ルール",
       "middle_category": "選手保護",
       "small_category": "投球数"
-    },
-    {
-      "id": "BQ605",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "JSBB学童部規定",
-      "question": "学童部の1日投球数ルールとして正しい組み合わせに近いものとして正しいものは（JSBB学童部規定）？",
-      "choices": [
-        "全学年一律50球以内",
-        "原則70球以内、4年生以下は60球以内",
-        "原則100球以内、4年生以下は80球以内"
-      ],
-      "answer": 1,
-      "explanation": "2025年大会要項例では1日70球、4年生以下60球。大会要項の確認が必要。",
-      "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
-      "main_category": "学童ルール",
-      "middle_category": "JSBB学童部規定",
-      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ608",
@@ -2158,26 +2061,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ612",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "DH仕組みが少年野球大会で採用される場合に確認すべきこととして正しいものは？",
-      "choices": [
-        "採用有無・対象選手・交代ルールを大会要項で確認する",
-        "DH採用時は守備交代や再出場ルールとの関係を確認する",
-        "打撃機会と守備の負担を大会ごとに見る"
-      ],
-      "answer": 0,
-      "explanation": "DHは大会や連盟によって採用・運営が異なります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ613",
       "level": 6,
       "level_name": "第6問",
@@ -2190,26 +2073,6 @@
       ],
       "answer": 0,
       "explanation": "暑熱環境では休憩や給水ルールが重視されます。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ614",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "頭への強い衝撃対策が少年野球で重視される理由として正しいものは？",
-      "choices": [
-        "症状が遅れて出る場合があり、慎重な確認が必要なため",
-        "頭部への衝撃後は本人の申告だけでわかりにくいため",
-        "一見軽そうでも重い症状へつながる可能性があるため"
-      ],
-      "answer": 2,
-      "explanation": "頭部衝撃後の判断は慎重に行う必要があります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
@@ -2233,26 +2096,6 @@
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ616",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "最新ルール問題を作る際に重要な姿勢として正しいものは？",
-      "choices": [
-        "年度・連盟・大会ごとの一次情報で確認する",
-        "地域差や切りかえ期間を分けて整理する",
-        "最新情報でも適用範囲を確認して扱う"
-      ],
-      "answer": 0,
-      "explanation": "少年野球は地域・大会ルールも確認が必要です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
       "main_category": "基礎知識",
       "middle_category": "学童・少年野球",
       "small_category": "その他"
@@ -2498,26 +2341,6 @@
       "small_category": "サングラス"
     },
     {
-      "id": "BQ631",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童ルール・サングラス",
-      "question": "野手が帽子の庇にサングラスを乗せる時に大切なのは？",
-      "choices": [
-        "大会ルールを確認する",
-        "相手に見えないようにする",
-        "ミラーなら必ず使える"
-      ],
-      "answer": 0,
-      "explanation": "令和5年から野手はサングラスを帽子の庇の上に乗せられます。大会ごとの規定も確認します。",
-      "source_note": "JSBB FAQ サングラスの使うについて（令和5年より投手使う可、投手ミラーレンズ不可、野手は庇上可）",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 追加大会ルール問題の即消し選択肢を修正 / v13: サングラスの対象条件を明記し、無条件の帽子上装着問題を修正。 / v14: サングラス規定を令和5年FAQの投手使用・投手ミラー不可・野手庇上可に合わせて修正",
-      "main_category": "学童ルール",
-      "middle_category": "用具規定",
-      "small_category": "サングラス"
-    },
-    {
       "id": "BQ632",
       "level": 6,
       "level_name": "第6問",
@@ -2702,7 +2525,7 @@
       "level": 6,
       "level_name": "第6問",
       "category": "最新学童ルール・ミズノ",
-      "question": "ミズノドリームカップ予選の基本回数は？",
+      "question": "MIZUNOドリームカップジュニアトーナメント予選の基本回数は？",
       "choices": [
         "6回制",
         "7回制",
@@ -2710,32 +2533,12 @@
       ],
       "answer": 0,
       "explanation": "2026大会ルールでは、都道府県予選は6回制、時間ルールありとされている。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
-    },
-    {
-      "id": "BQ642",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童ルール・ミズノ",
-      "question": "ミズノ予選の時間ルールで正しいのは？",
-      "choices": [
-        "80分到達回を最終回",
-        "6回制と時間制を併用",
-        "時間内でも最終回を確認"
-      ],
-      "answer": 0,
-      "explanation": "ミズノ予選では80分到達回を最終回とするなど、大会規定を確認します。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 追加大会ルール問題の即消し選択肢を修正",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ643",
@@ -2750,12 +2553,12 @@
       ],
       "answer": 0,
       "explanation": "ミズノ大会ルールでは、タイブレークは1死満塁で行う。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ644",
@@ -2770,12 +2573,12 @@
       ],
       "answer": 0,
       "explanation": "ミズノ大会ルールでは、タイブレークでも勝敗が付かない場合はじゃんけんとされる。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ645",
@@ -2790,12 +2593,12 @@
       ],
       "answer": 0,
       "explanation": "ミズノ大会ルールでは、投手の球数ルールは1日70球までとされる。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ646",
@@ -2810,12 +2613,12 @@
       ],
       "answer": 0,
       "explanation": "EDH制は10人で打順を組める制度です。守備人数とは分けて考えます。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 追加大会ルール問題の即消し選択肢を修正",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ647",
@@ -2830,12 +2633,12 @@
       ],
       "answer": 0,
       "explanation": "ミズノ大会ルールでは、一度採用した場合、試合を通して10人攻撃となる。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ648",
@@ -2850,12 +2653,12 @@
       ],
       "answer": 0,
       "explanation": "リエントリーは先発9人が一度再出場できる仕組みです。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 追加大会ルール問題の即消し選択肢を修正",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ650",
@@ -2870,12 +2673,12 @@
       ],
       "answer": 0,
       "explanation": "ミズノ大会ルールでは、各チーム2球ずつ持ち出し、試合球とするとされる。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ651",
@@ -3158,46 +2961,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ670",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童ルール",
-      "question": "大会ルールを確認する一番よいタイミングは？",
-      "choices": [
-        "大会前に要項を読む",
-        "試合後に考える",
-        "負けた時だけ読む"
-      ],
-      "answer": 0,
-      "explanation": "大会ごとに特別ルールがあるため、事前確認が大切です。",
-      "source_note": "大会特別規則監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ671",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童ルール",
-      "question": "大会ごとにルール差が出る理由は？",
-      "choices": [
-        "主催者と目的がちがうため",
-        "ベースの色がちがうため",
-        "ボールの名前だけのため"
-      ],
-      "answer": 0,
-      "explanation": "公式規則を基本にしながら、大会ごとの目的で特別規則が作られます。",
-      "source_note": "大会特別規則監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ673",
       "level": 6,
       "level_name": "第6問",
@@ -3358,26 +3121,6 @@
       "small_category": "グラウンド寸法"
     },
     {
-      "id": "BQ704",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "少年野球上級知識",
-      "question": "大会特別ルールを読む時に注意すべきこととして正しいものは？",
-      "choices": [
-        "開催年度・主催連盟・会場条件による違いを確認する",
-        "全国ルールと異なる独自運営があるか確認する",
-        "過去年度から変更された部分を重点的に確認する"
-      ],
-      "answer": 0,
-      "explanation": "大会ごとに特別ルールが異なることがあります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ705",
       "level": 7,
       "level_name": "第7問",
@@ -3456,26 +3199,6 @@
       "main_category": "学童ルール",
       "middle_category": "用具規定",
       "small_category": "サングラス"
-    },
-    {
-      "id": "BQ709",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "少年野球上級知識",
-      "question": "ベンチ入り・登録ルールを確認する理由として正しいものは？",
-      "choices": [
-        "出場資格と交代に関わるため",
-        "大会ごとに人数条件があるため",
-        "試合中の起用に関わるため"
-      ],
-      "answer": 0,
-      "explanation": "ベンチ入りや登録ルールは、出場資格や選手交代に直接関わります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 即消し選択肢を除去 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
     },
     {
       "id": "BQ710",
@@ -3678,66 +3401,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ721",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "大会特別ルール",
-      "question": "マクドナルドとミズノで特に違いやすいものは？",
-      "choices": [
-        "特別ルールの運営",
-        "ホームの形",
-        "野球の人数"
-      ],
-      "answer": 0,
-      "explanation": "同じ学童野球でも、主催大会により時間ルールやタイブレーク等が異なる。",
-      "source_note": "大会ごとの特別ルール確認が必要",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "マクドナルド・トーナメント"
-    },
-    {
-      "id": "BQ722",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "大会特別ルール",
-      "question": "ミズノの10人攻撃制を確認する理由は？",
-      "choices": [
-        "公式大会と違うため",
-        "野球が10人制だから",
-        "打順と守備を分けて考えるため"
-      ],
-      "answer": 0,
-      "explanation": "ミズノはEDH制を採用できるため、通常の9人攻撃と異なる確認が必要である。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 既知の即消し表現を修正",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
-    },
-    {
-      "id": "BQ723",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "大会特別ルール",
-      "question": "大会要項で最初に確認したいものは？",
-      "choices": [
-        "回数・時間・球数",
-        "選手の好きな番号",
-        "応援歌の長さ"
-      ],
-      "answer": 0,
-      "explanation": "試合形式、時間ルール、投球数は勝敗と安全に大きく関わる。",
-      "source_note": "大会ごとの特別ルール確認が必要",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "学童ルール",
-      "middle_category": "選手保護",
-      "small_category": "投球数"
-    },
-    {
       "id": "BQ724",
       "level": 7,
       "level_name": "第7問",
@@ -3750,7 +3413,7 @@
       ],
       "answer": 0,
       "explanation": "マクドナルド系では無死一・二塁、ミズノでは1死満塁など差がある。",
-      "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項 / MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項 / MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "学童ルール",
@@ -3778,26 +3441,6 @@
       "small_category": "マクドナルド・トーナメント"
     },
     {
-      "id": "BQ727",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "大会特別ルール",
-      "question": "ミズノのユニフォームルールで正しいのは？",
-      "choices": [
-        "そろわない場合の扱いを確認",
-        "全員同一が原則か確認",
-        "大会の許可条件を確認"
-      ],
-      "answer": 0,
-      "explanation": "ミズノのユニフォーム規定は大会ごとの条件を確認します。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 追加大会ルール問題の即消し選択肢を修正",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
-    },
-    {
       "id": "BQ728",
       "level": 7,
       "level_name": "第7問",
@@ -3810,12 +3453,12 @@
       ],
       "answer": 0,
       "explanation": "ミズノ大会ルールでは、合同チーム、選抜チームでの出場も可能とされる。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ729",
@@ -3830,7 +3473,7 @@
       ],
       "answer": 0,
       "explanation": "ミズノでは45分経過で試合成立など、マクドナルド系と運営が異なる。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "学童ルール",
@@ -3838,31 +3481,11 @@
       "small_category": "マクドナルド・トーナメント"
     },
     {
-      "id": "BQ730",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "大会特別ルール",
-      "question": "大会独自ルールを学ぶ目的は？",
-      "choices": [
-        "試合前の混乱を防ぐため",
-        "守備位置を変えるため",
-        "打順を早く決めるため"
-      ],
-      "answer": 0,
-      "explanation": "大会ごとにルール差があるため、事前共有で混乱を防げる。",
-      "source_note": "大会ごとの特別ルール確認が必要",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ731",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
-      "question": "ミズノドリームカップの試合回は？",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
+      "question": "MIZUNOドリームカップジュニアトーナメントの試合回は？",
       "choices": [
         "6回制",
         "9回制",
@@ -3870,18 +3493,18 @@
       ],
       "answer": 0,
       "explanation": "都道府県予選は6回制、時間制限ありで行われます。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ732",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会の時間制限で正しいのは？",
       "choices": [
         "80分到達の回を最終回",
@@ -3890,18 +3513,18 @@
       ],
       "answer": 0,
       "explanation": "試合開始後80分に到達したイニングを最終回とする規定があります。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ733",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会で同点時に使う方式は？",
       "choices": [
         "1死満塁タイブレーク",
@@ -3910,18 +3533,18 @@
       ],
       "answer": 0,
       "explanation": "タイブレーク方式は1死満塁、打者は継続打者で行います。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ734",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会で勝敗がつかない時は？",
       "choices": [
         "じゃんけんの場合がある",
@@ -3930,18 +3553,18 @@
       ],
       "answer": 0,
       "explanation": "タイブレークでも決まらない場合、じゃんけんで決める規定があります。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ736",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会のEDH制とは？",
       "choices": [
         "10人で打順を組める制度",
@@ -3950,18 +3573,18 @@
       ],
       "answer": 0,
       "explanation": "EDHは10人で打順を組むことができる制度です。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ738",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "EDHを使った後の扱いで正しいのは？",
       "choices": [
         "途中で9人制へ戻せない",
@@ -3970,18 +3593,18 @@
       ],
       "answer": 0,
       "explanation": "一度EDHを採用した試合では、途中で9人制へ変更できません。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ739",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "リエントリー制度の意味は？",
       "choices": [
         "退いた先発が再出場できる",
@@ -3990,18 +3613,18 @@
       ],
       "answer": 0,
       "explanation": "スターティングメンバーに限り、一度だけ再出場できる制度です。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ740",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "リエントリーで大切な条件は？",
       "choices": [
         "元の打順に戻る",
@@ -4010,18 +3633,18 @@
       ],
       "answer": 0,
       "explanation": "リエントリーする選手は元の打順に戻ります。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ741",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会の参加資格で特徴的なのは？",
       "choices": [
         "合同チームも出場可能",
@@ -4030,38 +3653,18 @@
       ],
       "answer": 0,
       "explanation": "大会規定では合同チーム、選抜チームの出場も可能とされています。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
-    },
-    {
-      "id": "BQ742",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "ミズノドリームカップ",
-      "question": "ミズノ大会のユニフォーム規定は？",
-      "choices": [
-        "ビブスでも出場できる",
-        "全員完全一致が必須",
-        "帽子なしでもよい"
-      ],
-      "answer": 0,
-      "explanation": "番号付きビブスなら、ユニフォームがそろっていなくても出場可能です。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ743",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会で大切なマナーは？",
       "choices": [
         "ヤジは禁止",
@@ -4070,18 +3673,18 @@
       ],
       "answer": 0,
       "explanation": "相手チームや審判へのヤジは禁止とされています。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ744",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会の試合球で正しいのは？",
       "choices": [
         "各チームが2球ずつ出す",
@@ -4090,18 +3693,18 @@
       ],
       "answer": 0,
       "explanation": "試合球は各チーム2球ずつ持ち出す規定です。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ745",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会の捕手防具で正しいのは？",
       "choices": [
         "マスク等を必ず着用",
@@ -4110,18 +3713,18 @@
       ],
       "answer": 0,
       "explanation": "捕手はマスク・レガース・プロテクターを必ず着用します。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ746",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会のコールド規定で近いものは？",
       "choices": [
         "3回10点、4回7点差",
@@ -4130,18 +3733,18 @@
       ],
       "answer": 0,
       "explanation": "3回以降10点、4回以降7点差でコールドゲームとなります。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ747",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会の審判で特徴的なのは？",
       "choices": [
         "対戦相手と相談して行う",
@@ -4150,18 +3753,18 @@
       ],
       "answer": 0,
       "explanation": "都道府県予選では、対戦相手と協議して審判を行います。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ748",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "対戦期限内に試合できない時は？",
       "choices": [
         "対戦可能日数で決まる場合がある",
@@ -4170,18 +3773,18 @@
       ],
       "answer": 0,
       "explanation": "期限内に対戦できない場合、対戦可能日の数で勝敗を決める規定があります。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ749",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "雨で試合が流れた時に大切なのは？",
       "choices": [
         "事務局へ申請する",
@@ -4190,18 +3793,18 @@
       ],
       "answer": 0,
       "explanation": "雨天延期時は、対戦期限延長のため事務局へ申請が必要です。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ750",
       "level": 7,
       "level_name": "第7問",
-      "category": "ミズノドリームカップ",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
       "question": "ミズノ大会で選手申告が必須になるのは？",
       "choices": [
         "全国大会から",
@@ -4210,52 +3813,12 @@
       ],
       "answer": 0,
       "explanation": "出場選手の申告・提出は全国大会から必須です。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
-    },
-    {
-      "id": "BQ751",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "大会特別規則",
-      "question": "ミズノとマクドナルドで違いが出る理由は？",
-      "choices": [
-        "大会の目的と主催が違う",
-        "使うベースだけが違う",
-        "審判服の色が違う"
-      ],
-      "answer": 0,
-      "explanation": "大会ごとに主催や目的が違うため、特別規則に差があります。",
-      "source_note": "大会特別規則監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "マクドナルド・トーナメント"
-    },
-    {
-      "id": "BQ752",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "大会特別規則",
-      "question": "大会要項を読む理由として正しいのは？",
-      "choices": [
-        "特別ルールを知るため",
-        "打順を早く覚えるため",
-        "相手の作戦を見るため"
-      ],
-      "answer": 0,
-      "explanation": "同じ学童野球でも大会ごとに時間制限や延長方式が違うことがあります。",
-      "source_note": "大会特別規則監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
       "id": "BQ753",
@@ -4290,26 +3853,6 @@
       ],
       "answer": 0,
       "explanation": "時間内に勝敗を決めるため、特別な走者状況で始める方式です。",
-      "source_note": "大会特別規則監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ755",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "大会特別規則",
-      "question": "大会ごとの用具ルールで大切なのは？",
-      "choices": [
-        "最新要項を確認する",
-        "前の大会と同じと考える",
-        "相手チームに任せる"
-      ],
-      "answer": 0,
-      "explanation": "用具の可否は大会や年度で変わるため、最新要項の確認が必要です。",
       "source_note": "大会特別規則監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
@@ -4718,26 +4261,6 @@
       "small_category": "後半専用"
     },
     {
-      "id": "BQ808",
-      "level": 8,
-      "level_name": "第8問",
-      "category": "高校野球",
-      "question": "高校野球の改革で伝統と比べられやすい観点は？",
-      "choices": [
-        "高校野球らしさと現代の安全基準",
-        "試合前練習と応援席の人数",
-        "ユニフォーム色と球場の広さ"
-      ],
-      "answer": 0,
-      "explanation": "高校野球の改革では、伝統と選手保護・安全基準の両立が議論されます。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
       "id": "BQ809",
       "level": 8,
       "level_name": "第8問",
@@ -4958,26 +4481,6 @@
       "small_category": "後半専用"
     },
     {
-      "id": "BQ821",
-      "level": 8,
-      "level_name": "第8問",
-      "category": "広がり・全国大会",
-      "question": "NPBジュニアを後半問題にする理由は？",
-      "choices": [
-        "学童全員にはなじみが薄い",
-        "選抜色の強い大会である",
-        "後半向きの発展知識である"
-      ],
-      "answer": 0,
-      "explanation": "NPBジュニアは学童全員が参加する大会ではないため、後半の発展知識に置きます。",
-      "source_note": "大会ごとの特別ルール確認が必要",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 即消し選択肢を除去",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
       "id": "BQ822",
       "level": 8,
       "level_name": "第8問",
@@ -5056,26 +4559,6 @@
       "main_category": "用具",
       "middle_category": "バット",
       "small_category": "規格・特徴"
-    },
-    {
-      "id": "BQ826",
-      "level": 8,
-      "level_name": "第8問",
-      "category": "野球制度",
-      "question": "大会規則と公認野球規則の関係は？",
-      "choices": [
-        "大会規則が上乗せされる",
-        "公認規則は全く使わない",
-        "審判ごとに自由に決める"
-      ],
-      "answer": 0,
-      "explanation": "公認野球規則を基本に、大会ごとの特別規則が加わることがあります。",
-      "source_note": "大会特別規則監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
     },
     {
       "id": "BQ827",
@@ -5458,26 +4941,6 @@
       "small_category": "後半専用"
     },
     {
-      "id": "BQ917",
-      "level": 9,
-      "level_name": "第9問",
-      "category": "大学・社会人・プロ",
-      "question": "国際大会でルール確認が重要な理由として正しいものは？",
-      "choices": [
-        "大会ごとに延長・球数・DHなど運営が異なる場合があるため",
-        "国際大会では主催団体ごとの特別ルールが加わる場合があるため",
-        "普段のリーグと異なるロースターや試合運営があるため"
-      ],
-      "answer": 0,
-      "explanation": "国際大会では大会特別ルールが重要です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
       "id": "BQ918",
       "level": 9,
       "level_name": "第9問",
@@ -5533,26 +4996,6 @@
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ921",
-      "level": 9,
-      "level_name": "第9問",
-      "category": "広がり・国際大会",
-      "question": "WBSC U-12を後半問題にする理由は？",
-      "choices": [
-        "国際大会で知名度が限られる",
-        "国内学童大会より発展的",
-        "後半向きの世界大会知識"
-      ],
-      "answer": 0,
-      "explanation": "WBSC U-12は国際大会の知識であり、一般的な学童大会より発展的な内容です。",
-      "source_note": "大会ごとの特別ルール確認が必要",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 即消し選択肢を除去",
       "main_category": "上級野球知識",
       "middle_category": "一般・高校・プロ",
       "small_category": "後半専用"
@@ -6018,26 +5461,6 @@
       "small_category": "後半専用"
     },
     {
-      "id": "BQ1021",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "広がり・国際大会",
-      "question": "世界少年野球大会を扱う位置は？",
-      "choices": [
-        "野球博士レベルの知識",
-        "世界大会としての発展知識",
-        "学童野球から広がる教養"
-      ],
-      "answer": 0,
-      "explanation": "世界少年野球大会は、学童選手全員が身近に知る大会ではないため、後半の教養問題として扱います。",
-      "source_note": "大会ごとの特別ルール確認が必要",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 即消し選択肢を除去",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
       "id": "BQ1022",
       "level": 10,
       "level_name": "第10問",
@@ -6070,26 +5493,6 @@
       ],
       "answer": 0,
       "explanation": "用具規制では、安全と試合の公平さを両立することが重要です。",
-      "source_note": "野球制度史",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1024",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・制度史",
-      "question": "国際大会でルール差が出る理由は？",
-      "choices": [
-        "国際規則と大会規定がある",
-        "ベースの形が国ごとに違う",
-        "全チームが同じリーグだから"
-      ],
-      "answer": 0,
-      "explanation": "国際大会では、国際規則に大会ごとの規定が加わることがあります。",
       "source_note": "野球制度史",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
