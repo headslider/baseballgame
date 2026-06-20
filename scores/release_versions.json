@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.21",
+  "current_public_version": "v1.1.23",
   "internal": {
-    "app_version": "v860-production",
-    "cache_version": "yakyu-yarouze-v860-production",
+    "app_version": "v862-production",
+    "cache_version": "yakyu-yarouze-v862-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの選択肢位置、下部メニュー固定、カウントダウン危険表示を調整。"
+    "change_summary": "野球博士チャレンジの問題データを v11 level rebalance の312問プールへ更新。"
   },
   "rules": [
     {
@@ -30,6 +30,36 @@
   ],
   "versions": [
     {
+      "id": "v1.1.23-20260620-v862",
+      "public_version": "v1.1.23",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジ問題データ更新",
+      "public_summary": "野球博士チャレンジの問題プールを v11 level rebalance の312問データへ更新しました。",
+      "admin_note": "v862-production更新。data/quiz_master_questions.json と assets/quiz_master_questions.js を quiz_master_questions_final_candidate_v11_level_rebalance.json の312問プールへ同期。20問制限はかけず、各レベルの全問題を出題プールとして扱う。前回未コミットの管理画面専用タブ化と選択肢配置調整も含め、index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v862-production",
+      "cache_version": "yakyu-yarouze-v862-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
+      "id": "v1.1.22-20260620-v861",
+      "public_version": "v1.1.22",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジ管理タブ分離",
+      "public_summary": "最高位管理者画面で、野球博士チャレンジの問題管理を専用タブとして扱うようにしました。クイズ画面の選択肢位置も再調整しました。",
+      "admin_note": "v861-production更新。admin.html のタブメニューに「野球博士チャレンジ」を追加し、既存の問題管理タブ内にあった野球博士問題管理カードを専用タブへ移動。タブを開いた時に quiz_master_question_list を読み込む。クイズ画面では選択肢を下部メニューの約20px上へ固定し、獲得点数表示の z-index を選択肢より上に調整。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v861-production",
+      "cache_version": "yakyu-yarouze-v861-production",
+      "visible": true,
+      "is_current": false,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.21-20260620-v860",
       "public_version": "v1.1.21",
       "release_type": "patch",
@@ -40,7 +70,7 @@
       "internal_version": "v860-production",
       "cache_version": "yakyu-yarouze-v860-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },

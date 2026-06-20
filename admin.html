@@ -179,6 +179,7 @@
         <button class="tab-btn" data-tab="tab-id-management" type="button">ID管理</button>
         <button class="tab-btn" data-tab="tab-player-management" type="button">ユーザー管理</button>
         <button class="tab-btn" data-tab="tab-question-management" data-admin-section="question-management" type="button">問題管理</button>
+        <button class="tab-btn" data-tab="tab-quiz-master" type="button">野球博士チャレンジ</button>
         <button class="tab-btn" data-tab="tab-request-management" type="button">要望管理</button>
         <button class="tab-btn" data-tab="tab-user-analytics" type="button">ユーザー分析</button>
         <button class="tab-btn" data-tab="tab-access-analytics" type="button">アクセス解析・データ解析</button>
@@ -629,59 +630,6 @@
           <div id="adminQuestionTestMessage" class="muted admin-question-test-message"></div>
         </div>
 
-        <div id="quizMasterQuestionManageCard" class="card" style="margin-top:12px">
-          <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
-            <div>
-              <h3 style="margin:0 0 4px">野球博士チャレンジ問題管理</h3>
-              <div class="muted">知識クイズ専用の問題を追加・修正・削除します。保存時に <code>data/quiz_master_questions.json</code> と <code>assets/quiz_master_questions.js</code> を同期し、変更前バックアップを作成します。</div>
-            </div>
-            <button class="secondary small" type="button" onclick="loadQuizMasterQuestionList()">野球博士問題を再読み込み</button>
-          </div>
-          <div class="row" style="margin-top:10px">
-            <label>検索<br><input id="quizMasterQuestionSearch" placeholder="ID・カテゴリ・問題文・解説"></label>
-            <label>レベル<br><select id="quizMasterLevelFilter"><option value="">すべて</option><option value="1">第1問</option><option value="2">第2問</option><option value="3">第3問</option><option value="4">第4問</option><option value="5">第5問</option><option value="6">第6問</option><option value="7">第7問</option><option value="8">第8問</option><option value="9">第9問</option><option value="10">第10問</option></select></label>
-            <label>カテゴリ<br><select id="quizMasterCategoryFilter"><option value="">すべて</option></select></label>
-            <button type="button" onclick="loadQuizMasterQuestionList()">検索</button>
-            <button class="secondary" type="button" onclick="newQuizMasterQuestionTemplate()">新規野球博士問題</button>
-          </div>
-          <div id="quizMasterQuestionInfo" class="muted" style="margin-top:8px">野球博士問題を読み込み中です。</div>
-          <div class="split-grid list-full" style="margin-top:12px">
-            <div>
-              <h4 style="margin:0 0 8px">問題一覧</h4>
-              <div id="quizMasterQuestionTable" class="table-wrap"></div>
-            </div>
-            <div id="quizMasterQuestionEditor" style="display:none">
-              <h4 style="margin:0 0 8px">野球博士問題フォーム</h4>
-              <div class="question-form">
-                <div class="form-grid">
-                  <label>ID*<input id="qmq_id" placeholder="例：BQ601"></label>
-                  <label>レベル*<select id="qmq_level"><option value="">選択してください</option><option value="1">第1問</option><option value="2">第2問</option><option value="3">第3問</option><option value="4">第4問</option><option value="5">第5問</option><option value="6">第6問</option><option value="7">第7問</option><option value="8">第8問</option><option value="9">第9問</option><option value="10">第10問</option></select></label>
-                  <label>カテゴリ*<input id="qmq_category" placeholder="例：安全"></label>
-                  <label>正解*<select id="qmq_answer"><option value="0">A</option><option value="1">B</option><option value="2">C</option></select></label>
-                </div>
-                <label>問題文*<textarea id="qmq_question" rows="3"></textarea></label>
-                <div class="form-grid">
-                  <label>選択肢A*<textarea id="qmq_choice_0" rows="2"></textarea></label>
-                  <label>選択肢B*<textarea id="qmq_choice_1" rows="2"></textarea></label>
-                  <label>選択肢C*<textarea id="qmq_choice_2" rows="2"></textarea></label>
-                </div>
-                <label>解説*<textarea id="qmq_explanation" rows="3"></textarea></label>
-                <div class="form-grid">
-                  <label>source_note<input id="qmq_source_note"></label>
-                  <label>overlap_check<input id="qmq_overlap_check" placeholder="本編と重複しない知識問題"></label>
-                  <label>quality_note<input id="qmq_quality_note"></label>
-                </div>
-                <div class="notice-actions">
-                  <button id="quizMasterQuestionSaveBtn" type="button" onclick="saveQuizMasterQuestionFromEditor()">保存 / 追加</button>
-                  <button class="secondary" type="button" onclick="copyQuizMasterEditingQuestion()">コピー</button>
-                  <button class="danger" type="button" onclick="deleteQuizMasterEditingQuestion()">削除</button>
-                </div>
-                <div id="quizMasterQuestionMessage" class="msg"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div id="questionListInfo" class="muted" style="margin-top:8px"></div>
         <div id="draftQuestionPanel" class="card" style="display:none;margin-top:12px">
           <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
@@ -846,6 +794,61 @@
               <div class="muted">CSV反映や復元の前に作成されたバックアップを確認・復元・削除できます。</div>
               <div id="questionBackupMessage" class="msg"></div>
               <div id="questionBackupList" class="table-wrap"><p class="muted">バックアップ一覧を読み込んでください。</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="tab-quiz-master" class="tab-panel">
+      <section id="quizMasterQuestionManageCard" class="card">
+        <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+          <div>
+            <h2 style="margin:0 0 4px">野球博士チャレンジ</h2>
+            <div class="muted">知識クイズ専用の問題を追加・修正・削除します。保存時に <code>data/quiz_master_questions.json</code> と <code>assets/quiz_master_questions.js</code> を同期し、変更前バックアップを作成します。</div>
+          </div>
+          <button class="secondary small" type="button" onclick="loadQuizMasterQuestionList()">野球博士問題を再読み込み</button>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <label>検索<br><input id="quizMasterQuestionSearch" placeholder="ID・カテゴリ・問題文・解説"></label>
+          <label>レベル<br><select id="quizMasterLevelFilter"><option value="">すべて</option><option value="1">第1問</option><option value="2">第2問</option><option value="3">第3問</option><option value="4">第4問</option><option value="5">第5問</option><option value="6">第6問</option><option value="7">第7問</option><option value="8">第8問</option><option value="9">第9問</option><option value="10">第10問</option></select></label>
+          <label>カテゴリ<br><select id="quizMasterCategoryFilter"><option value="">すべて</option></select></label>
+          <button type="button" onclick="loadQuizMasterQuestionList()">検索</button>
+          <button class="secondary" type="button" onclick="newQuizMasterQuestionTemplate()">新規野球博士問題</button>
+        </div>
+        <div id="quizMasterQuestionInfo" class="muted" style="margin-top:8px">野球博士問題を読み込み中です。</div>
+        <div class="split-grid list-full" style="margin-top:12px">
+          <div>
+            <h3 style="margin:0 0 8px">問題一覧</h3>
+            <div id="quizMasterQuestionTable" class="table-wrap"></div>
+          </div>
+          <div id="quizMasterQuestionEditor" style="display:none">
+            <h3 style="margin:0 0 8px">野球博士問題フォーム</h3>
+            <div class="question-form">
+              <div class="form-grid">
+                <label>ID*<input id="qmq_id" placeholder="例：BQ601"></label>
+                <label>レベル*<select id="qmq_level"><option value="">選択してください</option><option value="1">第1問</option><option value="2">第2問</option><option value="3">第3問</option><option value="4">第4問</option><option value="5">第5問</option><option value="6">第6問</option><option value="7">第7問</option><option value="8">第8問</option><option value="9">第9問</option><option value="10">第10問</option></select></label>
+                <label>カテゴリ*<input id="qmq_category" placeholder="例：安全"></label>
+                <label>正解*<select id="qmq_answer"><option value="0">A</option><option value="1">B</option><option value="2">C</option></select></label>
+              </div>
+              <label>問題文*<textarea id="qmq_question" rows="3"></textarea></label>
+              <div class="form-grid">
+                <label>選択肢A*<textarea id="qmq_choice_0" rows="2"></textarea></label>
+                <label>選択肢B*<textarea id="qmq_choice_1" rows="2"></textarea></label>
+                <label>選択肢C*<textarea id="qmq_choice_2" rows="2"></textarea></label>
+              </div>
+              <label>解説*<textarea id="qmq_explanation" rows="3"></textarea></label>
+              <div class="form-grid">
+                <label>source_note<input id="qmq_source_note"></label>
+                <label>overlap_check<input id="qmq_overlap_check" placeholder="本編と重複しない知識問題"></label>
+                <label>quality_note<input id="qmq_quality_note"></label>
+              </div>
+              <div class="notice-actions">
+                <button id="quizMasterQuestionSaveBtn" type="button" onclick="saveQuizMasterQuestionFromEditor()">保存 / 追加</button>
+                <button class="secondary" type="button" onclick="copyQuizMasterEditingQuestion()">コピー</button>
+                <button class="danger" type="button" onclick="deleteQuizMasterEditingQuestion()">削除</button>
+              </div>
+              <div id="quizMasterQuestionMessage" class="msg"></div>
             </div>
           </div>
         </div>
@@ -1082,7 +1085,6 @@ async function dashboard(){
     renderLog("idAuditLog",data.id_audit_log||[]);
     renderLog("adminAuditLog",data.admin_audit_log||[]);
     if($("questionListTable")) loadQuestionList().catch(e=>{setHtml("questionListTable",`<p class="err">${esc(e.message)}</p>`);});
-    if($("quizMasterQuestionTable")) loadQuizMasterQuestionList().catch(e=>{setHtml("quizMasterQuestionTable",`<p class="err">${esc(e.message)}</p>`);});
     if($("questionVersionTable")) loadQuestionVersions().catch(()=>{});
     if($("releaseVersionCurrent")) loadReleaseVersions().catch(()=>{});
   }catch(e){
@@ -3386,6 +3388,7 @@ function switchAdminTab(tabId){
   }
   if(tabId==="tab-user-analytics")renderUserAnalytics(latestUserAnalytics||{summary:{},by_grade:{},by_position:{},recent_users:[]});
   if(tabId==="tab-access-analytics")renderAccessAnalytics(latestAccessAnalytics||{summary:{},daily_access:{},pages:{},id_results:{},recent_access:[]});
+  if(tabId==="tab-quiz-master")loadQuizMasterQuestionList().catch(e=>{setHtml("quizMasterQuestionTable",`<p class="err">${esc(e.message)}</p>`);});
   if(tabId==="tab-version-management")loadReleaseVersions().catch(e=>{setHtml("releaseVersionCurrent",`<p class="err">${esc(e.message)}</p>`);});
   window.scrollTo({top:0,behavior:"smooth"});
 }
