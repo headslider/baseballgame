@@ -254,6 +254,18 @@ function player_has_feature($player_id, $feature) {
     return !empty($flags[$feature]);
 }
 
+function player_has_quiz_master_access($player_id) {
+    if (player_has_feature($player_id, 'admin_mode')) return true;
+    if (player_has_feature($player_id, 'quiz_master')) return true;
+    $sources = feature_sources_for_player($player_id);
+    if (is_array($sources)) {
+        foreach ($sources as $src) {
+            if (is_array($src) && (($src['type'] ?? '') === 'invite')) return true;
+        }
+    }
+    return false;
+}
+
 function normalize_admin_id($value) {
     return strtoupper(preg_replace('/[^A-Z0-9_\-]/', '', strtoupper($value ?? '')));
 }
@@ -282,6 +294,7 @@ function all_restricted_features() {
     return [
         'mistake_review'=>['label'=>'間違いプレイチェック機能','restricted'=>true],
         'device_transfer'=>['label'=>'端末引継ぎ機能','restricted'=>true],
+        'quiz_master'=>['label'=>'野球博士チャレンジ','restricted'=>true],
         'admin_mode'=>['label'=>'管理者用モード','restricted'=>true]
     ];
 }
@@ -533,7 +546,7 @@ function code_db_file_by_type($type) {
     return feature_scores_dir() . ($type === 'admin' ? '/admin_codes.json' : '/invite_codes.json');
 }
 function default_features_for_code_type($type) {
-    return $type === 'admin' ? ['mistake_review','device_transfer','admin_mode'] : ['mistake_review','device_transfer'];
+    return $type === 'admin' ? ['mistake_review','device_transfer','quiz_master','admin_mode'] : ['mistake_review','device_transfer','quiz_master'];
 }
 function summarize_code_db($type, $db) {
     $out = [];

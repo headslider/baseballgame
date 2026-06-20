@@ -1051,7 +1051,7 @@ function normalize_question_id_admin($value) {
 }
 
 function clean_features_admin($features, $type) {
-    $allowed = ['mistake_review'=>true,'device_transfer'=>true,'admin_mode'=>true];
+    $allowed = ['mistake_review'=>true,'device_transfer'=>true,'quiz_master'=>true,'admin_mode'=>true];
     if (!is_array($features) || !count($features)) return default_features_for_code_type($type);
     $out = [];
     foreach ($features as $f) {

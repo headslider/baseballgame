@@ -22,6 +22,9 @@ if (!verify_player_client($player_id, $client_token)) {
 
 $flags = feature_flags_for_player($player_id);
 $sources = function_exists('feature_sources_for_player') ? feature_sources_for_player($player_id) : [];
+if (function_exists('player_has_quiz_master_access') && player_has_quiz_master_access($player_id)) {
+    $flags['quiz_master'] = true;
+}
 echo json_encode([
     'ok'=>true,
     'player_id'=>$player_id,

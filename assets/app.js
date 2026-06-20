@@ -44,12 +44,13 @@ const GRADE_TIME_LIMITS={3:30,4:25,5:20,6:15};
 const OPTION_FEATURES={
   mistake_review:{label:"間違いプレイチェック機能",restricted:true},
   device_transfer:{label:"端末引継ぎ機能",restricted:true},
+  quiz_master:{label:"野球博士チャレンジ",restricted:true},
   admin_mode:{label:"管理者用モード",restricted:true}
 };
 const $=id=>document.getElementById(id);
 const QUIZ_MASTER_DAILY_LIMIT=3;
-const QUIZ_MASTER_DAILY_LIMIT_ENABLED=false;
-const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=false;
+const QUIZ_MASTER_DAILY_LIMIT_ENABLED=true;
+const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
 const QUIZ_MASTER_POINTS={1:10,2:20,3:40,4:80,5:160,6:240,7:360,8:540,9:810,10:1215};
 const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13};
 const QUIZ_MASTER_STATE={questions:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false};
@@ -1634,6 +1635,8 @@ function quizMasterMarkQuestionShown(q){
   quizMasterSaveTodayQuestionHistory(ids);
 }
 function hasInviteUnlockForQuizMaster(){
+  if(isFeatureUnlocked("quiz_master"))return true;
+  if(STATE.adminMode||isFeatureUnlocked("admin_mode"))return true;
   const sources=STATE.featureStatus&&STATE.featureStatus.sources;
   if(sources&&typeof sources==="object"){
     if(Object.values(sources).some(src=>src&&src.type==="invite"))return true;
@@ -1656,18 +1659,18 @@ async function ensureQuizMasterProductionAccess(){
 function updateQuizMasterDailyUI(){
   const remaining=STATE.adminMode?QUIZ_MASTER_DAILY_LIMIT:quizMasterRemainingToday();
   const life=$("quizMasterLifelineBtn");
-  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ ❤×${remaining}<br><small>毎日24時リセット</small>`:`ライフ ❤×∞<br><small>テスト中は無制限</small>`;
+  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ ❤×${remaining}<br><small>毎日24時リセット</small>`:`ライフ ❤×∞<br><small>招待ID登録済み</small>`;
   const start=$("quizMasterBtn");
   if(start){
     start.disabled=QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!STATE.adminMode&&remaining<=0;
-    start.textContent=QUIZ_MASTER_DAILY_LIMIT_ENABLED?(remaining>0||STATE.adminMode?`野球博士チャレンジ（本日残り${remaining}回）`:"野球博士チャレンジ（本日終了）"):"野球博士チャレンジ（テスト中は無制限）";
+    start.textContent=QUIZ_MASTER_DAILY_LIMIT_ENABLED?(remaining>0||STATE.adminMode?`野球博士チャレンジ（本日残り${remaining}回）`:"野球博士チャレンジ（本日終了）"):"野球博士チャレンジ";
   }
 }
 function showQuizMasterTutorial(){
   return new Promise(resolve=>{
     const overlay=$("quizMasterTutorialOverlay");
     if(!overlay){resolve(true);return}
-    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ チュートリアル"><p class="quiz-master-tutorial-kicker">初めての方へ</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全10問。各問に制限時間があります。</li><li>第6問からは点数が1.5倍に上がるチャレンジゾーンです。</li><li class="quiz-master-tutorial-danger">第6問以降で失敗すると獲得点数は0点になります。</li><li>現在のテスト版では挑戦回数は無制限です。本番では1日3回まで、利用から24時間後ではなく毎日24時にリセット予定です。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">チュートリアルを見た後に開始しますか?</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="again">再度、チュートリアルを確認する</button><button type="button" class="primary" data-quiz-tutorial="start">開始する</button></div></div>';
+    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ チュートリアル"><p class="quiz-master-tutorial-kicker">初めての方へ</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全10問。各問に制限時間があります。</li><li>第6問からは点数が1.5倍に上がるチャレンジゾーンです。</li><li class="quiz-master-tutorial-danger">第6問以降で失敗すると獲得点数は0点になります。</li><li>挑戦は1日3回までです。利用から24時間後ではなく、毎日24時にリセットされます。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">チュートリアルを見た後に開始しますか?</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="again">再度、チュートリアルを確認する</button><button type="button" class="primary" data-quiz-tutorial="start">開始する</button></div></div>';
     overlay.setAttribute("aria-hidden","false");
     overlay.classList.add("show");
     overlay.querySelector('[data-quiz-tutorial="again"]')?.addEventListener("click",()=>{
@@ -1713,9 +1716,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=870",
-    "./data/quiz_master_questions.json?v=870",
-    new URL("data/quiz_master_questions.json?v=870",document.baseURI).href
+    "data/quiz_master_questions.json?v=871",
+    "./data/quiz_master_questions.json?v=871",
+    new URL("data/quiz_master_questions.json?v=871",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -2833,7 +2836,7 @@ function handleInitialOpenAction(){
 }
 
 function logoutPlayer(){STATE.playerId="";STATE.loggedIn=false;STATE.progress={};STATE.featureFlags={};STATE.featureStatus=null;STATE.mistakeReviewEnabled=false;STATE.adminMode=false;localStorage.setItem("mistakeReviewEnabled","0");localStorage.setItem("adminMode","0");localStorage.removeItem("baseballPlayerId");$("playerId").value="";updateLoginUI();updateGradeOptions();updateAdminModeUI();show("screen-title")}
-function updateLoginUI(){const pid=STATE.loggedIn&&STATE.playerId?STATE.playerId:"";const idForChange=$("currentPlayerIdForChange");if(idForChange)idForChange.textContent=pid||"未ログイン";const inputId=currentInputPlayerId?currentInputPlayerId():"";const status=$("loginStatus");if(status){if(STATE.adminMode){status.textContent=pid?`プレイヤーID：${pid}（管理者用モード中：制限時間なし・ランキング反映なし）`:"管理者用モード中：制限時間なし・ランキング反映なし";}else{status.textContent=pid?`プレイヤーID：${pid}`:"プレイヤーIDなしでも野球博士チャレンジはテストプレイできます。成績保存・ランキング反映にはログインが必要です。";}}const inputArea=$("playerIdInputArea");if(inputArea)inputArea.style.display=pid?"none":"";const topRule=$("topPlayerIdRuleAccordion");if(topRule)topRule.style.display=pid?"none":"";const guide=$("guestGuide");if(guide)guide.style.display=(!STATE.adminMode&&!pid&&!inputId)?"block":"none";const login=$("loginBtn");if(login)login.style.display=pid?"none":"inline-block";const my=$("myPageBtn");if(my){my.disabled=!pid;my.style.display=pid?"inline-block":"none"}const ranking=$("rankingBtn");if(ranking){ranking.disabled=!pid;ranking.style.display=pid?"inline-block":"none"}const out=$("logoutBtn");if(out)out.style.display=pid?"inline-block":"none";const start=$("startBtn");if(start){start.style.display=pid?"block":"none";start.disabled=!pid}const quiz=$("quizMasterBtn");if(quiz){quiz.style.display="block";quiz.disabled=false}const quizRank=$("quizMasterRankingBtn");if(quizRank){quizRank.style.display="block";quizRank.disabled=false}updateQuizMasterDailyUI();updateIssueKeyActions();updateRequestMenuVisibility();updatePwaInstallGuide()}
+function updateLoginUI(){const pid=STATE.loggedIn&&STATE.playerId?STATE.playerId:"";const idForChange=$("currentPlayerIdForChange");if(idForChange)idForChange.textContent=pid||"未ログイン";const inputId=currentInputPlayerId?currentInputPlayerId():"";const status=$("loginStatus");if(status){if(STATE.adminMode){status.textContent=pid?`プレイヤーID：${pid}（管理者用モード中：制限時間なし・ランキング反映なし）`:"管理者用モード中：制限時間なし・ランキング反映なし";}else{status.textContent=pid?`プレイヤーID：${pid}`:"野球博士チャレンジは、プレイヤーIDでログインし、招待IDを登録した方のみ利用できます。";}}const inputArea=$("playerIdInputArea");if(inputArea)inputArea.style.display=pid?"none":"";const topRule=$("topPlayerIdRuleAccordion");if(topRule)topRule.style.display=pid?"none":"";const guide=$("guestGuide");if(guide)guide.style.display=(!STATE.adminMode&&!pid&&!inputId)?"block":"none";const login=$("loginBtn");if(login)login.style.display=pid?"none":"inline-block";const my=$("myPageBtn");if(my){my.disabled=!pid;my.style.display=pid?"inline-block":"none"}const ranking=$("rankingBtn");if(ranking){ranking.disabled=!pid;ranking.style.display=pid?"inline-block":"none"}const out=$("logoutBtn");if(out)out.style.display=pid?"inline-block":"none";const start=$("startBtn");if(start){start.style.display=pid?"block":"none";start.disabled=!pid}const quiz=$("quizMasterBtn");if(quiz){quiz.style.display="block";quiz.disabled=false}const quizRank=$("quizMasterRankingBtn");if(quizRank){quizRank.style.display="block";quizRank.disabled=false}updateQuizMasterDailyUI();updateIssueKeyActions();updateRequestMenuVisibility();updatePwaInstallGuide()}
 
 function latestPlayHtml(value){
   return escapeHtml(fmtDate(value));
