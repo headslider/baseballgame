@@ -1634,36 +1634,44 @@ function quizMasterMarkQuestionShown(q){
   ids.push(q.id);
   quizMasterSaveTodayQuestionHistory(ids);
 }
-function hasInviteUnlockForQuizMaster(){
+function hasQuizMasterFeatureAccess(){
   if(isFeatureUnlocked("quiz_master"))return true;
   if(STATE.adminMode||isFeatureUnlocked("admin_mode"))return true;
-  const sources=STATE.featureStatus&&STATE.featureStatus.sources;
-  if(sources&&typeof sources==="object"){
-    if(Object.values(sources).some(src=>src&&src.type==="invite"))return true;
-  }
   return false;
 }
 async function ensureQuizMasterProductionAccess(){
   if(!QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED)return true;
   if(!STATE.loggedIn||!STATE.playerId){
-    alert("野球博士チャレンジは、プレイヤーIDでログインし、招待IDを登録した方のみ利用できます。");
+    alert("野球博士チャレンジは、プレイヤーIDでログインし、オプション機能を解放した方のみ利用できます。");
     return false;
   }
   try{await refreshFeatureFlags(STATE.playerId);}catch(e){console.warn("quiz master access refresh failed",e)}
-  if(!hasInviteUnlockForQuizMaster()){
-    alert("野球博士チャレンジは招待ID登録済みのプレイヤーIDで利用できます。マイページで招待IDを登録してください。");
+  if(!hasQuizMasterFeatureAccess()){
+    alert("野球博士チャレンジはオプション機能です。マイページで招待IDまたは管理者IDを登録し、野球博士チャレンジ機能を解放してください。");
     return false;
   }
   return true;
 }
+function renderQuizMasterStartButton(label){
+  const start=$("quizMasterBtn");
+  if(!start)return;
+  start.textContent="";
+  const title=document.createElement("span");
+  title.className="quiz-master-start-title";
+  title.textContent=label;
+  const badge=document.createElement("span");
+  badge.className="quiz-master-start-new";
+  badge.textContent="NEW!";
+  start.append(title,badge);
+}
 function updateQuizMasterDailyUI(){
   const remaining=STATE.adminMode?QUIZ_MASTER_DAILY_LIMIT:quizMasterRemainingToday();
   const life=$("quizMasterLifelineBtn");
-  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ ❤×${remaining}<br><small>毎日24時リセット</small>`:`ライフ ❤×∞<br><small>招待ID登録済み</small>`;
+  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ ❤×${remaining}<br><small>毎日24時リセット</small>`:`ライフ ❤×∞<br><small>機能解放済み</small>`;
   const start=$("quizMasterBtn");
   if(start){
     start.disabled=QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!STATE.adminMode&&remaining<=0;
-    start.textContent=QUIZ_MASTER_DAILY_LIMIT_ENABLED?(remaining>0||STATE.adminMode?`野球博士チャレンジ（本日残り${remaining}回）`:"野球博士チャレンジ（本日終了）"):"野球博士チャレンジ";
+    renderQuizMasterStartButton(QUIZ_MASTER_DAILY_LIMIT_ENABLED?(remaining>0||STATE.adminMode?`野球博士チャレンジ（本日残り${remaining}回）`:"野球博士チャレンジ（本日終了）"):"野球博士チャレンジ");
   }
 }
 function showQuizMasterTutorial(){
@@ -1716,9 +1724,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=873",
-    "./data/quiz_master_questions.json?v=873",
-    new URL("data/quiz_master_questions.json?v=873",document.baseURI).href
+    "data/quiz_master_questions.json?v=875",
+    "./data/quiz_master_questions.json?v=875",
+    new URL("data/quiz_master_questions.json?v=875",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -2836,7 +2844,7 @@ function handleInitialOpenAction(){
 }
 
 function logoutPlayer(){STATE.playerId="";STATE.loggedIn=false;STATE.progress={};STATE.featureFlags={};STATE.featureStatus=null;STATE.mistakeReviewEnabled=false;STATE.adminMode=false;localStorage.setItem("mistakeReviewEnabled","0");localStorage.setItem("adminMode","0");localStorage.removeItem("baseballPlayerId");$("playerId").value="";updateLoginUI();updateGradeOptions();updateAdminModeUI();show("screen-title")}
-function updateLoginUI(){const pid=STATE.loggedIn&&STATE.playerId?STATE.playerId:"";const idForChange=$("currentPlayerIdForChange");if(idForChange)idForChange.textContent=pid||"未ログイン";const inputId=currentInputPlayerId?currentInputPlayerId():"";const status=$("loginStatus");if(status){if(STATE.adminMode){status.textContent=pid?`プレイヤーID：${pid}（管理者用モード中：制限時間なし・ランキング反映なし）`:"管理者用モード中：制限時間なし・ランキング反映なし";}else{status.textContent=pid?`プレイヤーID：${pid}`:"野球博士チャレンジは、プレイヤーIDでログインし、招待IDを登録した方のみ利用できます。";}}const inputArea=$("playerIdInputArea");if(inputArea)inputArea.style.display=pid?"none":"";const topRule=$("topPlayerIdRuleAccordion");if(topRule)topRule.style.display=pid?"none":"";const guide=$("guestGuide");if(guide)guide.style.display=(!STATE.adminMode&&!pid&&!inputId)?"block":"none";const login=$("loginBtn");if(login)login.style.display=pid?"none":"inline-block";const my=$("myPageBtn");if(my){my.disabled=!pid;my.style.display=pid?"inline-block":"none"}const ranking=$("rankingBtn");if(ranking){ranking.disabled=!pid;ranking.style.display=pid?"inline-block":"none"}const out=$("logoutBtn");if(out)out.style.display=pid?"inline-block":"none";const start=$("startBtn");if(start){start.style.display=pid?"block":"none";start.disabled=!pid}const quiz=$("quizMasterBtn");if(quiz){quiz.style.display="block";quiz.disabled=false}const quizRank=$("quizMasterRankingBtn");if(quizRank){quizRank.style.display="block";quizRank.disabled=false}updateQuizMasterDailyUI();updateIssueKeyActions();updateRequestMenuVisibility();updatePwaInstallGuide()}
+function updateLoginUI(){const pid=STATE.loggedIn&&STATE.playerId?STATE.playerId:"";const idForChange=$("currentPlayerIdForChange");if(idForChange)idForChange.textContent=pid||"未ログイン";const inputId=currentInputPlayerId?currentInputPlayerId():"";const status=$("loginStatus");if(status){if(STATE.adminMode){status.textContent=pid?`プレイヤーID：${pid}（管理者用モード中：制限時間なし・ランキング反映なし）`:"管理者用モード中：制限時間なし・ランキング反映なし";}else{status.textContent=pid?`プレイヤーID：${pid}`:"野球博士チャレンジは、プレイヤーIDでログインし、オプション機能を解放した方のみ利用できます。";}}const inputArea=$("playerIdInputArea");if(inputArea)inputArea.style.display=pid?"none":"";const topRule=$("topPlayerIdRuleAccordion");if(topRule)topRule.style.display=pid?"none":"";const guide=$("guestGuide");if(guide)guide.style.display=(!STATE.adminMode&&!pid&&!inputId)?"block":"none";const login=$("loginBtn");if(login)login.style.display=pid?"none":"inline-block";const my=$("myPageBtn");if(my){my.disabled=!pid;my.style.display=pid?"inline-block":"none"}const ranking=$("rankingBtn");if(ranking){ranking.disabled=!pid;ranking.style.display=pid?"inline-block":"none"}const out=$("logoutBtn");if(out)out.style.display=pid?"inline-block":"none";const start=$("startBtn");if(start){start.style.display=pid?"block":"none";start.disabled=!pid}const quiz=$("quizMasterBtn");if(quiz){quiz.style.display="block";quiz.disabled=false}const quizRank=$("quizMasterRankingBtn");if(quizRank){quizRank.style.display="block";quizRank.disabled=false}updateQuizMasterDailyUI();updateIssueKeyActions();updateRequestMenuVisibility();updatePwaInstallGuide()}
 
 function latestPlayHtml(value){
   return escapeHtml(fmtDate(value));

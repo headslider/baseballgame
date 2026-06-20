@@ -256,14 +256,7 @@ function player_has_feature($player_id, $feature) {
 
 function player_has_quiz_master_access($player_id) {
     if (player_has_feature($player_id, 'admin_mode')) return true;
-    if (player_has_feature($player_id, 'quiz_master')) return true;
-    $sources = feature_sources_for_player($player_id);
-    if (is_array($sources)) {
-        foreach ($sources as $src) {
-            if (is_array($src) && (($src['type'] ?? '') === 'invite')) return true;
-        }
-    }
-    return false;
+    return player_has_feature($player_id, 'quiz_master');
 }
 
 function normalize_admin_id($value) {

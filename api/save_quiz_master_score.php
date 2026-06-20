@@ -53,7 +53,7 @@ if (player_has_feature($player_id, 'admin_mode')) {
 }
 if (!player_has_quiz_master_access($player_id)) {
     http_response_code(403);
-    echo json_encode(['ok'=>false,'error'=>'quiz_master_locked','message'=>'野球博士チャレンジは招待ID登録済みのプレイヤーIDで利用できます。'], JSON_UNESCAPED_UNICODE | $JSON_INVALID_UTF8_SUBSTITUTE_FLAG);
+    echo json_encode(['ok'=>false,'error'=>'quiz_master_locked','message'=>'野球博士チャレンジはオプション機能です。招待IDまたは管理者IDで野球博士チャレンジ機能を解放してください。'], JSON_UNESCAPED_UNICODE | $JSON_INVALID_UTF8_SUBSTITUTE_FLAG);
     exit;
 }
 
