@@ -1,13 +1,13 @@
 {
-  "app_version": "v868-production",
-  "cache_version": "yakyu-yarouze-v868-production",
-  "public_version": "v1.1.29",
+  "app_version": "v869-production",
+  "cache_version": "yakyu-yarouze-v869-production",
+  "public_version": "v1.1.30",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの進行表示「1/10問」をトップへ戻るボタン左へ固定配置する再調整。",
+  "change_summary": "遊び方ページに野球博士チャレンジの遊び方と画面イメージを追加し、問題データをv15へ更新。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
