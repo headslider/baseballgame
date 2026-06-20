@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.38",
+  "current_public_version": "v1.1.39",
   "internal": {
-    "app_version": "v877-production",
-    "cache_version": "yakyu-yarouze-v877-production",
+    "app_version": "v878-production",
+    "cache_version": "yakyu-yarouze-v878-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士ランキングを総合点上位5名表示へ変更し、最近のプレイ表示を廃止。問題データをv18へ差し替え。"
+    "change_summary": "テスト完了まで野球博士チャレンジの1日3回制限を無効化し、ライフ表示とチュートリアル文言をテスト中無制限へ調整。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.39-20260620-v878",
+      "public_version": "v1.1.39",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジテスト中回数制限解除",
+      "public_summary": "テスト期間中、野球博士チャレンジを回数無制限でプレイできるようにしました。",
+      "admin_note": "v878-production更新。QUIZ_MASTER_DAILY_LIMIT_ENABLED を false に戻し、テスト完了まで1日3回制限を無効化。ライフ表示は「テスト中は無制限」、チュートリアルは本番では1日3回・毎日24時リセット、テスト中は回数無制限と明記。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v878-production",
+      "cache_version": "yakyu-yarouze-v878-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.38-20260620-v877",
       "public_version": "v1.1.38",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v877-production",
       "cache_version": "yakyu-yarouze-v877-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },

@@ -49,7 +49,7 @@ const OPTION_FEATURES={
 };
 const $=id=>document.getElementById(id);
 const QUIZ_MASTER_DAILY_LIMIT=3;
-const QUIZ_MASTER_DAILY_LIMIT_ENABLED=true;
+const QUIZ_MASTER_DAILY_LIMIT_ENABLED=false;
 const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
 const QUIZ_MASTER_POINTS={1:10,2:20,3:40,4:80,5:160,6:240,7:360,8:540,9:810,10:1215};
 const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13};
@@ -1667,7 +1667,7 @@ function renderQuizMasterStartButton(label){
 function updateQuizMasterDailyUI(){
   const remaining=STATE.adminMode?QUIZ_MASTER_DAILY_LIMIT:quizMasterRemainingToday();
   const life=$("quizMasterLifelineBtn");
-  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ ❤×${remaining}<br><small>毎日24時リセット</small>`:`ライフ ❤×∞<br><small>機能解放済み</small>`;
+  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ ❤×${remaining}<br><small>毎日24時リセット</small>`:`ライフ ❤×∞<br><small>テスト中は無制限</small>`;
   const start=$("quizMasterBtn");
   if(start){
     start.disabled=QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!STATE.adminMode&&remaining<=0;
@@ -1678,7 +1678,7 @@ function showQuizMasterTutorial(){
   return new Promise(resolve=>{
     const overlay=$("quizMasterTutorialOverlay");
     if(!overlay){resolve(true);return}
-    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ チュートリアル"><p class="quiz-master-tutorial-kicker">初めての方へ</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全10問。各問に制限時間があります。</li><li>第6問からは点数が1.5倍に上がるチャレンジゾーンです。</li><li class="quiz-master-tutorial-danger">第6問以降で失敗すると獲得点数は0点になります。</li><li>挑戦は1日3回までです。利用から24時間後ではなく、毎日24時にリセットされます。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">チュートリアルを見た後に開始しますか?</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="again">再度、チュートリアルを確認する</button><button type="button" class="primary" data-quiz-tutorial="start">開始する</button></div></div>';
+    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ チュートリアル"><p class="quiz-master-tutorial-kicker">初めての方へ</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全10問。各問に制限時間があります。</li><li>第6問からは点数が1.5倍に上がるチャレンジゾーンです。</li><li class="quiz-master-tutorial-danger">第6問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日3回まで、利用から24時間後ではなく毎日24時にリセットされます。テスト中は回数無制限です。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">チュートリアルを見た後に開始しますか?</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="again">再度、チュートリアルを確認する</button><button type="button" class="primary" data-quiz-tutorial="start">開始する</button></div></div>';
     overlay.setAttribute("aria-hidden","false");
     overlay.classList.add("show");
     overlay.querySelector('[data-quiz-tutorial="again"]')?.addEventListener("click",()=>{
@@ -1724,9 +1724,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=877",
-    "./data/quiz_master_questions.json?v=877",
-    new URL("data/quiz_master_questions.json?v=877",document.baseURI).href
+    "data/quiz_master_questions.json?v=878",
+    "./data/quiz_master_questions.json?v=878",
+    new URL("data/quiz_master_questions.json?v=878",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{

@@ -1,13 +1,13 @@
 {
-  "app_version": "v877-production",
-  "cache_version": "yakyu-yarouze-v877-production",
-  "public_version": "v1.1.38",
+  "app_version": "v878-production",
+  "cache_version": "yakyu-yarouze-v878-production",
+  "public_version": "v1.1.39",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士ランキングを総合点上位5名表示へ変更し、最近のプレイ表示を廃止。問題データをv18へ差し替え。",
+  "change_summary": "テスト完了まで野球博士チャレンジの1日3回制限を無効化し、ライフ表示とチュートリアル文言をテスト中無制限へ調整。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
