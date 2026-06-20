@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.26",
+  "current_public_version": "v1.1.27",
   "internal": {
-    "app_version": "v865-production",
-    "cache_version": "yakyu-yarouze-v865-production",
+    "app_version": "v866-production",
+    "cache_version": "yakyu-yarouze-v866-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの問題データを v14 sunglasses rule corrected の312問プールへ更新。"
+    "change_summary": "野球博士チャレンジ結果画面の最高記録・順位枠を非表示にし、ゲーム中の問題数表示を画面中央へ調整。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.27-20260620-v866",
+      "public_version": "v1.1.27",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジ結果画面・問題数表示調整",
+      "public_summary": "野球博士チャレンジの結果画面から最高記録・順位枠を外し、ゲーム中の問題数表示を画面中央に調整しました。",
+      "admin_note": "v866-production更新。結果画面では quizMasterRanking のランキング読み込みを行わず空表示にし、「あなたの最高記録は」枠と順位枠を非表示化。専用の野球博士ランキング画面は従来通り維持。ゲーム中の quiz-master-round をPCで上部バー中央へ配置し、スマホでも中央幅に調整。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v866-production",
+      "cache_version": "yakyu-yarouze-v866-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.26-20260620-v865",
       "public_version": "v1.1.26",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v865-production",
       "cache_version": "yakyu-yarouze-v865-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },

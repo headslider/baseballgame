@@ -9245,10 +9245,19 @@ body.quiz-master-failed .quiz-master-shell{
 }
 .quiz-master-topbar{
   grid-template-columns:minmax(150px,270px) 1fr auto auto !important;
+  position:relative !important;
 }
 @media(min-width:761px){
   .quiz-master-topbar{
     grid-template-columns:minmax(220px,330px) minmax(360px,1fr) auto auto !important;
+  }
+  .quiz-master-round{
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    justify-self:center !important;
+    z-index:4 !important;
   }
 }
 @media(max-width:760px){
@@ -9262,6 +9271,8 @@ body.quiz-master-failed .quiz-master-shell{
   .quiz-master-round{
     grid-column:1 / -1 !important;
     grid-row:2 / 3 !important;
+    justify-self:center !important;
+    width:min(360px,calc(100vw - 24px)) !important;
   }
   .quiz-master-count{
     grid-column:2 / 3 !important;

@@ -1713,9 +1713,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=865",
-    "./data/quiz_master_questions.json?v=865",
-    new URL("data/quiz_master_questions.json?v=865",document.baseURI).href
+    "data/quiz_master_questions.json?v=866",
+    "./data/quiz_master_questions.json?v=866",
+    new URL("data/quiz_master_questions.json?v=866",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -2079,8 +2079,9 @@ async function finishQuizMaster(cleared=false,message="",reason=""){
   setTextSafe("quizMasterResultTitle",cleared?"完全制覇！":"チャレンジ終了");
   setTextSafe("quizMasterFinalScore",`${score} pt`);
   renderQuizMasterResultDetail(message||`${QUIZ_MASTER_STATE.logs.length}問に挑戦しました。`,cleared);
+  const rankingBox=$("quizMasterRanking");
+  if(rankingBox)rankingBox.innerHTML="";
   await saveQuizMasterScore(cleared);
-  await loadQuizMasterRanking();
 }
 function renderQuizMasterResultDetail(message,cleared){
   const el=$("quizMasterResultDetail");
