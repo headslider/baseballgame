@@ -1571,6 +1571,9 @@ function quizMasterLimitPlayerKey(){
 function quizMasterDailyStorageKey(){
   return `baseballQuizMasterDaily:${quizMasterLimitPlayerKey()}:${quizMasterTodayKey()}`;
 }
+function quizMasterQuestionHistoryStorageKey(){
+  return `baseballQuizMasterQuestionHistory:${quizMasterLimitPlayerKey()}:${quizMasterTodayKey()}`;
+}
 function quizMasterTutorialStorageKey(){
   return `baseballQuizMasterTutorialSeen:${quizMasterLimitPlayerKey()}`;
 }
@@ -1607,6 +1610,28 @@ function quizMasterConsumeDailyAttempt(){
     localStorage.setItem(quizMasterDailyStorageKey(),String(used+1));
   }catch(e){}
   return {ok:true,remaining:Math.max(0,QUIZ_MASTER_DAILY_LIMIT-used-1)};
+}
+function quizMasterReadTodayQuestionHistory(){
+  try{
+    const raw=localStorage.getItem(quizMasterQuestionHistoryStorageKey())||"[]";
+    const arr=JSON.parse(raw);
+    return Array.isArray(arr)?arr.map(id=>String(id||"").trim()).filter(Boolean):[];
+  }catch(e){
+    return [];
+  }
+}
+function quizMasterSaveTodayQuestionHistory(ids){
+  try{
+    const unique=Array.from(new Set((ids||[]).map(id=>String(id||"").trim()).filter(Boolean)));
+    localStorage.setItem(quizMasterQuestionHistoryStorageKey(),JSON.stringify(unique.slice(-400)));
+  }catch(e){}
+}
+function quizMasterMarkQuestionShown(q){
+  if(!q||!q.id)return;
+  const ids=quizMasterReadTodayQuestionHistory();
+  if(ids.includes(q.id))return;
+  ids.push(q.id);
+  quizMasterSaveTodayQuestionHistory(ids);
 }
 function hasInviteUnlockForQuizMaster(){
   const sources=STATE.featureStatus&&STATE.featureStatus.sources;
@@ -1688,9 +1713,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=862",
-    "./data/quiz_master_questions.json?v=862",
-    new URL("data/quiz_master_questions.json?v=862",document.baseURI).href
+    "data/quiz_master_questions.json?v=863",
+    "./data/quiz_master_questions.json?v=863",
+    new URL("data/quiz_master_questions.json?v=863",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1711,8 +1736,10 @@ async function loadQuizMasterQuestions(){
 function pickQuizMasterSequence(rows){
   const sequence=[];
   const used=new Set();
+  const shownToday=new Set(quizMasterReadTodayQuestionHistory());
   for(let level=1;level<=10;level++){
-    const pool=rows.filter(q=>q.level===level&&!used.has(q.id));
+    let pool=rows.filter(q=>q.level===level&&!used.has(q.id)&&!shownToday.has(q.id));
+    if(!pool.length)pool=rows.filter(q=>q.level===level&&!used.has(q.id));
     if(!pool.length)throw new Error(`第${level}問の問題プールがありません。`);
     const q=pool[Math.floor(Math.random()*pool.length)];
     used.add(q.id);
@@ -1769,6 +1796,7 @@ function currentQuizMasterQuestion(){return QUIZ_MASTER_STATE.sequence[QUIZ_MAST
 function renderQuizMasterQuestion(){
   const q=currentQuizMasterQuestion();
   if(!q){finishQuizMaster(true);return}
+  quizMasterMarkQuestionShown(q);
   clearQuizMasterTimer();
   clearQuizMasterStageClasses();
   QUIZ_MASTER_STATE.selected=null;
