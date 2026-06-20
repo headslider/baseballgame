@@ -1,13 +1,13 @@
 {
-  "app_version": "v878-production",
-  "cache_version": "yakyu-yarouze-v878-production",
-  "public_version": "v1.1.39",
+  "app_version": "v879-production",
+  "cache_version": "yakyu-yarouze-v879-production",
+  "public_version": "v1.1.40",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "テスト完了まで野球博士チャレンジの1日3回制限を無効化し、ライフ表示とチュートリアル文言をテスト中無制限へ調整。",
+  "change_summary": "野球博士チャレンジ開始前の案内表現を「はじめに」へ変更し、操作ボタンを「ゲームを始める」「トップに戻る」に調整。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

@@ -1678,18 +1678,15 @@ function showQuizMasterTutorial(){
   return new Promise(resolve=>{
     const overlay=$("quizMasterTutorialOverlay");
     if(!overlay){resolve(true);return}
-    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ チュートリアル"><p class="quiz-master-tutorial-kicker">初めての方へ</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全10問。各問に制限時間があります。</li><li>第6問からは点数が1.5倍に上がるチャレンジゾーンです。</li><li class="quiz-master-tutorial-danger">第6問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日3回まで、利用から24時間後ではなく毎日24時にリセットされます。テスト中は回数無制限です。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">チュートリアルを見た後に開始しますか?</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="again">再度、チュートリアルを確認する</button><button type="button" class="primary" data-quiz-tutorial="start">開始する</button></div></div>';
+    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ はじめに"><p class="quiz-master-tutorial-kicker">はじめに</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全10問。各問に制限時間があります。</li><li>第6問からは点数が1.5倍に上がるチャレンジゾーンです。</li><li class="quiz-master-tutorial-danger">第6問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日3回まで、利用から24時間後ではなく毎日24時にリセットされます。テスト中は回数無制限です。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">内容を確認してからゲームを始めます。</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="top">トップに戻る</button><button type="button" class="primary" data-quiz-tutorial="start">ゲームを始める</button></div></div>';
     overlay.setAttribute("aria-hidden","false");
     overlay.classList.add("show");
-    overlay.querySelector('[data-quiz-tutorial="again"]')?.addEventListener("click",()=>{
-      const card=overlay.querySelector(".quiz-master-tutorial-card");
-      if(card){
-        card.classList.remove("replay");
-        void card.offsetWidth;
-        card.classList.add("replay");
-        card.scrollTop=0;
-      }
-    });
+    overlay.querySelector('[data-quiz-tutorial="top"]')?.addEventListener("click",()=>{
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden","true");
+      overlay.innerHTML="";
+      resolve(false);
+    },{once:true});
     overlay.querySelector('[data-quiz-tutorial="start"]')?.addEventListener("click",()=>{
       quizMasterMarkTutorialSeen();
       overlay.classList.remove("show");
@@ -1704,7 +1701,7 @@ async function ensureQuizMasterTutorial(){
   show("screen-quiz-master");
   updateQuizMasterDailyUI();
   setTextSafe("quizMasterQuestion","野球博士チャレンジを始めます。");
-  setTextSafe("quizMasterMessage","初回チュートリアルを確認してください。");
+  setTextSafe("quizMasterMessage","初回のはじめにを確認してください。");
   const choices=$("quizMasterChoices");if(choices)choices.innerHTML="";
   return await showQuizMasterTutorial();
 }
@@ -1724,9 +1721,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=878",
-    "./data/quiz_master_questions.json?v=878",
-    new URL("data/quiz_master_questions.json?v=878",document.baseURI).href
+    "data/quiz_master_questions.json?v=879",
+    "./data/quiz_master_questions.json?v=879",
+    new URL("data/quiz_master_questions.json?v=879",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
