@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.20",
+  "current_public_version": "v1.1.21",
   "internal": {
-    "app_version": "v859-production",
-    "cache_version": "yakyu-yarouze-v859-production",
+    "app_version": "v860-production",
+    "cache_version": "yakyu-yarouze-v860-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジのヒント削除、50:50確認、ランキング枠、表示演出を調整。"
+    "change_summary": "野球博士チャレンジの選択肢位置、下部メニュー固定、カウントダウン危険表示を調整。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.21-20260620-v860",
+      "public_version": "v1.1.21",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジ 配置微調整",
+      "public_summary": "野球博士チャレンジの選択肢位置を戻し、50:50などの下部メニューを画面下に固定しました。残り3秒以下のカウントダウンは数字だけ赤くなるよう調整しました。",
+      "admin_note": "v860-production更新。前回の選択肢上寄せを緩和。quiz-master-controls を画面下固定にし、50:50等の下部メニュー位置を維持。quiz-master-countdown-overlay.danger に transparent background を明示し、共通 .danger の赤背景が混ざらないよう調整。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v860-production",
+      "cache_version": "yakyu-yarouze-v860-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.20-20260620-v859",
       "public_version": "v1.1.20",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v859-production",
       "cache_version": "yakyu-yarouze-v859-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },

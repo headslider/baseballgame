@@ -1,13 +1,13 @@
 {
-  "app_version": "v859-production",
-  "cache_version": "yakyu-yarouze-v859-production",
-  "public_version": "v1.1.20",
+  "app_version": "v860-production",
+  "cache_version": "yakyu-yarouze-v860-production",
+  "public_version": "v1.1.21",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジのヒント削除、50:50確認、ランキング枠、表示演出を調整。",
+  "change_summary": "野球博士チャレンジの選択肢位置、下部メニュー固定、カウントダウン危険表示を調整。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
