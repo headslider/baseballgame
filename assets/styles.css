@@ -9226,8 +9226,8 @@ body.quiz-master-failed .quiz-master-shell{
   left:50% !important;
   bottom:calc(env(safe-area-inset-bottom, 0px) + 106px) !important;
   z-index:12 !important;
-  width:min(1380px,calc(100vw - 44px)) !important;
-  max-width:min(1380px,calc(100vw - 44px)) !important;
+  width:min(1180px,calc(100vw - 44px)) !important;
+  max-width:min(1180px,calc(100vw - 44px)) !important;
   transform:translateX(-50%) !important;
 }
 .quiz-master-controls{

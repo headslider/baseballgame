@@ -1,13 +1,13 @@
 {
-  "app_version": "v863-production",
-  "cache_version": "yakyu-yarouze-v863-production",
-  "public_version": "v1.1.24",
+  "app_version": "v864-production",
+  "cache_version": "yakyu-yarouze-v864-production",
+  "public_version": "v1.1.25",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジで同じ日に同じ問題が出ないよう、出題済み問題を記録して選定から除外。",
+  "change_summary": "野球博士チャレンジの問題データを v12 language naturalness の312問プールへ更新し、選択肢ボタン幅を調整。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
