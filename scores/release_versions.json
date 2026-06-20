@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.40",
+  "current_public_version": "v1.1.41",
   "internal": {
-    "app_version": "v879-production",
-    "cache_version": "yakyu-yarouze-v879-production",
+    "app_version": "v880-production",
+    "cache_version": "yakyu-yarouze-v880-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジ開始前の案内表現を「はじめに」へ変更し、操作ボタンを「ゲームを始める」「トップに戻る」に調整。"
+    "change_summary": "野球博士チャレンジとランキングを、オプション機能解放済みのプレイヤーだけに表示するよう修正。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.41-20260620-v880",
+      "public_version": "v1.1.41",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジ未解放時の非表示徹底",
+      "public_summary": "野球博士チャレンジとランキングを、オプション機能が解放されるまで表示しないよう修正しました。",
+      "admin_note": "v880-production更新。トップ画面の updateLoginUI でプレイヤーIDログイン済み、かつ quiz_master オプション解放済みまたは管理者モードの場合のみ野球博士チャレンジと野球博士ランキングを表示。初期HTMLにも display:none を設定し、JS初期化前にも未解放状態で表示されないよう修正。refreshFeatureFlags 後に updateLoginUI を再実行し、解放状態取得後に表示を更新。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v880-production",
+      "cache_version": "yakyu-yarouze-v880-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.40-20260620-v879",
       "public_version": "v1.1.40",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v879-production",
       "cache_version": "yakyu-yarouze-v879-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },
