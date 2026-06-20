@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.36",
+  "current_public_version": "v1.1.38",
   "internal": {
-    "app_version": "v875-production",
-    "cache_version": "yakyu-yarouze-v875-production",
+    "app_version": "v877-production",
+    "cache_version": "yakyu-yarouze-v877-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの利用条件をquiz_masterオプション機能解放判定へ修正し、問題データをv16 JSBB学童ルール版へ差し替え。"
+    "change_summary": "野球博士ランキングを総合点上位5名表示へ変更し、最近のプレイ表示を廃止。問題データをv18へ差し替え。"
   },
   "rules": [
     {
@@ -30,6 +30,36 @@
   ],
   "versions": [
     {
+      "id": "v1.1.38-20260620-v877",
+      "public_version": "v1.1.38",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士ランキング総合点TOP5・問題データ更新",
+      "public_summary": "野球博士ランキングを総合点の上位5名表示に変更し、問題データを最新版へ更新しました。",
+      "admin_note": "v877-production更新。get_quiz_master_ranking.php の公開 ranking をプレイヤー別累計点 total_score の上位5名へ変更し、recent は公開表示に使わない空配列へ変更。renderQuizMasterRanking はTOP5のみを表示し、最近のプレイ欄を生成しない。data/quiz_master_questions.json と assets/quiz_master_questions.js を quiz_master_questions_final_candidate_v18_jsbb_gakudo_label_added.json の300問プールへ同期。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v877-production",
+      "cache_version": "yakyu-yarouze-v877-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
+      "id": "v1.1.37-20260620-v876",
+      "public_version": "v1.1.37",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士ランキング総合点TOP5表示",
+      "public_summary": "野球博士ランキングを総合点の上位5名表示に変更し、最近のプレイ表示をなくしました。",
+      "admin_note": "v876-production更新。get_quiz_master_ranking.php の公開 ranking をプレイヤー別累計点 total_score の上位5名へ変更し、recent は公開表示に使わない空配列へ変更。renderQuizMasterRanking はTOP5のみを表示し、最近のプレイ欄を生成しない。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v876-production",
+      "cache_version": "yakyu-yarouze-v876-production",
+      "visible": true,
+      "is_current": false,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.36-20260620-v875",
       "public_version": "v1.1.36",
       "release_type": "patch",
@@ -40,7 +70,7 @@
       "internal_version": "v875-production",
       "cache_version": "yakyu-yarouze-v875-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },

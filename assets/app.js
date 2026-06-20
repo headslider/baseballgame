@@ -1724,9 +1724,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=875",
-    "./data/quiz_master_questions.json?v=875",
-    new URL("data/quiz_master_questions.json?v=875",document.baseURI).href
+    "data/quiz_master_questions.json?v=877",
+    "./data/quiz_master_questions.json?v=877",
+    new URL("data/quiz_master_questions.json?v=877",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -2165,15 +2165,14 @@ function quizMasterResultReasonText(reason){
 }
 function renderQuizMasterRanking(box,data,mode="result"){
   const rows=Array.isArray(data&&data.ranking)?data.ranking:[];
-  const recent=Array.isArray(data&&data.recent)?data.recent:[];
   const myBest=data&&data.my_best?data.my_best:null;
+  const myTotal=data&&data.my_total?data.my_total:null;
   const summary=data&&data.summary?data.summary:{};
-  const topRows=rows.slice(0,mode==="page"?20:10);
+  const topRows=rows.slice(0,5);
   const summaryHtml=mode==="page"?`<div class="quiz-master-ranking-summary"><span>参加者 <b>${escapeHtml(summary.total_players||0)}</b></span><span>プレイ数 <b>${escapeHtml(summary.total_plays||0)}</b></span><span>完全制覇 <b>${escapeHtml(summary.cleared_count||0)}</b></span></div>`:"";
-  const myHtml=myBest?`<div class="quiz-master-my-best"><span>あなたの最高記録は</span><b>${escapeHtml(myBest.rank)}位 / ${escapeHtml(myBest.score)} pt</b><em>第${escapeHtml(myBest.reached_level)}問到達</em></div>`:"";
-  const rankingHtml=topRows.length?`<ol>${topRows.map(r=>`<li class="${r.player_id===STATE.playerId?"me":""}"><span>${escapeHtml(r.rank)}位</span><b>${escapeHtml(r.player_id)}</b><em>${escapeHtml(r.score)} pt</em><small>第${escapeHtml(r.reached_level)}問 / ${escapeHtml(r.correct_count||0)}問正解</small></li>`).join("")}</ol>`:'<p>まだランキングはありません。</p>';
-  const recentHtml=mode==="page"?`<div class="quiz-master-recent-title">最近のプレイ</div>${recent.length?`<ul class="quiz-master-recent-list">${recent.slice(0,10).map(r=>`<li><b>${escapeHtml(r.player_id)}</b><span>${escapeHtml(r.score)} pt</span><em>${escapeHtml(quizMasterResultReasonText(r.result_reason))}</em><small>${escapeHtml(r.played_at||"")}</small></li>`).join("")}</ul>`:'<p>最近のプレイはありません。</p>'}`:"";
-  box.innerHTML=`<div class="quiz-master-ranking-board"><div class="quiz-master-ranking-title">野球博士ランキング</div>${summaryHtml}${myHtml}${rankingHtml}${recentHtml}</div>`;
+  const myHtml=myTotal?`<div class="quiz-master-my-best"><span>あなたの総合順位</span><b>${escapeHtml(myTotal.rank)}位 / ${escapeHtml(myTotal.total_score||myTotal.score||0)} pt</b>${myBest?`<em>最高 ${escapeHtml(myBest.score)} pt / 第${escapeHtml(myBest.reached_level)}問到達</em>`:""}</div>`:"";
+  const rankingHtml=topRows.length?`<ol>${topRows.map(r=>`<li class="${r.player_id===STATE.playerId?"me":""}"><span>${escapeHtml(r.rank)}位</span><b>${escapeHtml(r.player_id)}</b><em>${escapeHtml(r.total_score||r.score||0)} pt</em><small>プレイ数 ${escapeHtml(r.plays||0)} / 完全制覇 ${escapeHtml(r.cleared_count||0)}回</small></li>`).join("")}</ol>`:'<p>まだランキングはありません。</p>';
+  box.innerHTML=`<div class="quiz-master-ranking-board"><div class="quiz-master-ranking-title">野球博士総合点ランキング TOP5</div>${summaryHtml}${myHtml}${rankingHtml}</div>`;
 }
 async function loadQuizMasterRanking(targetId="quizMasterRanking",mode="result"){
   const box=$(targetId);if(!box)return;

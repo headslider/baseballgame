@@ -1,13 +1,13 @@
 {
-  "app_version": "v875-production",
-  "cache_version": "yakyu-yarouze-v875-production",
-  "public_version": "v1.1.36",
+  "app_version": "v877-production",
+  "cache_version": "yakyu-yarouze-v877-production",
+  "public_version": "v1.1.38",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの利用条件をquiz_masterオプション機能解放判定へ修正し、問題データをv16 JSBB学童ルール版へ差し替え。",
+  "change_summary": "野球博士ランキングを総合点上位5名表示へ変更し、最近のプレイ表示を廃止。問題データをv18へ差し替え。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

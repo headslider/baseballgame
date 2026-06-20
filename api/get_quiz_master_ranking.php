@@ -66,6 +66,13 @@ function quiz_master_rank_sort($a, $b) {
     return strcmp((string)($b['played_at'] ?? ''), (string)($a['played_at'] ?? ''));
 }
 
+function quiz_master_total_rank_sort($a, $b) {
+    if (($a['total_score'] ?? 0) !== ($b['total_score'] ?? 0)) return ($b['total_score'] ?? 0) <=> ($a['total_score'] ?? 0);
+    if (($a['plays'] ?? 0) !== ($b['plays'] ?? 0)) return ($b['plays'] ?? 0) <=> ($a['plays'] ?? 0);
+    if (($a['cleared_count'] ?? 0) !== ($b['cleared_count'] ?? 0)) return ($b['cleared_count'] ?? 0) <=> ($a['cleared_count'] ?? 0);
+    return strcmp((string)($b['latest_played_at'] ?? ''), (string)($a['latest_played_at'] ?? ''));
+}
+
 $request = quiz_master_read_request_payload();
 $request_player_id = normalize_player_id($request['player_id'] ?? ($_GET['player_id'] ?? ''));
 $request_client_token = normalize_client_token($request['client_token'] ?? ($_GET['client_token'] ?? ''));
@@ -88,6 +95,7 @@ if (is_file($file)) {
 }
 
 $best = [];
+$totals = [];
 $recent = [];
 $my_recent = [];
 $total_plays = 0;
@@ -104,12 +112,36 @@ foreach (($db['scores'] ?? []) as $raw_row) {
 
     $pid = $row['player_id'];
     if (quiz_master_is_better_row($row, $best[$pid] ?? null)) $best[$pid] = $row;
+    if (!isset($totals[$pid])) {
+        $totals[$pid] = [
+            'player_id'=>$pid,
+            'total_score'=>0,
+            'score'=>0,
+            'plays'=>0,
+            'cleared_count'=>0,
+            'best_score'=>0,
+            'best_reached_level'=>0,
+            'latest_played_at'=>''
+        ];
+    }
+    $totals[$pid]['total_score'] += $row['score'];
+    $totals[$pid]['score'] = $totals[$pid]['total_score'];
+    $totals[$pid]['plays']++;
+    if (!empty($row['cleared'])) $totals[$pid]['cleared_count']++;
+    if ($row['score'] > $totals[$pid]['best_score']) {
+        $totals[$pid]['best_score'] = $row['score'];
+        $totals[$pid]['best_reached_level'] = $row['reached_level'];
+    }
+    if (($row['played_at'] ?? '') > $totals[$pid]['latest_played_at']) $totals[$pid]['latest_played_at'] = $row['played_at'];
     $recent[] = $row;
     if ($include_private && $pid === $request_player_id) $my_recent[] = $row;
 }
 
-$rows = array_values($best);
-usort($rows, 'quiz_master_rank_sort');
+$best_rows = array_values($best);
+usort($best_rows, 'quiz_master_rank_sort');
+
+$rows = array_values($totals);
+usort($rows, 'quiz_master_total_rank_sort');
 foreach ($rows as $i=>&$row) $row['rank'] = $i + 1;
 unset($row);
 
@@ -121,10 +153,17 @@ usort($my_recent, function($a, $b) {
 });
 
 $my_best = null;
+$my_total = null;
 if ($include_private) {
-    foreach ($rows as $row) {
+    foreach ($best_rows as $row) {
         if (($row['player_id'] ?? '') === $request_player_id) {
             $my_best = $row;
+            break;
+        }
+    }
+    foreach ($rows as $row) {
+        if (($row['player_id'] ?? '') === $request_player_id) {
+            $my_total = $row;
             break;
         }
     }
@@ -132,9 +171,10 @@ if ($include_private) {
 
 echo json_encode([
     'ok'=>true,
-    'ranking'=>array_slice($rows, 0, 50),
-    'recent'=>array_slice($recent, 0, 20),
+    'ranking'=>array_slice($rows, 0, 5),
+    'recent'=>[],
     'my_best'=>$my_best,
+    'my_total'=>$my_total,
     'my_recent'=>array_slice($my_recent, 0, 10),
     'summary'=>[
         'total_players'=>count($rows),

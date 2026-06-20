@@ -1,9 +1,9 @@
 {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "final_candidate_v16_jsbb_gakudo_rules_only",
+    "version": "final_candidate_v18_jsbb_gakudo_label_added",
     "created_by": "ChatGPT",
-    "question_count": 312,
+    "question_count": 300,
     "answer_index_base": 0,
     "rules": [
       "通常学年別クイズと重複する守備判断・走塁判断・送球判断・カバーリング問題は含めない",
@@ -37,16 +37,16 @@
     "implementation_status": "Codex handoff candidate",
     "audit_step6": "2026-06-20 Step6 最終JSON実装監査完了。JSON構文、ID重複、level別件数、choices数、answer範囲、空欄、選択肢30文字以内、並び順を確認。",
     "level_question_counts": {
-      "1": 20,
+      "1": 19,
       "2": 18,
-      "3": 20,
+      "3": 19,
       "4": 20,
-      "5": 20,
-      "6": 67,
-      "7": 59,
-      "8": 38,
-      "9": 25,
-      "10": 25
+      "5": 19,
+      "6": 64,
+      "7": 57,
+      "8": 37,
+      "9": 24,
+      "10": 23
     },
     "audit_step5_5": "2026-06-20 一般野球のベース位置・寸法問題を第8問以降へ移動。第3問には学童向けグラウンド知識を補充。",
     "audit_step4_5": "2026-06-20 Step4.5 専門用語・カタカナ監査。オーバーユースけが等を小学生に分かる表現へ修正。",
@@ -81,6 +81,39 @@
       "BQ765",
       "BQ766",
       "BQ767"
+    ],
+    "audit_step5_8": "2026-06-20 指導者・監督・コーチを主題にした問題を削除。削除分の無理な補充は行わない。",
+    "removed_instructor_related_ids": [
+      "BQ109",
+      "BQ316",
+      "BQ520",
+      "BQ620",
+      "BQ649",
+      "BQ664",
+      "BQ718",
+      "BQ737",
+      "BQ817",
+      "BQ916",
+      "BQ1009",
+      "BQ1010"
+    ],
+    "audit_step5_9": "2026-06-20 学童の塁間・投手板距離などJSBB学童部規定に基づく問題の末尾に（JSBB学童部規定）を追加。",
+    "jsbb_gakudo_label_added_ids": [
+      "BQ301",
+      "BQ303",
+      "BQ304",
+      "BQ305",
+      "BQ306",
+      "BQ307",
+      "BQ308",
+      "BQ309",
+      "BQ318",
+      "BQ605",
+      "BQ637",
+      "BQ638",
+      "BQ701",
+      "BQ702",
+      "BQ703"
     ]
   },
   "questions": [
@@ -237,26 +270,6 @@
       ],
       "answer": 0,
       "explanation": "捕手は投球・打球の衝撃を受けやすいです。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ109",
-      "level": 1,
-      "level_name": "第1問",
-      "category": "少年野球基礎・安全用具",
-      "question": "夏場のクーリングタイムの目的は？",
-      "choices": [
-        "体温上昇を抑え、熱中症リスクを下げるため",
-        "監督が作戦を長く伝える時間を確保するため",
-        "グラウンド整備の回数を増やすため"
-      ],
-      "answer": 0,
-      "explanation": "暑熱環境では休憩・水分補給・冷却が重要です。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
@@ -848,8 +861,8 @@
       "id": "BQ301",
       "level": 3,
       "level_name": "第3問",
-      "category": "学童グラウンド知識",
-      "question": "学童で塁間を短くする主な理由は？",
+      "category": "JSBB学童部規定",
+      "question": "学童で塁間を短くする主な理由は（JSBB学童部規定）？",
       "choices": [
         "体格に合う試合にするため",
         "得点を多くするためだけ",
@@ -859,10 +872,10 @@
       "explanation": "学童では体格や走る力に合わせて、塁間を短くする大会があります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない学童グラウンド知識問題",
-      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ302",
@@ -888,8 +901,8 @@
       "id": "BQ303",
       "level": 3,
       "level_name": "第3問",
-      "category": "学童グラウンド知識",
-      "question": "学童の試合前に塁間を確認する理由は？",
+      "category": "JSBB学童部規定",
+      "question": "学童の試合前に塁間を確認する理由は（JSBB学童部規定）？",
       "choices": [
         "大会ごとに距離が違うため",
         "球場名で必ず同じため",
@@ -899,17 +912,17 @@
       "explanation": "学童では高学年・低学年や大会ごとに塁間が違う場合があります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない学童グラウンド知識問題",
-      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ304",
       "level": 3,
       "level_name": "第3問",
-      "category": "学童ルール",
-      "question": "学童野球高学年でよく使われる塁間距離として正しいものは？",
+      "category": "JSBB学童部規定",
+      "question": "学童野球高学年でよく使われる塁間距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "25m",
         "23m",
@@ -919,17 +932,17 @@
       "explanation": "学童高学年では23mが一般的なルールとして使われます。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ305",
       "level": 3,
       "level_name": "第3問",
-      "category": "学童ルール",
-      "question": "学童野球低学年で採用されることがある塁間距離として正しいものは？",
+      "category": "JSBB学童部規定",
+      "question": "学童野球低学年で採用されることがある塁間距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "27.43m",
         "23m",
@@ -939,17 +952,17 @@
       "explanation": "低学年大会では21mなど短い塁間が採用されることがあります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ306",
       "level": 3,
       "level_name": "第3問",
-      "category": "学童ルール",
-      "question": "学童野球高学年の投手板からホームまでの距離として正しいものは？",
+      "category": "JSBB学童部規定",
+      "question": "学童野球高学年の投手板からホームまでの距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "14m",
         "18.44m",
@@ -959,17 +972,17 @@
       "explanation": "学童高学年では16mが一般的です。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ307",
       "level": 3,
       "level_name": "第3問",
-      "category": "グラウンド・ルール",
-      "question": "塁間23mの場合のホームから二塁までの直線距離として正しいものは？",
+      "category": "JSBB学童部規定",
+      "question": "塁間23mの場合のホームから二塁までの直線距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "約30.0m",
         "約34.0m",
@@ -979,17 +992,17 @@
       "explanation": "23m×√2で約32.5mです。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ308",
       "level": 3,
       "level_name": "第3問",
-      "category": "学童グラウンド知識",
-      "question": "低学年の塁間が短い大会がある理由は？",
+      "category": "JSBB学童部規定",
+      "question": "低学年の塁間が短い大会がある理由は（JSBB学童部規定）？",
       "choices": [
         "走力や送球力に合わせるため",
         "塁を少なくするため",
@@ -999,17 +1012,17 @@
       "explanation": "低学年では走る力や投げる力に合わせて、試合しやすい距離にすることがあります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない学童グラウンド知識問題",
-      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ309",
       "level": 3,
       "level_name": "第3問",
-      "category": "学童グラウンド知識",
-      "question": "学童で投手板の距離を確認する理由は？",
+      "category": "JSBB学童部規定",
+      "question": "学童で投手板の距離を確認する理由は（JSBB学童部規定）？",
       "choices": [
         "学年や大会で違うことがあるため",
         "全員が同じ球速になるため",
@@ -1019,10 +1032,10 @@
       "explanation": "投手板からホームまでの距離は、学年や大会の規定で変わる場合があります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない学童グラウンド知識問題",
-      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ310",
@@ -1145,26 +1158,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ316",
-      "level": 3,
-      "level_name": "第3問",
-      "category": "グラウンド知識",
-      "question": "ダッグアウトの役割は？",
-      "choices": [
-        "試合に出ていない投手が準備をする区域",
-        "試合中の選手・監督・コーチが待機する区域",
-        "審判や大会役員が判定記録を確認する区域"
-      ],
-      "answer": 1,
-      "explanation": "ダッグアウトはチーム関係者の待機場所です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ317",
       "level": 3,
       "level_name": "第3問",
@@ -1188,8 +1181,8 @@
       "id": "BQ318",
       "level": 3,
       "level_name": "第3問",
-      "category": "学童グラウンド知識",
-      "question": "ホームから二塁が塁間より長い理由は？",
+      "category": "JSBB学童部規定",
+      "question": "ホームから二塁が塁間より長い理由は（JSBB学童部規定）？",
       "choices": [
         "正方形の対角線だから",
         "二塁だけ遠く置くため",
@@ -1199,10 +1192,10 @@
       "explanation": "本塁、一塁、二塁、三塁は正方形に近い形で置くため、対角線は塁間より長くなります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない学童グラウンド知識問題",
-      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ319",
@@ -2025,26 +2018,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ520",
-      "level": 5,
-      "level_name": "第5問",
-      "category": "安全・けが予防",
-      "question": "安全知識を子ども本人も学ぶべき理由として正しいものは？",
-      "choices": [
-        "ルールを覚えると練習しなくてよくなるため",
-        "自分の身体の異変や危険な行動に気づきやすくなるため",
-        "監督の指示を聞かなくてよくなるため"
-      ],
-      "answer": 1,
-      "explanation": "子ども自身が安全意識を持つことも重要です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ602",
       "level": 6,
       "level_name": "第6問",
@@ -2108,8 +2081,8 @@
       "id": "BQ605",
       "level": 6,
       "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "学童部の1日投球数ルールとして正しい組み合わせに近いものとして正しいものは？",
+      "category": "JSBB学童部規定",
+      "question": "学童部の1日投球数ルールとして正しい組み合わせに近いものとして正しいものは（JSBB学童部規定）？",
       "choices": [
         "全学年一律50球以内",
         "原則70球以内、4年生以下は60球以内",
@@ -2119,10 +2092,10 @@
       "explanation": "2025年大会要項例では1日70球、4年生以下60球。大会要項の確認が必要。",
       "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
       "main_category": "学童ルール",
-      "middle_category": "選手保護",
-      "small_category": "投球数"
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ608",
@@ -2343,26 +2316,6 @@
       "main_category": "用具",
       "middle_category": "バット",
       "small_category": "規格・特徴"
-    },
-    {
-      "id": "BQ620",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "最新ルールをチームで共有すべき理由として正しいものは？",
-      "choices": [
-        "指導者・保護者・選手の認識差による混乱を防ぐため",
-        "試合前の用具確認や安全対応をスムーズにするため",
-        "大会当日の考え方を審判任せにしすぎないため"
-      ],
-      "answer": 0,
-      "explanation": "共有により試合当日の誤解やトラブルを減らせます。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
     },
     {
       "id": "BQ621",
@@ -2668,8 +2621,8 @@
       "id": "BQ637",
       "level": 6,
       "level_name": "第6問",
-      "category": "最新学童ルール・マクドナルド",
-      "question": "2025年の投球数で基本となる上限は？",
+      "category": "JSBB学童部規定",
+      "question": "2025年の投球数で基本となる上限は（JSBB学童部規定）？",
       "choices": [
         "1日70球",
         "1試合100球",
@@ -2679,17 +2632,17 @@
       "explanation": "2025年大会要項例では、投球ルールは1日70球、4年生以下は60球とされている。",
       "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / v18: JSBB学童部規定表記を追加",
       "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "マクドナルド・トーナメント"
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ638",
       "level": 6,
       "level_name": "第6問",
-      "category": "最新学童ルール・マクドナルド",
-      "question": "4年生以下の投球数で近いものは？",
+      "category": "JSBB学童部規定",
+      "question": "4年生以下の投球数で近いものは（JSBB学童部規定）？",
       "choices": [
         "1日60球",
         "1日70球",
@@ -2699,10 +2652,10 @@
       "explanation": "2025年大会要項例では、4年生以下は1日60球とされている。",
       "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / v18: JSBB学童部規定表記を追加",
       "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "マクドナルド・トーナメント"
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ639",
@@ -2900,26 +2853,6 @@
       "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 追加大会ルール問題の即消し選択肢を修正",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
-    },
-    {
-      "id": "BQ649",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童ルール・ミズノ",
-      "question": "ミズノ大会の審判で正しいものは？",
-      "choices": [
-        "保護者審判も可",
-        "プロ審判のみ",
-        "審判なしで行う"
-      ],
-      "answer": 0,
-      "explanation": "都道府県予選では、指導者・保護者による審判も可とされている。",
-      "source_note": "MIZUNO BASEBALL DREAM CUP Jr. Tournament 大会ルール2026",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "学童ルール",
       "middle_category": "大会規定",
       "small_category": "ミズノドリームカップ"
@@ -3165,26 +3098,6 @@
       "small_category": "マクドナルド・トーナメント"
     },
     {
-      "id": "BQ664",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "マクドナルド大会",
-      "question": "マクドナルド大会で同点時に使う方式は？",
-      "choices": [
-        "タイブレーク",
-        "ホームラン競争",
-        "監督の抽選だけ"
-      ],
-      "answer": 0,
-      "explanation": "同点時はタイブレーク方式で勝敗を決める大会規定があります。",
-      "source_note": "高円宮賜杯大会要項監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "マクドナルド・トーナメント"
-    },
-    {
       "id": "BQ667",
       "level": 6,
       "level_name": "第6問",
@@ -3388,8 +3301,8 @@
       "id": "BQ701",
       "level": 7,
       "level_name": "第7問",
-      "category": "少年野球上級知識",
-      "question": "学童高学年の塁間23mと一般野球90フィートの違いを理解する意義として正しいものは？",
+      "category": "JSBB学童部規定",
+      "question": "学童高学年の塁間23mと一般野球90フィートの違いを理解する意義として正しいものは（JSBB学童部規定）？",
       "choices": [
         "高学年と大人で距離がちがう",
         "カテゴリーに応じた距離設定が選手の体格や安全に関係するため",
@@ -3399,17 +3312,17 @@
       "explanation": "学童野球では体格・年齢に合わせたルールが採用されます。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ702",
       "level": 7,
       "level_name": "第7問",
-      "category": "少年野球上級知識",
-      "question": "高学年の投手板16mが一般野球18.44mより短い理由として正しいものは？",
+      "category": "JSBB学童部規定",
+      "question": "高学年の投手板16mが一般野球18.44mより短い理由として正しいものは（JSBB学童部規定）？",
       "choices": [
         "投手有利をさらに強めるため",
         "捕手の送球距離を短くするため",
@@ -3419,17 +3332,17 @@
       "explanation": "距離設定は安全と試合の公平さのバランスを取るためです。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ703",
       "level": 7,
       "level_name": "第7問",
-      "category": "少年野球上級知識",
-      "question": "低学年で塁間を短くする大会がある理由として正しいものは？",
+      "category": "JSBB学童部規定",
+      "question": "低学年で塁間を短くする大会がある理由として正しいものは（JSBB学童部規定）？",
       "choices": [
         "高学年より得点を少なくするため",
         "塁数を減らすため",
@@ -3439,10 +3352,10 @@
       "explanation": "低学年では年齢に合った距離設定が行われます。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "学童ルール",
+      "middle_category": "JSBB学童部規定",
+      "small_category": "グラウンド寸法"
     },
     {
       "id": "BQ704",
@@ -3717,26 +3630,6 @@
       ],
       "answer": 0,
       "explanation": "試合の公平さと育成・安全を両立する必要があります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ718",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "少年野球上級知識",
-      "question": "指導者が最新ルールを学び直す必要がある理由として正しいものは？",
-      "choices": [
-        "昔の常識が現在のルールや安全基準と異なる場合があるため",
-        "選手保護や用具ルールが時代に合わせて更新されるため",
-        "経験則だけでは大会運営の変化に対応しにくい場合があるため"
-      ],
-      "answer": 0,
-      "explanation": "用具や安全対策の更新で過去の認識が古くなることがあります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
@@ -4057,26 +3950,6 @@
       ],
       "answer": 0,
       "explanation": "EDHは10人で打順を組むことができる制度です。",
-      "source_note": "ミズノドリームカップ2026大会規定監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "ミズノドリームカップ"
-    },
-    {
-      "id": "BQ737",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "ミズノドリームカップ",
-      "question": "EDHを使う時の大切な点は？",
-      "choices": [
-        "試合前に申告する",
-        "途中から自由に決める",
-        "相手監督だけが決める"
-      ],
-      "answer": 0,
-      "explanation": "EDHは試合開始前のオーダー交換時に申告します。",
       "source_note": "ミズノドリームカップ2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
@@ -5025,26 +4898,6 @@
       "small_category": "後半専用"
     },
     {
-      "id": "BQ817",
-      "level": 8,
-      "level_name": "第8問",
-      "category": "高校野球",
-      "question": "高校野球で指導者に求められる現代的な視点として正しいものは？",
-      "choices": [
-        "体調や暑さで無理をしないため",
-        "練習量と回復、選手の意思を含めて指導すること",
-        "大会成績と選手の長期的成長を両立させること"
-      ],
-      "answer": 0,
-      "explanation": "選手保護と教育的視点が重要です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
       "id": "BQ818",
       "level": 8,
       "level_name": "第8問",
@@ -5605,26 +5458,6 @@
       "small_category": "後半専用"
     },
     {
-      "id": "BQ916",
-      "level": 9,
-      "level_name": "第9問",
-      "category": "大学・社会人・プロ",
-      "question": "アマチュア資格が話題になる理由として正しいものは？",
-      "choices": [
-        "プロ経験者の指導は資格確認が必要",
-        "プロ・アマ間の関係や指導可否に関わるため",
-        "選手・指導者の立場によって適用されるルールが異なるため"
-      ],
-      "answer": 1,
-      "explanation": "プロアマ間の指導や復帰では資格ルールが関係します。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
       "id": "BQ917",
       "level": 9,
       "level_name": "第9問",
@@ -5980,46 +5813,6 @@
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1009",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "野球人口減少への対応として適切な方向性として正しいものは？",
-      "choices": [
-        "安全・楽しさ・参加しやすさを高める環境づくり",
-        "始めやすい環境を作ること",
-        "保護者・指導者の体への負担を減らし、継続しやすくすること"
-      ],
-      "answer": 0,
-      "explanation": "参加しやすく安全な環境づくりが重要です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1010",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "国際大会で野球が普及しにくい地域がある理由として正しいものは？",
-      "choices": [
-        "用具と施設の整備が必要なため",
-        "指導者や場所の確保が必要なため",
-        "地域のスポーツ文化に左右されるため"
-      ],
-      "answer": 0,
-      "explanation": "野球は用具や施設が必要なため、普及には整備の時間と費用がかかります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 日本語と難易度を調整 / Step4.6: 問題文の単調表現を自然化",
       "main_category": "上級野球知識",
       "middle_category": "一般・高校・プロ",
       "small_category": "後半専用"
