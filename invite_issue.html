@@ -58,7 +58,7 @@ function getClientToken(){const storageKey='baseballClientToken';const cookieKey
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 const player=document.getElementById('playerId');try{const queryPlayer=ISSUE_PAGE_PARAMS.get('player_id')||ISSUE_PAGE_PARAMS.get('pid')||'';player.value=queryPlayer||localStorage.getItem('baseballPlayerId')||'';if(queryPlayer)localStorage.setItem('baseballPlayerId',queryPlayer)}catch(e){}
 let currentCode='';
-const issueLinkKey=ISSUE_PAGE_PARAMS.get('invite_key')||ISSUE_PAGE_PARAMS.get('issue_key')||'';
+const issueLinkKey=ISSUE_PAGE_PARAMS.get('invite_key')||ISSUE_PAGE_PARAMS.get('inviteIssueKey')||ISSUE_PAGE_PARAMS.get('issue_invite')||ISSUE_PAGE_PARAMS.get('issue_key')||'';
 document.getElementById('issueBtn').addEventListener('click',async()=>{
   const pid=(player.value||'').trim();
   const msg=document.getElementById('message');

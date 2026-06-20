@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.41",
+  "current_public_version": "v1.1.42",
   "internal": {
-    "app_version": "v880-production",
-    "cache_version": "yakyu-yarouze-v880-production",
-    "updated_at": "2026-06-20T00:00:00+09:00",
+    "app_version": "v881-production",
+    "cache_version": "yakyu-yarouze-v881-production",
+    "updated_at": "2026-06-21T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジとランキングを、オプション機能解放済みのプレイヤーだけに表示するよう修正。"
+    "change_summary": "招待用URLからiOS PWAを追加した際、展開先フォルダに応じたstart_url/scopeを返すよう修正し、テスト環境で招待ID取得導線が消える問題を改善。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.42-20260621-v881",
+      "public_version": "v1.1.42",
+      "release_type": "patch",
+      "released_at": "2026-06-21",
+      "title": "招待用URLのiOS PWA起動先修正",
+      "public_summary": "招待用URLからホーム画面に追加した際、展開先に合わせて正しいPWA起動先を使うよう修正しました。",
+      "admin_note": "v881-production更新。api/issue_manifest.php の start_url / scope / id を固定 /baseball/ ではなく設置フォルダから自動計算するよう修正。baseball_test では /baseball_test/、本番では /baseball/ を返すことをPHPシミュレーションで確認。invite_issue.html は inviteIssueKey / issue_invite パラメータも受け取れるようにし、入口側と発行ページ側の対応名を統一。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v881-production",
+      "cache_version": "yakyu-yarouze-v881-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-21T00:00:00+09:00",
+      "updated_at": "2026-06-21T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.41-20260620-v880",
       "public_version": "v1.1.41",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v880-production",
       "cache_version": "yakyu-yarouze-v880-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },
