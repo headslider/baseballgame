@@ -9259,6 +9259,14 @@ body.quiz-master-failed .quiz-master-shell{
     justify-self:center !important;
     z-index:4 !important;
   }
+  .quiz-master-count{
+    grid-column:3 / 4 !important;
+    justify-self:end !important;
+  }
+  .quiz-master-exit{
+    grid-column:4 / 5 !important;
+    justify-self:end !important;
+  }
 }
 @media(max-width:760px){
   .quiz-master-topbar{

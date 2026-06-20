@@ -1,13 +1,13 @@
 {
-  "app_version": "v866-production",
-  "cache_version": "yakyu-yarouze-v866-production",
-  "public_version": "v1.1.27",
+  "app_version": "v867-production",
+  "cache_version": "yakyu-yarouze-v867-production",
+  "public_version": "v1.1.28",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジ結果画面の最高記録・順位枠を非表示にし、ゲーム中の問題数表示を画面中央へ調整。",
+  "change_summary": "野球博士チャレンジの進行表示「1/10問」をトップへ戻るボタン左の位置へ戻す調整。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
