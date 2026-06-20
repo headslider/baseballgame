@@ -1713,9 +1713,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=869",
-    "./data/quiz_master_questions.json?v=869",
-    new URL("data/quiz_master_questions.json?v=869",document.baseURI).href
+    "data/quiz_master_questions.json?v=870",
+    "./data/quiz_master_questions.json?v=870",
+    new URL("data/quiz_master_questions.json?v=870",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1745,7 +1745,21 @@ function pickQuizMasterSequence(rows){
     used.add(q.id);
     sequence.push(q);
   }
+  validateQuizMasterSequence(sequence);
   return sequence;
+}
+function validateQuizMasterSequence(sequence){
+  if(!Array.isArray(sequence)||sequence.length!==10){
+    throw new Error("野球博士チャレンジの出題数が不正です。");
+  }
+  sequence.forEach((q,idx)=>{
+    const expected=idx+1;
+    if(!q||Number(q.level)!==expected){
+      const actual=q&&q.level!==undefined?q.level:"未設定";
+      const id=q&&q.id?q.id:"IDなし";
+      throw new Error(`野球博士チャレンジの出題レベル不整合: 第${expected}問に level ${actual} (${id}) が選ばれました。`);
+    }
+  });
 }
 async function startQuizMaster(){
   const guestTest=!(STATE.loggedIn&&STATE.playerId);
@@ -1788,7 +1802,7 @@ async function startQuizMaster(){
   }catch(e){
     console.warn("quiz master start failed",e);
     setTextSafe("quizMasterQuestion","問題データを読み込めませんでした。");
-    setTextSafe("quizMasterMessage","data/quiz_master_questions.json を確認してください。");
+    setTextSafe("quizMasterMessage",e&&e.message?e.message:"data/quiz_master_questions.json を確認してください。");
   }
 }
 function setTextSafe(id,text){const el=$(id);if(el)el.textContent=text}
@@ -1796,6 +1810,12 @@ function currentQuizMasterQuestion(){return QUIZ_MASTER_STATE.sequence[QUIZ_MAST
 function renderQuizMasterQuestion(){
   const q=currentQuizMasterQuestion();
   if(!q){finishQuizMaster(true);return}
+  const questionNo=QUIZ_MASTER_STATE.currentIndex+1;
+  if(Number(q.level)!==questionNo){
+    console.error("quiz master level mismatch",{questionNo,question:q});
+    finishQuizMaster(false,"問題レベルの不整合を検出したため終了しました。","level_mismatch");
+    return;
+  }
   quizMasterMarkQuestionShown(q);
   clearQuizMasterTimer();
   clearQuizMasterStageClasses();
@@ -1804,10 +1824,10 @@ function renderQuizMasterQuestion(){
   QUIZ_MASTER_STATE.animating=true;
   QUIZ_MASTER_STATE.fiftyHidden=null;
   QUIZ_MASTER_STATE.roundToken+=1;
-  QUIZ_MASTER_STATE.remaining=quizMasterTimeForLevel(q.level);
+  QUIZ_MASTER_STATE.remaining=quizMasterTimeForLevel(questionNo);
   QUIZ_MASTER_STATE.questionStartedAt=0;
-  setTextSafe("quizMasterLevel",String(q.level));
-  setTextSafe("quizMasterProgress",`${q.level}/10`);
+  setTextSafe("quizMasterLevel",String(questionNo));
+  setTextSafe("quizMasterProgress",`${questionNo}/10`);
   setTextSafe("quizMasterScore",String(QUIZ_MASTER_STATE.score));
   setTextSafe("quizMasterTimer",String(QUIZ_MASTER_STATE.remaining));
   const prefix=QUIZ_MASTER_STATE.guestTest?"テストプレイ / ":"";

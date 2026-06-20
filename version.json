@@ -1,13 +1,13 @@
 {
-  "app_version": "v869-production",
-  "cache_version": "yakyu-yarouze-v869-production",
-  "public_version": "v1.1.30",
+  "app_version": "v870-production",
+  "cache_version": "yakyu-yarouze-v870-production",
+  "public_version": "v1.1.31",
   "updated_at": "2026-06-20T00:00:00+09:00",
   "release_date": "2026-06-20",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "遊び方ページに野球博士チャレンジの遊び方と画面イメージを追加し、問題データをv15へ更新。",
+  "change_summary": "野球博士チャレンジの出題レベルを抽選後・描画前に厳格検証し、不整合時に停止する安全ガードを追加。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.30",
+  "current_public_version": "v1.1.31",
   "internal": {
-    "app_version": "v869-production",
-    "cache_version": "yakyu-yarouze-v869-production",
+    "app_version": "v870-production",
+    "cache_version": "yakyu-yarouze-v870-production",
     "updated_at": "2026-06-20T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "遊び方ページに野球博士チャレンジの遊び方と画面イメージを追加し、問題データをv15へ更新。"
+    "change_summary": "野球博士チャレンジの出題レベルを抽選後・描画前に厳格検証し、不整合時に停止する安全ガードを追加。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.31-20260620-v870",
+      "public_version": "v1.1.31",
+      "release_type": "patch",
+      "released_at": "2026-06-20",
+      "title": "野球博士チャレンジ出題レベル検証強化",
+      "public_summary": "野球博士チャレンジで各問の問題プールと表示順が一致しているかをより厳格に検証するようにしました。",
+      "admin_note": "v870-production更新。pickQuizMasterSequence の抽選後に第1問=level1〜第10問=level10であることを検証し、renderQuizMasterQuestion 直前にも currentIndex+1 と q.level の一致を確認。不整合時は具体的なエラーを表示して開始・進行を停止。問題JSON取得クエリ、index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v870-production",
+      "cache_version": "yakyu-yarouze-v870-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-20T00:00:00+09:00",
+      "updated_at": "2026-06-20T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.30-20260620-v869",
       "public_version": "v1.1.30",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v869-production",
       "cache_version": "yakyu-yarouze-v869-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-20T00:00:00+09:00",
       "updated_at": "2026-06-20T00:00:00+09:00"
     },
