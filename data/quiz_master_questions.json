@@ -1,9 +1,9 @@
 {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "final_candidate_v43_added_audited",
+    "version": "final_candidate_v46_grade_expression_cleanup",
     "created_by": "ChatGPT",
-    "question_count": 256,
+    "question_count": 252,
     "answer_index_base": 0,
     "rules": [
       "通常学年別クイズと重複する守備判断・走塁判断・送球判断・カバーリング問題は含めない",
@@ -12,11 +12,12 @@
       "第8〜10問のみ高校野球・大学/社会人/プロ・野球史/制度中心",
       "問題作成はChatGPT、CodexはJSON読込・表示のみ",
       "固有名詞と必要な野球用語を除き、小学5年生までが読みやすい表現にする",
-      "選択肢は原則30文字以内にする"
+      "選択肢は原則30文字以内にする",
+      "学年を示す場合、「高学年」「低学年」だけで始めず、必ず「小学生の高学年」「小学生の低学年」のように「小学生」を先に置く。問題文だけでなく選択肢・解説も同じ表記に統一する。"
     ],
     "audit": "5-pass answer/explanation/logic/difficulty/overlap validation completed on 2026-06-19.",
     "audit_step1": "2026-06-20 Step1正解・解説整合監査完了（5観点チェック）",
-    "source_file": "quiz_master_questions_final_candidate_v40_formal_audit.json",
+    "source_file": "quiz_master_questions_final_candidate_v45_sunglass_pitch_cleanup.json",
     "audit_step2": "2026-06-20 Step2最新学童ルール監査：JSBB、マクドナルド・トーナメント、ミズノドリームカップの重要ルールを追加・反映。",
     "step2_added_questions": 43,
     "source_summary": [
@@ -417,7 +418,7 @@
       "BQ1083"
     ],
     "validation_errors": [],
-    "base_file": "quiz_master_questions_final_candidate_v42_confirm_cleanup.json",
+    "base_file": "quiz_master_questions_final_candidate_v44_spike_stud_cleanup.json",
     "audit_step9_1": "2026-06-21 イレギュラーの意味を問う用語問題を第3問に追加。既存BQ314は解説内の言及のみのため重複問題ではない。",
     "added_throw_destination_term_ids": [
       "BQ1084",
@@ -721,7 +722,38 @@
         ],
         "question": "マクドナルド系のタイブレークで近い形は？"
       }
-    ]
+    ],
+    "removed_ids": [
+      "BQ215",
+      "BQ314"
+    ],
+    "modified_ids": [
+      "BQ101",
+      "BQ117",
+      "BQ219"
+    ],
+    "before_count": 254,
+    "after_count": 252,
+    "deleted_count": 2,
+    "deleted_ids": [
+      "BQ516",
+      "BQ639"
+    ],
+    "note": "BQ516（サングラス安全対策）とBQ639（投球ルール到達時）を不適切問題として削除。",
+    "audit_step_v46_grade_expression_cleanup": "2026-06-22 全252問について、問題文・選択肢・解説に含まれる「高学年」「低学年」の表現を監査。対象を示す場合は必ず「小学生の高学年」「小学生の低学年」と表記するよう修正。",
+    "grade_expression_rule": {
+      "rule": "学年を示す場合、「高学年」「低学年」だけで始めず、必ず「小学生の高学年」「小学生の低学年」のように「小学生」を先に置く。問題文だけでなく選択肢・解説も同じ表記に統一する。",
+      "examples": [
+        "小学生の高学年では…",
+        "小学生の低学年が…"
+      ],
+      "prohibited_examples": [
+        "高学年では…",
+        "低学年の…",
+        "学童高学年…",
+        "学童野球低学年…"
+      ]
+    }
   },
   "questions": [
     {
@@ -731,14 +763,14 @@
       "category": "少年野球基礎・安全用具",
       "question": "スパイクを履くおもな目的は？",
       "choices": [
-        "スパイクの歯で地面をつかむため",
+        "スタッドで地面をつかみやすくするため",
         "クッション性を高め、長時間の立ち姿勢を楽にするため",
         "足首を固定し、投球時のぶれを抑えるため"
       ],
       "answer": 0,
-      "explanation": "スパイクはグリップを高め、急な動きや踏ん張りを支えます。",
+      "explanation": "スパイクは靴底のスタッドでグリップを高め、急な動きや踏ん張りを支えます。",
       "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "overlap_check": "スパイク名称をスタッドに統一。",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "基礎知識",
       "middle_category": "学童・少年野球",
@@ -946,23 +978,23 @@
     },
     {
       "id": "BQ117",
-      "level": 1,
-      "level_name": "第1問",
-      "category": "少年野球基礎・安全用具",
-      "question": "スパイクのポイントや金具がすり減った時の問題は？",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "用具とメンテナンス",
+      "question": "スパイクの靴底にある突起の名称は？",
       "choices": [
-        "ポイントの接地感が変わり、踏み出し時に力が逃げやすくなる",
-        "グリップ力が低下し、滑りやすくなる",
-        "足裏の感覚が変わり、走る時のリズムが一定になりにくい"
+        "スタッド",
+        "バットエンド",
+        "グラブの芯"
       ],
-      "answer": 1,
-      "explanation": "すりへりしたスパイクは踏ん張りが効きにくくなります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "answer": 0,
+      "explanation": "スパイクの靴底にある突起はスタッドと呼びます。学童野球では金属製スパイクは禁止です。",
+      "source_note": "学童野球用具基礎",
+      "overlap_check": "v43全問題内のスパイク・ポイント・金具表現を確認し、用語をスタッドに統一。",
+      "quality_note": "「ポイント」「金具」の曖昧・不適切表現を避け、名称を覚える問題へ修正。",
       "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
+      "middle_category": "用具の名称",
+      "small_category": "スパイク"
     },
     {
       "id": "BQ118",
@@ -1385,26 +1417,6 @@
       "small_category": "防具・グラブ"
     },
     {
-      "id": "BQ215",
-      "level": 2,
-      "level_name": "第2問",
-      "category": "用具とメンテナンス",
-      "question": "金属スパイクが大会で制限されることがある理由は？",
-      "choices": [
-        "金属音が大きく、投球の合図が聞こえにくくなるため",
-        "安全面やグラウンド保護、年齢カテゴリーへの配慮のため",
-        "金属スパイクでは土のグラウンドで踏み込みにくくなるため"
-      ],
-      "answer": 1,
-      "explanation": "金属スパイクは使えるかが大会・カテゴリー・グラウンドで異なります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ216",
       "level": 2,
       "level_name": "第2問",
@@ -1471,15 +1483,15 @@
       "category": "用具とメンテナンス",
       "question": "スパイク使用後の手入れとして正しいものは？",
       "choices": [
-        "使用後に泥を落とし、ポイント部の状態を確認する",
+        "使用後に泥を落とし、スタッドの状態を確認する",
         "試合前だけ水で洗い、濡れた状態で履き始める",
-        "アッパー部分だけ拭き、靴底のポイント部は確認しない"
+        "アッパー部分だけ拭き、靴底のスタッドは確認しない"
       ],
       "answer": 0,
-      "explanation": "使用後に泥を落としてポイント部の状態を確認することで、グリップ低下や傷みに気づきやすくなる。",
+      "explanation": "使用後に泥を落としてスタッドの状態を確認することで、グリップ低下や傷みに気づきやすくなります。",
       "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "overlap_check": "「ポイント部」表現を「スタッド」に統一。",
+      "quality_note": "学童向けに金属部品を連想する表現を避けた。",
       "main_category": "基礎知識",
       "middle_category": "学童・少年野球",
       "small_category": "その他"
@@ -1689,14 +1701,14 @@
       "level": 3,
       "level_name": "第3問",
       "category": "JSBB学童部規定",
-      "question": "学童野球高学年でよく使われる塁間距離として正しいものは（JSBB学童部規定）？",
+      "question": "小学生の高学年でよく使われる塁間距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "25m",
         "23m",
         "21m"
       ],
       "answer": 1,
-      "explanation": "学童高学年では23mが一般的なルールとして使われます。",
+      "explanation": "小学生の高学年では23mが一般的なルールとして使われます。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
@@ -1709,14 +1721,14 @@
       "level": 3,
       "level_name": "第3問",
       "category": "JSBB学童部規定",
-      "question": "学童野球低学年で採用されることがある塁間距離として正しいものは（JSBB学童部規定）？",
+      "question": "小学生の低学年で採用されることがある塁間距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "27.43m",
         "23m",
         "21m"
       ],
       "answer": 2,
-      "explanation": "低学年大会では21mなど短い塁間が採用されることがあります。",
+      "explanation": "小学生の低学年の大会では21mなど短い塁間が採用されることがあります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
@@ -1729,14 +1741,14 @@
       "level": 3,
       "level_name": "第3問",
       "category": "JSBB学童部規定",
-      "question": "学童野球高学年の投手板からホームまでの距離として正しいものは（JSBB学童部規定）？",
+      "question": "小学生の高学年の投手板からホームまでの距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "14m",
         "18.44m",
         "16m"
       ],
       "answer": 2,
-      "explanation": "学童高学年では16mが一般的です。",
+      "explanation": "小学生の高学年では16mが一般的です。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
@@ -1769,14 +1781,14 @@
       "level": 3,
       "level_name": "第3問",
       "category": "JSBB学童部規定",
-      "question": "低学年の塁間が短い大会がある理由は（JSBB学童部規定）？",
+      "question": "小学生の低学年の塁間が短い大会がある理由は（JSBB学童部規定）？",
       "choices": [
         "走力や送球力に合わせるため",
         "塁を少なくするため",
         "打順を早く回すため"
       ],
       "answer": 0,
-      "explanation": "低学年では走る力や投げる力に合わせて、試合しやすい距離にすることがあります。",
+      "explanation": "小学生の低学年では走る力や投げる力に合わせて、試合しやすい距離にすることがあります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない学童グラウンド知識問題",
       "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え / v18: JSBB学童部規定表記を追加",
@@ -1857,26 +1869,6 @@
       ],
       "answer": 1,
       "explanation": "正確な位置と安全な設置が重要です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ314",
-      "level": 3,
-      "level_name": "第3問",
-      "category": "グラウンド知識",
-      "question": "内野の土を整備する目的は？",
-      "choices": [
-        "打球の跳ね方や走塁時の安全を安定させる",
-        "乾いた土で打球速度を調整し、守備練習の難度をそろえる",
-        "スパイク跡を整えて、次のプレーで足を取られにくくする"
-      ],
-      "answer": 0,
-      "explanation": "整備不良はイレギュラーや転倒リスクにつながります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
@@ -2965,26 +2957,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ516",
-      "level": 5,
-      "level_name": "第5問",
-      "category": "安全・けが予防",
-      "question": "サングラスが安全対策になる理由として正しいものは？",
-      "choices": [
-        "強い日差しで球を見失いにくくする",
-        "打球や飛球を見やすくする",
-        "目を守り、判断しやすくする"
-      ],
-      "answer": 1,
-      "explanation": "サングラスは日差しを減らし、打球や飛球を見やすくすることで安全につながります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 即消し選択肢を除去 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "JSBB学童ルール",
-      "middle_category": "用具規定",
-      "small_category": "サングラス"
-    },
-    {
       "id": "BQ518",
       "level": 5,
       "level_name": "第5問",
@@ -3303,26 +3275,6 @@
       "main_category": "JSBB学童ルール",
       "middle_category": "規定",
       "small_category": "学童適用"
-    },
-    {
-      "id": "BQ639",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童ルール・マクドナルド",
-      "question": "投球ルールの到達時の考え方は？",
-      "choices": [
-        "到達打者の完了まで",
-        "次打者から交代する",
-        "大会要項で扱いを確認する"
-      ],
-      "answer": 0,
-      "explanation": "投球数到達時の扱いは、到達打者の完了までなど大会要項で確認します。",
-      "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 追加大会ルール問題の即消し選択肢を修正",
-      "main_category": "学童大会",
-      "middle_category": "大会規定",
-      "small_category": "マクドナルド・トーナメント"
     },
     {
       "id": "BQ640",
@@ -3729,9 +3681,9 @@
       "level": 7,
       "level_name": "第7問",
       "category": "JSBB学童部規定",
-      "question": "学童高学年の塁間23mと一般野球90フィートの違いを理解する意義として正しいものは（JSBB学童部規定）？",
+      "question": "小学生の高学年の塁間23mと一般野球90フィートの違いを理解する意義として正しいものは（JSBB学童部規定）？",
       "choices": [
-        "高学年と大人で距離がちがう",
+        "小学生の高学年と大人で距離がちがう",
         "カテゴリーに応じた距離設定が選手の体格や安全に関係するため",
         "距離差で投げる・走る難度が変わる"
       ],
@@ -3749,7 +3701,7 @@
       "level": 7,
       "level_name": "第7問",
       "category": "JSBB学童部規定",
-      "question": "高学年の投手板16mが一般野球18.44mより短い理由として正しいものは（JSBB学童部規定）？",
+      "question": "小学生の高学年の投手板16mが一般野球18.44mより短い理由として正しいものは（JSBB学童部規定）？",
       "choices": [
         "投手有利をさらに強めるため",
         "捕手の送球距離を短くするため",
@@ -4333,7 +4285,7 @@
       "choices": [
         "硬式球より柔らかくして打球速度を抑えるため",
         "軟式球の試合の公平さや硬式に近い感覚を高めるため",
-        "低学年から一般まで同じ投球距離に合わせるため"
+        "小学生の低学年から一般まで同じ投球距離に合わせるため"
       ],
       "answer": 1,
       "explanation": "M号球は試合の公平さ向上を意識した変更です。",
