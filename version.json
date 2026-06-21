@@ -1,13 +1,13 @@
 {
-  "app_version": "v884-production",
-  "cache_version": "yakyu-yarouze-v884-production",
-  "public_version": "v1.1.45",
+  "app_version": "v885-production",
+  "cache_version": "yakyu-yarouze-v885-production",
+  "public_version": "v1.1.46",
   "updated_at": "2026-06-21T00:00:00+09:00",
   "release_date": "2026-06-21",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの問題データを final_candidate_v29_step9 に更新。",
+  "change_summary": "野球博士チャレンジの問題データを final_candidate_v32_term_relation_added に更新。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
