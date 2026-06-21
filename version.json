@@ -1,13 +1,13 @@
 {
-  "app_version": "v889-production",
-  "cache_version": "yakyu-yarouze-v889-production",
-  "public_version": "v1.1.50",
+  "app_version": "v890-production",
+  "cache_version": "yakyu-yarouze-v890-production",
+  "public_version": "v1.1.51",
   "updated_at": "2026-06-21T00:00:00+09:00",
   "release_date": "2026-06-21",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジ結果画面を中央配置にし、不正解レビューの項目間に区切り線を追加。",
+  "change_summary": "野球博士チャレンジの問題データを final_candidate_v40_formal_audit に更新し、結果レビューの区切り線を調整。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

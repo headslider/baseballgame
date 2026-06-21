@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.50",
+  "current_public_version": "v1.1.51",
   "internal": {
-    "app_version": "v889-production",
-    "cache_version": "yakyu-yarouze-v889-production",
+    "app_version": "v890-production",
+    "cache_version": "yakyu-yarouze-v890-production",
     "updated_at": "2026-06-21T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジ結果画面を中央配置にし、不正解レビューの項目間に区切り線を追加。"
+    "change_summary": "野球博士チャレンジの問題データを final_candidate_v40_formal_audit に更新し、結果レビューの区切り線を調整。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.51-20260621-v890",
+      "public_version": "v1.1.51",
+      "release_type": "patch",
+      "released_at": "2026-06-21",
+      "title": "野球博士チャレンジ問題データv40更新と結果表示調整",
+      "public_summary": "野球博士チャレンジの問題データを最新版に更新し、結果画面の表示を調整しました。",
+      "admin_note": "v890-production更新。data/quiz_master_questions.json と assets/quiz_master_questions.js を quiz_master_questions_final_candidate_v40_formal_audit.json（meta version: final_candidate_v40_formal_audit、270問）へ同期。結果レビューで正解と理由の間の区切り線を削除。基本検証としてJSON構文、ID重複、level 1〜10、3択、answer範囲、問題文・解説の存在を確認。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v890-production",
+      "cache_version": "yakyu-yarouze-v890-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-21T00:00:00+09:00",
+      "updated_at": "2026-06-21T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.50-20260621-v889",
       "public_version": "v1.1.50",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v889-production",
       "cache_version": "yakyu-yarouze-v889-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-21T00:00:00+09:00",
       "updated_at": "2026-06-21T00:00:00+09:00"
     },

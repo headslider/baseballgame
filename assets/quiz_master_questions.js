@@ -1,7 +1,7 @@
 window.QUIZ_MASTER_QUESTIONS = {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "final_candidate_v39_step13_final_rules",
+    "version": "final_candidate_v40_formal_audit",
     "created_by": "ChatGPT",
     "question_count": 270,
     "answer_index_base": 0,
@@ -39,8 +39,8 @@ window.QUIZ_MASTER_QUESTIONS = {
     "level_question_counts": {
       "1": 22,
       "2": 22,
-      "3": 27,
-      "4": 22,
+      "3": 28,
+      "4": 21,
       "5": 21,
       "6": 43,
       "7": 35,
@@ -496,6 +496,12 @@ window.QUIZ_MASTER_QUESTIONS = {
       "BQ1115",
       "BQ1116",
       "BQ1117"
+    ],
+    "audit_step14": "2026-06-21 Step14正式版監査。低反発バット、タイブレーク投球数、ファウルチップの二重正解候補を修正。",
+    "v40_modified_ids": [
+      "BQ408",
+      "BQ706",
+      "BQ802"
     ]
   },
   "questions": [
@@ -2021,20 +2027,20 @@ window.QUIZ_MASTER_QUESTIONS = {
     },
     {
       "id": "BQ408",
-      "level": 4,
-      "level_name": "第4問",
+      "level": 3,
+      "level_name": "第3問",
       "category": "ルール知識（非状況判断）",
-      "question": "ファウルチップの理解で重要な点として正しいものは？",
+      "question": "ファウルチップとはどんな打球？",
       "choices": [
-        "捕手が直接捕ればストライク",
-        "後方へ鋭く進み捕球されたもの",
-        "地面に触れた時点で扱いが変わる"
+        "バットにかすり、そのまま捕手が捕球した打球",
+        "ファウル地域へ転がった打球",
+        "高く上がったファウルフライ"
       ],
-      "answer": 1,
-      "explanation": "ファウルチップは、バットにかすった球が鋭く捕手の手またはミットへ進み、正しく捕球されたものです。",
+      "answer": 0,
+      "explanation": "ファウルチップは、投球がバットにかすって鋭く捕手へ進み、そのまま正しく捕球されたものです。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 正確性と難易度を向上 / Step4.6: 問題文の単調表現を自然化",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 正確性と難易度を向上 / Step4.6: 問題文の単調表現を自然化 / v40: 二重正解防止と第3問配置へ修正",
       "main_category": "JSBB学童ルール",
       "middle_category": "用具規定",
       "small_category": "バット"
@@ -3726,15 +3732,15 @@ window.QUIZ_MASTER_QUESTIONS = {
       "category": "少年野球上級知識",
       "question": "タイブレーク時の投球数について確認すべきこととして正しいものは？",
       "choices": [
-        "延長・タイブレークでも投球数ルールの範囲内か確認する",
+        "タイブレークでは投球数を数えない",
         "通常回と同じく投球数管理の対象になるか大会要項で確認する",
-        "特別延長でも選手保護の観点から投球数を共有する"
+        "タイブレークでは投手交代が禁止される"
       ],
       "answer": 1,
-      "explanation": "タイブレークでも投球数ルールが関係する場合があります。",
+      "explanation": "タイブレークでも投球数ルールが関係する場合があるため、大会要項で確認が必要です。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v40: B/C同義化を解消",
       "main_category": "JSBB学童ルール",
       "middle_category": "選手保護",
       "small_category": "投球・兼任"
@@ -4466,15 +4472,15 @@ window.QUIZ_MASTER_QUESTIONS = {
       "category": "高校野球",
       "question": "高校野球の低反発バット導入の目的は？",
       "choices": [
-        "金属バットの反発力を見直し、打球速度を抑えるため",
-        "打球速度を抑え、安全と試合バランスを見直すため",
-        "高校野球の打撃環境を、用具面から段階的に調整するため"
+        "打球速度を抑えて安全性を高めるため",
+        "打者のホームランを増やすため",
+        "守備をより魅力的に見せるため"
       ],
-      "answer": 1,
-      "explanation": "低反発バットは打球速度や安全への対応です。",
+      "answer": 0,
+      "explanation": "高校野球の低反発バットは、打球速度を抑えて投手や野手の安全性を高める目的があります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v40: 二重正解防止のため選択肢を修正",
       "main_category": "JSBB学童ルール",
       "middle_category": "用具規定",
       "small_category": "バット"
