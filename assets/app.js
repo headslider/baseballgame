@@ -53,7 +53,7 @@ const QUIZ_MASTER_DAILY_LIMIT_ENABLED=false;
 const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
 const QUIZ_MASTER_POINTS={1:10,2:20,3:40,4:80,5:160,6:240,7:360,8:540,9:810,10:1215};
 const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13};
-const QUIZ_MASTER_STATE={questions:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false};
+const QUIZ_MASTER_STATE={questions:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
 const INNING_SLOTS=[
   ["1回表",0,"1B","attack"],["1回表",1,"2B","attack"],["1回表",2,"3B","attack"],
   ["1回裏",0,"1B","defense"],["1回裏",1,"2B","defense"],["1回裏",2,"3B","defense"],
@@ -1722,9 +1722,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=885",
-    "./data/quiz_master_questions.json?v=885",
-    new URL("data/quiz_master_questions.json?v=885",document.baseURI).href
+    "data/quiz_master_questions.json?v=886",
+    "./data/quiz_master_questions.json?v=886",
+    new URL("data/quiz_master_questions.json?v=886",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1790,7 +1790,7 @@ async function startQuizMaster(){
     show("screen-title");
     return;
   }
-  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:20,answered:false,startedAt:Date.now(),questionStartedAt:0,logs:[],challenge:false,guestTest,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false});
+  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:20,answered:false,startedAt:Date.now(),questionStartedAt:0,logs:[],challenge:false,guestTest,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]});
   show("screen-quiz-master");
   updateQuizMasterDailyUI();
   setTextSafe("quizMasterQuestion","問題データを読み込み中...");
@@ -1816,6 +1816,15 @@ async function startQuizMaster(){
 }
 function setTextSafe(id,text){const el=$(id);if(el)el.textContent=text}
 function currentQuizMasterQuestion(){return QUIZ_MASTER_STATE.sequence[QUIZ_MASTER_STATE.currentIndex]||null}
+function buildQuizMasterChoiceOrder(q){
+  return shuffle((Array.isArray(q&&q.choices)?q.choices:[]).map((text,originalIndex)=>({
+    text:String(text||""),
+    originalIndex,
+    isAnswer:originalIndex===Number(q&&q.answer)
+  })));
+}
+function currentQuizMasterChoiceOrder(){return Array.isArray(QUIZ_MASTER_STATE.choiceOrder)?QUIZ_MASTER_STATE.choiceOrder:[]}
+function currentQuizMasterAnswerIndex(){return currentQuizMasterChoiceOrder().findIndex(choice=>choice&&choice.isAnswer)}
 function renderQuizMasterQuestion(){
   const q=currentQuizMasterQuestion();
   if(!q){finishQuizMaster(true);return}
@@ -1832,6 +1841,7 @@ function renderQuizMasterQuestion(){
   QUIZ_MASTER_STATE.answered=false;
   QUIZ_MASTER_STATE.animating=true;
   QUIZ_MASTER_STATE.fiftyHidden=null;
+  QUIZ_MASTER_STATE.choiceOrder=buildQuizMasterChoiceOrder(q);
   QUIZ_MASTER_STATE.roundToken+=1;
   QUIZ_MASTER_STATE.remaining=quizMasterTimeForLevel(questionNo);
   QUIZ_MASTER_STATE.questionStartedAt=0;
@@ -1845,12 +1855,12 @@ function renderQuizMasterQuestion(){
   const box=$("quizMasterChoices");
   if(box){
     box.innerHTML="";
-    q.choices.forEach((text,idx)=>{
+    currentQuizMasterChoiceOrder().forEach((choice,idx)=>{
       const btn=document.createElement("button");
       btn.type="button";
       btn.className=`quiz-master-choice choice-${idx}`;
       btn.style.setProperty("--quiz-choice-order",String(idx));
-      btn.innerHTML=`<span class="quiz-master-choice-label">${String.fromCharCode(65+idx)}</span><b class="quiz-master-choice-text">${escapeHtml(text)}</b>`;
+      btn.innerHTML=`<span class="quiz-master-choice-label">${String.fromCharCode(65+idx)}</span><b class="quiz-master-choice-text">${escapeHtml(choice.text)}</b>`;
       btn.addEventListener("click",()=>selectQuizMasterChoice(idx));
       box.appendChild(btn);
     });
@@ -1930,7 +1940,8 @@ function resumeQuizMasterTimerAfterPrompt(){
 async function useQuizMasterFifty(){
   const q=currentQuizMasterQuestion();
   if(!q||QUIZ_MASTER_STATE.fiftyUsed||QUIZ_MASTER_STATE.fiftyPromptOpen||QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating)return;
-  const wrongIndexes=[0,1,2].filter(i=>i!==q.answer);
+  const answerIndex=currentQuizMasterAnswerIndex();
+  const wrongIndexes=[0,1,2].filter(i=>i!==answerIndex);
   if(!wrongIndexes.length)return;
   QUIZ_MASTER_STATE.fiftyPromptOpen=true;
   QUIZ_MASTER_STATE.animating=true;
@@ -2003,6 +2014,8 @@ function playQuizMasterTone(correct){
 }
 async function confirmQuizMasterChoice(timeout=false){
   const q=currentQuizMasterQuestion();
+  const choices=currentQuizMasterChoiceOrder();
+  const answerIndex=currentQuizMasterAnswerIndex();
   if(!q||QUIZ_MASTER_STATE.answered)return;
   if(!timeout&&QUIZ_MASTER_STATE.selected===null)return;
   QUIZ_MASTER_STATE.answered=true;
@@ -2010,13 +2023,13 @@ async function confirmQuizMasterChoice(timeout=false){
   updateQuizMasterFiftyButton();
   clearQuizMasterTimer();
   const selected=timeout?-1:QUIZ_MASTER_STATE.selected;
-  const correct=selected===q.answer;
+  const correct=selected===answerIndex;
   const answerMs=Date.now()-QUIZ_MASTER_STATE.questionStartedAt;
   document.querySelectorAll(".quiz-master-choice").forEach((b,i)=>{
-    b.classList.toggle("is-correct",i===q.answer);
+    b.classList.toggle("is-correct",i===answerIndex);
     b.classList.toggle("is-wrong",selected===i&&!correct);
   });
-  QUIZ_MASTER_STATE.logs.push({id:q.id,level:q.level,selected,answer:q.answer,correct,answer_time_ms:answerMs});
+  QUIZ_MASTER_STATE.logs.push({id:q.id,level:q.level,selected,answer:answerIndex,selected_original_index:selected>=0&&choices[selected]?choices[selected].originalIndex:-1,answer_original_index:Number(q.answer),correct,answer_time_ms:answerMs});
   playQuizMasterTone(correct);
   if(correct){
     const point=quizMasterPointForLevel(q.level);
@@ -2040,9 +2053,9 @@ async function confirmQuizMasterChoice(timeout=false){
     QUIZ_MASTER_STATE.failureReview={
       question:q.question,
       selected,
-      selectedText:selected>=0?(q.choices[selected]||""):"時間切れ",
-      answer:q.answer,
-      answerText:q.choices[q.answer]||"",
+      selectedText:selected>=0&&choices[selected]?(choices[selected].text||""):"時間切れ",
+      answer:answerIndex,
+      answerText:answerIndex>=0&&choices[answerIndex]?(choices[answerIndex].text||""):"",
       explanation:q.explanation||"",
       timeout:!!timeout
     };
@@ -2139,7 +2152,7 @@ async function saveQuizMasterScore(cleared){
       result_reason:QUIZ_MASTER_STATE.endReason,
       duration_sec:Math.round((Date.now()-QUIZ_MASTER_STATE.startedAt)/1000),
       question_ids:QUIZ_MASTER_STATE.logs.map(l=>l.id),
-      answer_summary:QUIZ_MASTER_STATE.logs.map(l=>({id:l.id,level:l.level,selected:l.selected,answer:l.answer,correct:!!l.correct}))
+      answer_summary:QUIZ_MASTER_STATE.logs.map(l=>({id:l.id,level:l.level,selected:l.selected,answer:l.answer,selected_original_index:l.selected_original_index,answer_original_index:l.answer_original_index,correct:!!l.correct}))
     })});
   }catch(e){console.warn("quiz score save failed",e)}
 }

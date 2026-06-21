@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.46",
+  "current_public_version": "v1.1.47",
   "internal": {
-    "app_version": "v885-production",
-    "cache_version": "yakyu-yarouze-v885-production",
+    "app_version": "v886-production",
+    "cache_version": "yakyu-yarouze-v886-production",
     "updated_at": "2026-06-21T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの問題データを final_candidate_v32_term_relation_added に更新。"
+    "change_summary": "野球博士チャレンジの選択肢A/B/Cを毎問ランダムに並び替えるよう更新。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.47-20260621-v886",
+      "public_version": "v1.1.47",
+      "release_type": "patch",
+      "released_at": "2026-06-21",
+      "title": "野球博士チャレンジ選択肢シャッフル対応",
+      "public_summary": "野球博士チャレンジで選択肢A/B/Cの表示順が毎問ランダムになるよう更新しました。",
+      "admin_note": "v886-production更新。野球博士チャレンジの各問題表示時に選択肢をシャッフルし、正解判定、50:50、結果画面、保存用answer_summaryが表示後のA/B/Cと整合するよう修正。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v886-production",
+      "cache_version": "yakyu-yarouze-v886-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-21T00:00:00+09:00",
+      "updated_at": "2026-06-21T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.46-20260621-v885",
       "public_version": "v1.1.46",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v885-production",
       "cache_version": "yakyu-yarouze-v885-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-21T00:00:00+09:00",
       "updated_at": "2026-06-21T00:00:00+09:00"
     },
