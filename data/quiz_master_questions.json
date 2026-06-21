@@ -1,9 +1,9 @@
 {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "final_candidate_v20_mizuno_name_fixed",
+    "version": "final_candidate_v22_human_double_answer_audit",
     "created_by": "ChatGPT",
-    "question_count": 268,
+    "question_count": 222,
     "answer_index_base": 0,
     "rules": [
       "通常学年別クイズと重複する守備判断・走塁判断・送球判断・カバーリング問題は含めない",
@@ -35,18 +35,18 @@
     "step5_added_questions": 64,
     "step5_modified_questions": 3,
     "implementation_status": "Codex handoff candidate",
-    "audit_step6": "2026-06-20 Step6 最終JSON実装監査完了。JSON構文、ID重複、level別件数、choices数、answer範囲、空欄、選択肢30文字以内、並び順を確認。",
+    "audit_step6": "二重正解監査を実施。意味が重複する選択肢や学童で実用性の低い問題を削除。",
     "level_question_counts": {
       "1": 16,
-      "2": 18,
-      "3": 18,
-      "4": 19,
-      "5": 19,
-      "6": 55,
-      "7": 46,
-      "8": 34,
-      "9": 22,
-      "10": 21
+      "2": 16,
+      "3": 17,
+      "4": 16,
+      "5": 15,
+      "6": 48,
+      "7": 39,
+      "8": 28,
+      "9": 18,
+      "10": 9
     },
     "audit_step5_5": "2026-06-20 一般野球のベース位置・寸法問題を第8問以降へ移動。第3問には学童向けグラウンド知識を補充。",
     "audit_step4_5": "2026-06-20 Step4.5 専門用語・カタカナ監査。オーバーユースけが等を小学生に分かる表現へ修正。",
@@ -157,7 +157,59 @@
       "BQ1024"
     ],
     "mizuno_official_name": "MIZUNOドリームカップジュニアトーナメント",
-    "audit_step5_11": "2026-06-21 ミズノ大会名称を 『MIZUNOドリームカップジュニアトーナメント』へ統一。"
+    "audit_step5_11": "2026-06-21 ミズノ大会名称を 『MIZUNOドリームカップジュニアトーナメント』へ統一。",
+    "audit_step6_1": "2026-06-21 人間感覚での二重正解監査を実施。A/B/Cのうち複数が同じ理由・効果になる問題、抽象的で『より適切』になりやすい問題、学童に役立ちにくい上級一般論を削除。明確化できる問題は修正。",
+    "double_answer_prevention_rule": [
+      "A/B/Cのうち2つ以上が同じ理由・効果になる場合は不採用",
+      "AもBも正しいが『より適切』で選ばせる問題は不採用",
+      "抽象論・一般論だけで答えさせる問題は不採用",
+      "明確な数値・禁止事項・許可事項・対象者がある問題を優先",
+      "学童選手が知って役立つ内容を優先"
+    ],
+    "removed_by_human_double_answer_audit_ids": [
+      "BQ204",
+      "BQ220",
+      "BQ319",
+      "BQ406",
+      "BQ407",
+      "BQ412",
+      "BQ505",
+      "BQ513",
+      "BQ514",
+      "BQ517",
+      "BQ610",
+      "BQ618",
+      "BQ646",
+      "BQ675",
+      "BQ713",
+      "BQ719",
+      "BQ736",
+      "BQ739",
+      "BQ740",
+      "BQ749",
+      "BQ609",
+      "BQ806",
+      "BQ818",
+      "BQ824",
+      "BQ825",
+      "BQ904",
+      "BQ910",
+      "BQ912",
+      "BQ925",
+      "BQ1005",
+      "BQ1008",
+      "BQ1011",
+      "BQ1013",
+      "BQ1014",
+      "BQ1015",
+      "BQ1022",
+      "BQ1023",
+      "BQ1025"
+    ],
+    "modified_by_human_double_answer_audit_ids": [
+      "BQ120",
+      "BQ210"
+    ]
   },
   "questions": [
     {
@@ -467,15 +519,15 @@
       "category": "少年野球基礎・安全用具",
       "question": "捕手用マスクの一番大切な役割は？",
       "choices": [
-        "顔を強い球から守る",
-        "投手のサインを隠す",
-        "声を通しやすくする"
+        "顔を投球や打球から守る",
+        "サインを見えやすくする",
+        "背番号を隠す"
       ],
       "answer": 0,
       "explanation": "捕手用マスクは、投球やファウルチップから顔を守るための防具です。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: Step4対象外だが即消し選択肢を予防修正 / Step5最終監査: 野球博士らしさ・単一正解性を調整",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: Step4対象外だが即消し選択肢を予防修正 / Step5最終監査: 野球博士らしさ・単一正解性を調整 / v22: 二重正解防止のため選択肢を明確化",
       "main_category": "基礎知識",
       "middle_category": "学童・少年野球",
       "small_category": "その他"
@@ -536,26 +588,6 @@
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: Step4対象外だが即消し選択肢を予防修正 / Step5最終監査: 野球博士らしさ・単一正解性を調整",
-      "main_category": "用具",
-      "middle_category": "バット",
-      "small_category": "規格・特徴"
-    },
-    {
-      "id": "BQ204",
-      "level": 2,
-      "level_name": "第2問",
-      "category": "用具とメンテナンス",
-      "question": "子ども用バットを選ぶ時に重要な考え方は？",
-      "choices": [
-        "身長・体格・振り切れる重さに合うものを選ぶ",
-        "長さを優先し、多少振り遅れても遠心力を重視する",
-        "上級生用に早めに慣れることを優先する"
-      ],
-      "answer": 0,
-      "explanation": "扱いきれない重さや長さはフォームを崩す原因になります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
       "main_category": "用具",
       "middle_category": "バット",
       "small_category": "規格・特徴"
@@ -665,17 +697,17 @@
       "level": 2,
       "level_name": "第2問",
       "category": "用具とメンテナンス",
-      "question": "捕手ミットが通常のグローブと異なる点は？",
+      "question": "捕手ミットが内野手用グラブと大きく違う点は？",
       "choices": [
-        "投球を受けるため厚く作られている",
-        "捕球面が広く深く作られている",
-        "捕手の捕球に合う形をしている"
+        "投球を受ける厚みがある",
+        "打球処理を速くする浅さ",
+        "外野飛球を捕りやすい長さ"
       ],
       "answer": 0,
-      "explanation": "捕手用ミットは投球を受けることに適した厚みや形状です。",
+      "explanation": "捕手ミットは投球を受けるため、厚みや形が捕手向けに作られています。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: Step4対象外だが即消し選択肢を予防修正",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: Step4対象外だが即消し選択肢を予防修正 / v22: 二重正解防止のため選択肢を明確化",
       "main_category": "用具",
       "middle_category": "用具知識",
       "small_category": "安全・手入れ"
@@ -819,26 +851,6 @@
       "main_category": "用具",
       "middle_category": "用具知識",
       "small_category": "安全・手入れ"
-    },
-    {
-      "id": "BQ220",
-      "level": 2,
-      "level_name": "第2問",
-      "category": "用具とメンテナンス",
-      "question": "用具選びで保護者が重視すべき考え方は？",
-      "choices": [
-        "子どもの体格・安全・扱いやすさのバランス",
-        "成長後も長く使えるよう大きめを選ぶこと",
-        "同じチームの上級生と同じルールへ早く合わせること"
-      ],
-      "answer": 0,
-      "explanation": "成長期の選手には、今の身体に合う用具が大切です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
     },
     {
       "id": "BQ301",
@@ -1161,26 +1173,6 @@
       "small_category": "グラウンド寸法"
     },
     {
-      "id": "BQ319",
-      "level": 3,
-      "level_name": "第3問",
-      "category": "グラウンド知識",
-      "question": "ラインを引く理由として正しいものは？",
-      "choices": [
-        "フェア・ファウルを見やすくする",
-        "走路や境界を見やすくする",
-        "試合区域を分かりやすくする"
-      ],
-      "answer": 0,
-      "explanation": "ラインはフェア・ファウルや走路など、判定の基準を見やすくします。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: ボケ回答を除去 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ320",
       "level": 3,
       "level_name": "第3問",
@@ -1301,46 +1293,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ406",
-      "level": 4,
-      "level_name": "第4問",
-      "category": "ルール知識（非状況判断）",
-      "question": "守備妨害の基本的な考え方として正しいものは？",
-      "choices": [
-        "攻撃側の行為が守備側のプレイを妨げた場合に問題となる",
-        "守備側が走者の進路をふさいだ場合を中心に扱う",
-        "観客やベンチの声が守る選手の集中を乱した場合を中心に扱う"
-      ],
-      "answer": 0,
-      "explanation": "攻撃側が守備のプレイを妨げるケースです。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ407",
-      "level": 4,
-      "level_name": "第4問",
-      "category": "ルール知識（非状況判断）",
-      "question": "走塁妨害の基本的な考え方として正しいものは？",
-      "choices": [
-        "守備側が走者の走路を妨げること",
-        "ボールを持たずに走路をふさぐこと",
-        "走者の進塁を不当に妨げること"
-      ],
-      "answer": 0,
-      "explanation": "走塁妨害は、守備側が走者の走路や進塁を妨げる行為です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 複数正解感を抑えて定義を明確化 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ408",
       "level": 4,
       "level_name": "第4問",
@@ -1413,26 +1365,6 @@
       ],
       "answer": 1,
       "explanation": "不当な併殺狙いを防ぎます。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ412",
-      "level": 4,
-      "level_name": "第4問",
-      "category": "ルール知識（非状況判断）",
-      "question": "打順間違いで重要な考え方として正しいものは？",
-      "choices": [
-        "誰が正規打者か、いつアピールされたかで処置が変わる",
-        "打撃結果が出た後のアピール時期により扱いが変わる",
-        "次のプレイが始まる前後で処置が変わる場合がある"
-      ],
-      "answer": 0,
-      "explanation": "アピールのタイミングで処置が変わります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
@@ -1661,26 +1593,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ505",
-      "level": 5,
-      "level_name": "第5問",
-      "category": "安全・けが予防",
-      "question": "ホーム以外のヘッドスライディングが非推奨になりやすい理由として正しいものは？",
-      "choices": [
-        "手や肩のけがが増えやすい",
-        "速さの効果が小さくけがが多い",
-        "接触時の危険が大きくなりやすい"
-      ],
-      "answer": 1,
-      "explanation": "ホーム以外では、速さの効果が小さい一方で手や肩のけがにつながりやすいです。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 選択肢を自然化 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ506",
       "level": 5,
       "level_name": "第5問",
@@ -1821,46 +1733,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ513",
-      "level": 5,
-      "level_name": "第5問",
-      "category": "安全・けが予防",
-      "question": "暑い日の試合で顔色や反応が悪い選手がいた時の考え方として正しいものは？",
-      "choices": [
-        "熱中症などを疑い、無理に続行させず確認を優先する",
-        "本人の意思が強ければ、次の回まで様子を見る",
-        "守備位置を変えてプレーを続けられるか確認する"
-      ],
-      "answer": 0,
-      "explanation": "熱中症疑いでは早期対応が重要です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ514",
-      "level": 5,
-      "level_name": "第5問",
-      "category": "安全・けが予防",
-      "question": "試合当日の食事で避けたい考え方として正しいものは？",
-      "choices": [
-        "消化や試合開始時間を考えずに急に大量に食べること",
-        "普段食べ慣れたものを試合時間に合わせて取ること",
-        "水分と食事の両方を考えて準備すること"
-      ],
-      "answer": 0,
-      "explanation": "消化時間やエネルギー補給を考えます。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ515",
       "level": 5,
       "level_name": "第5問",
@@ -1899,26 +1771,6 @@
       "main_category": "学童ルール",
       "middle_category": "用具規定",
       "small_category": "サングラス"
-    },
-    {
-      "id": "BQ517",
-      "level": 5,
-      "level_name": "第5問",
-      "category": "安全・けが予防",
-      "question": "グラウンドの石や穴を確認する理由として正しいものは？",
-      "choices": [
-        "転倒やイレギュラーによるけがを減らすため",
-        "打球処理の難度をそろえ、守備練習をしやすくするため",
-        "走路や守備位置の安全を確認するため"
-      ],
-      "answer": 0,
-      "explanation": "小さな凹凸や異物もけがにつながります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
     },
     {
       "id": "BQ518",
@@ -1981,26 +1833,6 @@
       "small_category": "サングラス"
     },
     {
-      "id": "BQ604",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "2026年導入予定の学童部1週間投球数ルールの目的は？",
-      "choices": [
-        "登板機会を分散し、投手育成につなげるため",
-        "大会日程の中で投手の体への負担を把握しやすくするため",
-        "連戦を含む肩肘への過度な体への負担を抑えるため"
-      ],
-      "answer": 2,
-      "explanation": "週投球数ルールはけが予防が目的です。",
-      "source_note": "全日本軟式野球連盟 2026年導入通知",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "学童ルール",
-      "middle_category": "選手保護",
-      "small_category": "投球数"
-    },
-    {
       "id": "BQ608",
       "level": 6,
       "level_name": "第6問",
@@ -2019,66 +1851,6 @@
       "main_category": "用具",
       "middle_category": "バット",
       "small_category": "規格・特徴"
-    },
-    {
-      "id": "BQ610",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "頭部死球後の臨時代走措置で重要な考え方として正しいものは？",
-      "choices": [
-        "状態確認中の攻撃継続と選手保護を両立するため",
-        "走者交代の対象者や戻り方を大会ルールで確認するため",
-        "頭部死球後の安全確認を優先し、臨時代走で運営を補うため"
-      ],
-      "answer": 2,
-      "explanation": "臨時代走は大会ルールに定められることがあります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ611",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "投手と捕手の体への負担管理で大切な考え方は？",
-      "choices": [
-        "捕手にも送球やしゃがむ体への負担がある",
-        "投手だけを見れば十分である",
-        "捕手は肩ひじの体への負担が少ない"
-      ],
-      "answer": 0,
-      "explanation": "捕手にも送球、しゃがむ姿勢、防具の重さなどの体への負担があり、投手と同じく管理が必要です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ613",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "熱中症対策が大会ルールに組み込まれる理由として正しいものは？",
-      "choices": [
-        "選手の体調管理を大会運営に組み込み、安全を高めるため",
-        "高温時の試合時間や休憩運営を明確にするため",
-        "審判・選手・保護者が同じ基準で対応しやすくするため"
-      ],
-      "answer": 0,
-      "explanation": "暑熱環境では休憩や給水ルールが重視されます。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
     },
     {
       "id": "BQ615",
@@ -2119,26 +1891,6 @@
       "main_category": "学童ルール",
       "middle_category": "用具規定",
       "small_category": "サングラス"
-    },
-    {
-      "id": "BQ618",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童野球",
-      "question": "学童野球の新ルールが増える理由として正しいものは？",
-      "choices": [
-        "選手保護・試合環境の変化・用具進化への対応",
-        "競技人口や指導環境の変化に合わせた運営改善",
-        "安全と公平さを保つための大会進行上の見直し"
-      ],
-      "answer": 0,
-      "explanation": "安全対策や用具の進化に合わせ、ルールも更新されます。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
     },
     {
       "id": "BQ619",
@@ -2601,26 +2353,6 @@
       "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
-      "id": "BQ646",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童ルール・ミズノ",
-      "question": "ミズノのEDH制で正しいものは？",
-      "choices": [
-        "10人で打順を組める",
-        "打撃専門枠を使える",
-        "守備人数とは分けて考える"
-      ],
-      "answer": 0,
-      "explanation": "EDH制は10人で打順を組める制度です。守備人数とは分けて考えます。",
-      "source_note": "MIZUNOドリームカップジュニアトーナメント 大会ルール2026",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 追加大会ルール問題の即消し選択肢を修正",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "MIZUNOドリームカップジュニアトーナメント"
-    },
-    {
       "id": "BQ647",
       "level": 6,
       "level_name": "第6問",
@@ -3001,26 +2733,6 @@
       "small_category": "サングラス"
     },
     {
-      "id": "BQ675",
-      "level": 6,
-      "level_name": "第6問",
-      "category": "最新学童ルール",
-      "question": "野手が帽子の庇にサングラスを乗せる時、大切なのは？",
-      "choices": [
-        "安全目的で正しく扱う",
-        "相手をまどわすために使う",
-        "審判に見せないようにする"
-      ],
-      "answer": 0,
-      "explanation": "野手の庇上サングラスは日差し対策や安全のための扱いで、相手を惑わす目的ではありません。",
-      "source_note": "JSBB/全軟連の2025-2029学童ルール監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。 / v13: サングラスの対象条件を明記し、無条件の帽子上装着問題を修正。 / v14: サングラス規定を令和5年FAQの投手使用・投手ミラー不可・野手庇上可に合わせて修正",
-      "main_category": "学童ルール",
-      "middle_category": "用具規定",
-      "small_category": "サングラス"
-    },
-    {
       "id": "BQ760",
       "level": 6,
       "level_name": "第6問",
@@ -3261,26 +2973,6 @@
       "small_category": "その他"
     },
     {
-      "id": "BQ713",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "少年野球上級知識",
-      "question": "大会で試合時間ルールが設けられる理由は？",
-      "choices": [
-        "選手体への負担・日程・会場運営のため",
-        "得点を少なくするため",
-        "守備時間を同じにするため"
-      ],
-      "answer": 0,
-      "explanation": "時間ルールは、選手の体への負担、会場の日程、安全な運営を考えて設けられることがあります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
       "id": "BQ714",
       "level": 7,
       "level_name": "第7問",
@@ -3353,46 +3045,6 @@
       ],
       "answer": 0,
       "explanation": "試合の公平さと育成・安全を両立する必要があります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ719",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "少年野球上級知識",
-      "question": "保護者にもルール共有が必要な理由として正しいものは？",
-      "choices": [
-        "保護者が審判判定を変更できるため",
-        "安全・用具・大会運営への理解がチーム運営を助けるため",
-        "選手交代を保護者が決めるため"
-      ],
-      "answer": 1,
-      "explanation": "保護者の理解は安全管理やトラブル防止に役立ちます。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ720",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "少年野球上級知識",
-      "question": "少年野球上級知識として価値があるものとして正しいものは？",
-      "choices": [
-        "ルールの丸暗記だけでなく、安全と大会運営の理由を理解する",
-        "試合ルール・大会要項・安全対策のつながりを理解すること",
-        "知識を試合運営や選手保護に活かせること"
-      ],
-      "answer": 0,
-      "explanation": "ルールの理由や安全上の意味を理解することが重要です。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
@@ -3561,26 +3213,6 @@
       "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
-      "id": "BQ736",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "MIZUNOドリームカップジュニアトーナメント",
-      "question": "ミズノ大会のEDH制とは？",
-      "choices": [
-        "10人で打順を組める制度",
-        "守備だけ10人にする制度",
-        "投手だけ打たない制度"
-      ],
-      "answer": 0,
-      "explanation": "EDHは10人で打順を組むことができる制度です。",
-      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "MIZUNOドリームカップジュニアトーナメント"
-    },
-    {
       "id": "BQ738",
       "level": 7,
       "level_name": "第7問",
@@ -3593,46 +3225,6 @@
       ],
       "answer": 0,
       "explanation": "一度EDHを採用した試合では、途中で9人制へ変更できません。",
-      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "MIZUNOドリームカップジュニアトーナメント"
-    },
-    {
-      "id": "BQ739",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "MIZUNOドリームカップジュニアトーナメント",
-      "question": "リエントリー制度の意味は？",
-      "choices": [
-        "退いた先発が再出場できる",
-        "全員が何度でも出られる",
-        "投手だけ再出場できる"
-      ],
-      "answer": 0,
-      "explanation": "スターティングメンバーに限り、一度だけ再出場できる制度です。",
-      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "MIZUNOドリームカップジュニアトーナメント"
-    },
-    {
-      "id": "BQ740",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "MIZUNOドリームカップジュニアトーナメント",
-      "question": "リエントリーで大切な条件は？",
-      "choices": [
-        "元の打順に戻る",
-        "打順を自由に変える",
-        "代走だけに使う"
-      ],
-      "answer": 0,
-      "explanation": "リエントリーする選手は元の打順に戻ります。",
       "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
@@ -3773,26 +3365,6 @@
       ],
       "answer": 0,
       "explanation": "期限内に対戦できない場合、対戦可能日の数で勝敗を決める規定があります。",
-      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "学童ルール",
-      "middle_category": "大会規定",
-      "small_category": "MIZUNOドリームカップジュニアトーナメント"
-    },
-    {
-      "id": "BQ749",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "MIZUNOドリームカップジュニアトーナメント",
-      "question": "雨で試合が流れた時に大切なのは？",
-      "choices": [
-        "事務局へ申請する",
-        "何もせず期限切れを待つ",
-        "相手だけに任せる"
-      ],
-      "answer": 0,
-      "explanation": "雨天延期時は、対戦期限延長のため事務局へ申請が必要です。",
       "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
@@ -4041,26 +3613,6 @@
       "small_category": "規格・特徴"
     },
     {
-      "id": "BQ609",
-      "level": 8,
-      "level_name": "第8問",
-      "category": "最新学童野球",
-      "question": "2026〜2028年が切りかえ期間とされるバット規制で大切な考え方は？",
-      "choices": [
-        "大会要項で使用可否を確認する",
-        "年度ごとの差を確認する",
-        "一般用と少年用を分けて見る"
-      ],
-      "answer": 0,
-      "explanation": "2026〜2028年は移行期間のため、年度や大会要項で使用可否を確認する必要があります。",
-      "source_note": "JSBB 2029年以降の少年部(学童・少年)バット使うルールについて / 2025年大人用やわらかい素材バットルール通知",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 即消し選択肢を除去 / v15: 学童以外のルール・道具問題のため第8問以降へ移動",
-      "main_category": "用具",
-      "middle_category": "バット",
-      "small_category": "規格・特徴"
-    },
-    {
       "id": "BQ653",
       "level": 8,
       "level_name": "第8問",
@@ -4119,26 +3671,6 @@
       "main_category": "用具",
       "middle_category": "バット",
       "small_category": "規格・特徴"
-    },
-    {
-      "id": "BQ801",
-      "level": 8,
-      "level_name": "第8問",
-      "category": "高校野球",
-      "question": "高校野球で7イニング制が議論される理由として正しいものは？",
-      "choices": [
-        "暑さ対策と投手負担のため",
-        "健康管理と大会運営の両立",
-        "連戦時の負担を減らすため"
-      ],
-      "answer": 1,
-      "explanation": "高校野球の7イニング制議論は、選手の健康管理と大会運営の両立が背景にあります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: ボケ回答を除去 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
     },
     {
       "id": "BQ802",
@@ -4219,26 +3751,6 @@
       "main_category": "上級野球知識",
       "middle_category": "一般・高校・プロ",
       "small_category": "後半専用"
-    },
-    {
-      "id": "BQ806",
-      "level": 8,
-      "level_name": "第8問",
-      "category": "高校野球",
-      "question": "高校野球の投球数ルールが議論・導入される理由として正しいものは？",
-      "choices": [
-        "投手起用を複数人で判断きっかけになるため",
-        "チーム戦術と選手保護の両立が求められるため",
-        "投手の肩肘けが予防と連投体への負担への対応"
-      ],
-      "answer": 2,
-      "explanation": "投手の健康保護は重要テーマです。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "学童ルール",
-      "middle_category": "選手保護",
-      "small_category": "投球数"
     },
     {
       "id": "BQ807",
@@ -4421,26 +3933,6 @@
       "small_category": "後半専用"
     },
     {
-      "id": "BQ818",
-      "level": 8,
-      "level_name": "第8問",
-      "category": "高校野球",
-      "question": "低反発バットと学童の高反発バット規制に共通する考え方として正しいものは？",
-      "choices": [
-        "用具の進化に対し、安全と試合バランスを見直すこと",
-        "反発力が選手保護や試合内容に与える影響を判断こと",
-        "カテゴリーに応じた適切な用具ルールを整えること"
-      ],
-      "answer": 0,
-      "explanation": "用具力と安全・試合の公平さの調整という共通点があります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "用具",
-      "middle_category": "バット",
-      "small_category": "規格・特徴"
-    },
-    {
       "id": "BQ819",
       "level": 8,
       "level_name": "第8問",
@@ -4519,46 +4011,6 @@
       "main_category": "上級野球知識",
       "middle_category": "一般・高校・プロ",
       "small_category": "後半専用"
-    },
-    {
-      "id": "BQ824",
-      "level": 8,
-      "level_name": "第8問",
-      "category": "高校野球制度",
-      "question": "高校野球7回制が話題になる主な理由は？",
-      "choices": [
-        "選手の体と大会運営のため",
-        "本塁打を増やすため",
-        "守備位置を減らすため"
-      ],
-      "answer": 0,
-      "explanation": "暑さや投手負担などを考え、選手保護と大会運営の両面で議論されています。",
-      "source_note": "高校野球制度監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ825",
-      "level": 8,
-      "level_name": "第8問",
-      "category": "高校野球制度",
-      "question": "低反発バット導入のねらいは？",
-      "choices": [
-        "安全と投打バランス",
-        "木製バット禁止",
-        "打球音を大きくする"
-      ],
-      "answer": 0,
-      "explanation": "低反発バットは、打球速度や投打バランスへの配慮から導入されました。",
-      "source_note": "高校野球制度監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "用具",
-      "middle_category": "バット",
-      "small_category": "規格・特徴"
     },
     {
       "id": "BQ827",
@@ -4721,26 +4173,6 @@
       "small_category": "規格・特徴"
     },
     {
-      "id": "BQ904",
-      "level": 9,
-      "level_name": "第9問",
-      "category": "大学・社会人・プロ",
-      "question": "プロ野球のドラフト仕組みの目的は？",
-      "choices": [
-        "新人選手の獲得機会を球団間で一定程度公平に配分するため",
-        "新人選手が希望球団と自由交渉できる権利を完全に保証するため",
-        "既存選手の移籍先を球団順位に応じて決めるため"
-      ],
-      "answer": 0,
-      "explanation": "ドラフトは新人選手獲得の手続きで、戦力均衡や獲得機会の公平さに関わる仕組みです。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
       "id": "BQ905",
       "level": 9,
       "level_name": "第9問",
@@ -4821,26 +4253,6 @@
       "small_category": "後半専用"
     },
     {
-      "id": "BQ910",
-      "level": 9,
-      "level_name": "第9問",
-      "category": "大学・社会人・プロ",
-      "question": "トライアウトの目的は？",
-      "choices": [
-        "新人ドラフトの指名順を決める公式抽選",
-        "選手が球団関係者へプレー機会を示す場",
-        "シーズン中の順位決定戦"
-      ],
-      "answer": 1,
-      "explanation": "トライアウトは再契約や移籍の機会を求める場です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
       "id": "BQ911",
       "level": 9,
       "level_name": "第9問",
@@ -4856,26 +4268,6 @@
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ912",
-      "level": 9,
-      "level_name": "第9問",
-      "category": "大学・社会人・プロ",
-      "question": "MLBでピッチクロックが導入されたおもな目的は？",
-      "choices": [
-        "試合進行を速め、テンポを改善するため",
-        "投球間隔を管理し、観戦しやすい試合時間へ近づけるため",
-        "プレー間の時間を短縮し、試合のリズムを整えるため"
-      ],
-      "answer": 0,
-      "explanation": "ピッチクロックは試合時間短縮とテンポ改善が目的です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
       "main_category": "上級野球知識",
       "middle_category": "一般・高校・プロ",
       "small_category": "後半専用"
@@ -5061,26 +4453,6 @@
       "small_category": "規格・特徴"
     },
     {
-      "id": "BQ925",
-      "level": 9,
-      "level_name": "第9問",
-      "category": "プロ野球制度",
-      "question": "プロで金属バットを使わない理由は？",
-      "choices": [
-        "競技性と安全のため",
-        "金属が重すぎるため",
-        "ボールが変形するため"
-      ],
-      "answer": 0,
-      "explanation": "プロ野球では木製バットを使い、打撃技術や投打バランスを保ちます。",
-      "source_note": "大学・社会人・プロ知識",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "用具",
-      "middle_category": "バット",
-      "small_category": "規格・特徴"
-    },
-    {
       "id": "BQ926",
       "level": 9,
       "level_name": "第9問",
@@ -5181,106 +4553,6 @@
       "small_category": "後半専用"
     },
     {
-      "id": "BQ1005",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "木製バットが上位カテゴリーで重視される理由として正しいものは？",
-      "choices": [
-        "打撃技術の精度が反映されやすく、試合の公平さを保ちやすい",
-        "反発力を抑え、投手とのバランスを取りやすい",
-        "素材差や芯の捉え方が結果に表れやすい"
-      ],
-      "answer": 0,
-      "explanation": "木製は芯で捉える技術が結果に反映されやすいです。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "用具",
-      "middle_category": "バット",
-      "small_category": "規格・特徴"
-    },
-    {
-      "id": "BQ1006",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "野球用具の進化とルール改正の関係として正しいものは？",
-      "choices": [
-        "用具の力で安全や公平さが変わるため",
-        "新素材の普及に合わせて公平さや安全を確認する必要がある",
-        "カテゴリーごとに用具のルールが変わるため"
-      ],
-      "answer": 0,
-      "explanation": "用具進化は安全や公平さの議論につながります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1007",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "AI審判・自動判定システムが議論される理由として正しいものは？",
-      "choices": [
-        "判定支援により審判のぶれにくさを高めるため",
-        "判定の正確さやぶれにくさ、試合運営の改善を目指すため",
-        "審判員の判断と技術支援の役割分担を見直すため"
-      ],
-      "answer": 1,
-      "explanation": "自動判定は判定精度や運営のしやすさの改善策です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1008",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "セイバーメトリクスの考え方として正しいものは？",
-      "choices": [
-        "統計データを用いて選手や戦術の価値を分析する考え方",
-        "経験的な評価を、出塁・長打・守備などの数値で補う考え方",
-        "打撃・投球・守備を数値化し、チーム編成にも活かす考え方"
-      ],
-      "answer": 0,
-      "explanation": "セイバーメトリクスは、野球を統計データで分析する考え方です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1011",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "ピッチクロックのような時間短縮策が注目される理由として正しいものは？",
-      "choices": [
-        "観戦体験や試合テンポを現代の視聴環境に合わせるため",
-        "試合時間の予測しやすさとテンポ改善を図るため",
-        "投球間隔を管理し、試合のリズムを整えるため"
-      ],
-      "answer": 0,
-      "explanation": "試合時間やテンポは現代スポーツの観戦価値に関わります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
       "id": "BQ1012",
       "level": 10,
       "level_name": "第10問",
@@ -5293,66 +4565,6 @@
       ],
       "answer": 1,
       "explanation": "安全改革では複数の価値の調整が必要です。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1013",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "MLBとNPBの違いを学ぶ意義として正しいものは？",
-      "choices": [
-        "同じ野球でもリーグ仕組み・運営・文化が異なることを理解できる",
-        "日本の野球を相対的に見て、仕組みや戦術の違いを学べる",
-        "国際大会や選手移籍でルール差を理解しやすくなる"
-      ],
-      "answer": 0,
-      "explanation": "国やリーグで仕組み・文化・運営に違いがあります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1014",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "野球が『間』のスポーツと呼ばれる理由として正しいものは？",
-      "choices": [
-        "投球間や状況判断の時間が戦術性を生むため",
-        "一球ごとの準備・駆け引き・間合いが試合展開に影響する",
-        "連続プレーだけでなく、次の一手を読む時間が重要になるため"
-      ],
-      "answer": 1,
-      "explanation": "野球では一球ごとの準備、駆け引き、間合いが試合展開に大きく関わります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1015",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "プロ野球のドラフトが完全自由競争でない理由として正しいものは？",
-      "choices": [
-        "新人選手の獲得機会を一定程度公平にするため",
-        "戦力均衡や新人獲得の公平さを保つため",
-        "球団間の競争とリーグ全体のバランスを取るため"
-      ],
-      "answer": 1,
-      "explanation": "ドラフト仕組みは、戦力のかたよりを減らし、新人選手の獲得機会を公平に近づけるための仕組みです。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
@@ -5421,26 +4633,6 @@
       "small_category": "後半専用"
     },
     {
-      "id": "BQ1019",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・仕組み史",
-      "question": "野球の未来で用具規制が続く可能性がある理由として正しいものは？",
-      "choices": [
-        "素材技術の進化が安全や試合バランスに影響するため",
-        "カテゴリーごとに用具の力を調整するため",
-        "新素材の普及により公平さや安全の確認が続くため"
-      ],
-      "answer": 0,
-      "explanation": "用具技術が進むほど試合の公平さと安全の調整が必要になります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
       "id": "BQ1020",
       "level": 10,
       "level_name": "第10問",
@@ -5456,66 +4648,6 @@
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 正解と解説を合わせて調整 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1022",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・制度史",
-      "question": "野球の大会ルールが変わり続ける理由は？",
-      "choices": [
-        "安全と時代に合わせるため",
-        "昔の記録を消すため",
-        "全試合を同じ点差にするため"
-      ],
-      "answer": 0,
-      "explanation": "ルールは選手の安全や大会運営、競技の変化に合わせて見直されます。",
-      "source_note": "野球制度史",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1023",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・制度史",
-      "question": "用具規制で一番大切な考え方は？",
-      "choices": [
-        "安全と公平さのバランス",
-        "メーカーの数を減らすこと",
-        "色をすべて同じにすること"
-      ],
-      "answer": 0,
-      "explanation": "用具規制では、安全と試合の公平さを両立することが重要です。",
-      "source_note": "野球制度史",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "上級野球知識",
-      "middle_category": "一般・高校・プロ",
-      "small_category": "後半専用"
-    },
-    {
-      "id": "BQ1025",
-      "level": 10,
-      "level_name": "第10問",
-      "category": "野球博士・制度史",
-      "question": "野球博士問題で重視する力は？",
-      "choices": [
-        "理由を比べて考える力",
-        "声の大きさだけ",
-        "速く答えるだけ"
-      ],
-      "answer": 0,
-      "explanation": "野球博士チャレンジでは、暗記だけでなく理由を比べて考える力を問います。",
-      "source_note": "野球博士チャレンジ設計",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
       "main_category": "上級野球知識",
       "middle_category": "一般・高校・プロ",
       "small_category": "後半専用"

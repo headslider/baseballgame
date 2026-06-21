@@ -1,13 +1,13 @@
 {
-  "app_version": "v882-production",
-  "cache_version": "yakyu-yarouze-v882-production",
-  "public_version": "v1.1.43",
+  "app_version": "v883-production",
+  "cache_version": "yakyu-yarouze-v883-production",
+  "public_version": "v1.1.44",
   "updated_at": "2026-06-21T00:00:00+09:00",
   "release_date": "2026-06-21",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの問題データを final_candidate_v20_mizuno_name_fixed に更新。",
+  "change_summary": "野球博士チャレンジの問題データを final_candidate_v22_human_double_answer_audit に更新。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
