@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.48",
+  "current_public_version": "v1.1.49",
   "internal": {
-    "app_version": "v887-production",
-    "cache_version": "yakyu-yarouze-v887-production",
+    "app_version": "v888-production",
+    "cache_version": "yakyu-yarouze-v888-production",
     "updated_at": "2026-06-21T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの問題データを final_candidate_v33_step10_fix_and_audit に更新し、結果画面に問題文を表示。"
+    "change_summary": "野球博士チャレンジの問題データを final_candidate_v39_step13_final_rules に更新。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.49-20260621-v888",
+      "public_version": "v1.1.49",
+      "release_type": "patch",
+      "released_at": "2026-06-21",
+      "title": "野球博士チャレンジ問題データv39更新",
+      "public_summary": "野球博士チャレンジの問題データを最新版に更新しました。",
+      "admin_note": "v888-production更新。data/quiz_master_questions.json と assets/quiz_master_questions.js を quiz_master_questions_final_candidate_v39_step13_final_rules.json（meta version: final_candidate_v39_step13_final_rules、270問）へ同期。基本検証としてJSON構文、ID重複、level 1〜10、3択、answer範囲、問題文・解説の存在を確認。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v888-production",
+      "cache_version": "yakyu-yarouze-v888-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-21T00:00:00+09:00",
+      "updated_at": "2026-06-21T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.48-20260621-v887",
       "public_version": "v1.1.48",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v887-production",
       "cache_version": "yakyu-yarouze-v887-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-21T00:00:00+09:00",
       "updated_at": "2026-06-21T00:00:00+09:00"
     },
