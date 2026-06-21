@@ -1,9 +1,9 @@
 window.QUIZ_MASTER_QUESTIONS = {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "final_candidate_v32_term_relation_added",
+    "version": "final_candidate_v33_step10_fix_and_audit",
     "created_by": "ChatGPT",
-    "question_count": 250,
+    "question_count": 249,
     "answer_index_base": 0,
     "rules": [
       "通常学年別クイズと重複する守備判断・走塁判断・送球判断・カバーリング問題は含めない",
@@ -38,9 +38,9 @@ window.QUIZ_MASTER_QUESTIONS = {
     "audit_step6": "二重正解監査を実施。意味が重複する選択肢や学童で実用性の低い問題を削除。",
     "level_question_counts": {
       "1": 22,
-      "2": 22,
-      "3": 24,
-      "4": 23,
+      "2": 21,
+      "3": 25,
+      "4": 22,
       "5": 21,
       "6": 41,
       "7": 31,
@@ -436,7 +436,7 @@ window.QUIZ_MASTER_QUESTIONS = {
     "added_irregular_term_ids": [
       "BQ1088"
     ],
-    "audit_step10_1": "2026-06-21 ショーバン姿勢、ファールチップ、カット、同義語問題（ゲッツー=ダブルプレー、四球=フォアボール、捕逸=パスボール）を追加。",
+    "audit_step10_1": "2026-06-21 簡単すぎる問題・二重正解監査。BQ320修正、BQ414削除、BQ1090を第3問へ移動。BQ1052/カット/四つは現状維持。",
     "added_term_relation_ids": [
       "BQ1089",
       "BQ1090",
@@ -444,6 +444,13 @@ window.QUIZ_MASTER_QUESTIONS = {
       "BQ1092",
       "BQ1093",
       "BQ1094"
+    ],
+    "removed_in_step10_1": [
+      "BQ414"
+    ],
+    "modified_in_step10_1": [
+      "BQ320",
+      "BQ1090"
     ]
   },
   "questions": [
@@ -1632,17 +1639,17 @@ window.QUIZ_MASTER_QUESTIONS = {
       "level": 3,
       "level_name": "第3問",
       "category": "グラウンド知識",
-      "question": "グラウンド整備がけが予防に直接つながる理由は？",
+      "question": "グラウンド整備で最初に行う目的はどれ？",
       "choices": [
-        "足場を整え、転びにくくするため",
-        "打球のはね方を安定させるため",
+        "選手を速く走らせるため",
+        "見た目のため",
         "穴やでこぼこを減らすため"
       ],
       "answer": 2,
-      "explanation": "穴やでこぼこを減らすことで、転倒や不規則な打球によるけがを減らしやすくなります。",
+      "explanation": "グラウンド整備では、まず穴やでこぼこを減らし、安全にプレーしやすい状態にします。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 複数正解に見える選択肢を整理",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 複数正解に見える選択肢を整理 / v33: 二重正解防止のため選択肢を修正。",
       "main_category": "基礎知識",
       "middle_category": "学童・少年野球",
       "small_category": "その他"
@@ -1940,26 +1947,6 @@ window.QUIZ_MASTER_QUESTIONS = {
       ],
       "answer": 1,
       "explanation": "リタッチは走者の塁への触れ直しを指します。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "基礎知識",
-      "middle_category": "学童・少年野球",
-      "small_category": "その他"
-    },
-    {
-      "id": "BQ414",
-      "level": 4,
-      "level_name": "第4問",
-      "category": "ルール知識（非状況判断）",
-      "question": "一塁のオーバーランが特別に扱われる理由として正しいものは？",
-      "choices": [
-        "打者走者が一塁を駆け抜ける場面が想定されている",
-        "一塁はファウル地域側に駆け抜ける走路が広く取られるため",
-        "ホームから最初に到達する塁で接触が多いため"
-      ],
-      "answer": 0,
-      "explanation": "一塁は駆け抜けが使える場面があります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
@@ -5349,8 +5336,8 @@ window.QUIZ_MASTER_QUESTIONS = {
     },
     {
       "id": "BQ1090",
-      "level": 2,
-      "level_name": "第2問",
+      "level": 3,
+      "level_name": "第3問",
       "category": "野球用語",
       "main_category": "野球用語",
       "middle_category": "試合で使う用語",
@@ -5365,7 +5352,7 @@ window.QUIZ_MASTER_QUESTIONS = {
       "explanation": "ファールチップは、打球がバットに触れてそのまま捕手が捕球した場合をいいます。",
       "source_note": "学童野球の試合・指導で使われる基本用語",
       "overlap_check": "既存問題検索後に追加。ファウルとの違いを理解する用語問題。",
-      "quality_note": "v32: 第3問までの実戦用語として追加。"
+      "quality_note": "v32: 第3問までの実戦用語として追加。 / v33: 用語難度に合わせ第3問へ移動。"
     },
     {
       "id": "BQ1091",

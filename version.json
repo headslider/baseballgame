@@ -1,13 +1,13 @@
 {
-  "app_version": "v886-production",
-  "cache_version": "yakyu-yarouze-v886-production",
-  "public_version": "v1.1.47",
+  "app_version": "v887-production",
+  "cache_version": "yakyu-yarouze-v887-production",
+  "public_version": "v1.1.48",
   "updated_at": "2026-06-21T00:00:00+09:00",
   "release_date": "2026-06-21",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの選択肢A/B/Cを毎問ランダムに並び替えるよう更新。",
+  "change_summary": "野球博士チャレンジの問題データを final_candidate_v33_step10_fix_and_audit に更新し、結果画面に問題文を表示。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

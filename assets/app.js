@@ -1722,9 +1722,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=886",
-    "./data/quiz_master_questions.json?v=886",
-    new URL("data/quiz_master_questions.json?v=886",document.baseURI).href
+    "data/quiz_master_questions.json?v=887",
+    "./data/quiz_master_questions.json?v=887",
+    new URL("data/quiz_master_questions.json?v=887",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -2135,7 +2135,7 @@ function renderQuizMasterResultDetail(message,cleared){
   }
   const answerLabel=`${String.fromCharCode(65+review.answer)}. ${review.answerText}`;
   const selectedHtml=review.timeout?"":`<div><span>選んだ答え</span><b>${escapeHtml(`${String.fromCharCode(65+review.selected)}. ${review.selectedText}`)}</b></div>`;
-  el.innerHTML=`<p>${escapeHtml(message)}</p><div class="quiz-master-answer-review">${selectedHtml}<div><span>正解</span><b>${escapeHtml(answerLabel)}</b></div><p><span>理由</span>${escapeHtml(review.explanation||"この問題の解説は登録されていません。")}</p></div>`;
+  el.innerHTML=`<p>${escapeHtml(message)}</p><div class="quiz-master-answer-review"><div><span>問題</span><b>${escapeHtml(review.question||"")}</b></div>${selectedHtml}<div><span>正解</span><b>${escapeHtml(answerLabel)}</b></div><p><span>理由</span>${escapeHtml(review.explanation||"この問題の解説は登録されていません。")}</p></div>`;
 }
 async function saveQuizMasterScore(cleared){
   if(STATE.adminMode||QUIZ_MASTER_STATE.guestTest||!STATE.loggedIn||!STATE.playerId)return;
