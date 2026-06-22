@@ -1,13 +1,13 @@
 {
-  "app_version": "v894-production",
-  "cache_version": "yakyu-yarouze-v894-production",
-  "public_version": "v1.1.55",
+  "app_version": "v895-production",
+  "cache_version": "yakyu-yarouze-v895-production",
+  "public_version": "v1.1.56",
   "updated_at": "2026-06-22T00:00:00+09:00",
   "release_date": "2026-06-22",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジを20問構成に変更し、問題データを final_candidate_v49_level_rebalance_and_batting_order_fix に更新。",
+  "change_summary": "野球博士チャレンジの20問版スコアを正解加算式に変更。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

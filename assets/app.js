@@ -54,7 +54,6 @@ const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
 const QUIZ_MASTER_TOTAL_QUESTIONS=20;
 const QUIZ_MASTER_CHECKPOINT_LEVEL=14;
 const QUIZ_MASTER_CHALLENGE_START_LEVEL=15;
-const QUIZ_MASTER_POINTS={1:10,2:20,3:40,4:80,5:160,6:240,7:360,8:540,9:810,10:1215,11:1823,12:2735,13:4103,14:6155,15:7386,16:8863,17:10636,18:12763,19:15316,20:18379};
 const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13,11:13,12:13,13:13,14:13,15:13,16:13,17:13,18:13,19:13,20:13};
 const QUIZ_MASTER_STATE={questions:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
 const INNING_SLOTS=[
@@ -1562,7 +1561,11 @@ function clearQuizMasterStageClasses(){
   if(fiftyOverlay)fiftyOverlay.classList.remove("show");
   hideQuizMasterCountdown();
 }
-function quizMasterPointForLevel(level){return QUIZ_MASTER_POINTS[Number(level)]||0}
+function quizMasterPointForLevel(level){
+  const n=Number(level);
+  if(!Number.isFinite(n)||n<1||n>QUIZ_MASTER_TOTAL_QUESTIONS)return 0;
+  return (5*n*n)-(5*n)+10;
+}
 function quizMasterTimeForLevel(level){return QUIZ_MASTER_TIME_LIMITS[Number(level)]||15}
 function quizMasterTodayKey(){
   const now=new Date();
@@ -1682,7 +1685,7 @@ function showQuizMasterTutorial(){
   return new Promise(resolve=>{
     const overlay=$("quizMasterTutorialOverlay");
     if(!overlay){resolve(true);return}
-    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ はじめに"><p class="quiz-master-tutorial-kicker">はじめに</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全20問。各問に制限時間があります。</li><li>第15問からは点数が1.2倍ずつ上がるチャレンジゾーンです。</li><li class="quiz-master-tutorial-danger">第15問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日3回まで、利用から24時間後ではなく毎日24時にリセットされます。テスト中は回数無制限です。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">内容を確認してからゲームを始めます。</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="top">トップに戻る</button><button type="button" class="primary" data-quiz-tutorial="start">ゲームを始める</button></div></div>';
+    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ はじめに"><p class="quiz-master-tutorial-kicker">はじめに</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全20問。各問に制限時間があります。</li><li>正解するたびに点数が加算され、後半ほど1問あたりの点数が大きく伸びます。</li><li class="quiz-master-tutorial-danger">第15問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日3回まで、利用から24時間後ではなく毎日24時にリセットされます。テスト中は回数無制限です。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">内容を確認してからゲームを始めます。</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="top">トップに戻る</button><button type="button" class="primary" data-quiz-tutorial="start">ゲームを始める</button></div></div>';
     overlay.setAttribute("aria-hidden","false");
     overlay.classList.add("show");
     overlay.querySelector('[data-quiz-tutorial="top"]')?.addEventListener("click",()=>{
@@ -1725,9 +1728,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=894",
-    "./data/quiz_master_questions.json?v=894",
-    new URL("data/quiz_master_questions.json?v=894",document.baseURI).href
+    "data/quiz_master_questions.json?v=895",
+    "./data/quiz_master_questions.json?v=895",
+    new URL("data/quiz_master_questions.json?v=895",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -2036,7 +2039,8 @@ async function confirmQuizMasterChoice(timeout=false){
   playQuizMasterTone(correct);
   if(correct){
     const point=quizMasterPointForLevel(q.level);
-    QUIZ_MASTER_STATE.score=point;
+    QUIZ_MASTER_STATE.score+=point;
+    setTextSafe("quizMasterScore",String(QUIZ_MASTER_STATE.score));
     setTextSafe("quizMasterMessage","正解！");
     await showQuizMasterPointBurst(point);
     setTextSafe("quizMasterMessage",q.explanation||"正解です。");
@@ -2068,7 +2072,7 @@ async function confirmQuizMasterChoice(timeout=false){
     const finalScore=q.level>=QUIZ_MASTER_CHALLENGE_START_LEVEL?0:QUIZ_MASTER_STATE.score;
     QUIZ_MASTER_STATE.score=finalScore;
     await playQuizMasterRoundExit();
-    finishQuizMaster(false,timeout?"時間切れで終了しました。":"不正解で終了しました。",q.level>=6?"challenge_failed":(timeout?"timeout":"wrong"));
+    finishQuizMaster(false,timeout?"時間切れで終了しました。":"不正解で終了しました。",q.level>=QUIZ_MASTER_CHALLENGE_START_LEVEL?"challenge_failed":(timeout?"timeout":"wrong"));
   }
 }
 async function playQuizMasterRoundExit(){
@@ -2088,8 +2092,8 @@ function showQuizMasterCheckpoint(){
   return new Promise(resolve=>{
     const overlay=$("quizMasterCheckpointOverlay");
     if(!overlay){resolve(true);return}
-    const checkpointPoint=quizMasterPointForLevel(QUIZ_MASTER_CHECKPOINT_LEVEL);
-    overlay.innerHTML=`<div class="quiz-master-checkpoint-card" role="dialog" aria-modal="true" aria-label="チャレンジ確認"><strong>${checkpointPoint}ポイント獲得。</strong><p>ここから点数が1.2倍ずつ上がりますが、失敗すると獲得点数は0点になります!<br>ここで終了しますか？</p><div class="quiz-master-checkpoint-actions"><button type="button" class="secondary" data-quiz-checkpoint="end">終了する</button><button type="button" class="primary" data-quiz-checkpoint="go">挑戦する</button></div></div>`;
+    const checkpointPoint=QUIZ_MASTER_STATE.score;
+    overlay.innerHTML=`<div class="quiz-master-checkpoint-card" role="dialog" aria-modal="true" aria-label="チャレンジ確認"><strong>${checkpointPoint}ポイント獲得。</strong><p>ここから1問あたりの点数がさらに大きく伸びますが、失敗すると獲得点数は0点になります!<br>ここで終了しますか？</p><div class="quiz-master-checkpoint-actions"><button type="button" class="secondary" data-quiz-checkpoint="end">終了する</button><button type="button" class="primary" data-quiz-checkpoint="go">挑戦する</button></div></div>`;
     overlay.setAttribute("aria-hidden","false");
     overlay.classList.add("show");
     overlay.querySelectorAll("[data-quiz-checkpoint]").forEach(btn=>{
@@ -2119,7 +2123,7 @@ function showQuizMasterPointBurst(point){
 async function finishQuizMaster(cleared=false,message="",reason=""){
   clearQuizMasterTimer();
   QUIZ_MASTER_STATE.endReason=cleared?"cleared":(reason||QUIZ_MASTER_STATE.endReason||"ended");
-  const score=cleared?quizMasterPointForLevel(QUIZ_MASTER_TOTAL_QUESTIONS):QUIZ_MASTER_STATE.score;
+  const score=QUIZ_MASTER_STATE.score;
   QUIZ_MASTER_STATE.score=score;
   show("screen-quiz-master-result");
   setTextSafe("quizMasterResultTitle",cleared?"完全制覇！":"チャレンジ終了");

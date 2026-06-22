@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.55",
+  "current_public_version": "v1.1.56",
   "internal": {
-    "app_version": "v894-production",
-    "cache_version": "yakyu-yarouze-v894-production",
+    "app_version": "v895-production",
+    "cache_version": "yakyu-yarouze-v895-production",
     "updated_at": "2026-06-22T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジを20問構成に変更し、問題データを final_candidate_v49_level_rebalance_and_batting_order_fix に更新。"
+    "change_summary": "野球博士チャレンジの20問版スコアを正解加算式に変更。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.56-20260622-v895",
+      "public_version": "v1.1.56",
+      "release_type": "patch",
+      "released_at": "2026-06-22",
+      "title": "野球博士チャレンジ20問版スコア調整",
+      "public_summary": "野球博士チャレンジの20問版スコアを、後半ほど伸びる加算方式に調整しました。",
+      "admin_note": "v895-production更新。野球博士チャレンジのスコアを、問題番号nに対して 5*n*n - 5*n + 10 点を正解ごとに加算する方式へ変更。第14問クリア時の継続確認は累計点を表示し、第15問以降の失敗時0点ルールは維持。20問満点は13,500点。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v895-production",
+      "cache_version": "yakyu-yarouze-v895-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-22T00:00:00+09:00",
+      "updated_at": "2026-06-22T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.55-20260622-v894",
       "public_version": "v1.1.55",
       "release_type": "minor",
@@ -40,7 +55,7 @@
       "internal_version": "v894-production",
       "cache_version": "yakyu-yarouze-v894-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-22T00:00:00+09:00",
       "updated_at": "2026-06-22T00:00:00+09:00"
     },
