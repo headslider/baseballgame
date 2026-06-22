@@ -1,9 +1,9 @@
 {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "final_candidate_v46_grade_expression_cleanup",
+    "version": "final_candidate_v47_user_csv_review",
     "created_by": "ChatGPT",
-    "question_count": 252,
+    "question_count": 251,
     "answer_index_base": 0,
     "rules": [
       "通常学年別クイズと重複する守備判断・走塁判断・送球判断・カバーリング問題は含めない",
@@ -13,11 +13,12 @@
       "問題作成はChatGPT、CodexはJSON読込・表示のみ",
       "固有名詞と必要な野球用語を除き、小学5年生までが読みやすい表現にする",
       "選択肢は原則30文字以内にする",
-      "学年を示す場合、「高学年」「低学年」だけで始めず、必ず「小学生の高学年」「小学生の低学年」のように「小学生」を先に置く。問題文だけでなく選択肢・解説も同じ表記に統一する。"
+      "学年を示す場合、「高学年」「低学年」だけで始めず、必ず「小学生の高学年」「小学生の低学年」のように「小学生」を先に置く。問題文だけでなく選択肢・解説も同じ表記に統一する。",
+      "対象学年を示す場合は、「高学年」「低学年」だけで始めず、必ず「小学生高学年」「小学生低学年」または「小学生の高学年」「小学生の低学年」のように「小学生」を前に置く。問題文・選択肢・解説も同じ基準で統一する。"
     ],
     "audit": "5-pass answer/explanation/logic/difficulty/overlap validation completed on 2026-06-19.",
     "audit_step1": "2026-06-20 Step1正解・解説整合監査完了（5観点チェック）",
-    "source_file": "quiz_master_questions_final_candidate_v45_sunglass_pitch_cleanup.json",
+    "source_file": "quiz_master_questions_final_candidate_v46_grade_expression_cleanup.json",
     "audit_step2": "2026-06-20 Step2最新学童ルール監査：JSBB、マクドナルド・トーナメント、ミズノドリームカップの重要ルールを追加・反映。",
     "step2_added_questions": 43,
     "source_summary": [
@@ -38,16 +39,16 @@
     "implementation_status": "Codex handoff candidate",
     "audit_step6": "二重正解監査を実施。意味が重複する選択肢や学童で実用性の低い問題を削除。",
     "level_question_counts": {
-      "1": 22,
-      "2": 25,
-      "3": 32,
-      "4": 22,
-      "5": 20,
+      "1": 23,
+      "2": 23,
+      "3": 31,
+      "4": 16,
+      "5": 21,
       "6": 29,
-      "7": 29,
-      "8": 29,
+      "7": 30,
+      "8": 28,
       "9": 24,
-      "10": 24
+      "10": 26
     },
     "audit_step5_5": "2026-06-20 一般野球のベース位置・寸法問題を第8問以降へ移動。第3問には学童向けグラウンド知識を補充。",
     "audit_step4_5": "2026-06-20 Step4.5 専門用語・カタカナ監査。オーバーユースけが等を小学生に分かる表現へ修正。",
@@ -741,17 +742,48 @@
     ],
     "note": "BQ516（サングラス安全対策）とBQ639（投球ルール到達時）を不適切問題として削除。",
     "audit_step_v46_grade_expression_cleanup": "2026-06-22 全252問について、問題文・選択肢・解説に含まれる「高学年」「低学年」の表現を監査。対象を示す場合は必ず「小学生の高学年」「小学生の低学年」と表記するよう修正。",
-    "grade_expression_rule": {
-      "rule": "学年を示す場合、「高学年」「低学年」だけで始めず、必ず「小学生の高学年」「小学生の低学年」のように「小学生」を先に置く。問題文だけでなく選択肢・解説も同じ表記に統一する。",
-      "examples": [
-        "小学生の高学年では…",
-        "小学生の低学年が…"
-      ],
-      "prohibited_examples": [
-        "高学年では…",
-        "低学年の…",
-        "学童高学年…",
-        "学童野球低学年…"
+    "grade_expression_rule": "対象学年を示す場合は、「高学年」「低学年」だけで始めず、必ず「小学生高学年」「小学生低学年」または「小学生の高学年」「小学生の低学年」のように「小学生」を前に置く。問題文・選択肢・解説も同じ基準で統一する。",
+    "audit_step_v47": "2026-06-22 ユーザー編集CSVをv46基準データと照合。削除・レベル・テキスト変更を反映し、ID、問題文、選択肢、正解、参照データを二重確認。CSVの自動日付変換により壊れた守備番号カテゴリ（6-4-3、4-6-3、5-4-3）は復元。",
+    "v47_removed_ids": [
+      "BQ738"
+    ],
+    "v47_modified_ids": [
+      "BQ113",
+      "BQ117",
+      "BQ1040",
+      "BQ218",
+      "BQ1076",
+      "BQ1077",
+      "BQ304",
+      "BQ305",
+      "BQ306",
+      "BQ307",
+      "BQ308",
+      "BQ401",
+      "BQ415",
+      "BQ418",
+      "BQ1045",
+      "BQ1075",
+      "BQ2042",
+      "BQ625",
+      "BQ1097",
+      "BQ1098",
+      "BQ653",
+      "BQ1099"
+    ],
+    "v47_csv_format_restore_ids": [
+      "BQ1097",
+      "BQ1098",
+      "BQ1099"
+    ],
+    "v47_validation": {
+      "question_count": 251,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "answer_index_errors": 0,
+      "bare_grade_expression_hits": 0,
+      "correct_choice_auxiliary_mismatch_fixed": [
+        "BQ653"
       ]
     }
   },
@@ -944,7 +976,7 @@
       "question": "試合前のウォーミングアップの目的は？",
       "choices": [
         "ボールやバットを温めて反発を一定にするため",
-        "相手チームに声量を示すため",
+        "相手チームを威圧するため",
         "身体を動ける状態にし、けがのリスクを下げるため"
       ],
       "answer": 2,
@@ -985,7 +1017,7 @@
       "choices": [
         "スタッド",
         "バットエンド",
-        "グラブの芯"
+        "ピン"
       ],
       "answer": 0,
       "explanation": "スパイクの靴底にある突起はスタッドと呼びます。学童野球では金属製スパイクは禁止です。",
@@ -1068,7 +1100,7 @@
       "choices": [
         "捕手が捕れる球をそらすこと",
         "投手の悪送球",
-        "走者が盗塁すること"
+        "野手の悪送球"
       ],
       "answer": 0,
       "explanation": "パスボールは、捕手が普通に捕れる投球を後ろにそらした場合に使う記録です。",
@@ -1463,7 +1495,7 @@
       "category": "用具とメンテナンス",
       "question": "捕手用プロテクターの役割は？",
       "choices": [
-        "送球時の肩の回転を強制する",
+        "ピッチャーに投げやすくする為",
         "胸や腹部を投球・打球から守る",
         "ストライクゾーンを広く見せる"
       ],
@@ -1538,8 +1570,8 @@
     },
     {
       "id": "BQ1076",
-      "level": 2,
-      "level_name": "第2問",
+      "level": 1,
+      "level_name": "第1問",
       "category": "野球用語",
       "main_category": "野球用語",
       "middle_category": "試合で使う用語",
@@ -1558,8 +1590,8 @@
     },
     {
       "id": "BQ1077",
-      "level": 2,
-      "level_name": "第2問",
+      "level": 1,
+      "level_name": "第1問",
       "category": "野球用語",
       "main_category": "野球用語",
       "middle_category": "試合で使う用語",
@@ -1701,7 +1733,7 @@
       "level": 3,
       "level_name": "第3問",
       "category": "JSBB学童部規定",
-      "question": "小学生の高学年でよく使われる塁間距離として正しいものは（JSBB学童部規定）？",
+      "question": "小学生高学年でよく使われる塁間距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "25m",
         "23m",
@@ -1721,7 +1753,7 @@
       "level": 3,
       "level_name": "第3問",
       "category": "JSBB学童部規定",
-      "question": "小学生の低学年で採用されることがある塁間距離として正しいものは（JSBB学童部規定）？",
+      "question": "小学生低学年で採用されることがある塁間距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "27.43m",
         "23m",
@@ -1741,7 +1773,7 @@
       "level": 3,
       "level_name": "第3問",
       "category": "JSBB学童部規定",
-      "question": "小学生の高学年の投手板からホームまでの距離として正しいものは（JSBB学童部規定）？",
+      "question": "小学生高学年の投手板からホームまでの距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "14m",
         "18.44m",
@@ -1761,7 +1793,7 @@
       "level": 3,
       "level_name": "第3問",
       "category": "JSBB学童部規定",
-      "question": "塁間23mの場合のホームから二塁までの直線距離として正しいものは（JSBB学童部規定）？",
+      "question": "小学生高学年の塁間の場合、ホームから二塁までの直線距離として正しいものは（JSBB学童部規定）？",
       "choices": [
         "約30.0m",
         "約34.0m",
@@ -1781,7 +1813,7 @@
       "level": 3,
       "level_name": "第3問",
       "category": "JSBB学童部規定",
-      "question": "小学生の低学年の塁間が短い大会がある理由は（JSBB学童部規定）？",
+      "question": "小学生低学年の塁間が短い大会がある理由は（JSBB学童部規定）？",
       "choices": [
         "走力や送球力に合わせるため",
         "塁を少なくするため",
@@ -2298,8 +2330,8 @@
     },
     {
       "id": "BQ401",
-      "level": 4,
-      "level_name": "第4問",
+      "level": 7,
+      "level_name": "第7問",
       "category": "ルール知識（非状況判断）",
       "question": "インフィールドフライルールのおもな趣旨として正しいものは？",
       "choices": [
@@ -2438,8 +2470,8 @@
     },
     {
       "id": "BQ415",
-      "level": 4,
-      "level_name": "第4問",
+      "level": 10,
+      "level_name": "第10問",
       "category": "ルール知識（非状況判断）",
       "question": "インターフェアとオブストラクションの区別として正しいものは？",
       "choices": [
@@ -2478,8 +2510,8 @@
     },
     {
       "id": "BQ418",
-      "level": 4,
-      "level_name": "第4問",
+      "level": 6,
+      "level_name": "第6問",
       "category": "ルール知識（非状況判断）",
       "question": "タイブレーク仕組みのおもな目的は？",
       "choices": [
@@ -2538,8 +2570,8 @@
     },
     {
       "id": "BQ1045",
-      "level": 4,
-      "level_name": "第4問",
+      "level": 10,
+      "level_name": "第10問",
       "category": "野球用語",
       "main_category": "野球用語",
       "middle_category": "試合で使う用語",
@@ -2578,8 +2610,8 @@
     },
     {
       "id": "BQ1075",
-      "level": 4,
-      "level_name": "第4問",
+      "level": 7,
+      "level_name": "第7問",
       "category": "野球用語",
       "main_category": "野球用語",
       "middle_category": "試合で使う用語",
@@ -2698,8 +2730,8 @@
     },
     {
       "id": "BQ2042",
-      "level": 4,
-      "level_name": "第4問",
+      "level": 5,
+      "level_name": "第5問",
       "category": "ルール",
       "main_category": "ルール",
       "middle_category": "打撃ルール",
@@ -3161,7 +3193,7 @@
       "level": 6,
       "level_name": "第6問",
       "category": "最新学童ルール・バット",
-      "question": "2029年以降も対象外とされるものは？",
+      "question": "2029年以降も使えるバットは？",
       "choices": [
         "木製・金属・カーボン",
         "外面ウレタン付き",
@@ -3837,26 +3869,6 @@
       "small_category": "MIZUNOドリームカップジュニアトーナメント"
     },
     {
-      "id": "BQ738",
-      "level": 7,
-      "level_name": "第7問",
-      "category": "MIZUNOドリームカップジュニアトーナメント",
-      "question": "EDHを使った後の扱いで正しいのは？",
-      "choices": [
-        "途中で9人制へ戻せない",
-        "毎回自由に人数変更",
-        "守備人数も10人になる"
-      ],
-      "answer": 0,
-      "explanation": "一度EDHを採用した試合では、途中で9人制へ変更できません。",
-      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
-      "main_category": "学童大会",
-      "middle_category": "大会特殊規定",
-      "small_category": "MIZUNOドリームカップジュニアトーナメント"
-    },
-    {
       "id": "BQ748",
       "level": 7,
       "level_name": "第7問",
@@ -4298,20 +4310,20 @@
     },
     {
       "id": "BQ653",
-      "level": 8,
-      "level_name": "第8問",
+      "level": 5,
+      "level_name": "第5問",
       "category": "最新学童ルール",
       "question": "2025年から学童で先に制限されたものは？",
       "choices": [
-        "一般用の弾性体バット",
-        "少年用の木製バット",
-        "すべての金属バット"
+        "一般用の弾性体(ウレタン等)バット",
+        "一般用の木製バット",
+        "一般用の金属バット"
       ],
       "answer": 0,
       "explanation": "2025年から学童部で一般用の弾性体バットの使用が制限されています。",
       "source_note": "JSBB/全軟連の2025-2029学童ルール監査",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。 / v15: 学童以外のルール・道具問題のため第8問以降へ移動",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。 / v47: ユーザー編集CSVに基づき第5問へ移動。",
       "main_category": "JSBB学童ルール",
       "middle_category": "用具規定",
       "small_category": "バット"
