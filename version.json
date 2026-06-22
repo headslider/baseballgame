@@ -1,13 +1,13 @@
 {
-  "app_version": "v897-production",
-  "cache_version": "yakyu-yarouze-v897-production",
-  "public_version": "v1.1.58",
+  "app_version": "v898-production",
+  "cache_version": "yakyu-yarouze-v898-production",
+  "public_version": "v1.1.59",
   "updated_at": "2026-06-22T00:00:00+09:00",
   "release_date": "2026-06-22",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジ第15問以降の加算率を段階的に強化し、失敗時0点の説明を明確化。",
+  "change_summary": "野球博士チャレンジの問題データをv55へ更新。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

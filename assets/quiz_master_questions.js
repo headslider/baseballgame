@@ -1,9 +1,9 @@
 window.QUIZ_MASTER_QUESTIONS = {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "final_candidate_v49_level_rebalance_and_batting_order_fix",
+    "version": "final_candidate_v55_ichiro_combined_hits_fix",
     "created_by": "ChatGPT",
-    "question_count": 250,
+    "question_count": 262,
     "answer_index_base": 0,
     "rules": [
       "通常学年別クイズと重複する守備判断・走塁判断・送球判断・カバーリング問題は含めない",
@@ -17,11 +17,14 @@ window.QUIZ_MASTER_QUESTIONS = {
       "第1〜14問は少年野球・学童野球・用具・安全・施設・基本用語・基本ルールを中心に出題する。",
       "第15〜20問は高校・一般・社会人・プロ野球知識、および例外を含む高度な競技規則を中心に出題する。",
       "各問題は、現在の main_category / middle_category / small_category を維持したまま、必要な前提知識・条件数・例外の多さ・実戦判断難度で第1〜20問へ分類する。",
-      "20問化ではレベルごとのプール数を12〜13問に均し、同じ問題が短期間に繰り返されにくい構成とする。"
+      "20問化ではレベルごとのプール数を12〜13問に均し、同じ問題が短期間に繰り返されにくい構成とする。",
+      "記録問題は、対象リーグ・公式戦かどうか・基準日を問題文または解説に明記する。",
+      "世界全体で統一した公式集計がない記録は、「世界最多」と断定せず、MLB公式戦・NPB公式戦など対象範囲を固定する。",
+      "選択肢に人物を使う記録問題は、原則として同一分野の歴代上位者から選ぶ。"
     ],
     "audit": "5-pass answer/explanation/logic/difficulty/overlap validation completed on 2026-06-19.",
     "audit_step1": "2026-06-20 Step1正解・解説整合監査完了（5観点チェック）",
-    "source_file": "quiz_master_questions_final_candidate_v48_20_question_difficulty_distribution.json",
+    "source_file": "quiz_master_questions_final_candidate_v49_level_rebalance_batting_order_fix.json",
     "audit_step2": "2026-06-20 Step2最新学童ルール監査：JSBB、マクドナルド・トーナメント、ミズノドリームカップの重要ルールを追加・反映。",
     "step2_added_questions": 43,
     "source_summary": [
@@ -59,9 +62,9 @@ window.QUIZ_MASTER_QUESTIONS = {
       "15": 13,
       "16": 13,
       "17": 12,
-      "18": 13,
-      "19": 10,
-      "20": 8
+      "18": 14,
+      "19": 14,
+      "20": 15
     },
     "audit_step5_5": "2026-06-20 一般野球のベース位置・寸法問題を第8問以降へ移動。第3問には学童向けグラウンド知識を補充。",
     "audit_step4_5": "2026-06-20 Step4.5 専門用語・カタカナ監査。オーバーユースけが等を小学生に分かる表現へ修正。",
@@ -432,7 +435,7 @@ window.QUIZ_MASTER_QUESTIONS = {
       "BQ1083"
     ],
     "validation_errors": [],
-    "base_file": "quiz_master_questions_final_candidate_v47_user_csv_review.json",
+    "base_file": "quiz_master_questions_final_candidate_v54_mlb_world_records_additions.json",
     "audit_step9_1": "2026-06-21 イレギュラーの意味を問う用語問題を第3問に追加。既存BQ314は解説内の言及のみのため重複問題ではない。",
     "added_throw_destination_term_ids": [
       "BQ1084",
@@ -747,7 +750,7 @@ window.QUIZ_MASTER_QUESTIONS = {
       "BQ219"
     ],
     "before_count": 254,
-    "after_count": 252,
+    "after_count": 262,
     "deleted_count": 2,
     "deleted_ids": [
       "BQ516",
@@ -891,6 +894,80 @@ window.QUIZ_MASTER_QUESTIONS = {
     ],
     "v49_modified_ids": [
       "BQ2091"
+    ],
+    "audit_step_v52": "2026-06-22 v49を基準に、ユーザー指定のBQ2108（投手用グラブ本体カラー）とBQ2109（投球回の3分の1記録）を第19問へ正式追加。現行問題、過去の削除・除外台帳、v50/v51候補を二重照合し、ID重複・問題文重複・同義語重複・二重正解・確認型を監査。",
+    "v52_added_ids": [
+      "BQ2108",
+      "BQ2109"
+    ],
+    "v52_source_verification": {
+      "BQ2108": "全日本軟式野球連盟「グラブの取り扱いについて」：投手用グラブ本体カラーは白・グレー・PANTONE色基準14番より薄い色を制限。",
+      "BQ2109": "NPB「公認野球規則 9.00 記録に関する規則」：投手の投球回はアウト一つを3分の1回として記録。"
+    },
+    "audit_step_v53": "2026-06-22 2025年夏の甲子園大会データ2問と、NPBイースタン・リーグの定義問題1問を追加。既存問題・過去の削除／除外論点・単一正解性を二重照合。",
+    "v53_added_ids": [
+      "BQ2111",
+      "BQ2112",
+      "BQ2113"
+    ],
+    "v53_source_verification": [
+      {
+        "id": "BQ2111",
+        "source": "日本高等学校野球連盟「第107回全国高校野球選手権地方大会 参加チーム数の確定」",
+        "verified": "2025年の地方大会は3,680校3,396チーム"
+      },
+      {
+        "id": "BQ2112",
+        "source": "日本高等学校野球連盟「第107回全国高等学校野球選手権大会 開催要項」",
+        "verified": "全国47都道府県の49代表校"
+      },
+      {
+        "id": "BQ2113",
+        "source": "NPB.jp「ファーム公式戦」",
+        "verified": "イースタン・リーグはNPBのファーム公式戦のリーグ"
+      }
+    ],
+    "v53_validation": {
+      "question_count": 255,
+      "id_duplicates": [],
+      "question_duplicates": [],
+      "answer_index_errors": [],
+      "choice_length_over_30": [],
+      "unmodified_grade_expression_hits": []
+    },
+    "audit_step_v54": "2026-06-22 第20問向けにMLB制度・世界野球記録を追加。MLB球団数、両リーグ球団数、公式戦通算本塁打、MLB追跡記録の最速球、MLB公式戦通算安打・盗塁を追加。",
+    "v54_added_ids": [
+      "BQ2114",
+      "BQ2115",
+      "BQ2116",
+      "BQ2117",
+      "BQ2118",
+      "BQ2119",
+      "BQ2120"
+    ],
+    "record_scope_rule": [
+      "記録問題は、対象リーグ・公式戦かどうか・基準日を問題文または解説に明記する。",
+      "世界全体で統一した公式集計がない記録は、「世界最多」と断定せず、MLB公式戦・NPB公式戦など対象範囲を固定する。",
+      "選択肢に人物を使う記録問題は、原則として同一分野の歴代上位者から選ぶ。"
+    ],
+    "v54_source_verification": {
+      "BQ2114-BQ2116": "MLB.com「30 MLB Teams」および2026年公式日程・順位表",
+      "BQ2117": "NPB.jp「歴代最高記録 本塁打【通算記録】」および米国野球殿堂「Sadaharu Oh」",
+      "BQ2118": "MLB.com「Speediest plays in Statcast history」「Aroldis Chapman on rise of high-velocity pitchers」",
+      "BQ2119": "MLB.com「Pete Rose top career moments」「All-Time MLB Player Hitting Stat Leaders」",
+      "BQ2120": "MLB.com「All-Time MLB Player Hitting Stat Leaders」「10 incredible Rickey Henderson stats」"
+    },
+    "v54_validation": {
+      "id_duplicates": 0,
+      "question_duplicates": 0,
+      "answer_index_errors": 0,
+      "choices_over_30_chars": 0,
+      "unqualified_grade_expression_hits": 0,
+      "new_question_count": 7
+    },
+    "audit_step_v55": "2026-06-22 BQ2119を、MLB公式戦通算最多安打（ピート・ローズ）から、NPBとMLBの公式戦を合算した通算最多安打（イチロー）へ差し替え。NPB1,278安打＋MLB3,089安打＝4,367安打を参照データと二重確認。",
+    "v55_modified_ids": [
+      "BQ2119"
     ]
   },
   "questions": [
@@ -5893,6 +5970,247 @@ window.QUIZ_MASTER_QUESTIONS = {
       "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
       "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
       "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2108",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "JSBB学童ルール",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "投手用グラブ",
+      "question": "JSBB規定で、投手用グラブの本体カラーに使えないものは？",
+      "choices": [
+        "白・グレー・基準色14番より薄い色",
+        "黒・茶・紺などの濃い色",
+        "赤・オレンジなどの濃い色"
+      ],
+      "answer": 0,
+      "explanation": "投手用グラブの本体カラーは、白・グレー・PANTONEの色基準14番より薄い色が使えません。",
+      "source_note": "全日本軟式野球連盟「グラブの取り扱いについて」",
+      "overlap_check": "v49全250問、過去の削除・除外台帳、v50/v51候補を2回照合。投手用グラブ本体カラーを直接問う問題はなし。",
+      "quality_note": "v52追加。公式資料で禁止対象を確認。数値・禁止対象が明確で、二重正解なし。"
+    },
+    {
+      "id": "BQ2109",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球記録",
+      "main_category": "野球記録",
+      "middle_category": "投手記録",
+      "small_category": "投球回",
+      "question": "投手が1アウトだけ取って交代した時、投球回数の記録は？",
+      "choices": [
+        "0回1/3",
+        "0回2/3",
+        "1回"
+      ],
+      "answer": 0,
+      "explanation": "投球回は、アウト一つを3分の1回として記録します。1アウトなら0回1/3です。",
+      "source_note": "NPB「公認野球規則 9.00 記録に関する規則」",
+      "overlap_check": "v49全250問、過去の削除・除外台帳、v50/v51候補を2回照合。投球回の3分の1表記を直接問う問題はなし。",
+      "quality_note": "v52追加。公式記録規則で確認。数値が明確で、二重正解なし。"
+    },
+    {
+      "id": "BQ2111",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "高校野球・大会データ",
+      "question": "2025年夏の甲子園の地方大会に参加した学校数は？",
+      "choices": [
+        "3,680校",
+        "3,396校",
+        "49校"
+      ],
+      "answer": 0,
+      "explanation": "2025年夏の甲子園の地方大会には、3,680校3,396チームが参加しました。",
+      "source_note": "日本高等学校野球連盟「第107回全国高校野球選手権地方大会 参加チーム数の確定」（2025年6月28日）",
+      "overlap_check": "v52全問題・過去の削除／除外台帳を照合。甲子園の2025年地方大会参加校数を直接問う問題はなし。",
+      "quality_note": "年度・大会を明記。学校数／チーム数／代表校数を区別し、単一正解性を確認済み。",
+      "main_category": "高校野球",
+      "middle_category": "大会データ",
+      "small_category": "地方大会参加校数"
+    },
+    {
+      "id": "BQ2112",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "高校野球・大会データ",
+      "question": "2025年夏の甲子園の本大会に出場した代表校数は？",
+      "choices": [
+        "47校",
+        "49校",
+        "3,396校"
+      ],
+      "answer": 1,
+      "explanation": "2025年夏の甲子園本大会には49代表校が出場しました。北海道と東京都は各2代表です。",
+      "source_note": "日本高等学校野球連盟「第107回全国高等学校野球選手権大会 開催要項」",
+      "overlap_check": "v52全問題・過去の削除／除外台帳を照合。甲子園本大会の代表校数を直接問う問題はなし。",
+      "quality_note": "年度・大会を明記。47都道府県、49代表校、地方大会参加チーム数を混同しない選択肢に調整。",
+      "main_category": "高校野球",
+      "middle_category": "大会データ",
+      "small_category": "本大会代表校数"
+    },
+    {
+      "id": "BQ2113",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "プロ野球・ファームリーグ",
+      "question": "NPBイースタン・リーグとは？",
+      "choices": [
+        "プロ野球のファーム公式戦のリーグ",
+        "プロ野球一軍だけのリーグ",
+        "独立リーグだけの公式戦"
+      ],
+      "answer": 0,
+      "explanation": "NPBイースタン・リーグは、プロ野球のファーム公式戦が行われるリーグの一つです。",
+      "source_note": "NPB.jp「ファーム公式戦」",
+      "overlap_check": "v52全問題・過去の削除／除外台帳を照合。「オイシックスの参加先」を問う旧案は採用せず、リーグ制度を問う新規論点として作成。",
+      "quality_note": "固有球団への依存を避け、NPBの公式リーグ制度を問う形へ変更。二重正解なしを確認済み。",
+      "main_category": "プロ野球",
+      "middle_category": "ファームリーグ",
+      "small_category": "イースタン・リーグ"
+    },
+    {
+      "id": "BQ2114",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB制度",
+      "small_category": "球団数",
+      "question": "2026年のMLBにある球団数は？",
+      "choices": [
+        "30球団",
+        "32球団",
+        "28球団"
+      ],
+      "answer": 0,
+      "explanation": "MLBはナショナル・リーグ15球団、アメリカン・リーグ15球団の計30球団です。",
+      "source_note": "MLB.com「30 MLB Teams」および2026年公式日程",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。MLB全体の球団数を問う問題はなし。",
+      "quality_note": "v54追加。対象年を明記し、リーグ別球団数と合わせて学べる数値問題。二重正解なし。"
+    },
+    {
+      "id": "BQ2115",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB制度",
+      "small_category": "ナショナル・リーグ球団数",
+      "question": "2026年のMLBナショナル・リーグの球団数は？",
+      "choices": [
+        "15球団",
+        "16球団",
+        "14球団"
+      ],
+      "answer": 0,
+      "explanation": "ナショナル・リーグは15球団です。アメリカン・リーグも15球団で、MLB全体では30球団です。",
+      "source_note": "MLB.com「30 MLB Teams」および2026年公式順位表",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。ナショナル・リーグの球団数を問う問題はなし。",
+      "quality_note": "v54追加。MLB全体球団数と混同しない選択肢に調整。二重正解なし。"
+    },
+    {
+      "id": "BQ2116",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB制度",
+      "small_category": "アメリカン・リーグ球団数",
+      "question": "2026年のMLBアメリカン・リーグの球団数は？",
+      "choices": [
+        "15球団",
+        "16球団",
+        "14球団"
+      ],
+      "answer": 0,
+      "explanation": "アメリカン・リーグは15球団です。ナショナル・リーグも15球団で、MLB全体では30球団です。",
+      "source_note": "MLB.com「30 MLB Teams」および2026年公式順位表",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。アメリカン・リーグの球団数を問う問題はなし。",
+      "quality_note": "v54追加。MLB全体球団数と混同しない選択肢に調整。二重正解なし。"
+    },
+    {
+      "id": "BQ2117",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "世界記録",
+      "small_category": "公式戦通算本塁打",
+      "question": "公式戦通算本塁打の世界最多とされる868本を打ったのは誰？",
+      "choices": [
+        "王貞治",
+        "バリー・ボンズ",
+        "ハンク・アーロン"
+      ],
+      "answer": 0,
+      "explanation": "王貞治はNPB公式戦で868本塁打を放ち、公式戦通算本塁打の世界最多記録として知られます。ボンズはMLB最多の762本、アーロンは755本です。",
+      "source_note": "NPB.jp「歴代最高記録 本塁打【通算記録】」、米国野球殿堂「Sadaharu Oh」",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。公式戦通算本塁打の世界最多記録を問う問題はなし。",
+      "quality_note": "v54追加。記録範囲を「公式戦通算本塁打」と明記。選択肢は主要な通算本塁打記録保持者で統一し、二重正解なし。"
+    },
+    {
+      "id": "BQ2118",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB記録",
+      "small_category": "最速球",
+      "question": "2026年6月時点、MLBの追跡記録で最速105.8マイルを記録した投手は誰？",
+      "choices": [
+        "アロルディス・チャップマン",
+        "ベン・ジョイス",
+        "ジョーダン・ヒックス"
+      ],
+      "answer": 0,
+      "explanation": "チャップマンは2010年に105.8マイル（約170.3km/h）を記録しました。追跡記録がある2008年以降で最速です。",
+      "source_note": "MLB.com「Speediest plays in Statcast history」「Aroldis Chapman on rise of high-velocity pitchers」",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。MLB追跡記録上の最速球を問う問題はなし。",
+      "quality_note": "v54追加。「世界最速」では測定方法が統一されないため、MLB追跡記録・基準日・速度を明記。選択肢は追跡記録上位投手で統一し、二重正解なし。"
+    },
+    {
+      "id": "BQ2119",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB記録",
+      "small_category": "通算安打",
+      "question": "NPBとMLBの公式戦を合算した通算安打数が最も多い選手は？",
+      "choices": [
+        "イチロー",
+        "ピート・ローズ",
+        "ハンク・アーロン"
+      ],
+      "answer": 0,
+      "explanation": "イチローはNPBで1,278安打、MLBで3,089安打を記録し、日米公式戦通算で4,367安打です。",
+      "source_note": "野球殿堂博物館「イチロー」／MLB.com「51 Ichiro Suzuki stats」",
+      "overlap_check": "v54全262問、過去の削除・除外台帳を2回照合。MLB限定の最多安打問題を日米公式戦合算の記録問題へ差し替え。対象範囲が異なるため既存問題との重複なし。",
+      "quality_note": "v55修正。リーグ横断の統一公式ランキングではなく、NPBとMLBの公式戦を合算した記録であることを問題文に明記。選択肢は各記録分野の上位者で統一し、二重正解なし。"
+    },
+    {
+      "id": "BQ2120",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB記録",
+      "small_category": "通算盗塁",
+      "question": "MLB公式戦通算盗塁の最多記録を持つのは誰？",
+      "choices": [
+        "リッキー・ヘンダーソン",
+        "ルー・ブロック",
+        "ビリー・ハミルトン"
+      ],
+      "answer": 0,
+      "explanation": "リッキー・ヘンダーソンはMLB公式戦で通算1,406盗塁を記録し、最多記録を持ちます。",
+      "source_note": "MLB.com「All-Time MLB Player Hitting Stat Leaders」「10 incredible Rickey Henderson stats」",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。MLB公式戦通算盗塁最多を問う問題はなし。",
+      "quality_note": "v54追加。世界全体では集計範囲が統一されないため、MLB公式戦通算と明記。選択肢は歴代上位の盗塁記録保持者で統一し、二重正解なし。"
     }
   ]
-};
+}
+;
