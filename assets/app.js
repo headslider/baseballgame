@@ -1739,9 +1739,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=900",
-    "./data/quiz_master_questions.json?v=900",
-    new URL("data/quiz_master_questions.json?v=900",document.baseURI).href
+    "data/quiz_master_questions.json?v=901",
+    "./data/quiz_master_questions.json?v=901",
+    new URL("data/quiz_master_questions.json?v=901",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1761,7 +1761,7 @@ async function loadQuizMasterQuestions(){
 }
 async function loadQuizMasterQuestionStats(){
   try{
-    const res=await fetch("api/get_quiz_master_question_stats.php?v=900",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_question_stats.php?v=901",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
   }catch(e){
@@ -1788,7 +1788,7 @@ function normalizeQuizMasterTitles(rows){
 async function loadQuizMasterTitles(){
   if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
   try{
-    const res=await fetch("api/get_quiz_master_titles.php?v=900",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_titles.php?v=901",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(res.ok&&data&&data.ok?data.titles:null);
   }catch(e){
@@ -3325,7 +3325,7 @@ function renderQuizMasterMyPage(data){
   const totalScore=Number(total&&total.total_score!==undefined?total.total_score:recent.reduce((sum,r)=>sum+Number(r.score||0),0));
   const titleInfo=(total&&total.title_info)||quizMasterTitleForScore(totalScore,data.titles);
   const recentRows=recent.length?`<div class="records-table quiz-master-mypage-table"><table><thead><tr><th>日時</th><th>得点</th><th>到達</th><th>結果</th></tr></thead><tbody>${recent.slice(0,5).map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td><b>${escapeHtml(r.score||0)} pt</b></td><td>第${escapeHtml(r.reached_level||0)}問</td><td>${escapeHtml(quizMasterResultReasonText(r.result_reason))}</td></tr>`).join("")}</tbody></table></div>`:"";
-  box.innerHTML=`<div class="quiz-master-mypage-card"><h3>野球博士チャレンジ</h3><div class="quiz-master-current-title"><span>現在の称号</span><b>${escapeHtml(titleInfo.title)}</b><em>${escapeHtml(totalScore)} pt</em></div><div class="summary-grid quiz-master-mypage-summary"><div><b>${escapeHtml(best?best.score:0)} pt</b><span>最高点</span></div><div><b>${escapeHtml(total&&total.rank?total.rank:"-")}位</b><span>総合順位</span></div><div><b>${escapeHtml(latest?latest.score:0)} pt</b><span>最新得点</span></div><div><b>${escapeHtml(totalScore)} pt</b><span>総合点</span></div></div>${recentRows}</div>`;
+  box.innerHTML=`<div class="quiz-master-mypage-card"><h3>野球博士チャレンジ</h3><div class="quiz-master-current-title"><b>${escapeHtml(titleInfo.title)}</b><em>${escapeHtml(totalScore)} pt</em></div><div class="summary-grid quiz-master-mypage-summary"><div><b>${escapeHtml(best?best.score:0)} pt</b><span>最高点</span></div><div><b>${escapeHtml(total&&total.rank?total.rank:"-")}位</b><span>総合順位</span></div><div><b>${escapeHtml(latest?latest.score:0)} pt</b><span>最新得点</span></div><div><b>${escapeHtml(totalScore)} pt</b><span>総合点</span></div></div>${recentRows}</div>`;
 }
 function renderMyPage(data,rankingData,quizMasterData){
   const summary=(data&&data.summary)||{};

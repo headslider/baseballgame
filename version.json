@@ -1,13 +1,13 @@
 {
-  "app_version": "v900-production",
-  "cache_version": "yakyu-yarouze-v900-production",
-  "public_version": "v1.1.61",
+  "app_version": "v901-production",
+  "cache_version": "yakyu-yarouze-v901-production",
+  "public_version": "v1.1.62",
   "updated_at": "2026-06-22T00:00:00+09:00",
   "release_date": "2026-06-22",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの総合点称号表示と最高位管理画面の称号管理を追加。",
+  "change_summary": "マイページの野球博士チャレンジ称号表示からラベルを削除。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
