@@ -812,7 +812,7 @@
         </div>
         <div class="row" style="margin-top:10px">
           <label>検索<br><input id="quizMasterQuestionSearch" placeholder="ID・カテゴリ・問題文・解説"></label>
-          <label>レベル<br><select id="quizMasterLevelFilter"><option value="">すべて</option><option value="1">第1問</option><option value="2">第2問</option><option value="3">第3問</option><option value="4">第4問</option><option value="5">第5問</option><option value="6">第6問</option><option value="7">第7問</option><option value="8">第8問</option><option value="9">第9問</option><option value="10">第10問</option></select></label>
+          <label>レベル<br><select id="quizMasterLevelFilter" data-quiz-master-level-select data-include-all="1"><option value="">すべて</option></select></label>
           <label>カテゴリ<br><select id="quizMasterCategoryFilter"><option value="">すべて</option></select></label>
           <button type="button" onclick="loadQuizMasterQuestionList()">検索</button>
           <button class="secondary" type="button" onclick="newQuizMasterQuestionTemplate()">新規野球博士問題</button>
@@ -828,7 +828,7 @@
             <div class="question-form">
               <div class="form-grid">
                 <label>ID*<input id="qmq_id" placeholder="例：BQ601"></label>
-                <label>レベル*<select id="qmq_level"><option value="">選択してください</option><option value="1">第1問</option><option value="2">第2問</option><option value="3">第3問</option><option value="4">第4問</option><option value="5">第5問</option><option value="6">第6問</option><option value="7">第7問</option><option value="8">第8問</option><option value="9">第9問</option><option value="10">第10問</option></select></label>
+                <label>レベル*<select id="qmq_level" data-quiz-master-level-select><option value="">選択してください</option></select></label>
                 <label>カテゴリ*<input id="qmq_category" placeholder="例：安全"></label>
                 <label>正解*<select id="qmq_answer"><option value="0">A</option><option value="1">B</option><option value="2">C</option></select></label>
               </div>
@@ -853,6 +853,21 @@
             </div>
           </div>
         </div>
+      </section>
+      <section id="quizMasterTitleManageCard" class="card">
+        <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
+          <div>
+            <h2 style="margin:0 0 4px">野球博士チャレンジ称号</h2>
+            <div class="muted">総合点に応じてマイページ・ランキング・ゲーム終了後演出に表示する称号を管理します。</div>
+          </div>
+          <button class="secondary small" type="button" onclick="loadQuizMasterTitlesAdmin()">称号を再読み込み</button>
+        </div>
+        <div id="quizMasterTitleTable" class="table-wrap" style="margin-top:10px"><p class="muted">称号を読み込み中です。</p></div>
+        <div class="notice-actions">
+          <button type="button" onclick="addQuizMasterTitleRow()">称号を追加</button>
+          <button class="primary" type="button" onclick="saveQuizMasterTitlesAdmin()">称号を保存</button>
+        </div>
+        <div id="quizMasterTitleMessage" class="msg"></div>
       </section>
     </div>
 
@@ -1022,6 +1037,7 @@ let userAnalyticsSortState={key:"last_played_at",dir:"desc"};
 let latestQuestions=[];
 let latestQuizMasterQuestions=[];
 let latestQuizMasterCategories=[];
+let latestQuizMasterTitles=[];
 let currentQuizMasterQuestion=null;
 let quizMasterQuestionEditorMode="none";
 let latestDraftQuestionRows=[];
@@ -1692,7 +1708,16 @@ function normalizeQuizMasterAdminId(v){
 }
 function quizMasterLevelName(level){
   const n=Number(level||0);
-  return n>=1&&n<=10?`第${n}問`:"";
+  return n>=1&&n<=20?`第${n}問`:"";
+}
+function initQuizMasterLevelSelects(){
+  document.querySelectorAll("[data-quiz-master-level-select]").forEach(sel=>{
+    const current=sel.value||"";
+    const includeAll=sel.getAttribute("data-include-all")==="1";
+    const first=includeAll?'<option value="">すべて</option>':'<option value="">選択してください</option>';
+    sel.innerHTML=first+Array.from({length:20},(_,i)=>`<option value="${i+1}">第${i+1}問</option>`).join("");
+    if(current)sel.value=current;
+  });
 }
 function updateQuizMasterCategoryFilter(categories){
   const sel=$("quizMasterCategoryFilter");
@@ -1716,7 +1741,7 @@ async function loadQuizMasterQuestionList(){
     latestQuizMasterCategories=data.categories||[];
     updateQuizMasterCategoryFilter(latestQuizMasterCategories);
     const counts=data.level_counts||{};
-    const countText=Array.from({length:10},(_,i)=>`${i+1}:${counts[String(i+1)]||counts[i+1]||0}`).join(" / ");
+    const countText=Array.from({length:20},(_,i)=>`${i+1}:${counts[String(i+1)]||counts[i+1]||0}`).join(" / ");
     setText("quizMasterQuestionInfo",`全${data.total||0}問 / 表示${data.filtered||0}問 / レベル別 ${countText}`);
     renderQuizMasterQuestionList(latestQuizMasterQuestions);
   }catch(e){
@@ -1818,13 +1843,68 @@ function collectQuizMasterQuestionForm(){
 }
 function validateQuizMasterQuestionClient(q){
   if(!/^BQ\d+$/.test(q.id))return "IDは BQ + 数字で入力してください。";
-  if(q.level<1||q.level>10)return "レベルを選択してください。";
+  if(q.level<1||q.level>20)return "レベルを選択してください。";
   if(!q.category)return "カテゴリを入力してください。";
   if(!q.question)return "問題文を入力してください。";
   if(q.choices.length!==3||q.choices.some(c=>!c))return "選択肢A/B/Cをすべて入力してください。";
   if(![0,1,2].includes(Number(q.answer)))return "正解を選択してください。";
   if(!q.explanation)return "解説を入力してください。";
   return "";
+}
+function renderQuizMasterTitlesAdmin(){
+  const box=$("quizMasterTitleTable");
+  if(!box)return;
+  const rows=Array.isArray(latestQuizMasterTitles)?latestQuizMasterTitles:[];
+  box.innerHTML=`<table><thead><tr><th>称号</th><th>必要総合点</th><th>操作</th></tr></thead><tbody>`+
+    rows.map((r,i)=>`<tr data-quiz-title-row="${i}"><td><input data-quiz-title-name="${i}" value="${esc(r.title||"")}" placeholder="称号名"></td><td><input data-quiz-title-point="${i}" type="number" min="0" step="1" value="${esc(r.point||0)}"></td><td><button class="small danger" type="button" onclick="removeQuizMasterTitleRow(${i})">削除</button></td></tr>`).join("")+
+    `</tbody></table>`;
+}
+async function loadQuizMasterTitlesAdmin(){
+  const box=$("quizMasterTitleTable");
+  if(box)box.innerHTML='<p class="muted">読み込み中...</p>';
+  try{
+    const data=await call("quiz_master_titles_get");
+    latestQuizMasterTitles=Array.isArray(data.titles)?data.titles:[];
+    renderQuizMasterTitlesAdmin();
+    setText("quizMasterTitleMessage",data.updated_at?`最終更新：${data.updated_at}`:"");
+  }catch(e){
+    if(box)box.innerHTML=`<p class="err">${esc(e.message)}</p>`;
+  }
+}
+function collectQuizMasterTitlesAdmin(){
+  const rows=[];
+  document.querySelectorAll("[data-quiz-title-row]").forEach(row=>{
+    const i=row.getAttribute("data-quiz-title-row");
+    const title=(document.querySelector(`[data-quiz-title-name="${i}"]`)?.value||"").trim();
+    const point=Number(document.querySelector(`[data-quiz-title-point="${i}"]`)?.value||0);
+    if(title)rows.push({title,point:Math.max(0,Math.floor(point||0))});
+  });
+  rows.sort((a,b)=>a.point-b.point||a.title.localeCompare(b.title,"ja"));
+  return rows;
+}
+function addQuizMasterTitleRow(){
+  latestQuizMasterTitles=collectQuizMasterTitlesAdmin();
+  latestQuizMasterTitles.push({title:"新しい称号",point:0});
+  renderQuizMasterTitlesAdmin();
+}
+function removeQuizMasterTitleRow(index){
+  latestQuizMasterTitles=collectQuizMasterTitlesAdmin().filter((_,i)=>i!==index);
+  renderQuizMasterTitlesAdmin();
+}
+async function saveQuizMasterTitlesAdmin(){
+  const msg=$("quizMasterTitleMessage");
+  try{
+    const titles=collectQuizMasterTitlesAdmin();
+    if(!titles.length)throw new Error("称号を1件以上入力してください。");
+    if(titles[0].point!==0)throw new Error("最初の称号は0点からにしてください。");
+    if(msg)msg.textContent="保存中...";
+    const data=await call("quiz_master_titles_save",{titles});
+    latestQuizMasterTitles=data.titles||titles;
+    renderQuizMasterTitlesAdmin();
+    if(msg){msg.textContent=data.message||"保存しました。";msg.className="msg ok";}
+  }catch(e){
+    if(msg){msg.textContent=e.message;msg.className="msg err";}
+  }
 }
 async function saveQuizMasterQuestionFromEditor(){
   const q=collectQuizMasterQuestionForm();
@@ -3389,7 +3469,10 @@ function switchAdminTab(tabId){
   }
   if(tabId==="tab-user-analytics")renderUserAnalytics(latestUserAnalytics||{summary:{},by_grade:{},by_position:{},recent_users:[]});
   if(tabId==="tab-access-analytics")renderAccessAnalytics(latestAccessAnalytics||{summary:{},daily_access:{},pages:{},id_results:{},recent_access:[]});
-  if(tabId==="tab-quiz-master")loadQuizMasterQuestionList().catch(e=>{setHtml("quizMasterQuestionTable",`<p class="err">${esc(e.message)}</p>`);});
+  if(tabId==="tab-quiz-master"){
+    loadQuizMasterQuestionList().catch(e=>{setHtml("quizMasterQuestionTable",`<p class="err">${esc(e.message)}</p>`);});
+    loadQuizMasterTitlesAdmin().catch(e=>{setHtml("quizMasterTitleTable",`<p class="err">${esc(e.message)}</p>`);});
+  }
   if(tabId==="tab-version-management")loadReleaseVersions().catch(e=>{setHtml("releaseVersionCurrent",`<p class="err">${esc(e.message)}</p>`);});
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -3397,6 +3480,7 @@ document.querySelectorAll(".tab-btn").forEach(b=>b.addEventListener("click",()=>
 // v666: お知らせ通知を最高位管理者画面の最初のページにする
 localStorage.setItem("superAdminActiveTab","tab-admin-notice");
 bindAdminNoticePreview();
+initQuizMasterLevelSelects();
 switchAdminTab("tab-admin-notice");
 if(token){showDash(true);dashboard().catch(()=>{sessionStorage.removeItem("superAdminToken"); try{localStorage.removeItem("superAdminToken");}catch(e){} showDash(false);});}
 else showDash(false);

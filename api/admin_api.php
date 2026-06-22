@@ -8,6 +8,7 @@ require_once __DIR__ . '/request_notification_common.php';
 require_once __DIR__ . '/scheduled_notifications.php';
 require_once __DIR__ . '/notice_duplicate_guard.php';
 require_once __DIR__ . '/question_status_common.php';
+require_once __DIR__ . '/quiz_master_titles_common.php';
 function admin_json($status, $payload) {
     http_response_code($status);
     echo json_encode($payload, JSON_UNESCAPED_UNICODE | (defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0));
@@ -254,7 +255,7 @@ function normalize_quiz_master_question_admin($q) {
 function validate_quiz_master_question_admin($q, $existing_ids, $original_id='') {
     if (!preg_match('/^BQ\d+$/', $q['id'] ?? '')) return 'IDは BQ + 数字で入力してください。例：BQ601';
     if (($original_id === '' || $original_id !== ($q['id'] ?? '')) && !empty($existing_ids[$q['id'] ?? ''])) return '同じIDの問題がすでにあります。';
-    if (intval($q['level'] ?? 0) < 1 || intval($q['level'] ?? 0) > 10) return 'level は 1〜10 で入力してください。';
+    if (intval($q['level'] ?? 0) < 1 || intval($q['level'] ?? 0) > 20) return 'level は 1〜20 で入力してください。';
     if (($q['category'] ?? '') === '') return 'category を入力してください。';
     if (($q['question'] ?? '') === '') return 'question を入力してください。';
     if (!isset($q['choices']) || !is_array($q['choices']) || count($q['choices']) !== 3) return 'choices は3個必要です。';
@@ -2304,7 +2305,7 @@ if ($action === 'quiz_master_question_list') {
     foreach ($questions as $q) {
         if (($q['category'] ?? '') !== '') $categories[$q['category']] = true;
         $lv = intval($q['level'] ?? 0);
-        if ($lv >= 1 && $lv <= 10) $level_counts[$lv] = ($level_counts[$lv] ?? 0) + 1;
+        if ($lv >= 1 && $lv <= 20) $level_counts[$lv] = ($level_counts[$lv] ?? 0) + 1;
         if ($level && $lv !== $level) continue;
         if ($category !== '' && ($q['category'] ?? '') !== $category) continue;
         if ($query !== '') {
@@ -2402,6 +2403,34 @@ if ($action === 'quiz_master_question_delete') {
         'message'=>'deleted ' . $id . ' backup=' . ($backup['file'] ?? '')
     ]);
     admin_json(200, ['ok'=>true,'message'=>'野球博士問題を削除しました。','id'=>$id,'backup_file'=>$backup['file'] ?? '']);
+}
+
+if ($action === 'quiz_master_titles_get') {
+    $payload = quiz_master_load_titles_payload();
+    admin_json(200, ['ok'=>true,'titles'=>$payload['titles'] ?? quiz_master_default_titles(),'updated_at'=>$payload['updated_at'] ?? '']);
+}
+
+if ($action === 'quiz_master_titles_save') {
+    $titles = quiz_master_normalize_titles($data['titles'] ?? []);
+    $payload = [
+        'version'=>1,
+        'updated_at'=>date('Y-m-d H:i:s'),
+        'updated_by'=>$admin_label,
+        'titles'=>$titles
+    ];
+    $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | $JSON_INVALID_UTF8_SUBSTITUTE_FLAG);
+    if ($json === false || !write_text_file_locked_admin(quiz_master_titles_file(), $json . "\n")) {
+        admin_json(500, ['ok'=>false,'message'=>'野球博士称号データを保存できませんでした。']);
+    }
+    audit_log_admin_event([
+        'admin_label'=>$admin_label,
+        'action'=>'quiz_master_titles_save',
+        'result'=>'success',
+        'target_type'=>'quiz_master_titles',
+        'target_hash_prefix'=>'titles',
+        'message'=>'saved ' . count($titles) . ' titles'
+    ]);
+    admin_json(200, ['ok'=>true,'message'=>'野球博士称号を保存しました。','titles'=>$titles]);
 }
 
 if ($action === 'question_options') {

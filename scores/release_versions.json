@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.60",
+  "current_public_version": "v1.1.61",
   "internal": {
-    "app_version": "v899-production",
-    "cache_version": "yakyu-yarouze-v899-production",
+    "app_version": "v900-production",
+    "cache_version": "yakyu-yarouze-v900-production",
     "updated_at": "2026-06-22T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの問題データをv56へ更新。"
+    "change_summary": "野球博士チャレンジの総合点称号表示と最高位管理画面の称号管理を追加。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.61-20260622-v900",
+      "public_version": "v1.1.61",
+      "release_type": "minor",
+      "released_at": "2026-06-22",
+      "title": "野球博士チャレンジ称号機能追加",
+      "public_summary": "野球博士チャレンジの総合点に応じた称号表示を追加しました。",
+      "admin_note": "v900-production更新。data/quiz_master_titles.json を追加し、野球博士チャレンジの総合点に応じた称号をマイページ・ランキングに表示。ゲーム終了後に今回新たに達成した称号を右からease-in-outで中央表示し、輝き演出後に左へ退出するアニメーションを追加。最高位管理画面の野球博士チャレンジタブに称号管理を追加し、問題管理のレベル選択・検証・集計を20問対応へ修正。保存APIは称号判定用に保存前後の総合点を返却。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。運用スコアデータ自体は変更なし。",
+      "internal_version": "v900-production",
+      "cache_version": "yakyu-yarouze-v900-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-22T00:00:00+09:00",
+      "updated_at": "2026-06-22T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.60-20260622-v899",
       "public_version": "v1.1.60",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v899-production",
       "cache_version": "yakyu-yarouze-v899-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-22T00:00:00+09:00",
       "updated_at": "2026-06-22T00:00:00+09:00"
     },

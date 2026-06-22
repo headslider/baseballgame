@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/feature_common.php';
+require_once __DIR__ . '/quiz_master_titles_common.php';
 header('Content-Type: application/json; charset=utf-8');
 $JSON_INVALID_UTF8_SUBSTITUTE_FLAG = defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0;
 const QUIZ_MASTER_MAX_SCORE = 20262;
@@ -103,6 +104,7 @@ $my_recent = [];
 $total_plays = 0;
 $cleared_count = 0;
 $latest_played_at = '';
+$title_rows = quiz_master_load_titles_payload()['titles'] ?? quiz_master_default_titles();
 
 foreach (($db['scores'] ?? []) as $raw_row) {
     if (!is_array($raw_row)) continue;
@@ -145,6 +147,7 @@ usort($best_rows, 'quiz_master_rank_sort');
 $rows = array_values($totals);
 usort($rows, 'quiz_master_total_rank_sort');
 foreach ($rows as $i=>&$row) $row['rank'] = $i + 1;
+foreach ($rows as &$row) $row['title_info'] = quiz_master_title_for_score($row['total_score'] ?? 0, $title_rows);
 unset($row);
 
 usort($recent, function($a, $b) {
@@ -184,6 +187,7 @@ echo json_encode([
         'cleared_count'=>$cleared_count,
         'latest_played_at'=>$latest_played_at
     ],
+    'titles'=>$title_rows,
     'total_players'=>count($rows)
 ], JSON_UNESCAPED_UNICODE | $JSON_INVALID_UTF8_SUBSTITUTE_FLAG);
 ?>

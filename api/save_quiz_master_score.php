@@ -2,6 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 $JSON_INVALID_UTF8_SUBSTITUTE_FLAG = defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0;
 require_once __DIR__ . '/feature_common.php';
+require_once __DIR__ . '/quiz_master_titles_common.php';
 const QUIZ_MASTER_MAX_SCORE = 20262;
 const QUIZ_MASTER_MAX_LEVEL = 20;
 
@@ -108,6 +109,13 @@ $db = $existing ? json_decode($existing, true) : null;
 if (!is_array($db)) $db = ['version'=>1,'scores'=>[]];
 if (!isset($db['scores']) || !is_array($db['scores'])) $db['scores'] = [];
 
+$total_before = 0;
+foreach ($db['scores'] as $row) {
+    if (is_array($row) && normalize_player_id($row['player_id'] ?? '') === $player_id) {
+        $total_before += quiz_master_clamp_int($row['score'] ?? 0, 0, QUIZ_MASTER_MAX_SCORE);
+    }
+}
+
 $db['scores'][] = [
     'played_at'=>date('Y-m-d H:i:s'),
     'player_id'=>$player_id,
@@ -137,5 +145,14 @@ if (!$ok) {
     exit;
 }
 
-echo json_encode(['ok'=>true], JSON_UNESCAPED_UNICODE);
+$total_after = $total_before + $score;
+$titles = quiz_master_load_titles_payload()['titles'] ?? quiz_master_default_titles();
+echo json_encode([
+    'ok'=>true,
+    'total_before'=>$total_before,
+    'total_after'=>$total_after,
+    'title_before'=>quiz_master_title_for_score($total_before, $titles),
+    'title_after'=>quiz_master_title_for_score($total_after, $titles),
+    'titles'=>$titles
+], JSON_UNESCAPED_UNICODE | $JSON_INVALID_UTF8_SUBSTITUTE_FLAG);
 ?>

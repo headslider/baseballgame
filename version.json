@@ -1,13 +1,13 @@
 {
-  "app_version": "v899-production",
-  "cache_version": "yakyu-yarouze-v899-production",
-  "public_version": "v1.1.60",
+  "app_version": "v900-production",
+  "cache_version": "yakyu-yarouze-v900-production",
+  "public_version": "v1.1.61",
   "updated_at": "2026-06-22T00:00:00+09:00",
   "release_date": "2026-06-22",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの問題データをv56へ更新。",
+  "change_summary": "野球博士チャレンジの総合点称号表示と最高位管理画面の称号管理を追加。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

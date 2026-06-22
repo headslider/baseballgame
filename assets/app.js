@@ -56,7 +56,13 @@ const QUIZ_MASTER_CHECKPOINT_LEVEL=14;
 const QUIZ_MASTER_CHALLENGE_START_LEVEL=15;
 const QUIZ_MASTER_CHALLENGE_MULTIPLIER_STEP=.2;
 const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13,11:13,12:13,13:13,14:13,15:13,16:13,17:13,18:13,19:13,20:13};
-const QUIZ_MASTER_STATE={questions:[],questionStats:{},sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
+const QUIZ_MASTER_TITLE_DEFAULTS=[
+  {title:"ボールボーイ",point:0},{title:"バットボーイ",point:50000},{title:"ベンチ入り",point:120000},{title:"代打の切り札",point:220000},{title:"スタメン",point:350000},
+  {title:"クリーンアップ",point:550000},{title:"四番打者",point:800000},{title:"エース",point:1100000},{title:"キャプテン",point:1450000},{title:"ベストナイン",point:1850000},
+  {title:"オールスター",point:2350000},{title:"甲子園スター",point:3000000},{title:"ドラフト候補",point:3700000},{title:"プロ野球選手",point:4500000},{title:"メジャーリーガー",point:5400000},
+  {title:"首位打者",point:6300000},{title:"ホームラン王",point:7100000},{title:"サイヤング賞",point:7900000},{title:"MVP",point:8800000},{title:"野球殿堂",point:10000000}
+];
+const QUIZ_MASTER_STATE={questions:[],questionStats:{},titles:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
 const INNING_SLOTS=[
   ["1回表",0,"1B","attack"],["1回表",1,"2B","attack"],["1回表",2,"3B","attack"],
   ["1回裏",0,"1B","defense"],["1回裏",1,"2B","defense"],["1回裏",2,"3B","defense"],
@@ -1733,9 +1739,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=899",
-    "./data/quiz_master_questions.json?v=899",
-    new URL("data/quiz_master_questions.json?v=899",document.baseURI).href
+    "data/quiz_master_questions.json?v=900",
+    "./data/quiz_master_questions.json?v=900",
+    new URL("data/quiz_master_questions.json?v=900",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1755,7 +1761,7 @@ async function loadQuizMasterQuestions(){
 }
 async function loadQuizMasterQuestionStats(){
   try{
-    const res=await fetch("api/get_quiz_master_question_stats.php?v=899",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_question_stats.php?v=900",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
   }catch(e){
@@ -1770,6 +1776,42 @@ function quizMasterCorrectRateText(q){
   const rate=Number(stat&&stat.correct_rate);
   if(!attempts||!Number.isFinite(rate))return "";
   return `（正解率${Math.round(rate)}%）`;
+}
+function normalizeQuizMasterTitles(rows){
+  const list=(Array.isArray(rows)?rows:QUIZ_MASTER_TITLE_DEFAULTS).map(row=>({
+    title:String(row&&row.title||"").trim(),
+    point:Math.max(0,Number(row&&row.point||0))
+  })).filter(row=>row.title&&Number.isFinite(row.point));
+  list.sort((a,b)=>a.point-b.point||a.title.localeCompare(b.title,"ja"));
+  return list.length?list:QUIZ_MASTER_TITLE_DEFAULTS.slice();
+}
+async function loadQuizMasterTitles(){
+  if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
+  try{
+    const res=await fetch("api/get_quiz_master_titles.php?v=900",{cache:"no-store"});
+    const data=await res.json();
+    QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(res.ok&&data&&data.ok?data.titles:null);
+  }catch(e){
+    console.warn("quiz title fetch failed",e);
+    QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles();
+  }
+  return QUIZ_MASTER_STATE.titles;
+}
+function quizMasterTitleForScore(score,titles){
+  const rows=normalizeQuizMasterTitles(titles||QUIZ_MASTER_STATE.titles);
+  const n=Number(score||0);
+  let current=rows[0];
+  rows.forEach(row=>{if(n>=row.point)current=row});
+  return current;
+}
+function quizMasterTitleBadgeHtml(score,titles){
+  const info=quizMasterTitleForScore(score,titles);
+  return `<span class="quiz-master-title-badge">${escapeHtml(info.title)}</span>`;
+}
+function quizMasterNewTitlesBetween(before,after,titles){
+  const b=Number(before||0),a=Number(after||0);
+  if(a<=b)return [];
+  return normalizeQuizMasterTitles(titles).filter(row=>row.point>b&&row.point<=a);
 }
 function pickQuizMasterSequence(rows){
   const sequence=[];
@@ -1827,7 +1869,7 @@ async function startQuizMaster(){
   setTextSafe("quizMasterScore","0");
   const choices=$("quizMasterChoices");if(choices)choices.innerHTML="";
   try{
-    const [rows]=await Promise.all([loadQuizMasterQuestions(),loadQuizMasterQuestionStats()]);
+    const [rows]=await Promise.all([loadQuizMasterQuestions(),loadQuizMasterQuestionStats(),loadQuizMasterTitles()]);
     const attempt=quizMasterConsumeDailyAttempt();
     if(!attempt.ok){
       updateQuizMasterDailyUI();
@@ -2155,7 +2197,8 @@ async function finishQuizMaster(cleared=false,message="",reason=""){
   renderQuizMasterResultDetail(message||`${QUIZ_MASTER_STATE.logs.length}問に挑戦しました。`,cleared);
   const rankingBox=$("quizMasterRanking");
   if(rankingBox)rankingBox.innerHTML="";
-  await saveQuizMasterScore(cleared);
+  const saveResult=await saveQuizMasterScore(cleared);
+  await showQuizMasterTitleAwards(saveResult);
 }
 function renderQuizMasterResultDetail(message,cleared){
   const el=$("quizMasterResultDetail");
@@ -2170,9 +2213,9 @@ function renderQuizMasterResultDetail(message,cleared){
   el.innerHTML=`<p>${escapeHtml(message)}</p><div class="quiz-master-answer-review"><div><span>問題</span><b>${escapeHtml(review.question||"")}</b></div>${selectedHtml}<div><span>正解</span><b>${escapeHtml(answerLabel)}</b></div><p><span>理由</span>${escapeHtml(review.explanation||"この問題の解説は登録されていません。")}</p></div>`;
 }
 async function saveQuizMasterScore(cleared){
-  if(STATE.adminMode||QUIZ_MASTER_STATE.guestTest||!STATE.loggedIn||!STATE.playerId)return;
+  if(STATE.adminMode||QUIZ_MASTER_STATE.guestTest||!STATE.loggedIn||!STATE.playerId)return null;
   try{
-    await fetch("api/save_quiz_master_score.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    const res=await fetch("api/save_quiz_master_score.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
       player_id:STATE.playerId,
       client_token:getClientToken(),
       score:QUIZ_MASTER_STATE.score,
@@ -2186,7 +2229,27 @@ async function saveQuizMasterScore(cleared){
       question_ids:QUIZ_MASTER_STATE.logs.map(l=>l.id),
       answer_summary:QUIZ_MASTER_STATE.logs.map(l=>({id:l.id,level:l.level,selected:l.selected,answer:l.answer,selected_original_index:l.selected_original_index,answer_original_index:l.answer_original_index,correct:!!l.correct}))
     })});
-  }catch(e){console.warn("quiz score save failed",e)}
+    const data=await res.json().catch(()=>null);
+    if(data&&data.titles)QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(data.titles);
+    return data&&data.ok?data:null;
+  }catch(e){console.warn("quiz score save failed",e);return null}
+}
+async function showQuizMasterTitleAwards(saveResult){
+  if(!saveResult||!saveResult.ok)return;
+  const titles=normalizeQuizMasterTitles(saveResult.titles||QUIZ_MASTER_STATE.titles);
+  const newly=quizMasterNewTitlesBetween(saveResult.total_before,saveResult.total_after,titles);
+  if(!newly.length)return;
+  const el=$("quizMasterTitleBurst");
+  if(!el)return;
+  for(const row of newly){
+    el.innerHTML=`<span>称号獲得</span><strong>${escapeHtml(row.title)}</strong>`;
+    el.classList.remove("show");
+    void el.offsetWidth;
+    el.classList.add("show");
+    await wait(2700);
+    el.classList.remove("show");
+    await wait(180);
+  }
 }
 async function fetchQuizMasterRanking(){
   const canPost=STATE.loggedIn&&STATE.playerId&&!STATE.adminMode;
@@ -2213,8 +2276,10 @@ function renderQuizMasterRanking(box,data,mode="result"){
   const summary=data&&data.summary?data.summary:{};
   const topRows=rows.slice(0,5);
   const summaryHtml=mode==="page"?`<div class="quiz-master-ranking-summary"><span>参加者 <b>${escapeHtml(summary.total_players||0)}</b></span><span>プレイ数 <b>${escapeHtml(summary.total_plays||0)}</b></span><span>完全制覇 <b>${escapeHtml(summary.cleared_count||0)}</b></span></div>`:"";
-  const myHtml=myTotal?`<div class="quiz-master-my-best"><span>あなたの総合順位</span><b>${escapeHtml(myTotal.rank)}位 / ${escapeHtml(myTotal.total_score||myTotal.score||0)} pt</b>${myBest?`<em>最高 ${escapeHtml(myBest.score)} pt / 第${escapeHtml(myBest.reached_level)}問到達</em>`:""}</div>`:"";
-  const rankingHtml=topRows.length?`<ol>${topRows.map(r=>`<li class="${r.player_id===STATE.playerId?"me":""}"><span>${escapeHtml(r.rank)}位</span><b>${escapeHtml(r.player_id)}</b><em>${escapeHtml(r.total_score||r.score||0)} pt</em><small>プレイ数 ${escapeHtml(r.plays||0)} / 完全制覇 ${escapeHtml(r.cleared_count||0)}回</small></li>`).join("")}</ol>`:'<p>まだランキングはありません。</p>';
+  const myScore=myTotal?Number(myTotal.total_score||myTotal.score||0):0;
+  const myTitle=myTotal?(myTotal.title_info||quizMasterTitleForScore(myScore,data&&data.titles)):null;
+  const myHtml=myTotal?`<div class="quiz-master-my-best"><span>あなたの総合順位</span><b>${escapeHtml(myTotal.rank)}位 / ${escapeHtml(myScore)} pt</b><strong class="quiz-master-title-badge">${escapeHtml(myTitle.title)}</strong>${myBest?`<em>最高 ${escapeHtml(myBest.score)} pt / 第${escapeHtml(myBest.reached_level)}問到達</em>`:""}</div>`:"";
+  const rankingHtml=topRows.length?`<ol>${topRows.map(r=>{const score=Number(r.total_score||r.score||0);const title=r.title_info||quizMasterTitleForScore(score,data&&data.titles);return `<li class="${r.player_id===STATE.playerId?"me":""}"><span>${escapeHtml(r.rank)}位</span><b>${escapeHtml(r.player_id)} <strong class="quiz-master-title-badge">${escapeHtml(title.title)}</strong></b><em>${escapeHtml(score)} pt</em><small>プレイ数 ${escapeHtml(r.plays||0)} / 完全制覇 ${escapeHtml(r.cleared_count||0)}回</small></li>`}).join("")}</ol>`:'<p>まだランキングはありません。</p>';
   box.innerHTML=`<div class="quiz-master-ranking-board"><div class="quiz-master-ranking-title">野球博士総合点ランキング TOP5</div>${summaryHtml}${myHtml}${rankingHtml}</div>`;
 }
 async function loadQuizMasterRanking(targetId="quizMasterRanking",mode="result"){
@@ -3250,15 +3315,17 @@ function renderQuizMasterMyPage(data){
     return;
   }
   const best=data.my_best||null;
+  const total=data.my_total||null;
   const recent=Array.isArray(data.my_recent)?data.my_recent:[];
   if(!best&&!recent.length){
     box.innerHTML='<div class="quiz-master-mypage-card"><h3>野球博士チャレンジ</h3><div class="mypage-empty">まだ保存された点数がありません。ログインしてプレイするとここに表示されます。</div></div>';
     return;
   }
   const latest=recent[0]||null;
-  const totalScore=recent.reduce((sum,r)=>sum+Number(r.score||0),0);
+  const totalScore=Number(total&&total.total_score!==undefined?total.total_score:recent.reduce((sum,r)=>sum+Number(r.score||0),0));
+  const titleInfo=(total&&total.title_info)||quizMasterTitleForScore(totalScore,data.titles);
   const recentRows=recent.length?`<div class="records-table quiz-master-mypage-table"><table><thead><tr><th>日時</th><th>得点</th><th>到達</th><th>結果</th></tr></thead><tbody>${recent.slice(0,5).map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td><b>${escapeHtml(r.score||0)} pt</b></td><td>第${escapeHtml(r.reached_level||0)}問</td><td>${escapeHtml(quizMasterResultReasonText(r.result_reason))}</td></tr>`).join("")}</tbody></table></div>`:"";
-  box.innerHTML=`<div class="quiz-master-mypage-card"><h3>野球博士チャレンジ</h3><div class="summary-grid quiz-master-mypage-summary"><div><b>${escapeHtml(best?best.score:0)} pt</b><span>最高点</span></div><div><b>${escapeHtml(best&&best.rank?best.rank:"-")}位</b><span>ランキング</span></div><div><b>${escapeHtml(latest?latest.score:0)} pt</b><span>最新得点</span></div><div><b>${escapeHtml(totalScore)} pt</b><span>直近合計</span></div></div>${recentRows}</div>`;
+  box.innerHTML=`<div class="quiz-master-mypage-card"><h3>野球博士チャレンジ</h3><div class="quiz-master-current-title"><span>現在の称号</span><b>${escapeHtml(titleInfo.title)}</b><em>${escapeHtml(totalScore)} pt</em></div><div class="summary-grid quiz-master-mypage-summary"><div><b>${escapeHtml(best?best.score:0)} pt</b><span>最高点</span></div><div><b>${escapeHtml(total&&total.rank?total.rank:"-")}位</b><span>総合順位</span></div><div><b>${escapeHtml(latest?latest.score:0)} pt</b><span>最新得点</span></div><div><b>${escapeHtml(totalScore)} pt</b><span>総合点</span></div></div>${recentRows}</div>`;
 }
 function renderMyPage(data,rankingData,quizMasterData){
   const summary=(data&&data.summary)||{};
