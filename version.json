@@ -1,13 +1,13 @@
 {
-  "app_version": "v902-production",
-  "cache_version": "yakyu-yarouze-v902-production",
-  "public_version": "v1.1.63",
+  "app_version": "v903-production",
+  "cache_version": "yakyu-yarouze-v903-production",
+  "public_version": "v1.1.64",
   "updated_at": "2026-06-22T00:00:00+09:00",
   "release_date": "2026-06-22",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの称号獲得点数を調整。",
+  "change_summary": "野球博士チャレンジの称号獲得演出が結果画面でも表示されるよう修正。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

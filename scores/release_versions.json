@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.63",
+  "current_public_version": "v1.1.64",
   "internal": {
-    "app_version": "v902-production",
-    "cache_version": "yakyu-yarouze-v902-production",
+    "app_version": "v903-production",
+    "cache_version": "yakyu-yarouze-v903-production",
     "updated_at": "2026-06-22T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの称号獲得点数を調整。"
+    "change_summary": "野球博士チャレンジの称号獲得演出が結果画面でも表示されるよう修正。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.64-20260622-v903",
+      "public_version": "v1.1.64",
+      "release_type": "patch",
+      "released_at": "2026-06-22",
+      "title": "野球博士チャレンジ称号演出表示修正",
+      "public_summary": "野球博士チャレンジの称号獲得演出が結果画面でも表示されるよう修正しました。",
+      "admin_note": "v903-production更新。称号獲得演出用の quizMasterTitleBurst がゲーム画面セクション内にあり、結果画面へ切り替えた時に親セクションごと非表示になっていたため、画面セクション外のグローバルレイヤーへ移動。称号判定は従来通り保存前後の総合点で新規達成称号を判定。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。運用スコアデータ自体は変更なし。",
+      "internal_version": "v903-production",
+      "cache_version": "yakyu-yarouze-v903-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-22T00:00:00+09:00",
+      "updated_at": "2026-06-22T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.63-20260622-v902",
       "public_version": "v1.1.63",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v902-production",
       "cache_version": "yakyu-yarouze-v902-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-22T00:00:00+09:00",
       "updated_at": "2026-06-22T00:00:00+09:00"
     },
