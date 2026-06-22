@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.54",
+  "current_public_version": "v1.1.55",
   "internal": {
-    "app_version": "v893-production",
-    "cache_version": "yakyu-yarouze-v893-production",
+    "app_version": "v894-production",
+    "cache_version": "yakyu-yarouze-v894-production",
     "updated_at": "2026-06-22T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの問題データを final_candidate_v47_user_csv_review に更新。"
+    "change_summary": "野球博士チャレンジを20問構成に変更し、問題データを final_candidate_v49_level_rebalance_and_batting_order_fix に更新。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.55-20260622-v894",
+      "public_version": "v1.1.55",
+      "release_type": "minor",
+      "released_at": "2026-06-22",
+      "title": "野球博士チャレンジ20問化と問題データv49更新",
+      "public_summary": "野球博士チャレンジを20問構成に変更し、問題データを最新版に更新しました。",
+      "admin_note": "v894-production更新。野球博士チャレンジを全20問に変更し、第14問クリア後に継続確認、第15問以降は1.2倍ずつ点数が上がり失敗時0点のチャレンジゾーンへ変更。data/quiz_master_questions.json と assets/quiz_master_questions.js を quiz_master_questions_final_candidate_v49_level_rebalance_batting_order_fix.json（meta version: final_candidate_v49_level_rebalance_and_batting_order_fix、250問）へ同期。制限時間は現行設定を拡張し、第10問以降は暫定13秒。基本検証としてJSON構文、ID重複、level 1〜20、3択、answer範囲、問題文・解説の存在を確認。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。",
+      "internal_version": "v894-production",
+      "cache_version": "yakyu-yarouze-v894-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-22T00:00:00+09:00",
+      "updated_at": "2026-06-22T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.54-20260622-v893",
       "public_version": "v1.1.54",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v893-production",
       "cache_version": "yakyu-yarouze-v893-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-22T00:00:00+09:00",
       "updated_at": "2026-06-22T00:00:00+09:00"
     },
