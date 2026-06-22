@@ -2,6 +2,8 @@
 header('Content-Type: application/json; charset=utf-8');
 $JSON_INVALID_UTF8_SUBSTITUTE_FLAG = defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0;
 require_once __DIR__ . '/feature_common.php';
+const QUIZ_MASTER_MAX_SCORE = 13500;
+const QUIZ_MASTER_MAX_LEVEL = 20;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -57,10 +59,10 @@ if (!player_has_quiz_master_access($player_id)) {
     exit;
 }
 
-$score = quiz_master_clamp_int($data['score'] ?? 0, 0, 1215);
-$reached_level = quiz_master_clamp_int($data['reached_level'] ?? 0, 0, 10);
-$answered_count = quiz_master_clamp_int($data['answered_count'] ?? $reached_level, 0, 10);
-$correct_count = quiz_master_clamp_int($data['correct_count'] ?? 0, 0, 10);
+$score = quiz_master_clamp_int($data['score'] ?? 0, 0, QUIZ_MASTER_MAX_SCORE);
+$reached_level = quiz_master_clamp_int($data['reached_level'] ?? 0, 0, QUIZ_MASTER_MAX_LEVEL);
+$answered_count = quiz_master_clamp_int($data['answered_count'] ?? $reached_level, 0, QUIZ_MASTER_MAX_LEVEL);
+$correct_count = quiz_master_clamp_int($data['correct_count'] ?? 0, 0, QUIZ_MASTER_MAX_LEVEL);
 $cleared = !empty($data['cleared']);
 $challenge = !empty($data['challenge']);
 $duration_sec = quiz_master_clamp_int($data['duration_sec'] ?? 0, 0, 3600);
@@ -69,19 +71,19 @@ $question_ids = $data['question_ids'] ?? [];
 if (!is_array($question_ids)) $question_ids = [];
 $question_ids = array_values(array_slice(array_map(function($id) {
     return substr(preg_replace('/[^A-Za-z0-9_-]/', '', (string)$id), 0, 32);
-}, $question_ids), 0, 10));
+}, $question_ids), 0, QUIZ_MASTER_MAX_LEVEL));
 $answer_summary = $data['answer_summary'] ?? [];
 if (!is_array($answer_summary)) $answer_summary = [];
 $answer_summary = array_values(array_slice(array_map(function($row) {
     if (!is_array($row)) return null;
     return [
         'id'=>substr(preg_replace('/[^A-Za-z0-9_-]/', '', (string)($row['id'] ?? '')), 0, 32),
-        'level'=>quiz_master_clamp_int($row['level'] ?? 0, 0, 10),
+        'level'=>quiz_master_clamp_int($row['level'] ?? 0, 0, QUIZ_MASTER_MAX_LEVEL),
         'selected'=>quiz_master_clamp_int($row['selected'] ?? -1, -1, 2),
         'answer'=>quiz_master_clamp_int($row['answer'] ?? -1, -1, 2),
         'correct'=>!empty($row['correct'])
     ];
-}, $answer_summary), 0, 10));
+}, $answer_summary), 0, QUIZ_MASTER_MAX_LEVEL));
 $answer_summary = array_values(array_filter($answer_summary, function($row) {
     return is_array($row) && ($row['id'] ?? '') !== '';
 }));

@@ -55,7 +55,7 @@ const QUIZ_MASTER_TOTAL_QUESTIONS=20;
 const QUIZ_MASTER_CHECKPOINT_LEVEL=14;
 const QUIZ_MASTER_CHALLENGE_START_LEVEL=15;
 const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13,11:13,12:13,13:13,14:13,15:13,16:13,17:13,18:13,19:13,20:13};
-const QUIZ_MASTER_STATE={questions:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
+const QUIZ_MASTER_STATE={questions:[],questionStats:{},sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
 const INNING_SLOTS=[
   ["1回表",0,"1B","attack"],["1回表",1,"2B","attack"],["1回表",2,"3B","attack"],
   ["1回裏",0,"1B","defense"],["1回裏",1,"2B","defense"],["1回裏",2,"3B","defense"],
@@ -1728,9 +1728,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=895",
-    "./data/quiz_master_questions.json?v=895",
-    new URL("data/quiz_master_questions.json?v=895",document.baseURI).href
+    "data/quiz_master_questions.json?v=896",
+    "./data/quiz_master_questions.json?v=896",
+    new URL("data/quiz_master_questions.json?v=896",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1747,6 +1747,24 @@ async function loadQuizMasterQuestions(){
   const rows=normalizeQuizMasterQuestions(data);
   QUIZ_MASTER_STATE.questions=rows;
   return rows;
+}
+async function loadQuizMasterQuestionStats(){
+  try{
+    const res=await fetch("api/get_quiz_master_question_stats.php?v=896",{cache:"no-store"});
+    const data=await res.json();
+    QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
+  }catch(e){
+    console.warn("quiz question stats fetch failed",e);
+    QUIZ_MASTER_STATE.questionStats={};
+  }
+  return QUIZ_MASTER_STATE.questionStats;
+}
+function quizMasterCorrectRateText(q){
+  const stat=q&&q.id?QUIZ_MASTER_STATE.questionStats[q.id]:null;
+  const attempts=Number(stat&&stat.attempts||0);
+  const rate=Number(stat&&stat.correct_rate);
+  if(!attempts||!Number.isFinite(rate))return "";
+  return `（正解率${Math.round(rate)}%）`;
 }
 function pickQuizMasterSequence(rows){
   const sequence=[];
@@ -1804,7 +1822,7 @@ async function startQuizMaster(){
   setTextSafe("quizMasterScore","0");
   const choices=$("quizMasterChoices");if(choices)choices.innerHTML="";
   try{
-    const rows=await loadQuizMasterQuestions();
+    const [rows]=await Promise.all([loadQuizMasterQuestions(),loadQuizMasterQuestionStats()]);
     const attempt=quizMasterConsumeDailyAttempt();
     if(!attempt.ok){
       updateQuizMasterDailyUI();
@@ -1857,7 +1875,8 @@ function renderQuizMasterQuestion(){
   setTextSafe("quizMasterTimer",String(QUIZ_MASTER_STATE.remaining));
   const prefix=QUIZ_MASTER_STATE.guestTest?"テストプレイ / ":"";
   setTextSafe("quizMasterMessage",q.category?`${prefix}カテゴリ: ${q.category}`:(QUIZ_MASTER_STATE.guestTest?"テストプレイ中です。結果はランキングに保存されません。":""));
-  setTextSafe("quizMasterQuestion",q.question);
+  const rateText=quizMasterCorrectRateText(q);
+  setTextSafe("quizMasterQuestion",rateText?`${q.question} ${rateText}`:q.question);
   const box=$("quizMasterChoices");
   if(box){
     box.innerHTML="";

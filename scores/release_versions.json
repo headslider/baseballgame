@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.56",
+  "current_public_version": "v1.1.57",
   "internal": {
-    "app_version": "v895-production",
-    "cache_version": "yakyu-yarouze-v895-production",
+    "app_version": "v896-production",
+    "cache_version": "yakyu-yarouze-v896-production",
     "updated_at": "2026-06-22T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの20問版スコアを正解加算式に変更。"
+    "change_summary": "野球博士チャレンジの問題文末に問題別正解率を表示し、20問版の保存上限を調整。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.57-20260622-v896",
+      "public_version": "v1.1.57",
+      "release_type": "patch",
+      "released_at": "2026-06-22",
+      "title": "野球博士チャレンジ問題別正解率表示",
+      "public_summary": "野球博士チャレンジの問題文末に、保存済み回答から算出した問題別正解率を表示するようにしました。",
+      "admin_note": "v896-production更新。scores/quiz_master_scores.json の保存済み answer_summary を読み取り、問題IDごとの回答数・正解数・小数点四捨五入した正解率を api/get_quiz_master_question_stats.php で返却。各問題のQテキスト末尾に「（正解率xx%）」を表示。20問版に合わせ、保存APIとランキングAPIの上限を13,500点・20問へ調整。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。運用スコアデータ自体は変更なし。",
+      "internal_version": "v896-production",
+      "cache_version": "yakyu-yarouze-v896-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-22T00:00:00+09:00",
+      "updated_at": "2026-06-22T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.56-20260622-v895",
       "public_version": "v1.1.56",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v895-production",
       "cache_version": "yakyu-yarouze-v895-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-22T00:00:00+09:00",
       "updated_at": "2026-06-22T00:00:00+09:00"
     },

@@ -2,6 +2,8 @@
 require_once __DIR__ . '/feature_common.php';
 header('Content-Type: application/json; charset=utf-8');
 $JSON_INVALID_UTF8_SUBSTITUTE_FLAG = defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0;
+const QUIZ_MASTER_MAX_SCORE = 13500;
+const QUIZ_MASTER_MAX_LEVEL = 20;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -27,10 +29,10 @@ function quiz_master_read_request_payload() {
 function quiz_master_public_row($row) {
     $pid = normalize_player_id($row['player_id'] ?? '');
     if ($pid === '') return null;
-    $score = quiz_master_rank_int($row['score'] ?? 0, 0, 1215);
-    $level = quiz_master_rank_int($row['reached_level'] ?? 0, 0, 10);
-    $answered = quiz_master_rank_int($row['answered_count'] ?? $level, 0, 10);
-    $correct = quiz_master_rank_int($row['correct_count'] ?? $level, 0, 10);
+    $score = quiz_master_rank_int($row['score'] ?? 0, 0, QUIZ_MASTER_MAX_SCORE);
+    $level = quiz_master_rank_int($row['reached_level'] ?? 0, 0, QUIZ_MASTER_MAX_LEVEL);
+    $answered = quiz_master_rank_int($row['answered_count'] ?? $level, 0, QUIZ_MASTER_MAX_LEVEL);
+    $correct = quiz_master_rank_int($row['correct_count'] ?? $level, 0, QUIZ_MASTER_MAX_LEVEL);
     return [
         'player_id'=>$pid,
         'score'=>$score,
