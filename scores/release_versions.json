@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.59",
+  "current_public_version": "v1.1.60",
   "internal": {
-    "app_version": "v898-production",
-    "cache_version": "yakyu-yarouze-v898-production",
+    "app_version": "v899-production",
+    "cache_version": "yakyu-yarouze-v899-production",
     "updated_at": "2026-06-22T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの問題データをv55へ更新。"
+    "change_summary": "野球博士チャレンジの問題データをv56へ更新。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.60-20260622-v899",
+      "public_version": "v1.1.60",
+      "release_type": "patch",
+      "released_at": "2026-06-22",
+      "title": "野球博士チャレンジ問題データv56更新",
+      "public_summary": "野球博士チャレンジの問題データを最新版に更新しました。",
+      "admin_note": "v899-production更新。data/quiz_master_questions.json と assets/quiz_master_questions.js を quiz_master_questions_final_candidate_v56_ohtani_wbc_additions.json（meta version: v56_ohtani_wbc_additions、270問）へ同期。大谷翔平の達成済みMLB記録3問と、WBCの開催年・開催地・大会方式5問を追加。基本検証としてJSON構文、ID重複、level 1〜20、3択、answer範囲、問題文・解説の存在を確認。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。運用スコアデータ自体は変更なし。",
+      "internal_version": "v899-production",
+      "cache_version": "yakyu-yarouze-v899-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-22T00:00:00+09:00",
+      "updated_at": "2026-06-22T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.59-20260622-v898",
       "public_version": "v1.1.59",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v898-production",
       "cache_version": "yakyu-yarouze-v898-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-22T00:00:00+09:00",
       "updated_at": "2026-06-22T00:00:00+09:00"
     },

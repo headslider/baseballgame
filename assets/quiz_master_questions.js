@@ -1,9 +1,9 @@
 window.QUIZ_MASTER_QUESTIONS = {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "final_candidate_v55_ichiro_combined_hits_fix",
+    "version": "v56_ohtani_wbc_additions",
     "created_by": "ChatGPT",
-    "question_count": 262,
+    "question_count": 270,
     "answer_index_base": 0,
     "rules": [
       "通常学年別クイズと重複する守備判断・走塁判断・送球判断・カバーリング問題は含めない",
@@ -62,9 +62,9 @@ window.QUIZ_MASTER_QUESTIONS = {
       "15": 13,
       "16": 13,
       "17": 12,
-      "18": 14,
-      "19": 14,
-      "20": 15
+      "18": 16,
+      "19": 16,
+      "20": 19
     },
     "audit_step5_5": "2026-06-20 一般野球のベース位置・寸法問題を第8問以降へ移動。第3問には学童向けグラウンド知識を補充。",
     "audit_step4_5": "2026-06-20 Step4.5 専門用語・カタカナ監査。オーバーユースけが等を小学生に分かる表現へ修正。",
@@ -435,7 +435,7 @@ window.QUIZ_MASTER_QUESTIONS = {
       "BQ1083"
     ],
     "validation_errors": [],
-    "base_file": "quiz_master_questions_final_candidate_v54_mlb_world_records_additions.json",
+    "base_file": "quiz_master_questions_final_candidate_v55_ichiro_combined_hits_fix.json",
     "audit_step9_1": "2026-06-21 イレギュラーの意味を問う用語問題を第3問に追加。既存BQ314は解説内の言及のみのため重複問題ではない。",
     "added_throw_destination_term_ids": [
       "BQ1084",
@@ -968,6 +968,26 @@ window.QUIZ_MASTER_QUESTIONS = {
     "audit_step_v55": "2026-06-22 BQ2119を、MLB公式戦通算最多安打（ピート・ローズ）から、NPBとMLBの公式戦を合算した通算最多安打（イチロー）へ差し替え。NPB1,278安打＋MLB3,089安打＝4,367安打を参照データと二重確認。",
     "v55_modified_ids": [
       "BQ2119"
+    ],
+    "audit_step_v56": "2026-06-22 大谷翔平の達成済みMLB記録3問と、WBCの開催年・開催地・大会方式5問を追加。次回WBCの開催地は公式発表を確認できないため追加しない。",
+    "v56_added_ids": [
+      "BQ2121",
+      "BQ2122",
+      "BQ2123",
+      "BQ2124",
+      "BQ2125",
+      "BQ2126",
+      "BQ2127",
+      "BQ2128"
+    ],
+    "wbc_question_rule": [
+      "WBCの将来開催地は、公式発表が確認できる場合だけ問題化する",
+      "未発表の開催地を推測で問題化しない",
+      "開催年・開催都市・参加数・大会方式は、対象大会の年を明記して問題化する"
+    ],
+    "ohtani_record_question_rule": [
+      "大谷翔平の記録は、年度途中で変動する成績ではなく、公式発表で達成済みと確認できる記録だけを問題化する",
+      "記録の対象範囲（MLB、ポストシーズン、投手として等）を問題文で明記する"
     ]
   },
   "questions": [
@@ -6210,6 +6230,166 @@ window.QUIZ_MASTER_QUESTIONS = {
       "source_note": "MLB.com「All-Time MLB Player Hitting Stat Leaders」「10 incredible Rickey Henderson stats」",
       "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。MLB公式戦通算盗塁最多を問う問題はなし。",
       "quality_note": "v54追加。世界全体では集計範囲が統一されないため、MLB公式戦通算と明記。選択肢は歴代上位の盗塁記録保持者で統一し、二重正解なし。"
+    },
+    {
+      "id": "BQ2121",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・大谷翔平の記録",
+      "main_category": "MLB",
+      "middle_category": "大谷翔平の記録",
+      "small_category": "50本塁打・50盗塁",
+      "question": "大谷翔平が2024年にMLB史上初めて達成した記録は？",
+      "choices": [
+        "1シーズン50本塁打・50盗塁",
+        "1シーズン60本塁打・60盗塁",
+        "1シーズン40本塁打・70盗塁"
+      ],
+      "answer": 0,
+      "explanation": "大谷翔平は2024年に54本塁打、59盗塁を記録し、MLB史上初の50本塁打・50盗塁を達成しました。",
+      "source_note": "MLB公式プレスリリース「Shohei Ohtani becomes first 50-50 player in MLB history」（2024年9月19日）",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。50本塁打・50盗塁の達成を問う問題はなし。",
+      "quality_note": "年度・記録条件を明記。数値の組み合わせを比較する単一正解問題。"
+    },
+    {
+      "id": "BQ2122",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・大谷翔平の記録",
+      "main_category": "MLB",
+      "middle_category": "大谷翔平の記録",
+      "small_category": "ポストシーズン二刀流記録",
+      "question": "大谷翔平が2025年NLCS第4戦で同じ試合に達成した組み合わせは？",
+      "choices": [
+        "3本塁打と10奪三振",
+        "4本塁打と5盗塁",
+        "完全試合と満塁本塁打"
+      ],
+      "answer": 0,
+      "explanation": "大谷翔平は2025年NLCS第4戦で3本塁打を放ち、先発投手として10奪三振を記録しました。",
+      "source_note": "MLB.com「Shohei Ohtani wins NLCS MVP after 3 homers, 10 strikeouts」（2025年10月17日）",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。同一試合の3本塁打・10奪三振を問う問題はなし。",
+      "quality_note": "試合・大会・達成内容を明記。二重正解なし。"
+    },
+    {
+      "id": "BQ2123",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・大谷翔平の記録",
+      "main_category": "MLB",
+      "middle_category": "大谷翔平の記録",
+      "small_category": "ポストシーズン二刀流記録",
+      "question": "2025年NLCS第4戦で、大谷翔平が投手としてMLB史上初めて達成したものは？",
+      "choices": [
+        "ポストシーズン1試合で2本塁打",
+        "完全試合",
+        "1試合4本塁打"
+      ],
+      "answer": 0,
+      "explanation": "大谷翔平は投手として出場した2025年NLCS第4戦で3本塁打を放ち、投手として初めてポストシーズン1試合で2本塁打以上を記録しました。",
+      "source_note": "MLB.com「Brewers lose 2025 NLCS to Dodgers, Shohei Ohtani」（2025年10月17日）",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。投手としてのポストシーズン複数本塁打記録を問う問題はなし。",
+      "quality_note": "「投手として」「ポストシーズン1試合」を明記して記録範囲を固定。二重正解なし。"
+    },
+    {
+      "id": "BQ2124",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "国際大会・WBC",
+      "main_category": "国際大会",
+      "middle_category": "WBC大会概要",
+      "small_category": "開催周期",
+      "question": "2026年大会の次に予定されるWBCは何年？",
+      "choices": [
+        "2029年",
+        "2030年",
+        "2028年"
+      ],
+      "answer": 0,
+      "explanation": "WBCは2026年大会の次に2029年の開催が予定されています。",
+      "source_note": "MLB.com「Jose Quintana, Julio Teheran lead Colombia in World Baseball Classic」（2026年3月3日）",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。次回WBCの開催年を問う問題はなし。",
+      "quality_note": "開催地は公式発表を確認できないため、未発表の開催地を問う問題は作成しない。"
+    },
+    {
+      "id": "BQ2125",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "国際大会・WBC",
+      "main_category": "国際大会",
+      "middle_category": "WBC開催地",
+      "small_category": "2026年東京プール",
+      "question": "2026年WBCの東京プールが行われた球場は？",
+      "choices": [
+        "東京ドーム",
+        "明治神宮野球場",
+        "横浜スタジアム"
+      ],
+      "answer": 0,
+      "explanation": "2026年WBCの東京プールは東京ドームで行われました。",
+      "source_note": "MLB.com「World Baseball Classic 2026 host sites announced」およびWBC公式チケット情報",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。2026年WBC東京プールの球場を問う問題はなし。",
+      "quality_note": "年度・大会・対象プールを明記。二重正解なし。"
+    },
+    {
+      "id": "BQ2126",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "国際大会・WBC",
+      "main_category": "国際大会",
+      "middle_category": "WBC開催地",
+      "small_category": "2026年決勝開催地",
+      "question": "2026年WBCの決勝が行われた都市は？",
+      "choices": [
+        "マイアミ",
+        "東京",
+        "ヒューストン"
+      ],
+      "answer": 0,
+      "explanation": "2026年WBCの決勝は、アメリカ・フロリダ州マイアミのloanDepot parkで行われました。",
+      "source_note": "WBC公式スケジュールおよびMLB.com「All you need to know about World Baseball Classic 2026」",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。2026年WBC決勝の開催都市を問う問題はなし。",
+      "quality_note": "球場名ではなく都市を問う形に限定し、選択肢を開催都市で統一。"
+    },
+    {
+      "id": "BQ2127",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "国際大会・WBC",
+      "main_category": "国際大会",
+      "middle_category": "WBC大会概要",
+      "small_category": "参加国数",
+      "question": "2026年WBCの本大会に参加した国と地域の数は？",
+      "choices": [
+        "20",
+        "16",
+        "24"
+      ],
+      "answer": 0,
+      "explanation": "2026年WBCの本大会には20の国と地域が参加しました。",
+      "source_note": "MLB.com「2026 World Baseball Classic rules and rule modifications」",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。2026年WBCの参加数を問う問題はなし。",
+      "quality_note": "年度と本大会を明記。選択肢を参加数に統一。"
+    },
+    {
+      "id": "BQ2128",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "国際大会・WBC",
+      "main_category": "国際大会",
+      "middle_category": "WBC大会方式",
+      "small_category": "決勝ラウンド進出条件",
+      "question": "2026年WBCで、各プールから準々決勝へ進めるのは何位まで？",
+      "choices": [
+        "上位2チーム",
+        "上位1チーム",
+        "上位3チーム"
+      ],
+      "answer": 0,
+      "explanation": "2026年WBCは各プール5チームの総当たりで、上位2チームが準々決勝へ進みます。",
+      "source_note": "MLB.com「All you need to know about World Baseball Classic 2026」",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。WBCのプール突破条件を問う問題はなし。",
+      "quality_note": "年度・段階・順位条件を固定。大会要項を確認させる確認型ではなく、明確な大会方式の知識問題。"
     }
   ]
 }

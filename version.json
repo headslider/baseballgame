@@ -1,13 +1,13 @@
 {
-  "app_version": "v898-production",
-  "cache_version": "yakyu-yarouze-v898-production",
-  "public_version": "v1.1.59",
+  "app_version": "v899-production",
+  "cache_version": "yakyu-yarouze-v899-production",
+  "public_version": "v1.1.60",
   "updated_at": "2026-06-22T00:00:00+09:00",
   "release_date": "2026-06-22",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの問題データをv55へ更新。",
+  "change_summary": "野球博士チャレンジの問題データをv56へ更新。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
