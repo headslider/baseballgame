@@ -2,7 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 $JSON_INVALID_UTF8_SUBSTITUTE_FLAG = defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0;
 require_once __DIR__ . '/feature_common.php';
-const QUIZ_MASTER_MAX_SCORE = 13500;
+const QUIZ_MASTER_MAX_SCORE = 20262;
 const QUIZ_MASTER_MAX_LEVEL = 20;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.57",
+  "current_public_version": "v1.1.58",
   "internal": {
-    "app_version": "v896-production",
-    "cache_version": "yakyu-yarouze-v896-production",
+    "app_version": "v897-production",
+    "cache_version": "yakyu-yarouze-v897-production",
     "updated_at": "2026-06-22T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの問題文末に問題別正解率を表示し、20問版の保存上限を調整。"
+    "change_summary": "野球博士チャレンジ第15問以降の加算率を段階的に強化し、失敗時0点の説明を明確化。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.58-20260622-v897",
+      "public_version": "v1.1.58",
+      "release_type": "patch",
+      "released_at": "2026-06-22",
+      "title": "野球博士チャレンジ加算率チャレンジ調整",
+      "public_summary": "野球博士チャレンジの第15問以降で、正解ごとに加算率が段階的に上がるよう調整しました。",
+      "admin_note": "v897-production更新。野球博士チャレンジの基本点 5*n*n - 5*n + 10 は維持し、第15問以降は第15問1.2倍から1問ごとに+0.2倍、20問目2.2倍へ段階的に加算率を強化。第15問以降で失敗すると獲得点数0点になる仕様は維持し、はじめに画面と第14問クリア後の継続確認で、加算率上昇と失敗時0点を明記。満点は20,262点のため保存APIとランキングAPIの上限を更新。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。運用スコアデータ自体は変更なし。",
+      "internal_version": "v897-production",
+      "cache_version": "yakyu-yarouze-v897-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-22T00:00:00+09:00",
+      "updated_at": "2026-06-22T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.57-20260622-v896",
       "public_version": "v1.1.57",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v896-production",
       "cache_version": "yakyu-yarouze-v896-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-22T00:00:00+09:00",
       "updated_at": "2026-06-22T00:00:00+09:00"
     },

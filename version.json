@@ -1,13 +1,13 @@
 {
-  "app_version": "v896-production",
-  "cache_version": "yakyu-yarouze-v896-production",
-  "public_version": "v1.1.57",
+  "app_version": "v897-production",
+  "cache_version": "yakyu-yarouze-v897-production",
+  "public_version": "v1.1.58",
   "updated_at": "2026-06-22T00:00:00+09:00",
   "release_date": "2026-06-22",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "野球博士チャレンジの問題文末に問題別正解率を表示し、20問版の保存上限を調整。",
+  "change_summary": "野球博士チャレンジ第15問以降の加算率を段階的に強化し、失敗時0点の説明を明確化。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

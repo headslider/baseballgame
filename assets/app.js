@@ -54,6 +54,7 @@ const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
 const QUIZ_MASTER_TOTAL_QUESTIONS=20;
 const QUIZ_MASTER_CHECKPOINT_LEVEL=14;
 const QUIZ_MASTER_CHALLENGE_START_LEVEL=15;
+const QUIZ_MASTER_CHALLENGE_MULTIPLIER_STEP=.2;
 const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13,11:13,12:13,13:13,14:13,15:13,16:13,17:13,18:13,19:13,20:13};
 const QUIZ_MASTER_STATE={questions:[],questionStats:{},sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
 const INNING_SLOTS=[
@@ -1564,7 +1565,11 @@ function clearQuizMasterStageClasses(){
 function quizMasterPointForLevel(level){
   const n=Number(level);
   if(!Number.isFinite(n)||n<1||n>QUIZ_MASTER_TOTAL_QUESTIONS)return 0;
-  return (5*n*n)-(5*n)+10;
+  const base=(5*n*n)-(5*n)+10;
+  const multiplier=n>=QUIZ_MASTER_CHALLENGE_START_LEVEL
+    ? 1+((n-QUIZ_MASTER_CHALLENGE_START_LEVEL+1)*QUIZ_MASTER_CHALLENGE_MULTIPLIER_STEP)
+    : 1;
+  return Math.round(base*multiplier);
 }
 function quizMasterTimeForLevel(level){return QUIZ_MASTER_TIME_LIMITS[Number(level)]||15}
 function quizMasterTodayKey(){
@@ -1685,7 +1690,7 @@ function showQuizMasterTutorial(){
   return new Promise(resolve=>{
     const overlay=$("quizMasterTutorialOverlay");
     if(!overlay){resolve(true);return}
-    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ はじめに"><p class="quiz-master-tutorial-kicker">はじめに</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全20問。各問に制限時間があります。</li><li>正解するたびに点数が加算され、後半ほど1問あたりの点数が大きく伸びます。</li><li class="quiz-master-tutorial-danger">第15問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日3回まで、利用から24時間後ではなく毎日24時にリセットされます。テスト中は回数無制限です。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">内容を確認してからゲームを始めます。</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="top">トップに戻る</button><button type="button" class="primary" data-quiz-tutorial="start">ゲームを始める</button></div></div>';
+    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ はじめに"><p class="quiz-master-tutorial-kicker">はじめに</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全20問。各問に制限時間があります。</li><li>正解するたびに点数が加算され、後半ほど1問あたりの点数が大きく伸びます。</li><li>第15問以降はチャレンジゾーンです。正解するたびに加算率が上がり、得点の伸びがさらに強くなります。</li><li class="quiz-master-tutorial-danger">第15問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日3回まで、利用から24時間後ではなく毎日24時にリセットされます。テスト中は回数無制限です。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">内容を確認してからゲームを始めます。</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="top">トップに戻る</button><button type="button" class="primary" data-quiz-tutorial="start">ゲームを始める</button></div></div>';
     overlay.setAttribute("aria-hidden","false");
     overlay.classList.add("show");
     overlay.querySelector('[data-quiz-tutorial="top"]')?.addEventListener("click",()=>{
@@ -1728,9 +1733,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=896",
-    "./data/quiz_master_questions.json?v=896",
-    new URL("data/quiz_master_questions.json?v=896",document.baseURI).href
+    "data/quiz_master_questions.json?v=897",
+    "./data/quiz_master_questions.json?v=897",
+    new URL("data/quiz_master_questions.json?v=897",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1750,7 +1755,7 @@ async function loadQuizMasterQuestions(){
 }
 async function loadQuizMasterQuestionStats(){
   try{
-    const res=await fetch("api/get_quiz_master_question_stats.php?v=896",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_question_stats.php?v=897",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
   }catch(e){
@@ -2112,7 +2117,7 @@ function showQuizMasterCheckpoint(){
     const overlay=$("quizMasterCheckpointOverlay");
     if(!overlay){resolve(true);return}
     const checkpointPoint=QUIZ_MASTER_STATE.score;
-    overlay.innerHTML=`<div class="quiz-master-checkpoint-card" role="dialog" aria-modal="true" aria-label="チャレンジ確認"><strong>${checkpointPoint}ポイント獲得。</strong><p>ここから1問あたりの点数がさらに大きく伸びますが、失敗すると獲得点数は0点になります!<br>ここで終了しますか？</p><div class="quiz-master-checkpoint-actions"><button type="button" class="secondary" data-quiz-checkpoint="end">終了する</button><button type="button" class="primary" data-quiz-checkpoint="go">挑戦する</button></div></div>`;
+    overlay.innerHTML=`<div class="quiz-master-checkpoint-card" role="dialog" aria-modal="true" aria-label="チャレンジ確認"><strong>${checkpointPoint}ポイント獲得。</strong><p>第15問からは正解するたびに加算率が上がり、得点の伸びがさらに強くなります。<br>ただし失敗すると獲得点数は0点になります!<br>ここで終了しますか？</p><div class="quiz-master-checkpoint-actions"><button type="button" class="secondary" data-quiz-checkpoint="end">終了する</button><button type="button" class="primary" data-quiz-checkpoint="go">挑戦する</button></div></div>`;
     overlay.setAttribute("aria-hidden","false");
     overlay.classList.add("show");
     overlay.querySelectorAll("[data-quiz-checkpoint]").forEach(btn=>{
