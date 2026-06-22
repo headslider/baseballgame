@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.62",
+  "current_public_version": "v1.1.63",
   "internal": {
-    "app_version": "v901-production",
-    "cache_version": "yakyu-yarouze-v901-production",
+    "app_version": "v902-production",
+    "cache_version": "yakyu-yarouze-v902-production",
     "updated_at": "2026-06-22T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "マイページの野球博士チャレンジ称号表示からラベルを削除。"
+    "change_summary": "野球博士チャレンジの称号獲得点数を調整。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.63-20260622-v902",
+      "public_version": "v1.1.63",
+      "release_type": "patch",
+      "released_at": "2026-06-22",
+      "title": "野球博士チャレンジ称号獲得点数調整",
+      "public_summary": "野球博士チャレンジの称号獲得に必要な総合点を調整しました。",
+      "admin_note": "v902-production更新。data/quiz_master_titles.json、APIフォールバック、フロントフォールバックの称号獲得点数を指定値へ同期。ボールボーイ0点、バットボーイ10000点、ベンチ入り40000点から野球殿堂10000000点までの20段階に調整。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。運用スコアデータ自体は変更なし。",
+      "internal_version": "v902-production",
+      "cache_version": "yakyu-yarouze-v902-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-22T00:00:00+09:00",
+      "updated_at": "2026-06-22T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.62-20260622-v901",
       "public_version": "v1.1.62",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v901-production",
       "cache_version": "yakyu-yarouze-v901-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-22T00:00:00+09:00",
       "updated_at": "2026-06-22T00:00:00+09:00"
     },

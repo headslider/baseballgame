@@ -57,10 +57,10 @@ const QUIZ_MASTER_CHALLENGE_START_LEVEL=15;
 const QUIZ_MASTER_CHALLENGE_MULTIPLIER_STEP=.2;
 const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13,11:13,12:13,13:13,14:13,15:13,16:13,17:13,18:13,19:13,20:13};
 const QUIZ_MASTER_TITLE_DEFAULTS=[
-  {title:"ボールボーイ",point:0},{title:"バットボーイ",point:50000},{title:"ベンチ入り",point:120000},{title:"代打の切り札",point:220000},{title:"スタメン",point:350000},
-  {title:"クリーンアップ",point:550000},{title:"四番打者",point:800000},{title:"エース",point:1100000},{title:"キャプテン",point:1450000},{title:"ベストナイン",point:1850000},
-  {title:"オールスター",point:2350000},{title:"甲子園スター",point:3000000},{title:"ドラフト候補",point:3700000},{title:"プロ野球選手",point:4500000},{title:"メジャーリーガー",point:5400000},
-  {title:"首位打者",point:6300000},{title:"ホームラン王",point:7100000},{title:"サイヤング賞",point:7900000},{title:"MVP",point:8800000},{title:"野球殿堂",point:10000000}
+  {level:1,title:"ボールボーイ",point:0},{level:2,title:"バットボーイ",point:10000},{level:3,title:"ベンチ入り",point:40000},{level:4,title:"代打の切り札",point:130000},{level:5,title:"スタメン",point:290000},
+  {level:6,title:"クリーンアップ",point:500000},{level:7,title:"四番打者",point:770000},{level:8,title:"エース",point:1110000},{level:9,title:"キャプテン",point:1510000},{level:10,title:"ベストナイン",point:1970000},
+  {level:11,title:"オールスター",point:2500000},{level:12,title:"甲子園スター",point:3080000},{level:13,title:"ドラフト候補",point:3730000},{level:14,title:"プロ野球選手",point:4440000},{level:15,title:"メジャーリーガー",point:5210000},
+  {level:16,title:"首位打者",point:6040000},{level:17,title:"ホームラン王",point:6930000},{level:18,title:"サイヤング賞",point:7890000},{level:19,title:"MVP",point:8910000},{level:20,title:"野球殿堂",point:10000000}
 ];
 const QUIZ_MASTER_STATE={questions:[],questionStats:{},titles:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
 const INNING_SLOTS=[
@@ -1739,9 +1739,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=901",
-    "./data/quiz_master_questions.json?v=901",
-    new URL("data/quiz_master_questions.json?v=901",document.baseURI).href
+    "data/quiz_master_questions.json?v=902",
+    "./data/quiz_master_questions.json?v=902",
+    new URL("data/quiz_master_questions.json?v=902",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1761,7 +1761,7 @@ async function loadQuizMasterQuestions(){
 }
 async function loadQuizMasterQuestionStats(){
   try{
-    const res=await fetch("api/get_quiz_master_question_stats.php?v=901",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_question_stats.php?v=902",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
   }catch(e){
@@ -1788,7 +1788,7 @@ function normalizeQuizMasterTitles(rows){
 async function loadQuizMasterTitles(){
   if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
   try{
-    const res=await fetch("api/get_quiz_master_titles.php?v=901",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_titles.php?v=902",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(res.ok&&data&&data.ok?data.titles:null);
   }catch(e){
