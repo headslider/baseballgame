@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.64",
+  "current_public_version": "v1.1.65",
   "internal": {
-    "app_version": "v903-production",
-    "cache_version": "yakyu-yarouze-v903-production",
+    "app_version": "v904-production",
+    "cache_version": "yakyu-yarouze-v904-production",
     "updated_at": "2026-06-22T00:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの称号獲得演出が結果画面でも表示されるよう修正。"
+    "change_summary": "野球博士チャレンジの称号表示とランキング配置を調整。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.65-20260622-v904",
+      "public_version": "v1.1.65",
+      "release_type": "patch",
+      "released_at": "2026-06-22",
+      "title": "野球博士チャレンジ称号表示調整",
+      "public_summary": "野球博士チャレンジの称号表示とランキング画面の見え方を調整しました。",
+      "admin_note": "v904-production更新。テスト確認用に称号獲得演出を一時的に毎回表示するフラグを有効化。野球博士ランキングページを上下中央寄せに調整し、称号バッジを読みやすい高コントラスト表示へ変更。ランキング行では称号を専用列に分け、スマホで下段落ちしにくい配置へ修正。マイページの称号外枠を削除し、野球博士チャレンジ欄を間違いプレイチェック欄の下に移動。index.html / service-worker.js / version.json / release_versions.json のバージョンを整合。運用スコアデータ自体は変更なし。",
+      "internal_version": "v904-production",
+      "cache_version": "yakyu-yarouze-v904-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-22T00:00:00+09:00",
+      "updated_at": "2026-06-22T00:00:00+09:00"
+    },
+    {
       "id": "v1.1.64-20260622-v903",
       "public_version": "v1.1.64",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v903-production",
       "cache_version": "yakyu-yarouze-v903-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-22T00:00:00+09:00",
       "updated_at": "2026-06-22T00:00:00+09:00"
     },
