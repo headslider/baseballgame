@@ -7499,7 +7499,6 @@ body.screen-quiz-master-active{
   color:#fff;
   min-height:100vh;
   min-height:100lvh;
-  overscroll-behavior:none;
 }
 /* html要素の青背景がsvh超過領域で覗くのを防ぐ（:has対応ブラウザ） */
 html:has(body.screen-quiz-master-active){
@@ -8677,28 +8676,6 @@ body.quiz-master-failed .quiz-master-shell{
   .qm-icon-rank{width:120px !important;}
   #screen-quiz-master-ranking .qm-icon-rank,
   #screen-quiz-master-result .qm-icon-rank{width:120px !important;}
-  /* ゲーム（出題）画面はスクロールさせず、1画面に固定する。
-     タップ/ドラッグで画面が上下に動かないよう position:fixed で固定し、
-     オーバースクロール（バウンス）も無効化する。 */
-  #screen-quiz-master.active{
-    position:fixed;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    height:100svh;
-    min-height:100svh;
-    max-height:100svh;
-    overflow:hidden;
-    overscroll-behavior:none;
-    touch-action:manipulation;
-  }
-  #screen-quiz-master .quiz-master-shell{
-    height:100%;
-    min-height:0;
-    overflow:hidden;
-    overscroll-behavior:none;
-  }
 }
 
 /* v839: desktop fit fixes for quiz master */
@@ -9329,6 +9306,23 @@ body.quiz-master-failed .quiz-master-shell{
   .quiz-master-chair{
     top:55% !important;
     height:clamp(190px,23vh,260px) !important;
+  }
+}
+/* モバイル/タブレットでも背景の椅子だけを画面に固定し、
+   スクロールやバウンスで動かないようにする（他の要素は固定しない）。
+   タップを妨げないよう pointer-events:none、コンテンツ背面に配置。 */
+@media(max-width:999px){
+  .quiz-master-chair{
+    position:fixed !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    height:clamp(110px,17vh,200px) !important;
+    width:auto !important;
+    max-width:none !important;
+    margin:0 !important;
+    z-index:0 !important;
+    pointer-events:none !important;
   }
 }
 
