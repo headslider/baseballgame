@@ -9605,6 +9605,7 @@ body.quiz-master-failed .quiz-master-shell{
   justify-content:center;
   padding:20px;
   min-height:100vh;
+  overflow:hidden;
 }
 #screen-quiz-master-menu .quiz-master-result-card{
   max-width:600px;
