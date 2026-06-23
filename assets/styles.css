@@ -8365,6 +8365,10 @@ img.qtb-badge-icon{
   border-color:#ffe26a;
   box-shadow:0 0 20px rgba(255,226,106,.24);
 }
+.quiz-master-ranking li > span{
+  text-align:center;
+  justify-self:center;
+}
 .quiz-master-ranking li span,
 .quiz-master-ranking li em{
   color:#ffe26a;
@@ -8387,7 +8391,9 @@ img.qtb-badge-icon{
 }
 .rank-plays{display:flex;flex-direction:row;align-items:center;gap:14px;text-align:left;}
 .rank-plays small{font-size:.85em;white-space:nowrap;}
-.rank-name{display:flex;flex-direction:row;align-items:baseline;gap:12px;min-width:0;justify-content:flex-end;}
+.rank-name{display:flex;flex-direction:row;align-items:baseline;gap:12px;min-width:0;width:100%;justify-content:space-between;}
+.rank-name b{text-align:left;}
+.rank-name em{text-align:right;}
 .rank-name b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .rank-name em{white-space:nowrap;flex-shrink:0;}
 .quiz-master-recent-title{
