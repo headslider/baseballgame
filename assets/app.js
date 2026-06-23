@@ -1784,7 +1784,16 @@ function normalizeQuizMasterTitles(rows){
     point:Math.max(0,Number(row&&row.point||0))
   })).filter(row=>row.title&&Number.isFinite(row.point));
   list.sort((a,b)=>a.point-b.point||a.title.localeCompare(b.title,"ja"));
-  return list.length?list:QUIZ_MASTER_TITLE_DEFAULTS.slice();
+  const out=list.length?list:QUIZ_MASTER_TITLE_DEFAULTS.slice();
+  out.forEach((row,i)=>{row.level=i+1;});
+  return out;
+}
+function quizMasterLevelIconStyle(level,w){
+  const cols=5,cw=1536/cols,ch=1024/4;
+  const lv=Math.max(1,Math.min(20,Number(level)||1));
+  const col=(lv-1)%cols,row=Math.floor((lv-1)/cols);
+  const s=w/cw;
+  return `display:inline-block;background:url('assets/level_icon.png') no-repeat;background-size:${Math.round(1536*s)}px ${Math.round(1024*s)}px;background-position:${Math.round(-col*cw*s)}px ${Math.round(-row*ch*s)}px;width:${Math.round(w)}px;height:${Math.round(ch*s)}px;vertical-align:middle;flex-shrink:0;`;
 }
 async function loadQuizMasterTitles(){
   if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
@@ -2251,16 +2260,11 @@ async function showQuizMasterTitleAwards(saveResult){
       `<div class="qtb-backdrop"></div>`+
       `<div class="qtb-rays"></div>`+
       `<div class="qtb-kicker-wrap"><span class="qtb-kicker">称号獲得</span></div>`+
-      `<div class="qtb-card">`+
-        `<div class="qtb-card-corners"></div>`+
-        `<div class="qtb-deco qtb-deco--top"><div class="qtb-deco-line"></div><div class="qtb-deco-diamond"></div><div class="qtb-deco-line"></div></div>`+
-        `<strong class="qtb-card-title">${escapeHtml(row.title)}</strong>`+
-        `<div class="qtb-deco qtb-deco--bottom"><div class="qtb-deco-line"></div><div class="qtb-deco-diamond"></div><div class="qtb-deco-line"></div></div>`+
-      `</div>`;
+      `<div class="qtb-badge-icon" style="${quizMasterLevelIconStyle(row.level,220)}"></div>`;
     el.classList.remove("show");
     void el.offsetWidth;
     el.classList.add("show");
-    await wait(3500);
+    await wait(4800);
     el.classList.remove("show");
     await wait(250);
   }
@@ -2292,8 +2296,8 @@ function renderQuizMasterRanking(box,data,mode="result"){
   const summaryHtml=mode==="page"?`<div class="quiz-master-ranking-summary"><span>参加者 <b>${escapeHtml(summary.total_players||0)}</b></span><span>プレイ数 <b>${escapeHtml(summary.total_plays||0)}</b></span><span>完全制覇 <b>${escapeHtml(summary.cleared_count||0)}</b></span></div>`:"";
   const myScore=myTotal?Number(myTotal.total_score||myTotal.score||0):0;
   const myTitle=myTotal?(myTotal.title_info||quizMasterTitleForScore(myScore,data&&data.titles)):null;
-  const myHtml=myTotal?`<div class="quiz-master-my-best"><span>あなたの総合順位</span><b>${escapeHtml(myTotal.rank)}位 / ${escapeHtml(myScore)} pt</b><strong class="quiz-master-title-badge">${escapeHtml(myTitle.title)}</strong>${myBest?`<em>最高 ${escapeHtml(myBest.score)} pt / 第${escapeHtml(myBest.reached_level)}問到達</em>`:""}</div>`:"";
-  const rankingHtml=topRows.length?`<ol>${topRows.map(r=>{const score=Number(r.total_score||r.score||0);const title=r.title_info||quizMasterTitleForScore(score,data&&data.titles);return `<li class="${r.player_id===STATE.playerId?"me":""}"><span>${escapeHtml(r.rank)}位</span><b>${escapeHtml(r.player_id)}</b><strong class="quiz-master-title-badge">${escapeHtml(title.title)}</strong><em>${escapeHtml(score)} pt</em><small>プレイ数 ${escapeHtml(r.plays||0)} / 完全制覇 ${escapeHtml(r.cleared_count||0)}回</small></li>`}).join("")}</ol>`:'<p>まだランキングはありません。</p>';
+  const myHtml=myTotal?`<div class="quiz-master-my-best"><span>あなたの総合順位</span><b>${escapeHtml(myTotal.rank)}位 / ${escapeHtml(myScore)} pt</b><strong class="quiz-master-title-badge"><span style="${quizMasterLevelIconStyle(myTitle.level,36)}"></span>${escapeHtml(myTitle.title)}</strong>${myBest?`<em>最高 ${escapeHtml(myBest.score)} pt / 第${escapeHtml(myBest.reached_level)}問到達</em>`:""}</div>`:"";
+  const rankingHtml=topRows.length?`<ol>${topRows.map(r=>{const score=Number(r.total_score||r.score||0);const title=r.title_info||quizMasterTitleForScore(score,data&&data.titles);return `<li class="${r.player_id===STATE.playerId?"me":""}"><span>${escapeHtml(r.rank)}位</span><b>${escapeHtml(r.player_id)}</b><strong class="quiz-master-title-badge"><span style="${quizMasterLevelIconStyle(title.level,36)}"></span>${escapeHtml(title.title)}</strong><em>${escapeHtml(score)} pt</em><small>プレイ数 ${escapeHtml(r.plays||0)} / 完全制覇 ${escapeHtml(r.cleared_count||0)}回</small></li>`}).join("")}</ol>`:'<p>まだランキングはありません。</p>';
   box.innerHTML=`<div class="quiz-master-ranking-board"><div class="quiz-master-ranking-title">野球博士総合点ランキング TOP5</div>${summaryHtml}${myHtml}${rankingHtml}</div>`;
 }
 async function loadQuizMasterRanking(targetId="quizMasterRanking",mode="result"){

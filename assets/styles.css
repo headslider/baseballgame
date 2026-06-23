@@ -7914,6 +7914,24 @@ body.screen-quiz-master-active{
   90%{opacity:1}
   100%{transform:translateX(110vw);opacity:0}
 }
+/* バッジアイコン — カードの代わりに表示 */
+.qtb-badge-icon{
+  position:absolute;
+  top:58%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  border-radius:12px;
+  filter:drop-shadow(0 0 28px rgba(255,200,50,.7)) drop-shadow(0 0 70px rgba(80,40,200,.4));
+  animation:qtbBadgeReveal 3.5s ease both;
+  animation-delay:1s;
+}
+@keyframes qtbBadgeReveal{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.7)}
+  18%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}
+  26%{transform:translate(-50%,-50%) scale(1)}
+  74%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(.9)}
+}
 /* メインカード — 画面の上下左右中央 */
 .qtb-card{
   position:absolute;
@@ -8329,10 +8347,11 @@ body.screen-quiz-master-active{
   display:inline-flex;
   align-items:center;
   justify-content:center;
+  gap:5px;
   width:max-content;
   max-width:100%;
   min-height:30px;
-  padding:4px 11px;
+  padding:4px 8px 4px 4px;
   border-radius:8px;
   border:1px solid rgba(255,226,106,.95);
   background:linear-gradient(180deg,#fff7b8 0%,#ffe16a 48%,#d59a00 100%);
