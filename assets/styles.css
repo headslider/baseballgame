@@ -9667,6 +9667,14 @@ body.quiz-master-failed .quiz-master-shell{
   max-width:600px;
   width:100%;
 }
+.quiz-master-menu-icon{
+  display:block;
+  width:clamp(180px,42%,300px);
+  height:auto;
+  margin:0 auto 6px;
+  object-fit:contain;
+  filter:drop-shadow(0 10px 20px rgba(0,0,0,.5));
+}
 .quiz-master-menu-buttons{
   display:flex;
   flex-direction:column;
