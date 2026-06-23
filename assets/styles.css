@@ -7684,8 +7684,11 @@ html:has(body.screen-quiz-master-active){
   text-shadow:0 3px 2px #000;
 }
 .quiz-master-question-icon{
-  width:min(210px,18vw);
-  min-width:118px;
+  width:min(190px,16vw);
+  min-width:104px;
+  padding:3px;
+  box-sizing:border-box;
+  object-fit:contain;
   border-radius:12px;
   border:2px solid #ffe179;
   background:rgba(4,14,32,.75);
