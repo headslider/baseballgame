@@ -8242,7 +8242,8 @@ img.qtb-badge-icon{
 }
 .quiz-master-current-title{
   display:flex;
-  gap:12px;
+  flex-direction:column;
+  gap:6px;
   align-items:center;
   justify-content:center;
   margin:0 0 12px;
@@ -8278,6 +8279,8 @@ img.qtb-badge-icon{
   color:#ffe26a;
   font-style:normal;
   font-weight:1000;
+  font-size:clamp(16px,2.8vw,22px);
+  text-align:center;
 }
 .quiz-master-mypage-table{
   margin-top:12px;
