@@ -7858,6 +7858,7 @@ body.screen-quiz-master-active{
   inset:0;
   background:radial-gradient(ellipse 80% 70% at 50% 50%,rgba(8,4,30,.97) 0%,rgba(0,0,0,.96) 100%);
   animation:qtbBackdropFade 3.5s ease both;
+  animation-delay:1s;
 }
 @keyframes qtbBackdropFade{
   0%{opacity:0}14%{opacity:1}80%{opacity:1}100%{opacity:0}
@@ -7878,6 +7879,7 @@ body.screen-quiz-master-active{
     rgba(255,200,50,.05) 306deg,transparent 324deg,
     rgba(255,200,50,.07) 342deg,transparent 360deg);
   animation:qtbRaysRotate 12s linear infinite,qtbRaysFade 3.5s ease both;
+  animation-delay:0s,1s;
 }
 @keyframes qtbRaysRotate{to{transform:rotate(360deg)}}
 @keyframes qtbRaysFade{
@@ -7902,7 +7904,7 @@ body.screen-quiz-master-active{
   background:linear-gradient(90deg,transparent 0%,rgba(255,200,50,.14) 25%,rgba(255,200,50,.22) 50%,rgba(255,200,50,.14) 75%,transparent 100%);
   text-shadow:0 0 18px rgba(255,210,80,.9),0 2px 4px rgba(0,0,0,.9);
   animation:qtbKickerSlide 2.2s cubic-bezier(.16,1,.3,1) both;
-  animation-delay:.06s;
+  animation-delay:1.06s;
 }
 @keyframes qtbKickerSlide{
   0%{transform:translateX(-110vw);opacity:0}
@@ -7915,7 +7917,7 @@ body.screen-quiz-master-active{
 /* メインカード — 画面の上下左右中央 */
 .qtb-card{
   position:absolute;
-  top:50%;
+  top:58%;
   left:50%;
   transform:translate(-50%,-50%);
   display:flex;
@@ -7930,6 +7932,7 @@ body.screen-quiz-master-active{
     0 0 110px rgba(60,20,180,.18),
     inset 0 0 36px rgba(255,208,56,.05);
   animation:qtbCardReveal 3.5s ease both;
+  animation-delay:1s;
   white-space:nowrap;
 }
 @keyframes qtbCardReveal{
@@ -7938,6 +7941,7 @@ body.screen-quiz-master-active{
   26%{transform:translate(-50%,-50%) scale(1)}
   74%{opacity:1;transform:translate(-50%,-50%) scale(1)}
   100%{opacity:0;transform:translate(-50%,-50%) scale(.93) translateY(-10px)}
+
 }
 /* コーナー飾り */
 .qtb-card::before,.qtb-card::after,
@@ -7967,8 +7971,8 @@ body.screen-quiz-master-active{
   background:linear-gradient(90deg,transparent,rgba(255,208,56,.7),transparent);
   animation:qtbDecoExpand .5s ease both;
 }
-.qtb-deco--top .qtb-deco-line{animation-delay:.38s}
-.qtb-deco--bottom .qtb-deco-line{animation-delay:.48s}
+.qtb-deco--top .qtb-deco-line{animation-delay:1.38s}
+.qtb-deco--bottom .qtb-deco-line{animation-delay:1.48s}
 @keyframes qtbDecoExpand{
   from{transform:scaleX(0);opacity:0}
   to{transform:scaleX(1);opacity:1}
@@ -8003,7 +8007,7 @@ body.screen-quiz-master-active{
   background:linear-gradient(108deg,transparent 28%,rgba(255,255,255,.55) 50%,transparent 72%);
   transform:translateX(-130%);
   animation:qtbTitleShine 3.5s ease both;
-  animation-delay:.3s;
+  animation-delay:1.3s;
 }
 @keyframes qtbTitleShine{
   0%{transform:translateX(-130%);opacity:0}
