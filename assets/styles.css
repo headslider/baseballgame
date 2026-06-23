@@ -7509,6 +7509,7 @@ body.screen-quiz-master-active{
   align-items:center;
   justify-content:center;
   padding:16px 0;
+  background:#030711;
 }
 .quiz-master-shell{
   position:relative;
@@ -9458,6 +9459,7 @@ body.quiz-master-failed .quiz-master-shell{
   border:2px solid rgba(255,226,106,.78);
   background:linear-gradient(180deg,rgba(4,20,48,.82),rgba(0,9,28,.9));
   box-shadow:0 0 24px rgba(255,226,106,.18),inset 0 0 22px rgba(0,126,255,.2);
+  align-self:center;
 }
 .quiz-master-ranking-page-card #quizMasterRankingPage{
   flex:1 1 auto;
