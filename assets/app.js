@@ -251,9 +251,15 @@ function maxScoreForCurrentGame(){return (STATE.sequence&&STATE.sequence.length?
 function show(id){
   if(id!=="screen-game")clearQuestionTimer();
   if(id!=="screen-quiz-master")clearQuizMasterTimer();
+  console.log(`[show] Transitioning to ${id}`);
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   const target=$(id);
-  if(target)target.classList.add("active");
+  if(target){
+    target.classList.add("active");
+    console.log(`[show] Added active class to ${id}`, target);
+  }else{
+    console.warn(`[show] Target element not found: ${id}`);
+  }
 
   // v679: トップ背景がゲーム中に見えないよう、現在画面のbodyクラスを明示する。
   document.body.classList.toggle("screen-title-active",id==="screen-title");
@@ -264,7 +270,7 @@ function show(id){
   document.body.classList.toggle("screen-settings-active",id==="screen-settings");
   document.body.classList.toggle("screen-how-active",id==="screen-how");
   document.body.classList.toggle("screen-notices-active",id==="screen-notices");
-  document.body.classList.toggle("screen-quiz-master-active",id==="screen-quiz-master"||id==="screen-quiz-master-result"||id==="screen-quiz-master-ranking");
+  document.body.classList.toggle("screen-quiz-master-active",id==="screen-quiz-master"||id==="screen-quiz-master-result"||id==="screen-quiz-master-ranking"||id==="screen-quiz-master-menu"||id==="screen-quiz-master-ranks");
   // v798: iPhone/iPadなどでは、ID取得導線はPWAのトップ画面だけに表示する。
   // トップ以外の画面へ移動した時や、Safari等の通常ブラウザ表示では非表示に戻す。
   if(typeof updateIssueKeyActions==="function")updateIssueKeyActions();
