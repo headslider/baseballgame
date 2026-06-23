@@ -9308,24 +9308,6 @@ body.quiz-master-failed .quiz-master-shell{
     height:clamp(190px,23vh,260px) !important;
   }
 }
-/* モバイル/タブレットでも背景の椅子だけを画面に固定し、
-   スクロールやバウンスで動かないようにする（他の要素は固定しない）。
-   タップを妨げないよう pointer-events:none、コンテンツ背面に配置。 */
-@media(max-width:999px){
-  .quiz-master-chair{
-    position:fixed !important;
-    left:50% !important;
-    top:50% !important;
-    transform:translate(-50%,-50%) !important;
-    height:clamp(110px,17vh,200px) !important;
-    width:auto !important;
-    max-width:none !important;
-    margin:0 !important;
-    z-index:0 !important;
-    pointer-events:none !important;
-  }
-}
-
 /* v841: quiz round entrance/exit sequence */
 .quiz-master-question-panel,
 .quiz-master-choice,
@@ -9763,7 +9745,10 @@ body.quiz-master-failed .quiz-master-shell{
   gap:4px;
   align-items:center;
 }
-.rank-name{
+.rank-item .rank-name{
+  display:block;
+  width:auto;
+  text-align:center;
   font-size:1.1em;
   font-weight:1000;
   color:#ffe26a;
@@ -9785,5 +9770,20 @@ body.quiz-master-failed .quiz-master-shell{
   }
   .quiz-master-ranking-summary{
     grid-template-columns:repeat(3,1fr) !important;
+  }
+}
+
+/* v957+: モバイルでは椅子を fixed にせず、背景とコンテンツの間のレイヤー
+   (.quiz-master-shell::before) に背景画像として貼り付ける。
+   これにより椅子は背景と一体でスクロール/バウンスし、選択肢やメニューと
+   別々に揺れることがなくなる。タップも妨げない。 */
+@media(max-width:999px){
+  .quiz-master-chair{
+    display:none !important;
+  }
+  .quiz-master-shell::before{
+    background:
+      linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.05) 46%,rgba(0,0,0,.46)),
+      url("quiz_master_chair.webp") center 56% / auto clamp(140px,24vh,300px) no-repeat;
   }
 }
