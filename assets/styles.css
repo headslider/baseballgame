@@ -7497,6 +7497,12 @@ body.screen-game-active #screen-title .stadium-bg{
 body.screen-quiz-master-active{
   background:#030711 !important;
   color:#fff;
+  min-height:100vh;
+  min-height:100lvh;
+}
+/* html要素の青背景がsvh超過領域で覗くのを防ぐ（:has対応ブラウザ） */
+html:has(body.screen-quiz-master-active){
+  background:#030711 !important;
 }
 .quiz-master-screen{
   padding:0;
