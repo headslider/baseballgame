@@ -9629,30 +9629,33 @@ body.quiz-master-failed .quiz-master-shell{
   box-shadow:0 0 0 2px rgba(3,19,43,.85),0 0 24px rgba(255,226,106,.25),inset 0 0 20px rgba(0,93,180,.32);
 }
 /* ===== Quiz Master ランク紹介 ===== */
-/* ランク紹介は全20ランクを並べるため、カードの高さ制限を解除しページ全体をスクロールさせる。 */
+/* 全20ランクを 4列×5行 で一画面に収める。スクロールは不要。 */
 #screen-quiz-master-ranks.active{
-  display:block;
-  overflow-y:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   padding:20px;
 }
 #screen-quiz-master-ranks .quiz-master-ranking-page-card{
+  max-width:min(1760px,97vw);
   max-height:none;
   overflow:visible;
-  margin:0 auto;
+  margin:auto;
 }
 .quiz-master-ranks-container{
   margin:20px 0;
 }
 .ranks-grid{
   display:grid;
-  grid-template-columns:1fr;
+  grid-template-columns:repeat(4,1fr);
   gap:12px;
 }
 .rank-item{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
   align-items:center;
+  text-align:center;
   padding:12px;
   border-radius:10px;
   background:rgba(0,19,47,.6);
@@ -9665,8 +9668,9 @@ body.quiz-master-failed .quiz-master-shell{
 }
 .rank-icon-wrapper{
   position:relative;
-  width:90px;
-  height:60px;
+  width:100%;
+  max-width:400px;
+  aspect-ratio:2/1;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -9675,14 +9679,16 @@ body.quiz-master-failed .quiz-master-shell{
   animation:rankIconGlow 1.8s ease-in-out infinite;
 }
 .rank-icon{
-  width:90px;
-  height:60px;
+  width:400px;
+  height:200px;
+  max-width:100%;
   object-fit:contain;
 }
 .rank-details{
   display:flex;
   flex-direction:column;
   gap:4px;
+  align-items:center;
 }
 .rank-name{
   font-size:1.1em;
@@ -9697,13 +9703,17 @@ body.quiz-master-failed .quiz-master-shell{
   0%,100%{filter:drop-shadow(0 0 0 rgba(255,226,106,0));}
   50%{filter:drop-shadow(0 0 12px rgba(255,226,106,.6));}
 }
+@media(max-width:1100px){
+  .ranks-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
 @media(max-width:760px){
   .ranks-grid{
-    grid-template-columns:1fr;
+    grid-template-columns:repeat(2,1fr);
   }
   .rank-item{
-    grid-template-columns:auto 1fr;
-    gap:10px;
+    gap:8px;
   }
   .quiz-master-ranking-summary{
     grid-template-columns:repeat(3,1fr) !important;
