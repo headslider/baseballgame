@@ -82,12 +82,13 @@ function read_json_file_safe($file, $default) {
     return is_array($json) ? $json : $default;
 }
 function write_json_file_locked($file, $data) {
+    $JSON_INVALID_UTF8_SUBSTITUTE_FLAG = defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0;
     $fp = fopen($file, 'c+');
     if (!$fp) return false;
     if (!flock($fp, LOCK_EX)) { fclose($fp); return false; }
     rewind($fp);
     ftruncate($fp, 0);
-    fwrite($fp, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    fwrite($fp, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | $JSON_INVALID_UTF8_SUBSTITUTE_FLAG));
     fflush($fp);
     flock($fp, LOCK_UN);
     fclose($fp);
@@ -136,15 +137,8 @@ function verify_player_client($player_id, $client_token) {
     $hash = hash('sha256', $client_token);
     $now = date('Y-m-d H:i:s');
 
-    if (!is_file($file)) {
-        $fp_new = fopen($file, 'w');
-        if (!$fp_new) return false;
-        fputcsv($fp_new, ['player_id','client_hash','created_at','last_login_at']);
-        fputcsv($fp_new, [safe_csv_cell_feature($player_id), $hash, $now, $now]);
-        fclose($fp_new);
-        return true;
-    }
-
+    // c+ はファイルが存在しない場合に新規作成するため、is_file() 分岐を排除して
+    // 常にロック取得後に読み書きする（TOCTOU 競合を防止）
     $fp = fopen($file, 'c+');
     if (!$fp) return false;
     if (!flock($fp, LOCK_EX)) { fclose($fp); return false; }
@@ -152,15 +146,18 @@ function verify_player_client($player_id, $client_token) {
     $rows = [];
     rewind($fp);
     $header = fgetcsv($fp);
-    while (($row = fgetcsv($fp)) !== false) {
-        if (count($row) < 4) continue;
-        $rows[] = [
-            'player_id' => $row[0] ?? '',
-            'client_hash' => $row[1] ?? '',
-            'created_at' => $row[2] ?? '',
-            'last_login_at' => $row[3] ?? '',
-        ];
+    if (is_array($header)) {
+        while (($row = fgetcsv($fp)) !== false) {
+            if (count($row) < 4) continue;
+            $rows[] = [
+                'player_id'    => $row[0] ?? '',
+                'client_hash'  => $row[1] ?? '',
+                'created_at'   => $row[2] ?? '',
+                'last_login_at'=> $row[3] ?? '',
+            ];
+        }
     }
+    // else: 新規ファイルまたは空ファイル → rows = [] のまま続行
 
     $found = false;
     $ok = false;
