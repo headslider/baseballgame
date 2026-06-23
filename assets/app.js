@@ -56,7 +56,7 @@ const QUIZ_MASTER_CHECKPOINT_LEVEL=14;
 const QUIZ_MASTER_CHALLENGE_START_LEVEL=15;
 const QUIZ_MASTER_CHALLENGE_MULTIPLIER_STEP=.2;
 const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13,11:13,12:13,13:13,14:13,15:13,16:13,17:13,18:13,19:13,20:13};
-const QUIZ_MASTER_TITLE_AWARD_ALWAYS_FOR_TEST=true;
+const QUIZ_MASTER_TITLE_AWARD_ALWAYS_FOR_TEST=false;
 const QUIZ_MASTER_TITLE_DEFAULTS=[
   {level:1,title:"ボールボーイ",point:0},{level:2,title:"バットボーイ",point:10000},{level:3,title:"ベンチ入り",point:40000},{level:4,title:"代打の切り札",point:130000},{level:5,title:"スタメン",point:290000},
   {level:6,title:"クリーンアップ",point:500000},{level:7,title:"四番打者",point:770000},{level:8,title:"エース",point:1110000},{level:9,title:"キャプテン",point:1510000},{level:10,title:"ベストナイン",point:1970000},
@@ -1483,7 +1483,7 @@ async function init(){
   $("myPageBackBtn").addEventListener("click",()=>show("screen-title"));
   $("rankingBackBtn").addEventListener("click",()=>show("screen-title"));
   const quizMasterExitBtn=$("quizMasterExitBtn");if(quizMasterExitBtn)quizMasterExitBtn.addEventListener("click",()=>show("screen-quiz-master-menu"));
-  const quizMasterResultBackBtn=$("quizMasterResultBackBtn");if(quizMasterResultBackBtn)quizMasterResultBackBtn.addEventListener("click",()=>show("screen-title"));
+  const quizMasterResultBackBtn=$("quizMasterResultBackBtn");if(quizMasterResultBackBtn)quizMasterResultBackBtn.addEventListener("click",openQuizMasterMenu);
   const quizMasterRetryBtn=$("quizMasterRetryBtn");if(quizMasterRetryBtn)quizMasterRetryBtn.addEventListener("click",startQuizMaster);
   const quizMasterRankingBackBtn=$("quizMasterRankingBackBtn");if(quizMasterRankingBackBtn)quizMasterRankingBackBtn.addEventListener("click",()=>show("screen-quiz-master-menu"));
   const quizMasterRankingPlayBtn=$("quizMasterRankingPlayBtn");if(quizMasterRankingPlayBtn)quizMasterRankingPlayBtn.addEventListener("click",startQuizMaster);
