@@ -8353,13 +8353,31 @@ img.qtb-badge-icon{
 }
 .quiz-master-ranking li{
   display:grid;
-  grid-template-columns:30px 110px auto 1fr;
-  gap:10px;
+  grid-template-columns:34px 110px 1fr;
+  grid-template-rows:auto auto;
+  column-gap:12px;
+  row-gap:3px;
   align-items:center;
   padding:9px 12px;
   border-radius:10px;
   background:linear-gradient(180deg,rgba(3,23,54,.92),rgba(0,9,28,.92));
   border:1px solid rgba(125,207,255,.52);
+}
+.quiz-master-ranking li > span{
+  grid-column:1;
+  grid-row:1 / span 2;
+}
+.quiz-master-ranking li > .qm-level-icon{
+  grid-column:2;
+  grid-row:1 / span 2;
+}
+.quiz-master-ranking li > .rank-name{
+  grid-column:3;
+  grid-row:1;
+}
+.quiz-master-ranking li > .rank-plays{
+  grid-column:3;
+  grid-row:2;
 }
 .quiz-master-ranking li.me{
   border-color:#ffe26a;
@@ -8385,9 +8403,9 @@ img.qtb-badge-icon{
   color:#cfe6ff;
   white-space:nowrap;
 }
-.rank-plays{display:flex;flex-direction:column;gap:2px;text-align:center;}
+.rank-plays{display:flex;flex-direction:column;gap:2px;text-align:left;}
 .rank-plays small{display:block;font-size:.85em;}
-.rank-name{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.rank-name{display:flex;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:4px 12px;min-width:0;}
 .rank-name b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .rank-name em{white-space:nowrap;flex-shrink:0;}
 .quiz-master-recent-title{
@@ -8429,7 +8447,7 @@ img.qtb-badge-icon{
 #screen-quiz-master-result .quiz-master-ranking li,
 #screen-quiz-master-ranking .quiz-master-ranking li{
   padding:7px 10px;
-  grid-template-columns:30px 130px auto 1fr;
+  grid-template-columns:34px 130px 1fr;
 }
 #screen-quiz-master-result .quiz-master-ranking-summary{
   margin:8px 0;
@@ -8607,12 +8625,8 @@ body.quiz-master-failed .quiz-master-shell{
     grid-template-columns:1fr;
   }
   .quiz-master-ranking li{
-    grid-template-columns:26px 88px;
-    gap:6px;
-  }
-  .quiz-master-ranking .rank-plays,
-  .quiz-master-ranking .rank-name{
-    grid-column:1 / -1;
+    grid-template-columns:26px 88px 1fr;
+    column-gap:8px;
   }
   .quiz-master-recent-list li{
     grid-template-columns:26px 88px 1fr;
