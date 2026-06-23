@@ -2420,7 +2420,7 @@ if ($action === 'quiz_master_titles_save') {
     ];
     $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | $JSON_INVALID_UTF8_SUBSTITUTE_FLAG);
     if ($json === false || !write_text_file_locked_admin(quiz_master_titles_file(), $json . "\n")) {
-        admin_json(500, ['ok'=>false,'message'=>'野球博士称号データを保存できませんでした。']);
+        admin_json(500, ['ok'=>false,'message'=>'野球博士ランクデータを保存できませんでした。']);
     }
     audit_log_admin_event([
         'admin_label'=>$admin_label,
@@ -2430,7 +2430,7 @@ if ($action === 'quiz_master_titles_save') {
         'target_hash_prefix'=>'titles',
         'message'=>'saved ' . count($titles) . ' titles'
     ]);
-    admin_json(200, ['ok'=>true,'message'=>'野球博士称号を保存しました。','titles'=>$titles]);
+    admin_json(200, ['ok'=>true,'message'=>'野球博士ランクを保存しました。','titles'=>$titles]);
 }
 
 if ($action === 'question_options') {

@@ -857,15 +857,15 @@
       <section id="quizMasterTitleManageCard" class="card">
         <div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px">
           <div>
-            <h2 style="margin:0 0 4px">野球博士チャレンジ称号</h2>
-            <div class="muted">総合点に応じてマイページ・ランキング・ゲーム終了後演出に表示する称号を管理します。</div>
+            <h2 style="margin:0 0 4px">野球博士チャレンジランク</h2>
+            <div class="muted">総合点に応じてマイページ・ランキング・ゲーム終了後演出に表示するランクを管理します。</div>
           </div>
-          <button class="secondary small" type="button" onclick="loadQuizMasterTitlesAdmin()">称号を再読み込み</button>
+          <button class="secondary small" type="button" onclick="loadQuizMasterTitlesAdmin()">ランクを再読み込み</button>
         </div>
-        <div id="quizMasterTitleTable" class="table-wrap" style="margin-top:10px"><p class="muted">称号を読み込み中です。</p></div>
+        <div id="quizMasterTitleTable" class="table-wrap" style="margin-top:10px"><p class="muted">ランクを読み込み中です。</p></div>
         <div class="notice-actions">
-          <button type="button" onclick="addQuizMasterTitleRow()">称号を追加</button>
-          <button class="primary" type="button" onclick="saveQuizMasterTitlesAdmin()">称号を保存</button>
+          <button type="button" onclick="addQuizMasterTitleRow()">ランクを追加</button>
+          <button class="primary" type="button" onclick="saveQuizMasterTitlesAdmin()">ランクを保存</button>
         </div>
         <div id="quizMasterTitleMessage" class="msg"></div>
       </section>
@@ -1855,8 +1855,8 @@ function renderQuizMasterTitlesAdmin(){
   const box=$("quizMasterTitleTable");
   if(!box)return;
   const rows=Array.isArray(latestQuizMasterTitles)?latestQuizMasterTitles:[];
-  box.innerHTML=`<table><thead><tr><th>称号</th><th>必要総合点</th><th>操作</th></tr></thead><tbody>`+
-    rows.map((r,i)=>`<tr data-quiz-title-row="${i}"><td><input data-quiz-title-name="${i}" value="${esc(r.title||"")}" placeholder="称号名"></td><td><input data-quiz-title-point="${i}" type="number" min="0" step="1" value="${esc(r.point||0)}"></td><td><button class="small danger" type="button" onclick="removeQuizMasterTitleRow(${i})">削除</button></td></tr>`).join("")+
+  box.innerHTML=`<table><thead><tr><th>ランク</th><th>必要総合点</th><th>操作</th></tr></thead><tbody>`+
+    rows.map((r,i)=>`<tr data-quiz-title-row="${i}"><td><input data-quiz-title-name="${i}" value="${esc(r.title||"")}" placeholder="ランク名"></td><td><input data-quiz-title-point="${i}" type="number" min="0" step="1" value="${esc(r.point||0)}"></td><td><button class="small danger" type="button" onclick="removeQuizMasterTitleRow(${i})">削除</button></td></tr>`).join("")+
     `</tbody></table>`;
 }
 async function loadQuizMasterTitlesAdmin(){
@@ -1884,7 +1884,7 @@ function collectQuizMasterTitlesAdmin(){
 }
 function addQuizMasterTitleRow(){
   latestQuizMasterTitles=collectQuizMasterTitlesAdmin();
-  latestQuizMasterTitles.push({title:"新しい称号",point:0});
+  latestQuizMasterTitles.push({title:"新しいランク",point:0});
   renderQuizMasterTitlesAdmin();
 }
 function removeQuizMasterTitleRow(index){
@@ -1895,8 +1895,8 @@ async function saveQuizMasterTitlesAdmin(){
   const msg=$("quizMasterTitleMessage");
   try{
     const titles=collectQuizMasterTitlesAdmin();
-    if(!titles.length)throw new Error("称号を1件以上入力してください。");
-    if(titles[0].point!==0)throw new Error("最初の称号は0点からにしてください。");
+    if(!titles.length)throw new Error("ランクを1件以上入力してください。");
+    if(titles[0].point!==0)throw new Error("最初のランクは0点からにしてください。");
     if(msg)msg.textContent="保存中...";
     const data=await call("quiz_master_titles_save",{titles});
     latestQuizMasterTitles=data.titles||titles;
