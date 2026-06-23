@@ -9587,15 +9587,37 @@ body.quiz-master-failed .quiz-master-shell{
   }
 }
 /* ===== Quiz Master メニュー ===== */
+#screen-quiz-master-menu{
+  background:radial-gradient(circle at 52% 0%,rgba(255,44,174,.12),transparent 34%),radial-gradient(circle at 50% 100%,rgba(0,120,255,.16),transparent 42%),#030711;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+#screen-quiz-master-menu .quiz-master-result-card{
+  max-width:600px;
+  width:100%;
+}
 .quiz-master-menu-buttons{
   display:flex;
   flex-direction:column;
-  gap:12px;
-  margin:20px 0;
+  gap:16px;
+  margin:24px 0;
 }
 .quiz-master-menu-buttons button{
-  min-height:56px;
+  min-height:60px;
   font-weight:1000;
+  font-size:1.1em;
+  background:linear-gradient(180deg,#e74c3c 0%,#c0392b 100%);
+  color:#fff;
+  border:none;
+  border-radius:16px;
+  box-shadow:0 4px 12px rgba(231,76,60,.3),inset 0 1px 0 rgba(255,255,255,.2);
+  transition:all 200ms ease;
+}
+.quiz-master-menu-buttons button:active{
+  transform:translateY(2px);
+  box-shadow:0 2px 6px rgba(231,76,60,.3),inset 0 1px 0 rgba(255,255,255,.2);
 }
 /* ===== Quiz Master ランク紹介 ===== */
 .quiz-master-ranks-container{
