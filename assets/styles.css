@@ -8363,11 +8363,15 @@ img.qtb-badge-icon{
 }
 .quiz-master-ranking li.me{
   border-color:#ffe26a;
-  box-shadow:0 0 20px rgba(255,226,106,.24);
+  animation:rankCardGlow 1.8s ease-in-out infinite;
+}
+@keyframes rankCardGlow{
+  0%,100%{box-shadow:0 0 12px rgba(255,226,106,.28);}
+  50%{box-shadow:0 0 28px rgba(255,226,106,.72),inset 0 0 14px rgba(255,226,106,.18);}
 }
 .quiz-master-ranking li > span{
-  text-align:center;
-  justify-self:center;
+  text-align:right;
+  justify-self:end;
 }
 .quiz-master-ranking li span,
 .quiz-master-ranking li em{

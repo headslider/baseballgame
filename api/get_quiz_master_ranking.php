@@ -159,7 +159,7 @@ if ($include_private) {
 
 echo json_encode([
     'ok'            => true,
-    'ranking'       => array_slice($rows, 0, 5),
+    'ranking'       => array_slice($rows, 0, 20),
     'recent'        => [],
     'my_best'       => $my_best,
     'my_total'      => $my_total,

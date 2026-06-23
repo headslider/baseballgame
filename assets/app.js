@@ -2303,13 +2303,22 @@ function renderQuizMasterRanking(box,data,mode="result"){
   const myBest=data&&data.my_best?data.my_best:null;
   const myTotal=data&&data.my_total?data.my_total:null;
   const summary=data&&data.summary?data.summary:{};
-  const topRows=rows.slice(0,5);
+  const topRows=rows.slice(0,20);
   const summaryHtml=mode==="page"?`<div class="quiz-master-ranking-summary"><span>参加者 <b>${escapeHtml(summary.total_players||0)}</b></span><span>プレイ数 <b>${escapeHtml(summary.total_plays||0)}</b></span><span>完全制覇 <b>${escapeHtml(summary.cleared_count||0)}</b></span></div>`:"";
-  const myScore=myTotal?Number(myTotal.total_score||myTotal.score||0):0;
-  const myTitle=myTotal?(myTotal.title_info||quizMasterTitleForScore(myScore,data&&data.titles)):null;
-  const myHtml=myTotal?`<div class="quiz-master-my-best"><span>あなたの総合順位</span><b>${escapeHtml(myTotal.rank)}位 / ${escapeHtml(myScore)} pt</b>${quizMasterLevelIconHtml(myTitle.level,'qm-icon-rank')}${myBest?`<em>最高 ${escapeHtml(myBest.score)} pt / 第${escapeHtml(myBest.reached_level)}問到達</em>`:""}</div>`:"";
-  const rankingHtml=topRows.length?`<ol>${topRows.map(r=>{const score=Number(r.total_score||r.score||0);const title=r.title_info||quizMasterTitleForScore(score,data&&data.titles);return `<li class="${r.player_id===STATE.playerId?"me":""}"><span>${escapeHtml(r.rank)}位</span>${quizMasterLevelIconHtml(title.level,'qm-icon-rank')}<div class="rank-plays"><small>プレイ数 ${escapeHtml(r.plays||0)}回</small><small>完全制覇 ${escapeHtml(r.cleared_count||0)}回</small></div><div class="rank-name"><b>${escapeHtml(r.player_id)}</b><em>${escapeHtml(score)} pt</em></div></li>`}).join("")}</ol>`:'<p>まだランキングはありません。</p>';
-  box.innerHTML=`<div class="quiz-master-ranking-board"><div class="quiz-master-ranking-title">野球博士総合点ランキング TOP5</div>${summaryHtml}${myHtml}${rankingHtml}</div>`;
+  const renderRow=(r,extraClass)=>{
+    const score=Number(r.total_score||r.score||0);
+    const title=r.title_info||quizMasterTitleForScore(score,data&&data.titles);
+    const cls=[(r.player_id===STATE.playerId?"me":""),extraClass||""].filter(Boolean).join(" ");
+    return `<li class="${cls}"><span>${escapeHtml(r.rank)}位</span>${quizMasterLevelIconHtml(title.level,'qm-icon-rank')}<div class="rank-plays"><small>プレイ数 ${escapeHtml(r.plays||0)}回</small><small>完全制覇 ${escapeHtml(r.cleared_count||0)}回</small></div><div class="rank-name"><b>${escapeHtml(r.player_id)}</b><em>${escapeHtml(score)} pt</em></div></li>`;
+  };
+  let listItems=topRows.map(r=>renderRow(r)).join("");
+  // 自分がトップ20圏外なら、最下部に同じデザインで自分のカードを21個目として追加する。
+  const inTop=!!STATE.playerId&&topRows.some(r=>r.player_id===STATE.playerId);
+  if(!inTop&&myTotal&&STATE.playerId){
+    listItems+=renderRow(myTotal,"rank-outside");
+  }
+  const rankingHtml=listItems?`<ol>${listItems}</ol>`:'<p>まだランキングはありません。</p>';
+  box.innerHTML=`<div class="quiz-master-ranking-board"><div class="quiz-master-ranking-title">野球博士総合点ランキング TOP20</div>${summaryHtml}${rankingHtml}</div>`;
 }
 async function loadQuizMasterRanking(targetId="quizMasterRanking",mode="result"){
   const box=$(targetId);if(!box)return;
