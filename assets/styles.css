@@ -7922,7 +7922,7 @@ body.screen-quiz-master-active{
 .qm-icon-rank{width:100px;height:auto;justify-self:center;}
 /* 結果画面ランキングは大きめに */
 #screen-quiz-master-result .qm-icon-rank,
-#screen-quiz-master-ranking .qm-icon-rank{width:120px !important;height:auto !important;}
+#screen-quiz-master-ranking .qm-icon-rank{width:300px !important;height:200px !important;}
 /* マイページ現在称号アイコン */
 .qm-icon-mypage{width:clamp(140px,26vw,220px);height:auto;margin:4px auto 2px;}
 /* バッジアイコン — オーバーレイ中央に表示 */
