@@ -8152,6 +8152,12 @@ img.qtb-badge-icon{
   flex-direction:column;
   overflow:hidden;
 }
+#screen-quiz-master-ranking{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
 .quiz-master-ranking-page-card{
   max-width:980px;
   max-height:min(860px,calc(100svh - 32px));
