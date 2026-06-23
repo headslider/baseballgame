@@ -8670,6 +8670,18 @@ body.quiz-master-failed .quiz-master-shell{
   .qm-icon-rank{width:120px !important;}
   #screen-quiz-master-ranking .qm-icon-rank,
   #screen-quiz-master-result .qm-icon-rank{width:120px !important;}
+  /* ゲーム（出題）画面はスクロールさせず、1画面に収める */
+  #screen-quiz-master.active{
+    height:100svh;
+    min-height:100svh;
+    max-height:100svh;
+    overflow:hidden;
+  }
+  #screen-quiz-master .quiz-master-shell{
+    height:100svh;
+    min-height:100svh;
+    overflow:hidden;
+  }
 }
 
 /* v839: desktop fit fixes for quiz master */
