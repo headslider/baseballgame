@@ -9669,7 +9669,7 @@ body.quiz-master-failed .quiz-master-shell{
 }
 .quiz-master-menu-icon{
   display:block;
-  width:clamp(90px,21%,150px);
+  width:clamp(180px,42%,300px);
   height:auto;
   margin:0 auto 6px;
   object-fit:contain;
