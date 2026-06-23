@@ -7918,10 +7918,10 @@ body.screen-quiz-master-active{
 .qm-level-icon{display:block;object-fit:contain;flex-shrink:0;}
 .qm-icon-sm{width:72px;height:auto;}
 .qm-icon-md{width:104px;height:auto;}
-/* ランキング行アイコン — ピル外に単独表示 */
-.qm-icon-rank{width:80px;height:auto;justify-self:center;}
+/* ランキング行アイコン — 名前の左に単独表示 */
+.qm-icon-rank{width:100px;height:auto;justify-self:center;}
 /* マイページ現在称号アイコン */
-.qm-icon-mypage{width:clamp(120px,22vw,180px);height:auto;margin:4px auto 2px;}
+.qm-icon-mypage{width:clamp(140px,26vw,220px);height:auto;margin:4px auto 2px;}
 /* バッジアイコン — オーバーレイ中央に表示 */
 img.qtb-badge-icon{
   position:absolute;
@@ -8340,7 +8340,7 @@ img.qtb-badge-icon{
 }
 .quiz-master-ranking li{
   display:grid;
-  grid-template-columns:42px minmax(0,1fr) 84px auto auto;
+  grid-template-columns:42px 110px minmax(0,1fr) auto auto;
   gap:10px;
   align-items:center;
   padding:9px 12px;
@@ -8591,10 +8591,10 @@ body.quiz-master-failed .quiz-master-shell{
   }
   .quiz-master-ranking li,
   .quiz-master-recent-list li{
-    grid-template-columns:36px minmax(0,1fr) 72px auto;
+    grid-template-columns:32px 88px minmax(0,1fr) auto;
     gap:6px;
   }
-  .qm-icon-rank{width:68px;}
+  .qm-icon-rank{width:84px;}
   .quiz-master-ranking li small,
   .quiz-master-recent-list small{
     grid-column:2 / -1;
