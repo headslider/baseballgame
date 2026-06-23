@@ -9588,11 +9588,17 @@ body.quiz-master-failed .quiz-master-shell{
 }
 /* ===== Quiz Master メニュー ===== */
 #screen-quiz-master-menu{
-  background:radial-gradient(circle at 52% 0%,rgba(255,44,174,.12),transparent 34%),radial-gradient(circle at 50% 100%,rgba(0,120,255,.16),transparent 42%),#030711;
+  background:
+    radial-gradient(circle at 52% 0%,rgba(255,44,174,.28),transparent 34%),
+    radial-gradient(circle at 50% 100%,rgba(0,120,255,.36),transparent 42%),
+    linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.52)),
+    url("quiz_master_bg.webp") center/cover no-repeat;
+  background-attachment:fixed;
   display:flex;
   align-items:center;
   justify-content:center;
   padding:20px;
+  min-height:100vh;
 }
 #screen-quiz-master-menu .quiz-master-result-card{
   max-width:600px;
