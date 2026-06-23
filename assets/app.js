@@ -2333,12 +2333,15 @@ async function renderQuizMasterRanks(){
     const myTitle=STATE.loggedIn?quizMasterTitleForScore(myScore,titles):null;
     const box=$("quizMasterRanksContainer");
     if(!box)return;
+    const rankUserCounts=data&&data.rank_user_counts?data.rank_user_counts:{};
     const ranksHtml=titles.map((title,idx)=>{
       const isCurrentRank=STATE.loggedIn&&myTitle&&myTitle.level===title.level;
-      return `<div class="rank-item${isCurrentRank?' current-rank':''}"><div class="rank-icon-wrapper">${quizMasterLevelIconHtml(title.level,'rank-icon')}</div><div class="rank-details"><div class="rank-name">${escapeHtml(title.title)}</div><div class="rank-points">必要点数: ${escapeHtml(title.point)} pt</div><div class="rank-users">到達人数: ${escapeHtml(data&&data.rank_user_counts&&data.rank_user_counts[title.level]||0)}人</div></div></div>`;
+      const userCount=rankUserCounts[title.level]||rankUserCounts[idx+1]||0;
+      return `<div class="rank-item${isCurrentRank?' current-rank':''}"><div class="rank-icon-wrapper">${quizMasterLevelIconHtml(title.level,'rank-icon')}</div><div class="rank-details"><div class="rank-name">${escapeHtml(title.title)}</div><div class="rank-points">必要点数: ${escapeHtml(title.point)} pt</div><div class="rank-users">到達人数: ${escapeHtml(userCount)}人</div></div></div>`;
     }).join("");
     box.innerHTML=`<div class="ranks-grid">${ranksHtml}</div>`;
   }catch(e){
+    console.error("ランク情報の読み込みエラー:",e);
     const box=$("quizMasterRanksContainer");
     if(box)box.innerHTML='<p>ランク情報を読み込めませんでした。</p>';
   }
