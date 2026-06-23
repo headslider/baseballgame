@@ -7914,13 +7914,18 @@ body.screen-quiz-master-active{
   90%{opacity:1}
   100%{transform:translateX(110vw);opacity:0}
 }
-/* バッジアイコン — カードの代わりに表示 */
-.qtb-badge-icon{
+/* レベルアイコン 共通 */
+.qm-level-icon{display:inline-block;object-fit:contain;vertical-align:middle;flex-shrink:0;}
+.qm-icon-sm{width:36px;height:auto;}
+.qm-icon-md{width:52px;height:auto;}
+/* バッジアイコン — オーバーレイ中央に表示 */
+img.qtb-badge-icon{
   position:absolute;
   top:58%;
   left:50%;
   transform:translate(-50%,-50%);
-  border-radius:12px;
+  width:clamp(160px,32vw,280px);
+  height:auto;
   filter:drop-shadow(0 0 28px rgba(255,200,50,.7)) drop-shadow(0 0 70px rgba(80,40,200,.4));
   animation:qtbBadgeReveal 3.5s ease both;
   animation-delay:1s;
@@ -8351,7 +8356,7 @@ body.screen-quiz-master-active{
   width:max-content;
   max-width:100%;
   min-height:30px;
-  padding:4px 8px 4px 4px;
+  padding:3px 8px 3px 3px;
   border-radius:8px;
   border:1px solid rgba(255,226,106,.95);
   background:linear-gradient(180deg,#fff7b8 0%,#ffe16a 48%,#d59a00 100%);
