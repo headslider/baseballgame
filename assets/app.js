@@ -1470,7 +1470,7 @@ async function init(){
   const adminIssueExternalBtn=$("adminIssueExternalBtn");if(adminIssueExternalBtn)adminIssueExternalBtn.addEventListener("click",handleIssueExternalButtonClick);
   $("myPageBtn").addEventListener("click",()=>{closeTopMenu();openMyPage()});
   $("rankingBtn").addEventListener("click",openRanking);
-  const quizMasterBtn=$("quizMasterBtn");if(quizMasterBtn)quizMasterBtn.addEventListener("click",()=>{closeTopMenu();startQuizMaster()});
+  const quizMasterBtn=$("quizMasterBtn");if(quizMasterBtn)quizMasterBtn.addEventListener("click",()=>{closeTopMenu();openQuizMasterMenu()});
   const quizMasterRankingBtn=$("quizMasterRankingBtn");if(quizMasterRankingBtn)quizMasterRankingBtn.addEventListener("click",()=>{closeTopMenu();openQuizMasterRanking()});
   const noticesMenuBtn=$("noticesMenuBtn");if(noticesMenuBtn)noticesMenuBtn.addEventListener("click",openNotices);
   $("logoutBtn").addEventListener("click",()=>{closeTopMenu();logoutPlayer()});
@@ -1481,6 +1481,11 @@ async function init(){
   const quizMasterRetryBtn=$("quizMasterRetryBtn");if(quizMasterRetryBtn)quizMasterRetryBtn.addEventListener("click",startQuizMaster);
   const quizMasterRankingBackBtn=$("quizMasterRankingBackBtn");if(quizMasterRankingBackBtn)quizMasterRankingBackBtn.addEventListener("click",()=>show("screen-title"));
   const quizMasterRankingPlayBtn=$("quizMasterRankingPlayBtn");if(quizMasterRankingPlayBtn)quizMasterRankingPlayBtn.addEventListener("click",startQuizMaster);
+  const quizMasterMenuStartBtn=$("quizMasterMenuStartBtn");if(quizMasterMenuStartBtn)quizMasterMenuStartBtn.addEventListener("click",startQuizMaster);
+  const quizMasterMenuRankingBtn=$("quizMasterMenuRankingBtn");if(quizMasterMenuRankingBtn)quizMasterMenuRankingBtn.addEventListener("click",openQuizMasterRanking);
+  const quizMasterMenuRanksBtn=$("quizMasterMenuRanksBtn");if(quizMasterMenuRanksBtn)quizMasterMenuRanksBtn.addEventListener("click",showQuizMasterRanks);
+  const quizMasterMenuBackBtn=$("quizMasterMenuBackBtn");if(quizMasterMenuBackBtn)quizMasterMenuBackBtn.addEventListener("click",()=>show("screen-title"));
+  const quizMasterRanksBackBtn=$("quizMasterRanksBackBtn");if(quizMasterRanksBackBtn)quizMasterRanksBackBtn.addEventListener("click",openQuizMasterMenu);
   const quizMasterFiftyBtn=$("quizMasterFiftyBtn");if(quizMasterFiftyBtn)quizMasterFiftyBtn.addEventListener("click",useQuizMasterFifty);
   const noticesBackBtn=$("noticesBackBtn");if(noticesBackBtn)noticesBackBtn.addEventListener("click",()=>show("screen-title"));
   $("resultMyPageBtn").addEventListener("click",openMyPage);
@@ -2312,6 +2317,31 @@ async function loadQuizMasterRanking(targetId="quizMasterRanking",mode="result")
 async function openQuizMasterRanking(){
   show("screen-quiz-master-ranking");
   await loadQuizMasterRanking("quizMasterRankingPage","page");
+}
+function openQuizMasterMenu(){
+  show("screen-quiz-master-menu");
+}
+async function showQuizMasterRanks(){
+  show("screen-quiz-master-ranks");
+  await renderQuizMasterRanks();
+}
+async function renderQuizMasterRanks(){
+  try{
+    const data=await fetchQuizMasterRanking();
+    const titles=normalizeQuizMasterTitles(data&&data.titles?data.titles:QUIZ_MASTER_STATE.titles);
+    const myScore=STATE.loggedIn?Number((STATE.quizMasterTotal||{}).total_score||0):0;
+    const myTitle=STATE.loggedIn?quizMasterTitleForScore(myScore,titles):null;
+    const box=$("quizMasterRanksContainer");
+    if(!box)return;
+    const ranksHtml=titles.map((title,idx)=>{
+      const isCurrentRank=STATE.loggedIn&&myTitle&&myTitle.level===title.level;
+      return `<div class="rank-item${isCurrentRank?' current-rank':''}"><div class="rank-icon-wrapper">${quizMasterLevelIconHtml(title.level,'rank-icon')}</div><div class="rank-details"><div class="rank-name">${escapeHtml(title.title)}</div><div class="rank-points">必要点数: ${escapeHtml(title.point)} pt</div><div class="rank-users">到達人数: ${escapeHtml(data&&data.rank_user_counts&&data.rank_user_counts[title.level]||0)}人</div></div></div>`;
+    }).join("");
+    box.innerHTML=`<div class="ranks-grid">${ranksHtml}</div>`;
+  }catch(e){
+    const box=$("quizMasterRanksContainer");
+    if(box)box.innerHTML='<p>ランク情報を読み込めませんでした。</p>';
+  }
 }
 
 function normalizeSimilarText(v){

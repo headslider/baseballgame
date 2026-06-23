@@ -9586,3 +9586,84 @@ body.quiz-master-failed .quiz-master-shell{
     width:calc(100vw - 16px) !important;
   }
 }
+/* ===== Quiz Master メニュー ===== */
+.quiz-master-menu-buttons{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin:20px 0;
+}
+.quiz-master-menu-buttons button{
+  min-height:56px;
+  font-weight:1000;
+}
+/* ===== Quiz Master ランク紹介 ===== */
+.quiz-master-ranks-container{
+  margin:20px 0;
+}
+.ranks-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+.rank-item{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:12px;
+  align-items:center;
+  padding:12px;
+  border-radius:10px;
+  background:rgba(0,19,47,.6);
+  border:1px solid rgba(125,207,255,.3);
+}
+.rank-item.current-rank{
+  border-color:rgba(255,226,106,.78);
+  background:rgba(25,50,100,.8);
+  box-shadow:0 0 16px rgba(255,226,106,.24),inset 0 0 12px rgba(0,126,255,.15);
+}
+.rank-icon-wrapper{
+  position:relative;
+  width:90px;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.rank-item.current-rank .rank-icon-wrapper{
+  animation:rankIconGlow 1.8s ease-in-out infinite;
+}
+.rank-icon{
+  width:90px;
+  height:60px;
+  object-fit:contain;
+}
+.rank-details{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.rank-name{
+  font-size:1.1em;
+  font-weight:1000;
+  color:#ffe26a;
+}
+.rank-points,.rank-users{
+  font-size:.9em;
+  color:#cfe6ff;
+}
+@keyframes rankIconGlow{
+  0%,100%{filter:drop-shadow(0 0 0 rgba(255,226,106,0));}
+  50%{filter:drop-shadow(0 0 12px rgba(255,226,106,.6));}
+}
+@media(max-width:760px){
+  .ranks-grid{
+    grid-template-columns:1fr;
+  }
+  .rank-item{
+    grid-template-columns:auto 1fr;
+    gap:10px;
+  }
+  .quiz-master-ranking-summary{
+    grid-template-columns:repeat(3,1fr) !important;
+  }
+}
