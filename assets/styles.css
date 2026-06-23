@@ -7499,6 +7499,7 @@ body.screen-quiz-master-active{
   color:#fff;
   min-height:100vh;
   min-height:100lvh;
+  overscroll-behavior:none;
 }
 /* html要素の青背景がsvh超過領域で覗くのを防ぐ（:has対応ブラウザ） */
 html:has(body.screen-quiz-master-active){
@@ -8676,17 +8677,27 @@ body.quiz-master-failed .quiz-master-shell{
   .qm-icon-rank{width:120px !important;}
   #screen-quiz-master-ranking .qm-icon-rank,
   #screen-quiz-master-result .qm-icon-rank{width:120px !important;}
-  /* ゲーム（出題）画面はスクロールさせず、1画面に収める */
+  /* ゲーム（出題）画面はスクロールさせず、1画面に固定する。
+     タップ/ドラッグで画面が上下に動かないよう position:fixed で固定し、
+     オーバースクロール（バウンス）も無効化する。 */
   #screen-quiz-master.active{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
     height:100svh;
     min-height:100svh;
     max-height:100svh;
     overflow:hidden;
+    overscroll-behavior:none;
+    touch-action:manipulation;
   }
   #screen-quiz-master .quiz-master-shell{
-    height:100svh;
-    min-height:100svh;
+    height:100%;
+    min-height:0;
     overflow:hidden;
+    overscroll-behavior:none;
   }
 }
 
