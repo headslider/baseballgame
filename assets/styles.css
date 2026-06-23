@@ -8152,7 +8152,7 @@ img.qtb-badge-icon{
   flex-direction:column;
   overflow:hidden;
 }
-#screen-quiz-master-ranking{
+#screen-quiz-master-ranking.active{
   display:flex;
   align-items:center;
   justify-content:center;
