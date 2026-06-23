@@ -7920,6 +7920,9 @@ body.screen-quiz-master-active{
 .qm-icon-md{width:104px;height:auto;}
 /* ランキング行アイコン — 名前の左に単独表示 */
 .qm-icon-rank{width:100px;height:auto;justify-self:center;}
+/* 結果画面ランキングは大きめに */
+#screen-quiz-master-result .qm-icon-rank,
+#screen-quiz-master-ranking .qm-icon-rank{width:120px !important;height:auto !important;}
 /* マイページ現在称号アイコン */
 .qm-icon-mypage{width:clamp(140px,26vw,220px);height:auto;margin:4px auto 2px;}
 /* バッジアイコン — オーバーレイ中央に表示 */
@@ -8414,8 +8417,10 @@ img.qtb-badge-icon{
 #screen-quiz-master-result .quiz-master-ranking ol{
   margin-top:8px;
 }
-#screen-quiz-master-result .quiz-master-ranking li{
+#screen-quiz-master-result .quiz-master-ranking li,
+#screen-quiz-master-ranking .quiz-master-ranking li{
   padding:7px 10px;
+  grid-template-columns:36px 130px minmax(0,1fr) auto auto;
 }
 #screen-quiz-master-result .quiz-master-ranking-summary{
   margin:8px 0;

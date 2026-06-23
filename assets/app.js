@@ -1793,7 +1793,7 @@ function quizMasterLevelIconUrl(level){
   return `assets/quiz_icon/${lv}.png`;
 }
 function quizMasterLevelIconHtml(level,cssClass){
-  return `<img src="${quizMasterLevelIconUrl(level)}" class="qm-level-icon${cssClass?' '+cssClass:''}" alt="" loading="lazy">`;
+  return `<img src="${quizMasterLevelIconUrl(level)}" class="qm-level-icon${cssClass?' '+cssClass:''}" alt="" loading="eager">`;
 }
 async function loadQuizMasterTitles(){
   if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
