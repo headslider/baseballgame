@@ -2270,7 +2270,7 @@ async function showQuizMasterTitleAwards(saveResult){
     el.innerHTML=
       `<div class="qtb-backdrop"></div>`+
       `<div class="qtb-rays"></div>`+
-      `<div class="qtb-kicker-wrap"><span class="qtb-kicker">新しいランクを獲得!</span></div>`+
+      `<div class="qtb-kicker-wrap"><span class="qtb-kicker">新しい野球博士ランクを獲得!</span></div>`+
       `${quizMasterLevelIconHtml(row.level,'qtb-badge-icon')}`;
     el.classList.remove("show");
     void el.offsetWidth;
