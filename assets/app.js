@@ -2247,13 +2247,22 @@ async function showQuizMasterTitleAwards(saveResult){
   const el=$("quizMasterTitleBurst");
   if(!el)return;
   for(const row of newly){
-    el.innerHTML=`<span>称号獲得</span><strong>${escapeHtml(row.title)}</strong>`;
+    el.innerHTML=
+      `<div class="qtb-backdrop"></div>`+
+      `<div class="qtb-rays"></div>`+
+      `<div class="qtb-kicker-wrap"><span class="qtb-kicker">称号獲得</span></div>`+
+      `<div class="qtb-card">`+
+        `<div class="qtb-card-corners"></div>`+
+        `<div class="qtb-deco qtb-deco--top"><div class="qtb-deco-line"></div><div class="qtb-deco-diamond"></div><div class="qtb-deco-line"></div></div>`+
+        `<strong class="qtb-card-title">${escapeHtml(row.title)}</strong>`+
+        `<div class="qtb-deco qtb-deco--bottom"><div class="qtb-deco-line"></div><div class="qtb-deco-diamond"></div><div class="qtb-deco-line"></div></div>`+
+      `</div>`;
     el.classList.remove("show");
     void el.offsetWidth;
     el.classList.add("show");
-    await wait(2700);
+    await wait(3500);
     el.classList.remove("show");
-    await wait(180);
+    await wait(250);
   }
 }
 async function fetchQuizMasterRanking(){
