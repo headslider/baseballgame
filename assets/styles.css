@@ -7897,7 +7897,7 @@ body.screen-quiz-master-active{
   width:100%;
   text-align:center;
   color:#fff;
-  font-size:clamp(15px,2.6vw,42px);
+  font-size:clamp(19px,2.6vw,46px);
   font-weight:900;
   letter-spacing:.32em;
   padding:clamp(6px,.9vw,13px) 0;
