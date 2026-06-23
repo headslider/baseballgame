@@ -7495,7 +7495,7 @@ body.screen-game-active #screen-title .stadium-bg{
   text-shadow:0 2px 2px rgba(0,0,0,.45);
 }
 body.screen-quiz-master-active{
-  background:#030711;
+  background:#030711 !important;
   color:#fff;
 }
 .quiz-master-screen{
