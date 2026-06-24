@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>少年野球シミュレーター「野球やろうぜ！」</title><link rel="stylesheet" href="assets/styles.css?v=975">  <script>(function(){try{var p=new URLSearchParams(location.search||"");var issue=(p.get("issue")||p.get("id_issue")||"").toLowerCase();var invite=p.get("invite_key")||p.get("inviteIssueKey")||p.get("issue_invite")||"";var admin=p.get("admin_key")||p.get("adminIssueKey")||p.get("issue_admin")||"";function ck(n,v){try{document.cookie=encodeURIComponent(n)+"="+encodeURIComponent(v||"")+"; Max-Age="+(90*24*60*60)+"; Path=/; SameSite=Lax"+(location.protocol==="https:"?"; Secure":"");}catch(e){}}function ls(n,v){try{localStorage.setItem(n,v||"");}catch(e){}}var href="manifest.webmanifest";if(((issue==="admin")&&admin)||(!issue&&admin)){ck("baseballPendingAdminIssueUrl",admin);ck("baseballPendingIssueType","admin");ls("baseballPendingAdminIssueUrl",admin);ls("baseballPendingIssueType","admin");href="api/issue_manifest.php?openExternalBrowser=1&issue=admin&admin_key="+encodeURIComponent(admin);}else if(((issue==="invite")&&invite)||(!issue&&invite)){ck("baseballPendingInviteIssueUrl",invite);ck("baseballPendingIssueType","invite");ls("baseballPendingInviteIssueUrl",invite);ls("baseballPendingIssueType","invite");href="api/issue_manifest.php?openExternalBrowser=1&issue=invite&invite_key="+encodeURIComponent(invite);}document.write('<link rel="manifest" href="'+href.replace(/"/g,"%22")+'">');}catch(e){document.write('<link rel="manifest" href="manifest.webmanifest">');}})();</script>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>少年野球シミュレーター「野球やろうぜ！」</title><link rel="stylesheet" href="assets/styles.css?v=976">  <script>(function(){try{var p=new URLSearchParams(location.search||"");var issue=(p.get("issue")||p.get("id_issue")||"").toLowerCase();var invite=p.get("invite_key")||p.get("inviteIssueKey")||p.get("issue_invite")||"";var admin=p.get("admin_key")||p.get("adminIssueKey")||p.get("issue_admin")||"";function ck(n,v){try{document.cookie=encodeURIComponent(n)+"="+encodeURIComponent(v||"")+"; Max-Age="+(90*24*60*60)+"; Path=/; SameSite=Lax"+(location.protocol==="https:"?"; Secure":"");}catch(e){}}function ls(n,v){try{localStorage.setItem(n,v||"");}catch(e){}}var href="manifest.webmanifest";if(((issue==="admin")&&admin)||(!issue&&admin)){ck("baseballPendingAdminIssueUrl",admin);ck("baseballPendingIssueType","admin");ls("baseballPendingAdminIssueUrl",admin);ls("baseballPendingIssueType","admin");href="api/issue_manifest.php?openExternalBrowser=1&issue=admin&admin_key="+encodeURIComponent(admin);}else if(((issue==="invite")&&invite)||(!issue&&invite)){ck("baseballPendingInviteIssueUrl",invite);ck("baseballPendingIssueType","invite");ls("baseballPendingInviteIssueUrl",invite);ls("baseballPendingIssueType","invite");href="api/issue_manifest.php?openExternalBrowser=1&issue=invite&invite_key="+encodeURIComponent(invite);}document.write('<link rel="manifest" href="'+href.replace(/"/g,"%22")+'">');}catch(e){document.write('<link rel="manifest" href="manifest.webmanifest">');}})();</script>
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
   <meta name="theme-color" content="#0046b8">
   <meta name="app-version" content="v905-production">
@@ -242,14 +242,22 @@
         <div class="quiz-master-howto-layout">
           <figure class="quiz-master-howto-shot"><img src="assets/howto/quiz_master_howto.webp" alt="野球博士チャレンジのクイズ画面"></figure>
           <div class="quiz-master-howto-body">
-            <p>トップ画面の「野球博士チャレンジ」からメニュー（ゲームスタート／ランキング／野球博士ランク一覧）を開いて遊ぶ、野球知識クイズです。守備・走塁判断ではなく、用具、安全、少年野球ルール、施設知識、プロ野球・野球史などを学びます。</p>
+            <p><b>野球博士チャレンジとは？</b></p>
+            <p>野球のことを楽しく学べる、全20問のクイズゲームです。</p>
+            <p>守備や走塁の判断ではなく、野球のルール、道具、安全、球場、プロ野球、野球の歴史などの問題に挑戦します。</p>
+            <p>メニューでは、次のことができます。</p>
             <ul class="lp-list">
-              <li><b>全20問</b>のクイズに挑戦します。<b>制限時間あり</b>で、残り10秒から中央にカウントダウンが表示されます。</li>
-              <li><b>50:50</b>は1ゲームに1回だけ、間違いの選択肢を1つ消せます。</li>
-              <li><b>第15問以降</b>は高得点チャレンジです。正解するたびに加算率が上がり、失敗すると獲得点数は0点になります。</li>
+              <li>ゲームスタート</li>
+              <li>ランキングを見る</li>
+              <li>野球博士ランク一覧を見る</li>
             </ul>
+            <div class="qm-howto-subhead">ゲームのルール</div>
+            <p>問題には制限時間があります。残り10秒になると、画面の真ん中にカウントダウンが出ます。</p>
+            <p>「50:50」は、1回のゲームで1回だけ使えます。間違っている答えを1つ消して、答えやすくできます。</p>
+            <p>15問目からは高得点チャレンジです。正解を続けるほど、もらえる点数が増えます。ただし、1問でも間違えると、そのゲームで取った点数は0点になります。</p>
             <div class="qm-howto-subhead"><img class="qm-howto-mini-icon" src="assets/quiz_master_icon.webp" alt="">野球博士ランク</div>
-            <p>累計ポイントに応じて、<b>ボールボーイ</b>から<b>野球殿堂</b>まで全20段階のランクが上がります。新しいランクに到達すると結果画面で獲得アニメーションが表示され、「野球博士ランク一覧」で全ランクと必要点数を確認できます。</p>
+            <p>クイズでためた合計ポイントが増えると、野球博士ランクが上がります。</p>
+            <p>ランクは「ボールボーイ」から「野球殿堂」まで、全部で20段階あります。新しいランクになると、結果画面でお祝いのアニメーションが見られます。</p>
             <div class="qm-howto-rank-icons">
               <img src="assets/quiz_icon/1.png" alt="ボールボーイ">
               <span aria-hidden="true">›</span>
@@ -257,8 +265,10 @@
               <span aria-hidden="true">›</span>
               <img src="assets/quiz_icon/20.png" alt="野球殿堂">
             </div>
+            <p>必要なポイントや、全部のランクは「野球博士ランク一覧」で確認できます。</p>
             <div class="qm-howto-subhead">ランキング</div>
-            <p>機能が解放されたプレイヤーIDで遊ぶと、総合点が<b>ランキングTOP20</b>とマイページに反映されます。自分の順位はカードが光って表示され、20位圏外のときは一番下に自分の成績が表示されます。</p>
+            <p>ランキング機能が使えるプレイヤーIDで遊ぶと、取った点数がランキングとマイページに反映されます。</p>
+            <p>総合ランキングは20位まで表示されます。自分の順位は光って表示され、20位に入っていないときも、画面の一番下で自分の成績を確認できます。</p>
           </div>
         </div>
       </div>
@@ -523,9 +533,9 @@
 <div id="timeProgressWrap" class="time-progress-wrap" aria-live="polite">
   <div class="time-progress-track"><div id="timeProgressBar" class="time-progress-bar"></div></div>
   <div id="timeProgressLabel" class="time-progress-label">制限時間なし</div>
-</div></div><div class="question-card"><div class="q-meta"><span id="qType"></span><span id="qId"></span><span id="qTheme"></span><span id="qStage"></span><span id="qHolder"></span><button id="interruptGameBtn" class="game-interrupt-btn qmeta-interrupt-btn" type="button">ゲームを中断する</button></div><h2 id="qTitle"></h2><p id="qSituation"></p><p id="qPrompt"></p><div id="choices" class="choices"></div></div></div></section><section id="screen-result" class="screen"><div class="result-card"><h2>試合終了！</h2><div id="resultScore" class="result-score"></div><div id="scoreSaveNotice" class="score-save-notice" aria-live="polite"></div><div id="rank" class="rank"></div><div id="breakdown"></div><div id="answerLog" class="answer-log"></div><div class="result-actions"><button id="retryBtn" class="primary">もう一回</button><button id="resultMyPageBtn" class="secondary" type="button">マイページで成績を見る</button></div></div></section></main><script src="assets/quiz_master_questions.js?v=969"></script><script src="assets/app.js?v=975"></script><script>
+</div></div><div class="question-card"><div class="q-meta"><span id="qType"></span><span id="qId"></span><span id="qTheme"></span><span id="qStage"></span><span id="qHolder"></span><button id="interruptGameBtn" class="game-interrupt-btn qmeta-interrupt-btn" type="button">ゲームを中断する</button></div><h2 id="qTitle"></h2><p id="qSituation"></p><p id="qPrompt"></p><div id="choices" class="choices"></div></div></div></section><section id="screen-result" class="screen"><div class="result-card"><h2>試合終了！</h2><div id="resultScore" class="result-score"></div><div id="scoreSaveNotice" class="score-save-notice" aria-live="polite"></div><div id="rank" class="rank"></div><div id="breakdown"></div><div id="answerLog" class="answer-log"></div><div class="result-actions"><button id="retryBtn" class="primary">もう一回</button><button id="resultMyPageBtn" class="secondary" type="button">マイページで成績を見る</button></div></div></section></main><script src="assets/quiz_master_questions.js?v=969"></script><script src="assets/app.js?v=976"></script><script>
 window.YAKYU_APP_VERSION = 'v905-production';
-window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v975-production';
+window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v976-production';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
