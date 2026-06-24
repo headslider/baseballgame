@@ -10052,3 +10052,38 @@ body.app-booting #quizMasterRankingBtn{
   color:#dd0e2d;
   font-weight:900;
 }
+
+/* マイページ間違いプレイチェックのページネーション */
+.mistake-review-pagination{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:clamp(14px,2vw,20px);
+  flex-wrap:wrap;
+  margin-top:clamp(18px,2.4vw,28px);
+  padding-top:clamp(14px,2vw,20px);
+  border-top:1px solid rgba(255,102,153,.2);
+}
+.mistake-review-pagination button{
+  min-width:110px;
+  min-height:36px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .18s ease;
+}
+.mistake-review-pagination button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+.mistake-review-pagination button:not(:disabled):hover{
+  transform:translateY(-1px);
+  filter:brightness(1.06);
+}
+.page-info{
+  font-size:14px;
+  font-weight:700;
+  color:#0b3a75;
+  white-space:nowrap;
+}

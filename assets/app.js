@@ -3368,6 +3368,7 @@ function mistakeReviewItemHtml(view){
 
 
 
+let MISTAKE_REVIEW_PAGE=1;
 function renderMistakeReviewSection(){
   const box=$("myPageMistakes");
   if(!box)return;
@@ -3398,9 +3399,41 @@ function renderMistakeReviewSection(){
   const unavailableViews=views.filter(v=>v.unavailable);
   const tags=tagSummaryFromMistakes(activeViews.map(v=>({...(v.raw||{}),tags:v.tags||[]})));
   const tagHtml=tags.length?`<div class="weak-tags">${tags.map(([t,n])=>`<span>${escapeHtml(t)} <b>${escapeHtml(n)}</b></span>`).join("")}</div>`:"";
-  const listHtml=activeViews.slice(0,30).map(mistakeReviewItemHtml).join("");
+
+  // ページネーション（10個以上で20個/ページ）
+  const itemsPerPage=20;
+  const totalPages=Math.ceil(activeViews.length/itemsPerPage);
+  const showPagination=activeViews.length>=10;
+  if(showPagination)MISTAKE_REVIEW_PAGE=Math.max(1,Math.min(MISTAKE_REVIEW_PAGE,totalPages));
+
+  const startIdx=(MISTAKE_REVIEW_PAGE-1)*itemsPerPage;
+  const endIdx=startIdx+itemsPerPage;
+  const pageViews=showPagination?activeViews.slice(startIdx,endIdx):activeViews.slice(0,30);
+  const listHtml=pageViews.map(mistakeReviewItemHtml).join("");
+
+  // ページネーションコントロール
+  const paginationHtml=showPagination?`<div class="mistake-review-pagination">
+    <button class="secondary" data-page-action="prev" ${MISTAKE_REVIEW_PAGE<=1?'disabled':''}>&lt; 前へ</button>
+    <span class="page-info">ページ ${MISTAKE_REVIEW_PAGE} / ${totalPages}</span>
+    <button class="secondary" data-page-action="next" ${MISTAKE_REVIEW_PAGE>=totalPages?'disabled':''}>次へ &gt;</button>
+  </div>`:"";
+
   const unavailableHtml=unavailableViews.length?`<h4>更新または停止された問題</h4><p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailableViews.slice(0,20).map(mistakeReviewItemHtml).join("")}`:"";
-  box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4>間違えた問題一覧</h4>${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}${unavailableHtml}</div>`;
+  box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4>間違えた問題一覧</h4>${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}${paginationHtml}${unavailableHtml}</div>`;
+
+  // ページネーションボタンのイベントリスナー
+  if(showPagination){
+    box.querySelectorAll('[data-page-action]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        if(btn.getAttribute('data-page-action')==='prev'&&MISTAKE_REVIEW_PAGE>1){
+          MISTAKE_REVIEW_PAGE--;
+        }else if(btn.getAttribute('data-page-action')==='next'&&MISTAKE_REVIEW_PAGE<totalPages){
+          MISTAKE_REVIEW_PAGE++;
+        }
+        renderMistakeReviewSection();
+      });
+    });
+  }
 }
 function recordMistakeReview(q,choice,score){
   if(isAdminQuestionTestMode())return;
