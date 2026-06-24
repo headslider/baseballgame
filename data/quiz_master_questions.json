@@ -1,9 +1,9 @@
 {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "v66_sheet_knock_revision",
+    "version": "v67_remove_upper_category_value_question",
     "created_by": "ChatGPT",
-    "question_count": 324,
+    "question_count": 323,
     "answer_index_base": 0,
     "rules": [
       "通常学年別クイズと重複する守備判断・走塁判断・送球判断・カバーリング問題は含めない",
@@ -24,7 +24,7 @@
     ],
     "audit": "5-pass answer/explanation/logic/difficulty/overlap validation completed on 2026-06-19.",
     "audit_step1": "2026-06-20 Step1正解・解説整合監査完了（5観点チェック）",
-    "source_file": "ユーザー指定修正（BQ2150 シートノック、2026-06-24）",
+    "source_file": "ユーザー指定削除（少年野球から見た上位カテゴリー知識の価値、2026-06-24）",
     "audit_step2": "2026-06-20 Step2最新学童ルール監査：JSBB、マクドナルド・トーナメント、ミズノドリームカップの重要ルールを追加・反映。",
     "step2_added_questions": 43,
     "source_summary": [
@@ -62,7 +62,7 @@
       "15": 13,
       "16": 16,
       "17": 12,
-      "18": 18,
+      "18": 17,
       "19": 16,
       "20": 25
     },
@@ -435,7 +435,7 @@
       "BQ1083"
     ],
     "validation_errors": [],
-    "base_file": "quiz_master_questions_final_candidate_v65_case_knock_addition.json",
+    "base_file": "quiz_master_questions_final_candidate_v66_sheet_knock_revision.json",
     "audit_step9_1": "2026-06-21 イレギュラーの意味を問う用語問題を第3問に追加。既存BQ314は解説内の言及のみのため重複問題ではない。",
     "added_throw_destination_term_ids": [
       "BQ1084",
@@ -1281,6 +1281,23 @@
     ],
     "v66_validation": {
       "question_count": 324,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0
+    },
+    "audit_step_v67": "2026-06-24 「少年野球から見た上位カテゴリー知識の価値として正しいものは？」を削除。抽象的な価値判断・上位カテゴリの学習価値を問う確認型問題に当たり、現行の採用基準に合わないため除外台帳へ記録。",
+    "v67_deleted_ids": [
+      "BQ920"
+    ],
+    "v67_deleted_topics": [
+      "少年野球から見た上位カテゴリー知識の価値"
+    ],
+    "v67_validation": {
+      "question_count": 323,
       "id_duplicates": 0,
       "question_text_duplicates": 0,
       "choice_count_errors": 0,
@@ -6744,26 +6761,6 @@
       ],
       "answer": 1,
       "explanation": "上位カテゴリーでは木製での打撃技術が必要になります。",
-      "source_note": "",
-      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
-      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
-      "main_category": "上級野球知識",
-      "middle_category": "後半専用",
-      "small_category": "明確知識"
-    },
-    {
-      "id": "BQ920",
-      "level": 18,
-      "level_name": "第18問",
-      "category": "大学・社会人・プロ",
-      "question": "少年野球から見た上位カテゴリー知識の価値として正しいものは？",
-      "choices": [
-        "将来の進路や用具・技術の違いを理解する助けになる",
-        "カテゴリーごとのルール差を知り、野球の広がりを理解できる",
-        "今の学童野球と将来の野球環境をつなげて考えられる"
-      ],
-      "answer": 1,
-      "explanation": "カテゴリーの違いを知ることは将来像の理解につながります。",
       "source_note": "",
       "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
       "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
