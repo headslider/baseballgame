@@ -8010,7 +8010,7 @@ img.qtb-badge-icon{
   display:grid;
   place-items:center;
   padding:clamp(16px,4vw,46px);
-  background:radial-gradient(circle at 50% 42%,rgba(255,218,45,.18),rgba(0,5,18,.78) 58%,rgba(0,0,0,.92));
+  background:rgba(0,0,0,.96);
   visibility:hidden;
   pointer-events:none;
 }
