@@ -1505,7 +1505,7 @@ async function init(){
   const quizMasterMenuStartBtn=$("quizMasterMenuStartBtn");if(quizMasterMenuStartBtn)quizMasterMenuStartBtn.addEventListener("click",startQuizMaster);
   const quizMasterMenuRankingBtn=$("quizMasterMenuRankingBtn");if(quizMasterMenuRankingBtn)quizMasterMenuRankingBtn.addEventListener("click",openQuizMasterRanking);
   const quizMasterMenuRanksBtn=$("quizMasterMenuRanksBtn");if(quizMasterMenuRanksBtn)quizMasterMenuRanksBtn.addEventListener("click",showQuizMasterRanks);
-  const quizMasterMenuHowtoBtn=$("quizMasterMenuHowtoBtn");if(quizMasterMenuHowtoBtn)quizMasterMenuHowtoBtn.addEventListener("click",showQuizMasterTutorial);
+  const quizMasterMenuHowtoBtn=$("quizMasterMenuHowtoBtn");if(quizMasterMenuHowtoBtn)quizMasterMenuHowtoBtn.addEventListener("click",async()=>{show("screen-quiz-master");await new Promise(r=>setTimeout(r,50));showQuizMasterTutorial();});
   const quizMasterMenuBackBtn=$("quizMasterMenuBackBtn");if(quizMasterMenuBackBtn)quizMasterMenuBackBtn.addEventListener("click",()=>show("screen-title"));
   const quizMasterRanksBackBtn=$("quizMasterRanksBackBtn");if(quizMasterRanksBackBtn)quizMasterRanksBackBtn.addEventListener("click",openQuizMasterMenu);
   const quizMasterFiftyBtn=$("quizMasterFiftyBtn");if(quizMasterFiftyBtn)quizMasterFiftyBtn.addEventListener("click",useQuizMasterFifty);
