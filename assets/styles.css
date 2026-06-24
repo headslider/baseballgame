@@ -10091,6 +10091,20 @@ body.app-booting #quizMasterRankingBtn{
   padding:4px 12px;
   border-radius:6px;
 }
+@media (max-width:600px){
+  .mistake-review-pagination{
+    gap:clamp(8px,1.5vw,12px);
+  }
+  .mistake-review-pagination button{
+    min-width:auto;
+    padding:6px 10px;
+    font-size:12px;
+  }
+  .page-info{
+    font-size:12px;
+    padding:3px 8px;
+  }
+}
 
 /* マイページ間違いプレイチェックのアコーディオン */
 .mistake-accordion-title{
