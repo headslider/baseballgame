@@ -48577,15 +48577,15 @@
       "prompt": "あなたならどうする？最も良い判断を選んでください。",
       "visual_batter_runner": "true",
       "visual_ball_path": "right_shallow",
-      "choice_1": "打球を確認しながら二塁を狙う",
+      "choice_1": "打球方向を見ながら一塁付近で待つ",
       "score_1": "3",
-      "explain_1": "打球判断しながら次塁を狙う。",
-      "choice_2": "大きくふくらみながら二塁へ向かう",
+      "explain_1": "浅いフライでは、捕球された時に戻れるよう一塁付近で待つ。",
+      "choice_2": "大きくリードして二塁を狙う",
       "score_2": "1",
-      "explain_2": "進塁はできるが送球に対して不利。",
-      "choice_3": "打球方向を見ながら一塁付近で止まる",
+      "explain_2": "進塁を狙う意識はあるが、捕球されると戻れずアウトになりやすい。",
+      "choice_3": "とにかく二塁へ向かう",
       "score_3": "0",
-      "explain_3": "次塁を狙える場面を逃しやすい。",
+      "explain_3": "捕球された時に一塁へ戻れず、ダブルプレーになりやすい。",
       "raw_json": {
         "id": "NA004",
         "type": "attack",
@@ -48599,19 +48599,19 @@
         "situation": "浅いライトフライ。ライトが捕球体勢に入っている。",
         "choices": [
           {
-            "text": "打球を確認しながら二塁を狙う",
+            "text": "打球方向を見ながら一塁付近で待つ",
             "score": 3,
-            "explain": "打球判断しながら次塁を狙う。"
+            "explain": "浅いフライでは、捕球された時に戻れるよう一塁付近で待つ。"
           },
           {
-            "text": "大きくふくらみながら二塁へ向かう",
+            "text": "大きくリードして二塁を狙う",
             "score": 1,
-            "explain": "進塁はできるが送球に対して不利。"
+            "explain": "進塁を狙う意識はあるが、捕球されると戻れずアウトになりやすい。"
           },
           {
-            "text": "打球方向を見ながら一塁付近で止まる",
+            "text": "とにかく二塁へ向かう",
             "score": 0,
-            "explain": "次塁を狙える場面を逃しやすい。"
+            "explain": "捕球された時に一塁へ戻れず、ダブルプレーになりやすい。"
           }
         ],
         "visual": {
@@ -48650,10 +48650,10 @@
         "visual_ball_path": "right_shallow",
         "visual_ball_holder": "RF",
         "visual_target_position": "RF",
-        "choices_sha256": "164820d91378eaffae03db5a2b7cc7adac1771cadc8e35d35362b4b0c02002d5"
+        "choices_sha256": "9668183c69363349f3c5f9156e1cbe8573e1274b5ced679c198b4260b030fa6d"
       },
-      "semantic_signature_sha256": "7121ddf409061ec85aa7215e40278ea92287c41d4fbb739340cebde558798259",
-      "raw_json_sha256": "97397fea5716cb05eb472e6ab2806633989323e4ec26d77e66a046d0138a6a92"
+      "semantic_signature_sha256": "e4baa9dd3c436c1efaf318f04d8a99445b7cdabeefc890ad9b3504d385c720ab",
+      "raw_json_sha256": "c7412416f3a1db5a28919f078dd052a86ee4e2077444724d6d75e72dd5e6227a"
     },
     {
       "id": "NA005",
