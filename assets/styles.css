@@ -8054,13 +8054,13 @@ img.qtb-badge-icon{
 .quiz-master-tutorial-card h2{
   margin:0 0 16px;
   color:#ffe26a;
-  font-size:clamp(34px,5vw,64px);
+  font-size:clamp(28px,4vw,42px);
   line-height:1.08;
   text-align:center;
   text-shadow:0 4px 2px #000,0 0 24px rgba(255,226,106,.64);
 }
 .quiz-master-tutorial-body{
-  font-size:clamp(17px,2.2vw,27px);
+  font-size:clamp(14px,1.8vw,18px);
   line-height:1.55;
   font-weight:900;
   text-shadow:0 2px 2px #000;
