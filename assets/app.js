@@ -2252,10 +2252,12 @@ function showQuizMasterPointBurst(point){
 async function finishQuizMaster(cleared=false,message="",reason=""){
   clearQuizMasterTimer();
   QUIZ_MASTER_STATE.endReason=cleared?"cleared":(reason||QUIZ_MASTER_STATE.endReason||"ended");
+  // 中断（stopped）はその時点の累積スコアをそのまま獲得する（0点化しない）。
+  const stopped=QUIZ_MASTER_STATE.endReason==="stopped";
   const score=QUIZ_MASTER_STATE.score;
   QUIZ_MASTER_STATE.score=score;
   show("screen-quiz-master-result");
-  setTextSafe("quizMasterResultTitle",cleared?"完全制覇！":"チャレンジ終了");
+  setTextSafe("quizMasterResultTitle",cleared?"完全制覇！":(stopped?"中断して獲得！":"チャレンジ終了"));
   setTextSafe("quizMasterFinalScore",`${score} pt`);
   renderQuizMasterResultDetail(message||`${QUIZ_MASTER_STATE.logs.length}問に挑戦しました。`,cleared);
   const rankingBox=$("quizMasterRanking");
