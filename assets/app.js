@@ -5291,7 +5291,7 @@ function showQuizMasterBonusLifeAnimation(){
       el.setAttribute("aria-hidden","true");
       el.innerHTML=`<div class="qm-bonus-life-heart" aria-hidden="true"><svg viewBox="0 0 32 29.6" xmlns="http://www.w3.org/2000/svg"><path d="M23.6,0c-2.7,0-5.1,1.4-6.6,3.6C15.5,1.4,13.1,0,10.4,0C4.7,0,0,4.7,0,10.4 c0,7.4,7.5,12.3,16,19.2c8.5-6.9,16-11.8,16-19.2C32,4.7,27.3,0,23.6,0z" fill="#dd0e2d"/></svg></div>`+
         `<div class="qm-bonus-life-band" aria-hidden="true"></div>`+
-        `<div class="qm-bonus-life-text">本日の野球博士チャレンジ用ボーナスライフをゲット!</div>`;
+        `<div class="qm-bonus-life-text">野球博士デイリーライフをゲット!</div>`;
       document.body.appendChild(el);
     }
     el.classList.remove("show");
