@@ -48,7 +48,7 @@ const OPTION_FEATURES={
   admin_mode:{label:"管理者用モード",restricted:true}
 };
 const $=id=>document.getElementById(id);
-const QUIZ_MASTER_DAILY_LIMIT=3;
+const QUIZ_MASTER_DAILY_LIMIT=5;
 const QUIZ_MASTER_DAILY_LIMIT_ENABLED=false;
 const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
 const QUIZ_MASTER_TOTAL_QUESTIONS=20;
@@ -1626,27 +1626,46 @@ function quizMasterMarkTutorialSeen(){
     localStorage.setItem(quizMasterTutorialStorageKey(),"1");
   }catch(e){}
 }
+function quizMasterBonusLifeStorageKey(){
+  return `baseballQuizMasterBonusLife:${quizMasterLimitPlayerKey()}:${quizMasterTodayKey()}`;
+}
+function quizMasterHasBonusLifeToday(){
+  try{return localStorage.getItem(quizMasterBonusLifeStorageKey())==="1";}catch(e){return false;}
+}
+// 通常の野球やろうぜ！を1日1回完了したとき、その日だけ野球博士チャレンジのライフを+1する（当日初回のみ加算）。
+function quizMasterGrantBonusLifeToday(){
+  try{
+    if(localStorage.getItem(quizMasterBonusLifeStorageKey())==="1")return false;
+    localStorage.setItem(quizMasterBonusLifeStorageKey(),"1");
+    return true;
+  }catch(e){return false;}
+}
+// 当日の実効ライフ上限（基本5 + 通常ゲーム完了ボーナス）。
+function quizMasterDailyLimitToday(){
+  return QUIZ_MASTER_DAILY_LIMIT+(quizMasterHasBonusLifeToday()?1:0);
+}
 function quizMasterReadDailyUsed(){
   try{
     const n=Number(localStorage.getItem(quizMasterDailyStorageKey())||"0");
-    return Number.isFinite(n)?Math.max(0,Math.min(QUIZ_MASTER_DAILY_LIMIT,n)):0;
+    return Number.isFinite(n)?Math.max(0,Math.min(quizMasterDailyLimitToday(),n)):0;
   }catch(e){
     return 0;
   }
 }
 function quizMasterRemainingToday(){
-  if(!QUIZ_MASTER_DAILY_LIMIT_ENABLED)return QUIZ_MASTER_DAILY_LIMIT;
-  return Math.max(0,QUIZ_MASTER_DAILY_LIMIT-quizMasterReadDailyUsed());
+  if(!QUIZ_MASTER_DAILY_LIMIT_ENABLED)return quizMasterDailyLimitToday();
+  return Math.max(0,quizMasterDailyLimitToday()-quizMasterReadDailyUsed());
 }
 function quizMasterConsumeDailyAttempt(){
-  if(!QUIZ_MASTER_DAILY_LIMIT_ENABLED)return {ok:true,remaining:QUIZ_MASTER_DAILY_LIMIT};
-  if(STATE.adminMode)return {ok:true,remaining:QUIZ_MASTER_DAILY_LIMIT};
+  const limitToday=quizMasterDailyLimitToday();
+  if(!QUIZ_MASTER_DAILY_LIMIT_ENABLED)return {ok:true,remaining:limitToday};
+  if(STATE.adminMode)return {ok:true,remaining:limitToday};
   const used=quizMasterReadDailyUsed();
-  if(used>=QUIZ_MASTER_DAILY_LIMIT)return {ok:false,remaining:0};
+  if(used>=limitToday)return {ok:false,remaining:0};
   try{
     localStorage.setItem(quizMasterDailyStorageKey(),String(used+1));
   }catch(e){}
-  return {ok:true,remaining:Math.max(0,QUIZ_MASTER_DAILY_LIMIT-used-1)};
+  return {ok:true,remaining:Math.max(0,limitToday-used-1)};
 }
 function quizMasterReadTodayQuestionHistory(){
   try{
@@ -1714,7 +1733,7 @@ function showQuizMasterTutorial(){
   return new Promise(resolve=>{
     const overlay=$("quizMasterTutorialOverlay");
     if(!overlay){resolve(true);return}
-    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ はじめに"><p class="quiz-master-tutorial-kicker">はじめに</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全20問。各問に制限時間があります。</li><li>正解するたびに点数が加算され、後半ほど1問あたりの点数が大きく伸びます。</li><li>第15問以降はチャレンジゾーンです。正解するたびに加算率が上がり、得点の伸びがさらに強くなります。</li><li class="quiz-master-tutorial-danger">第15問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日3回まで、利用から24時間後ではなく毎日24時にリセットされます。テスト中は回数無制限です。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">内容を確認してからゲームを始めます。</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="top">トップに戻る</button><button type="button" class="secondary quiz-master-lifeline" data-quiz-tutorial="start">ゲームを始める</button></div></div>';
+    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ はじめに"><p class="quiz-master-tutorial-kicker">はじめに</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全20問。各問に制限時間があります。</li><li>正解するたびに点数が加算され、後半ほど1問あたりの点数が大きく伸びます。</li><li>第15問以降はチャレンジゾーンです。正解するたびに加算率が上がり、得点の伸びがさらに強くなります。</li><li class="quiz-master-tutorial-danger">第15問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日5ライフまで。通常の野球やろうぜ！を1回クリアすると、その日だけライフが1つ増えます。毎日24時にリセットされます（テスト中は無制限）。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">内容を確認してからゲームを始めます。</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="top">トップに戻る</button><button type="button" class="secondary quiz-master-lifeline" data-quiz-tutorial="start">ゲームを始める</button></div></div>';
     overlay.setAttribute("aria-hidden","false");
     overlay.classList.add("show");
     overlay.querySelector('[data-quiz-tutorial="top"]')?.addEventListener("click",()=>{
@@ -1883,8 +1902,8 @@ async function startQuizMaster(){
   if(QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!STATE.adminMode&&quizMasterRemainingToday()<=0){
     updateQuizMasterDailyUI();
     const status=$("loginStatus");
-    if(status)status.textContent="野球博士チャレンジは本日3回までです。利用から24時間後ではなく、毎日24時にリセットされます。";
-    alert("野球博士チャレンジは本日3回までです。利用から24時間後ではなく、毎日24時にリセットされます。");
+    if(status)status.textContent="野球博士チャレンジは本日のライフを使い切りました。毎日24時にリセットされます。通常の野球やろうぜ！を1回クリアすると、本日だけライフが1つ増えます。";
+    alert("野球博士チャレンジは本日のライフを使い切りました。毎日24時にリセットされます。通常の野球やろうぜ！を1回クリアすると、本日だけライフが1つ増えます。");
     show("screen-title");
     return;
   }
@@ -5262,6 +5281,9 @@ function finishGame(){
   $("rank").textContent=r;
   const didClear=STATE.score>=GRADE_CLEAR_SCORE&&STATE.grade>=3;
   const nextGrade=Math.min(6,STATE.grade+1);
+  // 新仕様: 通常ゲームを1日1回完了すると、その日だけ野球博士チャレンジのライフを+1（当日初回のみ）。
+  const earnedQuizLife=(STATE.loggedIn&&STATE.playerId&&!STATE.adminMode&&!isAdminQuestionTestMode()&&typeof hasQuizMasterFeatureAccess==="function"&&hasQuizMasterFeatureAccess())?quizMasterGrantBonusLifeToday():false;
+  const quizLifeMsg=earnedQuizLife?`<p class="unlock-note">野球博士チャレンジのライフが1つ増えました！（本日のみ・毎日24時にリセット）</p>`:"";
   const adminMsg=isAdminQuestionTestMode()
     ?`<p class="unlock-note locked">管理者テストプレイのため、この結果はスコア・ランキング・間違い記録・学年解放に反映されません。</p>`
     :(STATE.adminMode?`<p class="unlock-note locked">管理者用モードのため、この結果は保存・ランキング反映・学年解放されません。</p>`:"");
@@ -5270,7 +5292,7 @@ function finishGame(){
     :(isBasic
       ?`<p class="unlock-note">基本動作モード完了！10問の基本問題をくり返し練習しよう。</p>`
       :(didClear?(STATE.grade<6?`<p class="unlock-note">${GRADE_CLEAR_SCORE}点以上達成！この学年をクリアしました。次回から同じ守備位置で${nextGrade}年生が選べます。</p>`:`<p class="unlock-note">${GRADE_CLEAR_SCORE}点以上達成！この守備位置の6年生をクリアしました。</p>`):`<p class="unlock-note locked">${GRADE_CLEAR_SCORE}点以上で次の学年が開放されます。もう一度チャレンジしよう！</p>`));
-  $("breakdown").innerHTML=isBasic?`<p>基本動作：${STATE.score}/${maxScore}点</p>${adminMsg}${unlockMsg}`:`<p>攻撃：${STATE.attackScore}/27点　守備：${STATE.defenseScore}/27点</p>${adminMsg}${unlockMsg}`;
+  $("breakdown").innerHTML=isBasic?`<p>基本動作：${STATE.score}/${maxScore}点</p>${adminMsg}${unlockMsg}${quizLifeMsg}`:`<p>攻撃：${STATE.attackScore}/27点　守備：${STATE.defenseScore}/27点</p>${adminMsg}${unlockMsg}${quizLifeMsg}`;
   $("answerLog").innerHTML=STATE.logs.map(l=>`<div class="logrow"><b>${escapeHtml(l.inning)}</b><span>${escapeHtml(outsLabel(l.outs))} ${escapeHtml(stageLabel(l.stage))}<br>${(STATE.adminMode||isAdminQuestionTestMode())?`${escapeHtml(l.id)}：`:"選択："}${rubyHtml(l.selected)}<br><small>${rubyHtml(l.explain)}${l.answer_time_ms?`　回答時間：${(Number(l.answer_time_ms)/1000).toFixed(1)}秒`:""}</small></span><b>${escapeHtml(l.score)}点</b></div>`).join("");
   setScoreSaveNotice("",false);
   saveScore().then(data=>{
