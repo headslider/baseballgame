@@ -9967,3 +9967,63 @@ body.app-booting #quizMasterBtn,
 body.app-booting #quizMasterRankingBtn{
   display:none !important;
 }
+
+/* v989+: 通常ゲーム完了でボーナスライフ獲得時の演出 */
+.qm-bonus-life-overlay{
+  position:fixed;
+  inset:0;
+  z-index:2147483600;
+  pointer-events:none;
+  visibility:hidden;
+}
+.qm-bonus-life-overlay.show{
+  visibility:visible;
+}
+.qm-bonus-life-heart{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:300px;
+  height:300px;
+  max-width:80vw;
+  max-height:80vw;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(2);
+  filter:drop-shadow(0 14px 34px rgba(255,45,79,.55));
+}
+.qm-bonus-life-heart svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+.qm-bonus-life-overlay.show .qm-bonus-life-heart{
+  animation:qmBonusHeart 2.6s ease both;
+}
+@keyframes qmBonusHeart{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(2);}
+  19%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  77%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.06);}
+}
+.qm-bonus-life-text{
+  position:absolute;
+  top:50%;
+  left:50%;
+  max-width:none;
+  white-space:nowrap;
+  text-align:center;
+  font-size:clamp(20px,3.4vw,40px);
+  font-weight:1000;
+  color:#fff;
+  text-shadow:0 3px 2px #000,0 0 18px rgba(255,45,79,.65);
+  transform:translate(-170vw,-50%);
+}
+.qm-bonus-life-overlay.show .qm-bonus-life-text{
+  animation:qmBonusText 2.6s ease-in-out both;
+}
+@keyframes qmBonusText{
+  0%{transform:translate(-170vw,-50%);}
+  19%{transform:translate(-50%,-50%);}
+  77%{transform:translate(-50%,-50%);}
+  100%{transform:translate(170vw,-50%);}
+}

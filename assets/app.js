@@ -5272,6 +5272,24 @@ async function answer(q,c){
 }
 function disableChoices(){$("choices").querySelectorAll("button").forEach(b=>b.disabled=true)}
 function showGoodJob(mode){return new Promise(resolve=>{const el=$("goodJobToast");if(!el){resolve();return}const sceneMode=mode==="defense"?"defense":"attack";el.className=`goodjob-toast ${sceneMode}`;el.style.display="block";el.style.opacity="1";void el.offsetWidth;el.classList.add("show");setTimeout(()=>{el.className="goodjob-toast";el.style.display="none";el.style.opacity="";resolve()},1500)})}
+function showQuizMasterBonusLifeAnimation(){
+  try{
+    let el=document.getElementById("quizMasterBonusLifeOverlay");
+    if(!el){
+      el=document.createElement("div");
+      el.id="quizMasterBonusLifeOverlay";
+      el.className="qm-bonus-life-overlay";
+      el.setAttribute("aria-hidden","true");
+      el.innerHTML=`<div class="qm-bonus-life-text">本日の野球博士チャレンジ用ボーナスライフをゲット!</div>`+
+        `<div class="qm-bonus-life-heart" aria-hidden="true"><svg viewBox="0 0 32 29.6" xmlns="http://www.w3.org/2000/svg"><path d="M23.6,0c-2.7,0-5.1,1.4-6.6,3.6C15.5,1.4,13.1,0,10.4,0C4.7,0,0,4.7,0,10.4 c0,7.4,7.5,12.3,16,19.2c8.5-6.9,16-11.8,16-19.2C32,4.7,27.3,0,23.6,0z" fill="#ff2d4f"/></svg></div>`;
+      document.body.appendChild(el);
+    }
+    el.classList.remove("show");
+    void el.offsetWidth;
+    el.classList.add("show");
+    setTimeout(()=>{if(el)el.classList.remove("show");},2700);
+  }catch(e){}
+}
 function finishGame(){
   clearQuestionTimer();
   const maxScore=maxScoreForCurrentGame();
@@ -5284,6 +5302,7 @@ function finishGame(){
   // 新仕様: 通常ゲームを1日1回完了すると、その日だけ野球博士チャレンジのライフを+1（当日初回のみ）。
   const earnedQuizLife=(STATE.loggedIn&&STATE.playerId&&!STATE.adminMode&&!isAdminQuestionTestMode()&&typeof hasQuizMasterFeatureAccess==="function"&&hasQuizMasterFeatureAccess())?quizMasterGrantBonusLifeToday():false;
   const quizLifeMsg=earnedQuizLife?`<p class="unlock-note">野球博士チャレンジのライフが1つ増えました！（本日のみ・毎日24時にリセット）</p>`:"";
+  if(earnedQuizLife)setTimeout(showQuizMasterBonusLifeAnimation,450);
   const adminMsg=isAdminQuestionTestMode()
     ?`<p class="unlock-note locked">管理者テストプレイのため、この結果はスコア・ランキング・間違い記録・学年解放に反映されません。</p>`
     :(STATE.adminMode?`<p class="unlock-note locked">管理者用モードのため、この結果は保存・ランキング反映・学年解放されません。</p>`:"");
