@@ -2146,6 +2146,18 @@ async function confirmQuizMasterChoice(timeout=false){
       }
       QUIZ_MASTER_STATE.challenge=true;
     }
+    // 第15問以降は正解するたびに、中断（現在の点数を確保）か継続かを確認する。
+    if(q.level>=QUIZ_MASTER_CHALLENGE_START_LEVEL){
+      const nextQ=QUIZ_MASTER_STATE.sequence[QUIZ_MASTER_STATE.currentIndex+1];
+      if(nextQ){
+        const cont=await showQuizMasterContinuePrompt(QUIZ_MASTER_STATE.score,quizMasterPointForLevel(nextQ.level));
+        if(!cont){
+          await playQuizMasterRoundExit();
+          finishQuizMaster(false,"ここで中断して点数を確保しました。","stopped");
+          return;
+        }
+      }
+    }
     QUIZ_MASTER_STATE.currentIndex+=1;
     await playQuizMasterRoundExit();
     renderQuizMasterQuestion();
@@ -2196,6 +2208,30 @@ function showQuizMasterCheckpoint(){
         overlay.setAttribute("aria-hidden","true");
         overlay.innerHTML="";
         setTextSafe("quizMasterMessage",go?"チャレンジモードに進みます。":`第${QUIZ_MASTER_CHECKPOINT_LEVEL}問クリアで終了します。`);
+        resolve(go);
+      },{once:true});
+    });
+  });
+}
+function showQuizMasterContinuePrompt(currentScore,nextPoint){
+  return new Promise(resolve=>{
+    const overlay=$("quizMasterCheckpointOverlay");
+    if(!overlay){resolve(true);return}
+    overlay.innerHTML=`<div class="quiz-master-continue-card" role="dialog" aria-modal="true" aria-label="中断確認">`+
+      `<p class="quiz-master-continue-lead">今中断するとこちらの点数が獲得できます!</p>`+
+      `<div class="quiz-master-continue-score">${escapeHtml(currentScore)} pt</div>`+
+      `<p class="quiz-master-continue-next-label">次の問題で獲得できる点数は</p>`+
+      `<div class="quiz-master-continue-next">+${escapeHtml(nextPoint)} pt</div>`+
+      `<div class="quiz-master-continue-actions"><button type="button" class="secondary" data-quiz-continue="stop">中断する</button><button type="button" class="primary" data-quiz-continue="go">続ける</button></div>`+
+      `</div>`;
+    overlay.setAttribute("aria-hidden","false");
+    overlay.classList.add("show");
+    overlay.querySelectorAll("[data-quiz-continue]").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const go=btn.getAttribute("data-quiz-continue")==="go";
+        overlay.classList.remove("show");
+        overlay.setAttribute("aria-hidden","true");
+        overlay.innerHTML="";
         resolve(go);
       },{once:true});
     });
@@ -2302,6 +2338,7 @@ function quizMasterResultReasonText(reason){
   if(reason==="timeout")return "時間切れ";
   if(reason==="wrong")return "不正解";
   if(reason==="checkpoint_end")return `第${QUIZ_MASTER_CHECKPOINT_LEVEL}問で終了`;
+  if(reason==="stopped")return "途中で中断";
   return "終了";
 }
 function renderQuizMasterRanking(box,data,mode="result"){
