@@ -9681,20 +9681,65 @@ body.quiz-master-failed .quiz-master-shell{
 .quiz-master-menu-buttons{
   display:flex;
   flex-direction:column;
-  gap:16px;
+  gap:14px;
   margin:24px 0;
 }
 .quiz-master-menu-buttons button{
-  min-height:74px;
-  border-radius:14px;
-  border:3px solid #ffe26a;
-  background:linear-gradient(180deg,#0b4f8e,#051a36);
+  position:relative;
+  min-height:64px;
+  padding:14px 48px 14px 24px;
+  border-radius:16px;
+  border:1px solid rgba(255,226,106,.5);
+  background:linear-gradient(180deg,#123a6d 0%,#0b2347 56%,#07182f 100%);
   color:#fff;
-  font-size:clamp(18px,2.2vw,30px);
-  font-weight:1000;
-  text-shadow:0 3px 2px #000;
-  box-shadow:0 0 0 2px rgba(3,19,43,.85),0 0 24px rgba(255,226,106,.25),inset 0 0 20px rgba(0,93,180,.32);
+  font-size:clamp(17px,2vw,26px);
+  font-weight:900;
+  letter-spacing:.04em;
+  text-shadow:0 2px 4px rgba(0,0,0,.55);
+  box-shadow:0 6px 18px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.16);
+  overflow:hidden;
+  transition:transform .12s ease,box-shadow .18s ease,filter .18s ease;
 }
+.quiz-master-menu-buttons button::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;
+  height:46%;
+  background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0));
+  pointer-events:none;
+}
+.quiz-master-menu-buttons button::after{
+  content:"›";
+  position:absolute;
+  right:20px;top:50%;
+  transform:translateY(-50%);
+  color:#ffe26a;
+  font-size:1.5em;
+  font-weight:900;
+  opacity:.85;
+  transition:transform .18s ease,opacity .18s ease;
+}
+.quiz-master-menu-buttons button:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.07);
+  box-shadow:0 10px 26px rgba(0,0,0,.5),0 0 22px rgba(255,226,106,.28),inset 0 1px 0 rgba(255,255,255,.22);
+}
+.quiz-master-menu-buttons button:hover::after{
+  transform:translate(4px,-50%);
+  opacity:1;
+}
+.quiz-master-menu-buttons button:active{
+  transform:translateY(1px);
+  box-shadow:0 3px 10px rgba(0,0,0,.45),inset 0 2px 6px rgba(0,0,0,.4);
+}
+/* ゲームスタートは行動を促すゴールドのCTAにして階層をつける */
+#quizMasterMenuStartBtn{
+  background:linear-gradient(180deg,#ffe07a 0%,#f6b21f 52%,#cd7a0c 100%);
+  border-color:rgba(255,255,255,.55);
+  color:#3a1f00;
+  text-shadow:0 1px 0 rgba(255,255,255,.45);
+}
+#quizMasterMenuStartBtn::after{color:#6a3700;}
 /* ===== Quiz Master ランク紹介 ===== */
 /* 全20ランクを 4列×5行 で一画面に収める。スクロールは不要。 */
 #screen-quiz-master-ranks.active{
