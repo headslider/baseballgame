@@ -1722,7 +1722,7 @@ function renderQuizMasterStartButton(label){
 function updateQuizMasterDailyUI(){
   const remaining=STATE.adminMode?QUIZ_MASTER_DAILY_LIMIT:quizMasterRemainingToday();
   const life=$("quizMasterLifelineBtn");
-  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ ❤×${remaining}<br><small>毎日24時リセット</small>`:`ライフ ❤×∞<br><small>テスト中は無制限</small>`;
+  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ <span class="qm-life-heart">♥</span>×${remaining}<br><small>毎日24時リセット</small>`:`ライフ <span class="qm-life-heart">♥</span>×∞<br><small>テスト中は無制限</small>`;
   const start=$("quizMasterBtn");
   if(start){
     start.disabled=QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!STATE.adminMode&&remaining<=0;
@@ -5280,8 +5280,9 @@ function showQuizMasterBonusLifeAnimation(){
       el.id="quizMasterBonusLifeOverlay";
       el.className="qm-bonus-life-overlay";
       el.setAttribute("aria-hidden","true");
-      el.innerHTML=`<div class="qm-bonus-life-text">本日の野球博士チャレンジ用ボーナスライフをゲット!</div>`+
-        `<div class="qm-bonus-life-heart" aria-hidden="true"><svg viewBox="0 0 32 29.6" xmlns="http://www.w3.org/2000/svg"><path d="M23.6,0c-2.7,0-5.1,1.4-6.6,3.6C15.5,1.4,13.1,0,10.4,0C4.7,0,0,4.7,0,10.4 c0,7.4,7.5,12.3,16,19.2c8.5-6.9,16-11.8,16-19.2C32,4.7,27.3,0,23.6,0z" fill="#ff2d4f"/></svg></div>`;
+      el.innerHTML=`<div class="qm-bonus-life-heart" aria-hidden="true"><svg viewBox="0 0 32 29.6" xmlns="http://www.w3.org/2000/svg"><path d="M23.6,0c-2.7,0-5.1,1.4-6.6,3.6C15.5,1.4,13.1,0,10.4,0C4.7,0,0,4.7,0,10.4 c0,7.4,7.5,12.3,16,19.2c8.5-6.9,16-11.8,16-19.2C32,4.7,27.3,0,23.6,0z" fill="#dd0e2d"/></svg></div>`+
+        `<div class="qm-bonus-life-band" aria-hidden="true"></div>`+
+        `<div class="qm-bonus-life-text">本日の野球博士チャレンジ用ボーナスライフをゲット!</div>`;
       document.body.appendChild(el);
     }
     el.classList.remove("show");

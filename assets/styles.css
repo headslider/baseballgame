@@ -9983,13 +9983,32 @@ body.app-booting #quizMasterRankingBtn{
   position:absolute;
   top:50%;
   left:50%;
-  width:300px;
-  height:300px;
-  max-width:80vw;
-  max-height:80vw;
+  width:150px;
+  height:150px;
+  max-width:70vw;
+  max-height:70vw;
   opacity:0;
   transform:translate(-50%,-50%) scale(2);
-  filter:drop-shadow(0 14px 34px rgba(255,45,79,.55));
+  filter:drop-shadow(0 12px 28px rgba(221,14,45,.55));
+}
+.qm-bonus-life-band{
+  position:absolute;
+  left:0;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  height:clamp(60px,12vw,116px);
+  background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.82) 12%,rgba(0,0,0,.82) 88%,rgba(0,0,0,0));
+  opacity:0;
+}
+.qm-bonus-life-overlay.show .qm-bonus-life-band{
+  animation:qmBonusBand 2.6s ease both;
+}
+@keyframes qmBonusBand{
+  0%{opacity:0;}
+  19%{opacity:1;}
+  77%{opacity:1;}
+  100%{opacity:0;}
 }
 .qm-bonus-life-heart svg{
   width:100%;
@@ -10026,4 +10045,10 @@ body.app-booting #quizMasterRankingBtn{
   19%{transform:translate(-50%,-50%);}
   77%{transform:translate(-50%,-50%);}
   100%{transform:translate(170vw,-50%);}
+}
+
+/* ゲーム中ライフのハートを #dd0e2d で表示 */
+.qm-life-heart{
+  color:#dd0e2d;
+  font-weight:900;
 }
