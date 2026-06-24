@@ -3435,8 +3435,8 @@ function renderMistakeReviewSection(){
     <button class="secondary" data-unavailable-page-action="next" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE>=unavailableTotalPages?'disabled':''}>次へ &gt;</button>
   </div>`:"";
 
-  const unavailableHtml=unavailableViews.length?`<h4>更新または停止された問題</h4><p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailablePageViews.map(mistakeReviewItemHtml).join("")}${unavailablePaginationHtml}`:"";
-  box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4>間違えた問題一覧</h4>${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}${paginationHtml}${unavailableHtml}</div>`;
+  const unavailableHtml=unavailableViews.length?`<h4>更新または停止された問題</h4>${unavailablePaginationHtml}<p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailablePageViews.map(mistakeReviewItemHtml).join("")}${unavailablePaginationHtml}`:"";
+  box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4>間違えた問題一覧</h4>${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}${paginationHtml}${unavailableHtml}</div>`;
 
   // 「間違えた問題一覧」ページネーションボタンのイベントリスナー
   if(showPagination){
