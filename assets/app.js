@@ -3370,6 +3370,8 @@ function mistakeReviewItemHtml(view){
 
 let MISTAKE_REVIEW_PAGE=1;
 let MISTAKE_REVIEW_UNAVAILABLE_PAGE=1;
+let MISTAKE_REVIEW_LIST_OPEN=true;
+let MISTAKE_REVIEW_UNAVAILABLE_OPEN=true;
 function renderMistakeReviewSection(){
   const box=$("myPageMistakes");
   if(!box)return;
@@ -3435,8 +3437,8 @@ function renderMistakeReviewSection(){
     <button class="secondary" data-unavailable-page-action="next" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE>=unavailableTotalPages?'disabled':''}>次へ &gt;</button>
   </div>`:"";
 
-  const unavailableHtml=unavailableViews.length?`<h4>更新または停止された問題</h4>${unavailablePaginationHtml}<p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailablePageViews.map(mistakeReviewItemHtml).join("")}`:"";
-  box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4>間違えた問題一覧</h4>${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}${unavailableHtml}</div>`;
+  const unavailableHtml=unavailableViews.length?`<h4 class="mistake-accordion-title" data-accordion="unavailable"><span class="accordion-icon">${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'▼':'▶'}</span> 更新または停止された問題</h4><div class="mistake-accordion-content" data-accordion-content="unavailable" style="display:${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'block':'none'}">${unavailablePaginationHtml}<p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailablePageViews.map(mistakeReviewItemHtml).join("")}</div>`:"";
+  box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4 class="mistake-accordion-title" data-accordion="list"><span class="accordion-icon">${MISTAKE_REVIEW_LIST_OPEN?'▼':'▶'}</span> 間違えた問題一覧</h4><div class="mistake-accordion-content" data-accordion-content="list" style="display:${MISTAKE_REVIEW_LIST_OPEN?'block':'none'}">${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}</div>${unavailableHtml}</div>`;
 
   // 「間違えた問題一覧」ページネーションボタンのイベントリスナー
   if(showPagination){
@@ -3465,6 +3467,20 @@ function renderMistakeReviewSection(){
       });
     });
   }
+
+  // アコーディオン制御
+  box.querySelectorAll('[data-accordion]').forEach(title=>{
+    title.style.cursor='pointer';
+    title.addEventListener('click',()=>{
+      const accordion=title.getAttribute('data-accordion');
+      if(accordion==='list'){
+        MISTAKE_REVIEW_LIST_OPEN=!MISTAKE_REVIEW_LIST_OPEN;
+      }else if(accordion==='unavailable'){
+        MISTAKE_REVIEW_UNAVAILABLE_OPEN=!MISTAKE_REVIEW_UNAVAILABLE_OPEN;
+      }
+      renderMistakeReviewSection();
+    });
+  });
 }
 function recordMistakeReview(q,choice,score){
   if(isAdminQuestionTestMode())return;

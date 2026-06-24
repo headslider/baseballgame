@@ -10091,3 +10091,24 @@ body.app-booting #quizMasterRankingBtn{
   padding:4px 12px;
   border-radius:6px;
 }
+
+/* マイページ間違いプレイチェックのアコーディオン */
+.mistake-accordion-title{
+  cursor:pointer;
+  user-select:none;
+  transition:color .18s ease;
+}
+.mistake-accordion-title:hover{
+  color:#ff6699;
+}
+.accordion-icon{
+  display:inline-block;
+  width:1.2em;
+  text-align:center;
+  margin-right:4px;
+  transition:transform .2s ease;
+}
+.mistake-accordion-content{
+  transition:all .24s ease;
+  overflow:hidden;
+}
