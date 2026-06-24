@@ -1422,6 +1422,17 @@ async function init(){
   detectIssueKeyUrl();
   loadPublicVersionInfo().catch(()=>{});
 
+  // ログイン状態の確定とボタン表示は、ネットワーク取得（game_config等）より先に行う。
+  // キャッシュ済みフラグで即時描画し、起動ガードを外すことで描画遅延・チラつきを防ぐ。
+  const savedId=localStorage.getItem("baseballPlayerId")||"";
+  $("playerId").value=savedId;
+  STATE.playerId=savedId;
+  STATE.loggedIn=!!savedId;
+  if(savedId)STATE.featureFlags=loadLocalFeatureFlags(savedId);
+  loadMistakeReviewSetting(savedId);
+  updateLoginUI();
+  document.body.classList.remove("app-booting");
+
   // トップ画面を早く出すため、初期表示で不要な重い処理は後回しにする。
   // 問題データ questions.json はゲーム開始時に遅延読み込みする。
   let cfg={positions:{}};
@@ -1443,17 +1454,7 @@ async function init(){
     sel.dataset.loaded="1";
   }
 
-  const savedId=localStorage.getItem("baseballPlayerId")||"";
-  $("playerId").value=savedId;
-  STATE.playerId=savedId;
-  STATE.loggedIn=!!savedId;
-  // 解放ボタンの描画遅延対策: サーバー確認前にキャッシュ済みフラグで即時描画する。
-  if(savedId)STATE.featureFlags=loadLocalFeatureFlags(savedId);
-  loadMistakeReviewSetting(savedId);
-  updateLoginUI();
   updateGradeOptions();
-  // ログイン状態を確定し正しいボタンを表示し終えたので、起動中の表示ガードを外す。
-  document.body.classList.remove("app-booting");
 
   // サーバー確認系はトップ表示をブロックしない。
   if(savedId){
