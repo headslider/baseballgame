@@ -10084,6 +10084,10 @@ body.app-booting #quizMasterRankingBtn{
 .page-info{
   font-size:14px;
   font-weight:700;
-  color:#0b3a75;
+  color:#fff;
+  text-shadow:0 2px 4px rgba(0,0,0,.4);
   white-space:nowrap;
+  background:rgba(11,58,117,.15);
+  padding:4px 12px;
+  border-radius:6px;
 }
