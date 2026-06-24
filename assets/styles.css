@@ -7835,17 +7835,19 @@ html:has(body.screen-quiz-master-active){
   z-index:2147482000;
   width:max-content;
   max-width:90%;
-  padding:18px 42px;
+  padding:clamp(18px,2.8vw,48px) clamp(42px,6vw,86px);
   border-radius:999px;
-  background:linear-gradient(180deg,rgba(255,250,190,.99),rgba(255,184,0,.99));
+  background:linear-gradient(135deg,#fffc74,#ffd700,#ff8c00);
   color:#fff;
-  font-size:clamp(44px,9vw,118px);
+  font-size:clamp(48px,10vw,140px);
   font-weight:1000;
-  text-shadow:0 5px 3px rgba(0,0,0,.72),0 0 24px rgba(255,255,255,.92);
-  box-shadow:0 0 34px rgba(255,230,70,.95),0 0 92px rgba(255,46,172,.56),0 0 150px rgba(76,190,255,.32);
+  letter-spacing:0.05em;
+  text-shadow:0 0 6px rgba(0,0,0,.9),0 4px 10px rgba(0,0,0,.72),0 0 32px rgba(255,215,0,.84);
+  box-shadow:0 0 0 3px rgba(255,215,0,.4),0 0 24px rgba(255,230,70,.95),0 0 48px rgba(255,140,0,.72),0 0 92px rgba(255,46,172,.48),0 0 150px rgba(76,190,255,.28),inset 0 0 24px rgba(255,255,255,.36);
   opacity:0;
   pointer-events:none;
-  transform:translate(-50%,-50%) scale(.82);
+  transform:translate(-50%,-50%) scale(.72);
+  filter:brightness(1.15);
 }
 .quiz-master-point-burst.show{
   animation:quizPointBurst 1.22s ease both;
@@ -8583,10 +8585,11 @@ body.quiz-master-failed .quiz-master-shell{
   50%{filter:brightness(1.45);box-shadow:0 0 0 3px rgba(255,255,255,.92),0 0 48px rgba(89,255,178,.86),inset 0 0 34px rgba(89,255,178,.55)}
 }
 @keyframes quizPointBurst{
-  0%{opacity:0;transform:translate(-50%,-42%) scale(.62)}
-  16%{opacity:1;transform:translate(-50%,-52%) scale(1.12)}
-  58%{opacity:1;transform:translate(-50%,-54%) scale(1)}
-  100%{opacity:0;transform:translate(-50%,-66%) scale(.9)}
+  0%{opacity:0;transform:translate(-50%,-40%) scale(.45) rotate(-25deg)}
+  8%{opacity:1;transform:translate(-50%,-48%) scale(1.18) rotate(12deg);filter:brightness(1.4)}
+  28%{opacity:1;transform:translate(-50%,-52%) scale(1.08) rotate(8deg);filter:brightness(1.2)}
+  62%{opacity:1;transform:translate(-50%,-56%) scale(1) rotate(-2deg);filter:brightness(1)}
+  100%{opacity:0;transform:translate(-50%,-72%) scale(.75) rotate(15deg);filter:brightness(0.8)}
 }
 @keyframes quizMasterCountdownPop{
   0%{opacity:0;transform:scale(.72)}
