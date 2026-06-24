@@ -1488,7 +1488,7 @@ async function init(){
   $("logoutBtn").addEventListener("click",()=>{closeTopMenu();logoutPlayer()});
   $("myPageBackBtn").addEventListener("click",()=>show("screen-title"));
   $("rankingBackBtn").addEventListener("click",()=>show("screen-title"));
-  const quizMasterExitBtn=$("quizMasterExitBtn");if(quizMasterExitBtn)quizMasterExitBtn.addEventListener("click",()=>show("screen-quiz-master-menu"));
+  const quizMasterExitBtn=$("quizMasterExitBtn");if(quizMasterExitBtn)quizMasterExitBtn.addEventListener("click",async()=>{if(await confirmQuizMasterExitWarning()){clearQuizMasterTimer();show("screen-quiz-master-menu");}});
   const quizMasterResultBackBtn=$("quizMasterResultBackBtn");if(quizMasterResultBackBtn)quizMasterResultBackBtn.addEventListener("click",openQuizMasterMenu);
   const quizMasterRetryBtn=$("quizMasterRetryBtn");if(quizMasterRetryBtn)quizMasterRetryBtn.addEventListener("click",startQuizMaster);
   const quizMasterRankingBackBtn=$("quizMasterRankingBackBtn");if(quizMasterRankingBackBtn)quizMasterRankingBackBtn.addEventListener("click",()=>show("screen-quiz-master-menu"));
@@ -2209,6 +2209,28 @@ function showQuizMasterCheckpoint(){
         overlay.innerHTML="";
         setTextSafe("quizMasterMessage",go?"チャレンジモードに進みます。":`第${QUIZ_MASTER_CHECKPOINT_LEVEL}問クリアで終了します。`);
         resolve(go);
+      },{once:true});
+    });
+  });
+}
+function confirmQuizMasterExitWarning(){
+  return new Promise(resolve=>{
+    const overlay=$("quizMasterCheckpointOverlay");
+    if(!overlay){resolve(true);return}
+    overlay.innerHTML=`<div class="quiz-master-exit-card" role="dialog" aria-modal="true" aria-label="メニューに戻る確認">`+
+      `<p class="quiz-master-exit-title">⚠ 本当にメニューに戻りますか？</p>`+
+      `<ul class="quiz-master-exit-notes"><li>今のゲームは終了し、<b>獲得した点数は記録されません。</b></li><li><b>ライフを1つ消費</b>し、本日プレイできる回数が1回減ります。</li></ul>`+
+      `<div class="quiz-master-exit-actions"><button type="button" class="primary" data-quiz-exit="back">ゲームに戻る</button><button type="button" class="secondary" data-quiz-exit="ok">OK</button></div>`+
+      `</div>`;
+    overlay.setAttribute("aria-hidden","false");
+    overlay.classList.add("show");
+    overlay.querySelectorAll("[data-quiz-exit]").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const ok=btn.getAttribute("data-quiz-exit")==="ok";
+        overlay.classList.remove("show");
+        overlay.setAttribute("aria-hidden","true");
+        overlay.innerHTML="";
+        resolve(ok);
       },{once:true});
     });
   });

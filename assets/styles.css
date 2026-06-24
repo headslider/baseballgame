@@ -8201,6 +8201,64 @@ img.qtb-badge-icon{
   font-size:clamp(18px,2.5vw,30px);
   font-weight:1000;
 }
+/* ゲーム中の「メニューに戻る」離脱警告（危険を伝える赤系デザイン） */
+.quiz-master-exit-card{
+  width:min(640px,94vw);
+  padding:clamp(22px,3.4vw,40px);
+  border-radius:18px;
+  border:3px solid #ff6a6a;
+  background:linear-gradient(180deg,rgba(48,8,12,.97),rgba(20,3,6,.98));
+  color:#fff;
+  text-align:center;
+  box-shadow:0 0 38px rgba(255,70,70,.4),inset 0 0 26px rgba(255,40,40,.22);
+  animation:quizMasterCheckpointPop .26s ease-out both;
+}
+.quiz-master-exit-title{
+  margin:0 0 16px;
+  font-size:clamp(22px,3.4vw,38px);
+  font-weight:1000;
+  color:#ffd34d;
+  text-shadow:0 3px 2px #000;
+}
+.quiz-master-exit-notes{
+  display:grid;
+  gap:10px;
+  margin:0 0 6px;
+  padding:0;
+  list-style:none;
+  text-align:left;
+  font-size:clamp(16px,2.2vw,26px);
+  font-weight:800;
+  line-height:1.45;
+  text-shadow:0 2px 2px #000;
+}
+.quiz-master-exit-notes li{
+  position:relative;
+  padding-left:1.5em;
+}
+.quiz-master-exit-notes li::before{
+  content:"⚠";
+  position:absolute;
+  left:0;
+  color:#ff8a8a;
+}
+.quiz-master-exit-notes b{
+  color:#ffd34d;
+}
+.quiz-master-exit-actions{
+  display:flex;
+  justify-content:center;
+  gap:clamp(12px,2vw,20px);
+  flex-wrap:wrap;
+  margin-top:clamp(22px,3vw,32px);
+}
+.quiz-master-exit-actions button{
+  min-width:min(240px,42vw);
+  min-height:clamp(54px,7vw,76px);
+  border-radius:14px;
+  font-size:clamp(18px,2.5vw,30px);
+  font-weight:1000;
+}
 .quiz-master-result-card{
   max-width:760px;
   width:min(760px,94vw);
