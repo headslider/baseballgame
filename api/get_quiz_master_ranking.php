@@ -136,9 +136,14 @@ usort($best_rows, 'quiz_master_compare_rows');
 
 $title_rows = quiz_master_load_titles_payload()['titles'] ?? quiz_master_default_titles();
 usort($rows, 'quiz_master_total_compare');
+$rank_user_counts = [];
 foreach ($rows as $i => &$row) {
     $row['rank']       = $i + 1;
     $row['title_info'] = quiz_master_title_for_score($row['total_score'] ?? 0, $title_rows);
+    $lvl = intval($row['title_info']['level'] ?? 0);
+    if ($lvl > 0) {
+        $rank_user_counts[$lvl] = ($rank_user_counts[$lvl] ?? 0) + 1;
+    }
 }
 unset($row);
 
@@ -171,5 +176,6 @@ echo json_encode([
         'latest_played_at' => $latest_played_at
     ],
     'titles'        => $title_rows,
-    'total_players' => count($rows)
+    'total_players' => count($rows),
+    'rank_user_counts' => (object)$rank_user_counts
 ], JSON_UNESCAPED_UNICODE | $JSON_INVALID_UTF8_SUBSTITUTE_FLAG);

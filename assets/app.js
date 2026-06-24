@@ -2350,8 +2350,9 @@ async function renderQuizMasterRanks(){
   try{
     const data=await fetchQuizMasterRanking();
     const titles=normalizeQuizMasterTitles(data&&data.titles?data.titles:QUIZ_MASTER_STATE.titles);
-    const myScore=STATE.loggedIn?Number((STATE.quizMasterTotal||{}).total_score||0):0;
-    const myTitle=STATE.loggedIn?quizMasterTitleForScore(myScore,titles):null;
+    const myTotal=data&&data.my_total?data.my_total:null;
+    const myScore=Number((myTotal&&(myTotal.total_score||myTotal.score))||(STATE.loggedIn?(STATE.quizMasterTotal||{}).total_score:0)||0);
+    const myTitle=(STATE.loggedIn||myTotal)?quizMasterTitleForScore(myScore,titles):null;
     const box=$("quizMasterRanksContainer");
     if(!box)return;
     const rankUserCounts=data&&data.rank_user_counts?data.rank_user_counts:{};
