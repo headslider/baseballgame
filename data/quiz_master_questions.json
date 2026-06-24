@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "v67_remove_upper_category_value_question",
+    "version": "v68_close_stance_correction",
     "created_by": "ChatGPT",
     "question_count": 323,
     "answer_index_base": 0,
@@ -24,7 +24,7 @@
     ],
     "audit": "5-pass answer/explanation/logic/difficulty/overlap validation completed on 2026-06-19.",
     "audit_step1": "2026-06-20 Step1正解・解説整合監査完了（5観点チェック）",
-    "source_file": "ユーザー指定削除（少年野球から見た上位カテゴリー知識の価値、2026-06-24）",
+    "source_file": "用語表記修正（BQ2175 クロースタンス→クローズスタンス、2026-06-24）",
     "audit_step2": "2026-06-20 Step2最新学童ルール監査：JSBB、マクドナルド・トーナメント、ミズノドリームカップの重要ルールを追加・反映。",
     "step2_added_questions": 43,
     "source_summary": [
@@ -435,7 +435,7 @@
       "BQ1083"
     ],
     "validation_errors": [],
-    "base_file": "quiz_master_questions_final_candidate_v66_sheet_knock_revision.json",
+    "base_file": "quiz_master_questions_final_candidate_v67_remove_upper_category_value_question.json",
     "audit_step9_1": "2026-06-21 イレギュラーの意味を問う用語問題を第3問に追加。既存BQ314は解説内の言及のみのため重複問題ではない。",
     "added_throw_destination_term_ids": [
       "BQ1084",
@@ -1297,6 +1297,20 @@
       "少年野球から見た上位カテゴリー知識の価値"
     ],
     "v67_validation": {
+      "question_count": 323,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0
+    },
+    "audit_step_v68": "2026-06-24 BQ2175の誤表記「クロースタンス」を「クローズスタンス」へ修正。問題文、選択肢、解説、分類名、出典メモを更新し、全体の構造検証を実施。",
+    "v68_modified_ids": [
+      "BQ2175"
+    ],
+    "v68_validation": {
       "question_count": 323,
       "id_duplicates": 0,
       "question_text_duplicates": 0,
@@ -4155,18 +4169,18 @@
       "category": "野球用語",
       "main_category": "野球用語",
       "middle_category": "打撃フォーム",
-      "small_category": "クロースタンス",
-      "question": "クロースタンスとは？",
+      "small_category": "クローズスタンス",
+      "question": "クローズスタンスとは？",
       "choices": [
-        "前足を本塁側へ寄せ、体を閉じ気味にする立ち方",
-        "前足を引き、体を投手側へ開く立ち方",
-        "両足をそろえて立つ立ち方"
+        "捕手側の足を本塁から遠ざける立ち方",
+        "投手側の足を本塁から遠ざける立ち方",
+        "両足を本塁に近づける立ち方"
       ],
       "answer": 0,
-      "explanation": "クロースタンスは、前足を本塁側へ寄せ、体を閉じ気味にする打席での立ち方です。",
-      "source_note": "野球用語。",
-      "overlap_check": "BQ2171のオープンスタンスとは反対の立ち方であり、同時追加だが論点は区別できる。",
-      "quality_note": "v61新規追加。第6問以降の打撃フォーム用語として配置。"
+      "explanation": "クローズスタンスは、捕手側の足を投手側の足より本塁から遠ざけ、体を閉じ気味にして構える打席での立ち方です。",
+      "source_note": "Full-Count野球用語辞典「クローズドスタンス」。クローズスタンスとも呼ばれる。",
+      "overlap_check": "BQ2171のオープンスタンスとは、足の位置と体の向きが反対の立ち方であり、論点は区別できる。",
+      "quality_note": "v68: 「クロースタンス」を誤表記として修正。正式な呼び方をクローズスタンスに統一。"
     },
     {
       "id": "BQ2176",
