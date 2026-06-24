@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "野球博士チャレンジ",
-    "version": "v68_close_stance_correction",
+    "version": "v69_long_throw_definition_correction",
     "created_by": "ChatGPT",
     "question_count": 323,
     "answer_index_base": 0,
@@ -24,7 +24,7 @@
     ],
     "audit": "5-pass answer/explanation/logic/difficulty/overlap validation completed on 2026-06-19.",
     "audit_step1": "2026-06-20 Step1正解・解説整合監査完了（5観点チェック）",
-    "source_file": "用語表記修正（BQ2175 クロースタンス→クローズスタンス、2026-06-24）",
+    "source_file": "ユーザー指定修正（BQ2154 遠投、2026-06-25）",
     "audit_step2": "2026-06-20 Step2最新学童ルール監査：JSBB、マクドナルド・トーナメント、ミズノドリームカップの重要ルールを追加・反映。",
     "step2_added_questions": 43,
     "source_summary": [
@@ -435,7 +435,7 @@
       "BQ1083"
     ],
     "validation_errors": [],
-    "base_file": "quiz_master_questions_final_candidate_v67_remove_upper_category_value_question.json",
+    "base_file": "quiz_master_questions_final_candidate_v68_close_stance_correction.json",
     "audit_step9_1": "2026-06-21 イレギュラーの意味を問う用語問題を第3問に追加。既存BQ314は解説内の言及のみのため重複問題ではない。",
     "added_throw_destination_term_ids": [
       "BQ1084",
@@ -1311,6 +1311,20 @@
       "BQ2175"
     ],
     "v68_validation": {
+      "question_count": 323,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0
+    },
+    "audit_step_v69": "2026-06-25 BQ2154「遠投」を練習ではなく、できるだけ遠くへ投げる行為として定義へ修正。問題文、選択肢、解説の整合性と全体構造を検証。",
+    "v69_modified_ids": [
+      "BQ2154"
+    ],
+    "v69_validation": {
       "question_count": 323,
       "id_duplicates": 0,
       "question_text_duplicates": 0,
@@ -2612,15 +2626,15 @@
       "small_category": "遠投",
       "question": "遠投とは？",
       "choices": [
-        "できるだけ遠くへ投げる練習",
-        "近い相手へ速く投げる練習",
-        "打球を遠くへ飛ばす練習"
+        "できるだけ遠くへ投げること",
+        "近い相手へ速く投げること",
+        "打球を遠くへ飛ばすこと"
       ],
       "answer": 0,
-      "explanation": "遠投は、フォームや肩の使い方を意識しながら、できるだけ遠くへ投げる練習です。",
+      "explanation": "遠投は、ボールをできるだけ遠くへ投げることです。",
       "source_note": "野球用語。",
-      "overlap_check": "v60全281問に遠投の定義問題はないことを確認。",
-      "quality_note": "v61新規追加。ユーザー指定により第4〜5問向け用語として配置。"
+      "overlap_check": "v69: 遠投は練習の名称ではなく、遠くへ投げる行為を指す定義へ修正。",
+      "quality_note": "v69: ユーザー指摘により「練習」表現を削除し、行為として定義を統一。"
     },
     {
       "id": "BQ2155",
