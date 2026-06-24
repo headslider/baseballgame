@@ -162,6 +162,7 @@
 .quiz-master-howto-section{
   background:linear-gradient(180deg,#f7fbff,#eef6ff);
   border-color:#b9d9ff;
+  margin-top:22px;
 }
 .quiz-master-howto-layout{
   display:grid;
