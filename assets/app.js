@@ -1488,7 +1488,16 @@ async function init(){
   $("logoutBtn").addEventListener("click",()=>{closeTopMenu();logoutPlayer()});
   $("myPageBackBtn").addEventListener("click",()=>show("screen-title"));
   $("rankingBackBtn").addEventListener("click",()=>show("screen-title"));
-  const quizMasterExitBtn=$("quizMasterExitBtn");if(quizMasterExitBtn)quizMasterExitBtn.addEventListener("click",async()=>{if(await confirmQuizMasterExitWarning()){clearQuizMasterTimer();show("screen-quiz-master-menu");}});
+  const quizMasterExitBtn=$("quizMasterExitBtn");if(quizMasterExitBtn)quizMasterExitBtn.addEventListener("click",async()=>{
+    clearQuizMasterTimer(); // 警告表示中は制限時間を停止する
+    const ok=await confirmQuizMasterExitWarning();
+    if(ok){
+      clearQuizMasterTimer();
+      show("screen-quiz-master-menu");
+    }else{
+      resumeQuizMasterTimerAfterPrompt(); // ゲームに戻る場合は再開
+    }
+  });
   const quizMasterResultBackBtn=$("quizMasterResultBackBtn");if(quizMasterResultBackBtn)quizMasterResultBackBtn.addEventListener("click",openQuizMasterMenu);
   const quizMasterRetryBtn=$("quizMasterRetryBtn");if(quizMasterRetryBtn)quizMasterRetryBtn.addEventListener("click",startQuizMaster);
   const quizMasterRankingBackBtn=$("quizMasterRankingBackBtn");if(quizMasterRankingBackBtn)quizMasterRankingBackBtn.addEventListener("click",()=>show("screen-quiz-master-menu"));
