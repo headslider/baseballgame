@@ -9799,3 +9799,13 @@ body.quiz-master-failed .quiz-master-shell{
       url("quiz_master_chair.webp") center 56% / auto clamp(140px,24vh,300px) no-repeat;
   }
 }
+
+/* v971+: 起動中（app-booting）はログイン状態に依存する条件付きコントロールを
+   隠し、JSが状態を確定してから正しいボタンだけを表示する。
+   これにより「不要ボタンが一瞬出て消える」チラつきを防ぐ。 */
+body.app-booting #screen-title .registration-control,
+body.app-booting #screen-title .game-start-control,
+body.app-booting #quizMasterBtn,
+body.app-booting #quizMasterRankingBtn{
+  display:none !important;
+}

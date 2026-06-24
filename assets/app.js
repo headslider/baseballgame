@@ -1452,6 +1452,8 @@ async function init(){
   loadMistakeReviewSetting(savedId);
   updateLoginUI();
   updateGradeOptions();
+  // ログイン状態を確定し正しいボタンを表示し終えたので、起動中の表示ガードを外す。
+  document.body.classList.remove("app-booting");
 
   // サーバー確認系はトップ表示をブロックしない。
   if(savedId){
