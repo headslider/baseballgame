@@ -1505,7 +1505,7 @@ async function init(){
   const quizMasterMenuStartBtn=$("quizMasterMenuStartBtn");if(quizMasterMenuStartBtn)quizMasterMenuStartBtn.addEventListener("click",startQuizMaster);
   const quizMasterMenuRankingBtn=$("quizMasterMenuRankingBtn");if(quizMasterMenuRankingBtn)quizMasterMenuRankingBtn.addEventListener("click",openQuizMasterRanking);
   const quizMasterMenuRanksBtn=$("quizMasterMenuRanksBtn");if(quizMasterMenuRanksBtn)quizMasterMenuRanksBtn.addEventListener("click",showQuizMasterRanks);
-  const quizMasterMenuHowtoBtn=$("quizMasterMenuHowtoBtn");if(quizMasterMenuHowtoBtn)quizMasterMenuHowtoBtn.addEventListener("click",async()=>{show("screen-quiz-master");await new Promise(r=>setTimeout(r,50));showQuizMasterTutorial();});
+  const quizMasterMenuHowtoBtn=$("quizMasterMenuHowtoBtn");if(quizMasterMenuHowtoBtn)quizMasterMenuHowtoBtn.addEventListener("click",async()=>{show("screen-quiz-master");await new Promise(r=>setTimeout(r,50));showQuizMasterTutorial(true);});
   const quizMasterMenuBackBtn=$("quizMasterMenuBackBtn");if(quizMasterMenuBackBtn)quizMasterMenuBackBtn.addEventListener("click",()=>show("screen-title"));
   const quizMasterRanksBackBtn=$("quizMasterRanksBackBtn");if(quizMasterRanksBackBtn)quizMasterRanksBackBtn.addEventListener("click",openQuizMasterMenu);
   const quizMasterFiftyBtn=$("quizMasterFiftyBtn");if(quizMasterFiftyBtn)quizMasterFiftyBtn.addEventListener("click",useQuizMasterFifty);
@@ -1739,17 +1739,20 @@ function updateQuizMasterDailyUI(){
     renderQuizMasterStartButton(QUIZ_MASTER_DAILY_LIMIT_ENABLED?(remaining>0||STATE.adminMode?`野球博士チャレンジ（本日残り${remaining}回）`:"野球博士チャレンジ（本日終了）"):"野球博士チャレンジ");
   }
 }
-function showQuizMasterTutorial(){
+function showQuizMasterTutorial(fromMenu=false){
   return new Promise(resolve=>{
     const overlay=$("quizMasterTutorialOverlay");
     if(!overlay){resolve(true);return}
-    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ はじめに"><p class="quiz-master-tutorial-kicker">はじめに</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全20問。各問に制限時間があります。</li><li>正解するたびに点数が加算され、後半ほど1問あたりの点数が大きく伸びます。</li><li>第15問以降はチャレンジゾーンです。正解するたびに加算率が上がり、得点の伸びがさらに強くなります。</li><li class="quiz-master-tutorial-danger">第15問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日5ライフまで。通常の野球やろうぜ！を1回クリアすると、その日だけライフが1つ増えます。毎日24時にリセットされます（テスト中は無制限）。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">内容を確認してからゲームを始めます。</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="top">トップに戻る</button><button type="button" class="secondary quiz-master-lifeline" data-quiz-tutorial="start">ゲームを始める</button></div></div>';
+    const topButtonText=fromMenu?"メニューに戻る":"トップに戻る";
+    const startButtonHtml=fromMenu?"":'<button type="button" class="secondary quiz-master-lifeline" data-quiz-tutorial="start">ゲームを始める</button>';
+    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ はじめに"><p class="quiz-master-tutorial-kicker">はじめに</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>用具、安全、少年野球ルール、施設知識、高校野球、プロ野球、野球史などを学べる知識クイズです。</p><ul><li>全20問。各問に制限時間があります。</li><li>正解するたびに点数が加算され、後半ほど1問あたりの点数が大きく伸びます。</li><li>第15問以降はチャレンジゾーンです。正解するたびに加算率が上がり、得点の伸びがさらに強くなります。</li><li class="quiz-master-tutorial-danger">第15問以降で失敗すると獲得点数は0点になります。</li><li>本番では1日5ライフまで。通常の野球やろうぜ！を1回クリアすると、その日だけライフが1つ増えます。毎日24時にリセットされます（テスト中は無制限）。</li><li>50:50は1ゲームに1回だけ、誤答を1つ消せます。</li></ul></div><p class="quiz-master-tutorial-prompt">内容を確認してからゲームを始めます。</p><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="top">'+topButtonText+'</button>'+startButtonHtml+'</div></div>';
     overlay.setAttribute("aria-hidden","false");
     overlay.classList.add("show");
     overlay.querySelector('[data-quiz-tutorial="top"]')?.addEventListener("click",()=>{
       overlay.classList.remove("show");
       overlay.setAttribute("aria-hidden","true");
       overlay.innerHTML="";
+      if(fromMenu)show("screen-quiz-master-menu");
       resolve(false);
     },{once:true});
     overlay.querySelector('[data-quiz-tutorial="start"]')?.addEventListener("click",()=>{
