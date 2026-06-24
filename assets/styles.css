@@ -165,11 +165,13 @@
   margin-top:22px;
 }
 .quiz-master-howto-layout{
-  display:block;
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(280px,.92fr);
+  gap:18px;
+  align-items:start;
 }
 .quiz-master-howto-shot{
-  margin:0 auto 18px;
-  max-width:760px;
+  margin:0;
   border-radius:18px;
   overflow:hidden;
   border:3px solid #0b3a75;
@@ -183,39 +185,6 @@
 }
 .quiz-master-howto-body p{
   margin:0 0 12px;
-}
-.qm-howto-subhead{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin:16px 0 6px;
-  font-weight:900;
-  font-size:1.08em;
-  color:#0b3a75;
-}
-.qm-howto-mini-icon{
-  width:30px;
-  height:30px;
-  object-fit:contain;
-  border-radius:6px;
-}
-.qm-howto-rank-icons{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-  margin:6px 0 12px;
-}
-.qm-howto-rank-icons img{
-  width:66px;
-  height:auto;
-  object-fit:contain;
-  filter:drop-shadow(0 4px 8px rgba(0,0,0,.25));
-}
-.qm-howto-rank-icons span{
-  color:#0b3a75;
-  font-weight:900;
-  font-size:1.3em;
 }
 .option-feature-section .quiz-master-howto-section{
   grid-column:1/-1;
