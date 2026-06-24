@@ -3369,6 +3369,7 @@ function mistakeReviewItemHtml(view){
 
 
 let MISTAKE_REVIEW_PAGE=1;
+let MISTAKE_REVIEW_UNAVAILABLE_PAGE=1;
 function renderMistakeReviewSection(){
   const box=$("myPageMistakes");
   if(!box)return;
@@ -3418,10 +3419,26 @@ function renderMistakeReviewSection(){
     <button class="secondary" data-page-action="next" ${MISTAKE_REVIEW_PAGE>=totalPages?'disabled':''}>次へ &gt;</button>
   </div>`:"";
 
-  const unavailableHtml=unavailableViews.length?`<h4>更新または停止された問題</h4><p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailableViews.slice(0,20).map(mistakeReviewItemHtml).join("")}`:"";
+  // 「更新または停止された問題」ページネーション（5個/ページ）
+  const unavailableItemsPerPage=5;
+  const unavailableTotalPages=Math.ceil(unavailableViews.length/unavailableItemsPerPage);
+  const showUnavailablePagination=unavailableViews.length>=5;
+  if(showUnavailablePagination)MISTAKE_REVIEW_UNAVAILABLE_PAGE=Math.max(1,Math.min(MISTAKE_REVIEW_UNAVAILABLE_PAGE,unavailableTotalPages));
+
+  const unavailableStartIdx=(MISTAKE_REVIEW_UNAVAILABLE_PAGE-1)*unavailableItemsPerPage;
+  const unavailableEndIdx=unavailableStartIdx+unavailableItemsPerPage;
+  const unavailablePageViews=showUnavailablePagination?unavailableViews.slice(unavailableStartIdx,unavailableEndIdx):unavailableViews.slice(0,20);
+
+  const unavailablePaginationHtml=showUnavailablePagination?`<div class="mistake-review-pagination">
+    <button class="secondary" data-unavailable-page-action="prev" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE<=1?'disabled':''}>&lt; 前へ</button>
+    <span class="page-info">ページ ${MISTAKE_REVIEW_UNAVAILABLE_PAGE} / ${unavailableTotalPages}</span>
+    <button class="secondary" data-unavailable-page-action="next" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE>=unavailableTotalPages?'disabled':''}>次へ &gt;</button>
+  </div>`:"";
+
+  const unavailableHtml=unavailableViews.length?`<h4>更新または停止された問題</h4><p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailablePageViews.map(mistakeReviewItemHtml).join("")}${unavailablePaginationHtml}`:"";
   box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4>間違えた問題一覧</h4>${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}${paginationHtml}${unavailableHtml}</div>`;
 
-  // ページネーションボタンのイベントリスナー
+  // 「間違えた問題一覧」ページネーションボタンのイベントリスナー
   if(showPagination){
     box.querySelectorAll('[data-page-action]').forEach(btn=>{
       btn.addEventListener('click',()=>{
@@ -3429,6 +3446,20 @@ function renderMistakeReviewSection(){
           MISTAKE_REVIEW_PAGE--;
         }else if(btn.getAttribute('data-page-action')==='next'&&MISTAKE_REVIEW_PAGE<totalPages){
           MISTAKE_REVIEW_PAGE++;
+        }
+        renderMistakeReviewSection();
+      });
+    });
+  }
+
+  // 「更新または停止された問題」ページネーションボタンのイベントリスナー
+  if(showUnavailablePagination){
+    box.querySelectorAll('[data-unavailable-page-action]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        if(btn.getAttribute('data-unavailable-page-action')==='prev'&&MISTAKE_REVIEW_UNAVAILABLE_PAGE>1){
+          MISTAKE_REVIEW_UNAVAILABLE_PAGE--;
+        }else if(btn.getAttribute('data-unavailable-page-action')==='next'&&MISTAKE_REVIEW_UNAVAILABLE_PAGE<unavailableTotalPages){
+          MISTAKE_REVIEW_UNAVAILABLE_PAGE++;
         }
         renderMistakeReviewSection();
       });
