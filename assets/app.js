@@ -446,7 +446,8 @@ async function refreshFeatureFlags(pid=STATE.playerId){
     renderFeatureUnlockSection();
     return null;
   }
-  STATE.featureFlags={};
+  // ネットワーク確認中もキャッシュ済みフラグを保持し、解放ボタンが消えないようにする。
+  STATE.featureFlags=loadLocalFeatureFlags(pid);
   STATE.featureStatus=null;
   try{
     const res=await fetch("api/get_features.php",{
@@ -1446,6 +1447,8 @@ async function init(){
   $("playerId").value=savedId;
   STATE.playerId=savedId;
   STATE.loggedIn=!!savedId;
+  // 解放ボタンの描画遅延対策: サーバー確認前にキャッシュ済みフラグで即時描画する。
+  if(savedId)STATE.featureFlags=loadLocalFeatureFlags(savedId);
   loadMistakeReviewSetting(savedId);
   updateLoginUI();
   updateGradeOptions();
