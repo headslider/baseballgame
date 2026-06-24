@@ -3401,8 +3401,8 @@ function renderMistakeReviewSection(){
   const tags=tagSummaryFromMistakes(activeViews.map(v=>({...(v.raw||{}),tags:v.tags||[]})));
   const tagHtml=tags.length?`<div class="weak-tags">${tags.map(([t,n])=>`<span>${escapeHtml(t)} <b>${escapeHtml(n)}</b></span>`).join("")}</div>`:"";
 
-  // ページネーション（10個以上で20個/ページ）
-  const itemsPerPage=20;
+  // ページネーション（10個以上で10個/ページ）
+  const itemsPerPage=10;
   const totalPages=Math.ceil(activeViews.length/itemsPerPage);
   const showPagination=activeViews.length>=10;
   if(showPagination)MISTAKE_REVIEW_PAGE=Math.max(1,Math.min(MISTAKE_REVIEW_PAGE,totalPages));
