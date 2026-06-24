@@ -165,13 +165,11 @@
   margin-top:22px;
 }
 .quiz-master-howto-layout{
-  display:grid;
-  grid-template-columns:minmax(0,1.08fr) minmax(280px,.92fr);
-  gap:18px;
-  align-items:start;
+  display:block;
 }
 .quiz-master-howto-shot{
-  margin:0;
+  margin:0 auto 18px;
+  max-width:760px;
   border-radius:18px;
   overflow:hidden;
   border:3px solid #0b3a75;
