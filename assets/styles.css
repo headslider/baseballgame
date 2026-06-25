@@ -8482,7 +8482,7 @@ img.qtb-badge-icon{
 }
 .quiz-master-ranking li{
   display:grid;
-  grid-template-columns:50px 70px 1fr 110px 80px;
+  grid-template-columns:50px 70px 1fr 140px 80px;
   column-gap:12px;
   align-items:center;
   padding:10px 12px;
@@ -8570,7 +8570,7 @@ img.qtb-badge-icon{
 #screen-quiz-master-result .quiz-master-ranking li,
 #screen-quiz-master-ranking .quiz-master-ranking li{
   padding:10px 12px;
-  grid-template-columns:50px 70px 1fr 110px 80px;
+  grid-template-columns:50px 70px 1fr 140px 80px;
 }
 #screen-quiz-master-result .quiz-master-ranking-summary{
   margin:8px 0;
