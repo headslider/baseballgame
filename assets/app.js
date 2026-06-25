@@ -2401,11 +2401,16 @@ function renderQuizMasterRanking(box,data,mode="result"){
   const summary=data&&data.summary?data.summary:{};
   const topRows=rows.slice(0,20);
   const summaryHtml=mode==="page"?`<div class="quiz-master-ranking-summary"><span>参加者 <b>${escapeHtml(summary.total_players||0)}</b></span><span>プレイ数 <b>${escapeHtml(summary.total_plays||0)}</b></span><span>完全制覇 <b>${escapeHtml(summary.cleared_count||0)}</b></span></div>`:"";
+  const formatScore=s=>{
+    if(s>=10000000)return`${Math.floor(s/10000)}万`;
+    return s;
+  };
   const renderRow=(r,extraClass)=>{
     const score=Number(r.total_score||r.score||0);
+    const displayScore=formatScore(score);
     const title=r.title_info||quizMasterTitleForScore(score,data&&data.titles);
     const cls=[(r.player_id===STATE.playerId?"me":""),extraClass||""].filter(Boolean).join(" ");
-    return `<li class="${cls}"><span class="rank-rank">${escapeHtml(r.rank)}位</span><em class="rank-score">${escapeHtml(score)} pt</em><div class="rank-name"><b>${escapeHtml(r.player_id)}</b></div><div class="rank-plays"><small>プレイ数 ${escapeHtml(r.plays||0)}回</small><small>完全制覇 ${escapeHtml(r.cleared_count||0)}回</small></div>${quizMasterLevelIconHtml(title.level,'qm-icon-rank')}</li>`;
+    return `<li class="${cls}"><span class="rank-rank">${escapeHtml(r.rank)}位</span><em class="rank-score">${escapeHtml(displayScore)}${score>=10000000?"":"pt"}</em><div class="rank-name"><b>${escapeHtml(r.player_id)}</b></div><div class="rank-plays"><small>プレイ数 ${escapeHtml(r.plays||0)}回</small><small>完全制覇 ${escapeHtml(r.cleared_count||0)}回</small></div>${quizMasterLevelIconHtml(title.level,'qm-icon-rank')}</li>`;
   };
   let listItems=topRows.map(r=>renderRow(r)).join("");
   // 自分がトップ20圏外なら、最下部に同じデザインで自分のカードを21個目として追加する。
