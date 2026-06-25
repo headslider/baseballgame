@@ -8749,7 +8749,7 @@ body.quiz-master-failed .quiz-master-shell{
     grid-template-columns:1fr;
   }
   #screen-quiz-master-ranking .quiz-master-ranking li{
-    grid-template-columns:35px minmax(100px, 1fr) 60px 50px !important;
+    grid-template-columns:35px minmax(100px, 1fr) 60px 120px !important;
     grid-template-rows:auto auto !important;
     column-gap:2px !important;
     row-gap:1px !important;
@@ -8817,7 +8817,7 @@ body.quiz-master-failed .quiz-master-shell{
   #screen-quiz-master-ranking .quiz-master-ranking li .qm-icon-rank{
     grid-column:4 !important;
     grid-row:1 / 3 !important;
-    width:50px !important;
+    width:120px !important;
     height:auto !important;
     justify-self:end !important;
   }
