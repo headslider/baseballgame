@@ -8803,7 +8803,6 @@ body.quiz-master-failed .quiz-master-shell{
     justify-content:center !important;
     justify-self:start !important;
   }
-  #screen-quiz-master-ranking .quiz-master-ranking li .rank-plays small
   #screen-quiz-master-ranking .quiz-master-ranking li .rank-plays small{
     font-size:.65em;
     white-space:nowrap;
