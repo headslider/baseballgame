@@ -1,5 +1,5 @@
 /**
- * プレイヤー削除用JavaScript（app.jsに統合予定）
+ * プレイヤー削除用JavaScript
  */
 
 function showUserDeleteDialog() {
@@ -9,28 +9,166 @@ function showUserDeleteDialog() {
     return;
   }
 
-  const confirmed = confirm(
-    '⚠️ アカウント削除の確認\n\n' +
-    'このプレイヤーIDで記録されたすべてのデータ（スコア、ランキング、間違いプレイチェック）が削除されます。\n\n' +
-    '削除後のデータ復旧はできません。本当に削除してよろしいですか？'
-  );
+  // カスタム警告ダイアログを表示
+  showDeleteConfirmationDialog(playerId);
+}
 
-  if (!confirmed) {
-    return;
+function showDeleteConfirmationDialog(playerId) {
+  // 既存のダイアログがあれば削除
+  const existingDialog = document.getElementById('deleteConfirmDialog');
+  if (existingDialog) {
+    existingDialog.remove();
   }
 
-  const doubleConfirmed = confirm(
-    '最終確認です。本当に削除してもよろしいですか？\n\n' +
-    'プレイヤーID: ' + playerId + '\n\n' +
-    'この操作は取り消せません。'
-  );
+  // ダイアログ背景（オーバーレイ）
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+  `;
 
-  if (!doubleConfirmed) {
-    return;
-  }
+  // ダイアログボックス
+  const dialog = document.createElement('div');
+  dialog.id = 'deleteConfirmDialog';
+  dialog.style.cssText = `
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  `;
 
-  // 削除要求送信
-  submitUserDeleteRequest(playerId);
+  // タイトル
+  const title = document.createElement('h2');
+  title.style.cssText = `
+    margin: 0 0 16px 0;
+    font-size: 20px;
+    color: #dc3545;
+    font-weight: bold;
+  `;
+  title.textContent = '⚠️ アカウントを本当に削除しますか？';
+
+  // 警告メッセージ
+  const message = document.createElement('p');
+  message.style.cssText = `
+    margin: 0 0 16px 0;
+    color: #6c757d;
+    line-height: 1.6;
+  `;
+  message.textContent = 'この操作は取り消すことができません。アカウントと関連するすべてのデータが永久に削除されます。';
+
+  // 削除対象データリスト
+  const list = document.createElement('ul');
+  list.style.cssText = `
+    margin: 0 0 24px 0;
+    padding-left: 20px;
+    color: #6c757d;
+  `;
+  const dataItems = [
+    'プレイヤープロフィール',
+    'ゲーム成績・スコア',
+    'ランキング記録',
+    ' 間違いプレイチェック履歴',
+    '野球博士チャレンジの成績',
+    'すべてのアカウント関連データ'
+  ];
+  dataItems.forEach(item => {
+    const li = document.createElement('li');
+    li.style.marginBottom = '8px';
+    li.textContent = item;
+    list.appendChild(li);
+  });
+
+  // プレイヤーID表示
+  const idDisplay = document.createElement('div');
+  idDisplay.style.cssText = `
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 0 0 24px 0;
+    border-left: 4px solid #dc3545;
+  `;
+  const idLabel = document.createElement('strong');
+  idLabel.style.color = '#212529';
+  idLabel.textContent = 'プレイヤーID: ';
+  const idValue = document.createElement('span');
+  idValue.style.color = '#dc3545';
+  idValue.textContent = playerId;
+  idDisplay.appendChild(idLabel);
+  idDisplay.appendChild(idValue);
+
+  // ボタン容器
+  const buttonContainer = document.createElement('div');
+  buttonContainer.style.cssText = `
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  `;
+
+  // キャンセルボタン
+  const cancelBtn = document.createElement('button');
+  cancelBtn.style.cssText = `
+    padding: 10px 24px;
+    border: 1px solid #6c757d;
+    background: white;
+    color: #6c757d;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+  `;
+  cancelBtn.textContent = 'キャンセル';
+  cancelBtn.onclick = function() {
+    overlay.remove();
+  };
+
+  // 削除ボタン
+  const deleteBtn = document.createElement('button');
+  deleteBtn.style.cssText = `
+    padding: 10px 24px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+  `;
+  deleteBtn.textContent = 'アカウント削除';
+  deleteBtn.onclick = function() {
+    overlay.remove();
+    submitUserDeleteRequest(playerId);
+  };
+
+  buttonContainer.appendChild(cancelBtn);
+  buttonContainer.appendChild(deleteBtn);
+
+  // ダイアログに要素を追加
+  dialog.appendChild(title);
+  dialog.appendChild(message);
+  dialog.appendChild(list);
+  dialog.appendChild(idDisplay);
+  dialog.appendChild(buttonContainer);
+
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+
+  // キーボード操作対応
+  document.addEventListener('keydown', function handleEsc(e) {
+    if (e.key === 'Escape') {
+      overlay.remove();
+      document.removeEventListener('keydown', handleEsc);
+    }
+  });
 }
 
 function submitUserDeleteRequest(playerId) {
@@ -47,7 +185,7 @@ function submitUserDeleteRequest(playerId) {
         alert(
           '削除要求を受け付けました。\n\n' +
           'リクエストID: ' + response.request_id + '\n\n' +
-          'ご質問やご不明な点は、お問い合わせフォームよりご連絡ください。'
+          '管理チームが3営業日以内に確認し、アカウントを削除いたします。'
         );
         // ログアウト
         logout();
@@ -73,47 +211,36 @@ function addUserDeleteButton() {
   // 既に追加されている場合はスキップ
   if (document.getElementById('userDeleteBtn')) return;
 
-  // 設定内容の最後に削除ボタンを追加
-  const hr = document.createElement('hr');
-  hr.style.margin = '24px 0';
-
+  // 設定セクションのスタイルに統一
   const deleteSection = document.createElement('div');
+  deleteSection.className = 'settings-section';
+  deleteSection.style.borderTop = '1px solid #e9ecef';
+  deleteSection.style.paddingTop = '24px';
   deleteSection.style.marginTop = '24px';
 
   const deleteTitle = document.createElement('h3');
   deleteTitle.textContent = 'アカウント削除';
-  deleteTitle.style.fontSize = '16px';
-  deleteTitle.style.color = '#212529';
   deleteTitle.style.marginBottom = '12px';
 
-  const deleteDesc = document.createElement('p');
-  deleteDesc.style.color = '#6c757d';
-  deleteDesc.style.fontSize = '14px';
-  deleteDesc.style.marginBottom = '12px';
-  deleteDesc.textContent = 'アカウントとすべての関連データを削除します。この操作は取り消せません。';
+  const deleteNote = document.createElement('p');
+  deleteNote.className = 'settings-note';
+  deleteNote.textContent = 'アカウントとそれに紐づくすべてのデータを削除します。この操作は取り消すことができません。';
 
   const deleteBtn = document.createElement('button');
   deleteBtn.id = 'userDeleteBtn';
   deleteBtn.className = 'secondary';
   deleteBtn.type = 'button';
   deleteBtn.textContent = '⚠️ アカウント削除';
-  deleteBtn.style.color = '#ff6b6b';
-  deleteBtn.style.borderColor = '#ff6b6b';
-  deleteBtn.style.display = 'inline-block';
+  deleteBtn.style.color = '#dc3545';
+  deleteBtn.style.borderColor = '#dc3545';
   deleteBtn.addEventListener('click', showUserDeleteDialog);
 
   deleteSection.appendChild(deleteTitle);
-  deleteSection.appendChild(deleteDesc);
+  deleteSection.appendChild(deleteNote);
   deleteSection.appendChild(deleteBtn);
 
-  const settingsContent = settingsCard.querySelector('.mypage-head ~ *') || settingsCard.lastChild;
-  if (settingsContent) {
-    settingsCard.insertBefore(hr, settingsContent.nextSibling);
-    settingsCard.insertBefore(deleteSection, hr.nextSibling);
-  } else {
-    settingsCard.appendChild(hr);
-    settingsCard.appendChild(deleteSection);
-  }
+  // 一番下に追加
+  settingsCard.appendChild(deleteSection);
 }
 
 // ページ読み込み時に削除ボタンを追加
