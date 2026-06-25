@@ -11,7 +11,7 @@ const STATIC_ASSETS = [
   './manifest.webmanifest',
   './api/issue_manifest.php',
   './version.json',
-  './assets/styles.css?v=1042',
+  './assets/styles.css?v=1043',
   './assets/app.js?v=1043',
   './assets/top_background.webp',
   './assets/top_title_mobile.webp',
