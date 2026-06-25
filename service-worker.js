@@ -1,5 +1,5 @@
 /* PWA Service Worker for 野球やろうぜ！ */
-const CACHE_VERSION = 'yakyu-yarouze-v1064-production';
+const CACHE_VERSION = 'yakyu-yarouze-v1065-production';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -11,7 +11,7 @@ const STATIC_ASSETS = [
   './manifest.webmanifest',
   './api/issue_manifest.php',
   './version.json',
-  './assets/styles.css?v=1053',
+  './assets/styles.css?v=1054',
   './assets/app.js?v=1044',
   './assets/top_background.webp',
   './assets/top_title_mobile.webp',
