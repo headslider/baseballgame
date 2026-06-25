@@ -66,21 +66,59 @@ function submitUserDeleteRequest(playerId) {
 }
 
 function addUserDeleteButton() {
-  const profileSection = document.getElementById('myPageProfile');
-  if (!profileSection) return;
+  // 設定画面に削除ボタンを追加
+  const settingsCard = document.querySelector('.settings-card');
+  if (!settingsCard) return;
 
   // 既に追加されている場合はスキップ
   if (document.getElementById('userDeleteBtn')) return;
 
+  // 設定内容の最後に削除ボタンを追加
+  const hr = document.createElement('hr');
+  hr.style.margin = '24px 0';
+
+  const deleteSection = document.createElement('div');
+  deleteSection.style.marginTop = '24px';
+
+  const deleteTitle = document.createElement('h3');
+  deleteTitle.textContent = 'アカウント削除';
+  deleteTitle.style.fontSize = '16px';
+  deleteTitle.style.color = '#212529';
+  deleteTitle.style.marginBottom = '12px';
+
+  const deleteDesc = document.createElement('p');
+  deleteDesc.style.color = '#6c757d';
+  deleteDesc.style.fontSize = '14px';
+  deleteDesc.style.marginBottom = '12px';
+  deleteDesc.textContent = 'アカウントとすべての関連データを削除します。この操作は取り消せません。';
+
   const deleteBtn = document.createElement('button');
   deleteBtn.id = 'userDeleteBtn';
-  deleteBtn.className = 'secondary user-delete-btn';
+  deleteBtn.className = 'secondary';
   deleteBtn.type = 'button';
   deleteBtn.textContent = '⚠️ アカウント削除';
-  deleteBtn.style.marginTop = '12px';
   deleteBtn.style.color = '#ff6b6b';
   deleteBtn.style.borderColor = '#ff6b6b';
+  deleteBtn.style.display = 'inline-block';
   deleteBtn.addEventListener('click', showUserDeleteDialog);
 
-  profileSection.appendChild(deleteBtn);
+  deleteSection.appendChild(deleteTitle);
+  deleteSection.appendChild(deleteDesc);
+  deleteSection.appendChild(deleteBtn);
+
+  const settingsContent = settingsCard.querySelector('.mypage-head ~ *') || settingsCard.lastChild;
+  if (settingsContent) {
+    settingsCard.insertBefore(hr, settingsContent.nextSibling);
+    settingsCard.insertBefore(deleteSection, hr.nextSibling);
+  } else {
+    settingsCard.appendChild(hr);
+    settingsCard.appendChild(deleteSection);
+  }
+}
+
+// ページ読み込み時に削除ボタンを追加
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', addUserDeleteButton);
+} else {
+  addUserDeleteButton();
 }
