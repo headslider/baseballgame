@@ -8798,7 +8798,7 @@ body.quiz-master-failed .quiz-master-shell{
     flex-wrap:nowrap !important;
     gap:1px !important;
     min-width:0 !important;
-    text-align:left;
+    text-align:left !important;
     justify-content:center !important;
     justify-self:start !important;
   }
