@@ -8770,6 +8770,7 @@ body.quiz-master-failed .quiz-master-shell{
   }
   .quiz-master-ranking li > .rank-name{
     grid-column:3;
+    display:flex;
     flex-direction:row;
     align-items:center;
     gap:0;
@@ -8786,6 +8787,7 @@ body.quiz-master-failed .quiz-master-shell{
   }
   .quiz-master-ranking li > .rank-plays{
     grid-column:4;
+    display:flex;
     flex-direction:column;
     flex-wrap:nowrap;
     gap:1px;
