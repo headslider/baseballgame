@@ -8767,7 +8767,7 @@ body.quiz-master-failed .quiz-master-shell{
   }
   #screen-quiz-master-ranking .quiz-master-ranking li > .rank-score{
     grid-column:2 !important;
-    grid-row:1 !important;
+    grid-row:2 !important;
     font-size:.75em;
     text-align:left;
     white-space:nowrap;
@@ -8775,7 +8775,7 @@ body.quiz-master-failed .quiz-master-shell{
   }
   #screen-quiz-master-ranking .quiz-master-ranking li > .rank-name{
     grid-column:2 !important;
-    grid-row:2 !important;
+    grid-row:1 !important;
     display:flex !important;
     flex-direction:row !important;
     align-items:center !important;
