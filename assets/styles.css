@@ -8748,8 +8748,7 @@ body.quiz-master-failed .quiz-master-shell{
   .quiz-master-ranking-summary{
     grid-template-columns:1fr;
   }
-  #screen-quiz-master-ranking .quiz-master-ranking li,
-  #screen-quiz-master-result .quiz-master-ranking li{
+  #screen-quiz-master-ranking .quiz-master-ranking li{
     grid-template-columns:35px minmax(100px, 1fr) 60px 50px !important;
     grid-template-rows:auto auto !important;
     column-gap:2px !important;
@@ -8808,14 +8807,13 @@ body.quiz-master-failed .quiz-master-shell{
     justify-self:start !important;
   }
   #screen-quiz-master-ranking .quiz-master-ranking li .rank-plays small,
-  #screen-quiz-master-result .quiz-master-ranking li .rank-plays small{
+  #screen-quiz-master-ranking .quiz-master-ranking li .rank-plays small{
     font-size:.65em;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
   }
-  #screen-quiz-master-ranking .quiz-master-ranking li > .qm-level-icon,
-  #screen-quiz-master-result .quiz-master-ranking li > .qm-level-icon{
+  #screen-quiz-master-ranking .quiz-master-ranking li > .qm-level-icon{
     grid-column:4 !important;
     grid-row:1 / 3 !important;
     width:50px !important;
