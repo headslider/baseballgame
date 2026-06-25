@@ -8749,7 +8749,7 @@ body.quiz-master-failed .quiz-master-shell{
     grid-template-columns:1fr;
   }
   .quiz-master-ranking li{
-    grid-template-columns:28px minmax(0, 1fr) 70px 38px;
+    grid-template-columns:28px minmax(0, 1fr) 70px 50px;
     grid-template-rows:auto auto;
     column-gap:3px;
     row-gap:2px;
