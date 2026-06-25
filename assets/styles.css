@@ -8749,9 +8749,9 @@ body.quiz-master-failed .quiz-master-shell{
     grid-template-columns:1fr;
   }
   .quiz-master-ranking li{
-    grid-template-columns:35px 45px 1fr 90px 50px;
+    grid-template-columns:35px 45px minmax(80px, 1fr) 150px 50px;
     grid-template-rows:auto;
-    column-gap:5px;
+    column-gap:4px;
     padding:8px;
   }
   .quiz-master-ranking li > .rank-rank{
