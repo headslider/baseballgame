@@ -8749,10 +8749,10 @@ body.quiz-master-failed .quiz-master-shell{
     grid-template-columns:1fr;
   }
   .quiz-master-ranking li{
-    grid-template-columns:35px 45px minmax(80px, 1fr) 150px 50px;
+    grid-template-columns:30px 38px 1fr 110px 42px;
     grid-template-rows:auto;
-    column-gap:4px;
-    padding:8px;
+    column-gap:3px;
+    padding:6px 4px;
   }
   .quiz-master-ranking li > .rank-rank{
     font-size:.8em;
