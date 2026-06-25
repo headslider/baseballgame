@@ -8750,7 +8750,7 @@ body.quiz-master-failed .quiz-master-shell{
   }
   #screen-quiz-master-ranking .quiz-master-ranking li{
     grid-template-columns:35px minmax(100px, 1fr) 60px 120px !important;
-    grid-template-rows:1fr 1fr !important;
+    grid-template-rows:auto auto !important;
     column-gap:2px !important;
     row-gap:0 !important;
     padding:4px 2px !important;
