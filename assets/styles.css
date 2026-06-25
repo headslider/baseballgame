@@ -8772,6 +8772,7 @@ body.quiz-master-failed .quiz-master-shell{
     text-align:left;
     white-space:nowrap;
     justify-self:start !important;
+    align-self:end !important;
   }
   #screen-quiz-master-ranking .quiz-master-ranking li > .rank-name{
     grid-column:2 !important;
@@ -8783,6 +8784,7 @@ body.quiz-master-failed .quiz-master-shell{
     min-width:0 !important;
     overflow:hidden !important;
     justify-self:start !important;
+    align-self:start !important;
   }
   #screen-quiz-master-ranking .quiz-master-ranking li > .rank-name b{
     min-width:0;
