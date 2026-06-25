@@ -9986,7 +9986,7 @@ body.quiz-master-failed .quiz-master-shell{
   }
   .quiz-master-shell::before{
     background:
-      linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.05) 46%,rgba(0,0,0,.46))
+      linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.05) 46%,rgba(0,0,0,.46)),
       url("quiz_master_chair.webp") center 56% / auto clamp(140px,24vh,300px) no-repeat;
   }
 }
