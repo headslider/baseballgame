@@ -1924,7 +1924,7 @@ async function startQuizMaster(){
   show("screen-quiz-master");
   updateQuizMasterDailyUI();
   setTextSafe("quizMasterQuestion","問題データを読み込み中...");
-  setTextSafe("quizMasterMessage",guestTest?"テストプレイ中です。結果はランキングに保存されません。":"");
+  setTextSafe("quizMasterMessage","");
   setTextSafe("quizMasterScore","0");
   const choices=$("quizMasterChoices");if(choices)choices.innerHTML="";
   try{
@@ -1979,8 +1979,7 @@ function renderQuizMasterQuestion(){
   setTextSafe("quizMasterProgress",`${questionNo}/${QUIZ_MASTER_TOTAL_QUESTIONS}`);
   setTextSafe("quizMasterScore",String(QUIZ_MASTER_STATE.score));
   setTextSafe("quizMasterTimer",String(QUIZ_MASTER_STATE.remaining));
-  const prefix=QUIZ_MASTER_STATE.guestTest?"テストプレイ / ":"";
-  setTextSafe("quizMasterMessage",q.category?`${prefix}カテゴリ: ${q.category}`:(QUIZ_MASTER_STATE.guestTest?"テストプレイ中です。結果はランキングに保存されません。":""));
+  setTextSafe("quizMasterMessage",q.category?`カテゴリ: ${q.category}`:"")
   const rateText=quizMasterCorrectRateText(q);
   setTextSafe("quizMasterQuestion",rateText?`${q.question} ${rateText}`:q.question);
   const box=$("quizMasterChoices");
@@ -2023,8 +2022,7 @@ async function startQuizMasterRoundIntro(token){
   }
   if(token!==QUIZ_MASTER_STATE.roundToken||$("screen-quiz-master")?.classList.contains("active")===false)return;
   clearQuizMasterStageClasses();
-  const prefix=QUIZ_MASTER_STATE.guestTest?"テストプレイ / ":"";
-  setTextSafe("quizMasterMessage",q.category?`${prefix}カテゴリ: ${q.category}`:(QUIZ_MASTER_STATE.guestTest?"テストプレイ中です。結果はランキングに保存されません。":""));
+  setTextSafe("quizMasterMessage",q.category?`カテゴリ: ${q.category}`:"")
   QUIZ_MASTER_STATE.animating=false;
   QUIZ_MASTER_STATE.questionStartedAt=Date.now();
   updateQuizMasterFiftyButton();
