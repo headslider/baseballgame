@@ -214,13 +214,9 @@ function addUserDeleteButton() {
   // 設定セクションのスタイルに統一
   const deleteSection = document.createElement('div');
   deleteSection.className = 'settings-section';
-  deleteSection.style.borderTop = '1px solid #e9ecef';
-  deleteSection.style.paddingTop = '24px';
-  deleteSection.style.marginTop = '24px';
 
   const deleteTitle = document.createElement('h3');
   deleteTitle.textContent = 'アカウント削除';
-  deleteTitle.style.marginBottom = '12px';
 
   const deleteNote = document.createElement('p');
   deleteNote.className = 'settings-note';
@@ -231,8 +227,7 @@ function addUserDeleteButton() {
   deleteBtn.className = 'secondary';
   deleteBtn.type = 'button';
   deleteBtn.textContent = '⚠️ アカウント削除';
-  deleteBtn.style.color = '#dc3545';
-  deleteBtn.style.borderColor = '#dc3545';
+  deleteBtn.style.marginTop = '12px';
   deleteBtn.addEventListener('click', showUserDeleteDialog);
 
   deleteSection.appendChild(deleteTitle);
