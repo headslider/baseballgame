@@ -2418,7 +2418,7 @@ function renderQuizMasterRanking(box,data,mode="result"){
   if(!inTop&&myTotal&&STATE.playerId){
     listItems+=renderRow(myTotal,"rank-outside");
   }
-  const rankingHtml=listItems?`<ol>${listItems}</ol>`:'<p>まだランキングはありません。</p>';
+  const rankingHtml=listItems?`<ol class="quiz-master-ranking">${listItems}</ol>`:'<p>まだランキングはありません。</p>';
   box.innerHTML=`<div class="quiz-master-ranking-board"><div class="quiz-master-ranking-title">野球博士総合点ランキング TOP20</div>${summaryHtml}${rankingHtml}</div>`;
 }
 async function loadQuizMasterRanking(targetId="quizMasterRanking",mode="result"){
