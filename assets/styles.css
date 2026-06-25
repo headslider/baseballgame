@@ -8813,7 +8813,8 @@ body.quiz-master-failed .quiz-master-shell{
     overflow:hidden;
     text-overflow:ellipsis;
   }
-  #screen-quiz-master-ranking .quiz-master-ranking li > .qm-level-icon{
+  #screen-quiz-master-ranking .quiz-master-ranking li > .qm-level-icon,
+  #screen-quiz-master-ranking .quiz-master-ranking li .qm-icon-rank{
     grid-column:4 !important;
     grid-row:1 / 3 !important;
     width:50px !important;
