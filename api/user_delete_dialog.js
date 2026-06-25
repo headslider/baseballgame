@@ -63,6 +63,7 @@ function showDeleteConfirmationDialog(playerId) {
     margin: 0 0 16px 0;
     color: #6c757d;
     line-height: 1.6;
+    font-weight: bold;
   `;
   message.textContent = 'この操作は取り消すことができません。アカウントと関連するすべてのデータが永久に削除されます。';
 
