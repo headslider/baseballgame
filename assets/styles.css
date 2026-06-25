@@ -8566,7 +8566,7 @@ img.qtb-badge-icon{
 #screen-quiz-master-result .quiz-master-ranking li,
 #screen-quiz-master-ranking .quiz-master-ranking li{
   padding:7px 10px;
-  grid-template-columns:34px 130px auto 1fr;
+  grid-template-columns:50px 70px 1fr 120px 80px;
 }
 #screen-quiz-master-result .quiz-master-ranking-summary{
   margin:8px 0;
