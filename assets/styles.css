@@ -228,9 +228,9 @@
 }
 
 /* 個別UIは動かさない。上下バラつき防止 */
-#screen-title .start-card input,
-#screen-title .start-card select,
-#screen-title .start-card button,
+#screen-title .start-card input
+#screen-title .start-card select
+#screen-title .start-card button
 #screen-title .start-card label {
   position: static !important;
   top: auto !important;
@@ -342,7 +342,7 @@
 /* 守備: ボールはグローブの下、GoodJobテキストの後ろ */
 .goodjob-toast.defense .gj-ball{z-index:2;}
 .goodjob-toast.defense .gj-glove{z-index:4;}
-.goodjob-toast.defense .gj-bat,
+.goodjob-toast.defense .gj-bat
 .goodjob-toast.defense .gj-impact{display:none;}
 
 /* 攻撃: ボールはバットの下、両方GoodJobテキストの後ろ */
@@ -542,21 +542,21 @@
 }
 
 /* 入力フォームはタイトルの下に来るよう前面・下寄せ */
-#screen-title .title-panel,
-#screen-title .title-card,
-#screen-title .start-panel,
-#screen-title .menu-card,
-#screen-title form,
-#screen-title .lp-card,
+#screen-title .title-panel
+#screen-title .title-card
+#screen-title .start-panel
+#screen-title .menu-card
+#screen-title form
+#screen-title .lp-card
 #screen-title > div{
   position: relative !important;
   z-index: 2 !important;
 }
 
 /* 既存UIコンテナが上に寄りすぎる場合に一律下げる */
-#screen-title .title-card,
-#screen-title .start-panel,
-#screen-title .menu-card,
+#screen-title .title-card
+#screen-title .start-panel
+#screen-title .menu-card
 #screen-title form{
   margin-top: clamp(190px, 24vh, 280px) !important;
 }
@@ -574,9 +574,9 @@
     background-image: url("./top_title_mobile.webp") !important;
     background-size: contain !important;
   }
-  #screen-title .title-card,
-  #screen-title .start-panel,
-  #screen-title .menu-card,
+  #screen-title .title-card
+  #screen-title .start-panel
+  #screen-title .menu-card
   #screen-title form{
     margin-top: clamp(170px, 24vh, 230px) !important;
   }
@@ -588,9 +588,9 @@
     width: 94vw !important;
     height: 170px !important;
   }
-  #screen-title .title-card,
-  #screen-title .start-panel,
-  #screen-title .menu-card,
+  #screen-title .title-card
+  #screen-title .start-panel
+  #screen-title .menu-card
   #screen-title form{
     margin-top: 165px !important;
   }
@@ -1192,7 +1192,7 @@ html, body{
 }
 
 /* v155: スマホはUIをさらに上へ、PCはUIを少し下へ。背景画像の繰り返しを停止 */
-#screen-title,
+#screen-title
 #screen-title .stadium-bg{
   background-repeat: no-repeat !important;
 }
@@ -1238,14 +1238,14 @@ html, body{
 
 
 /* v157: 問題文テキストを少し大きく、太く表示 */
-.question-card h2,
+.question-card h2
 #qTitle{
   font-size: clamp(24px, 3.2vw, 34px) !important;
   font-weight: 900 !important;
   line-height: 1.35 !important;
 }
-.question-card p,
-#qSituation,
+.question-card p
+#qSituation
 #qPrompt{
   font-size: clamp(18px, 2.2vw, 24px) !important;
   font-weight: 800 !important;
@@ -1255,12 +1255,12 @@ html, body{
   color: #0b3a75 !important;
 }
 @media (max-width: 720px){
-  .question-card h2,
+  .question-card h2
   #qTitle{
     font-size: 24px !important;
   }
-  .question-card p,
-  #qSituation,
+  .question-card p
+  #qSituation
   #qPrompt{
     font-size: 18px !important;
     line-height: 1.65 !important;
@@ -2380,21 +2380,21 @@ body.admin-mode-on #loginStatus{
 #qTheme{
   display:none !important;
 }
-.question-meta,
-.badges,
-.q-badges,
-.question-tags,
+.question-meta
+.badges
+.q-badges
+.question-tags
 .question-head{
   max-width:100%;
   overflow:hidden;
 }
-.question-meta .badge,
-.badges .badge,
-.q-badges .badge,
-.question-tags .badge,
-#qId,
-#qType,
-#qStage,
+.question-meta .badge
+.badges .badge
+.q-badges .badge
+.question-tags .badge
+#qId
+#qType
+#qStage
 #qHolder{
   max-width:100%;
   white-space:normal;
@@ -2435,9 +2435,9 @@ rt{
   font-weight: 700;
   letter-spacing: 0;
 }
-.choice-text ruby rt,
-#qTitle ruby rt,
-#qSituation ruby rt,
+.choice-text ruby rt
+#qTitle ruby rt
+#qSituation ruby rt
 #qPrompt ruby rt{
   font-size: 0.56em;
 }
@@ -2538,7 +2538,7 @@ rt{
   font-weight:900;
   color:#597085;
 }
-.status-chip strong,
+.status-chip strong
 .status-chip .inning{
   font-size:clamp(17px,3.6vw,26px);
   font-weight:1000;
@@ -2722,7 +2722,7 @@ rt{
     font-size:11px;
     margin-bottom:3px;
   }
-  .status-chip strong,
+  .status-chip strong
   .status-chip .inning{
     font-size:18px;
   }
@@ -2849,8 +2849,8 @@ rt{
   border:none !important;
   box-shadow:none !important;
 }
-.mode-attack .question-card,
-.mode-defense .question-card,
+.mode-attack .question-card
+.mode-defense .question-card
 .mode-basic .question-card{
   border:none !important;
   box-shadow:none !important;
@@ -2885,7 +2885,7 @@ rt{
     font-size:9px;
     margin-bottom:1px;
   }
-  .status-chip strong,
+  .status-chip strong
   .status-chip .inning{
     font-size:15px;
   }
@@ -2932,8 +2932,8 @@ rt{
   margin-top:14px;
   margin-bottom:0 !important;
 }
-.question-card h2,
-.question-card p,
+.question-card h2
+.question-card p
 .question-card .choices{
   order:0;
 }
@@ -2949,12 +2949,12 @@ rt{
    - プレイヤーID入力欄、ランキングボタン、学年セレクトの長い制限時間表示が
      画面幅を押し出さないようにトップ画面だけで幅を固定。
    - 管理者モード固有UIではなく、通常のスマホ表示を優先して調整。 */
-html,
+html
 body{
   max-width:100%;
   overflow-x:hidden;
 }
-#screen-title,
+#screen-title
 #screen-title .stadium-bg{
   max-width:100vw !important;
   overflow-x:hidden !important;
@@ -2973,10 +2973,10 @@ body{
     overflow:hidden !important;
     justify-self:center !important;
   }
-  #screen-title .start-card *,
-  #screen-title .login-actions,
-  #screen-title .login-status,
-  #screen-title .guest-guide,
+  #screen-title .start-card *
+  #screen-title .login-actions
+  #screen-title .login-status
+  #screen-title .guest-guide
   #screen-title .grade-lock-status{
     min-width:0 !important;
     max-width:100% !important;
@@ -2984,8 +2984,8 @@ body{
   #screen-title .start-card label{
     width:100% !important;
   }
-  #screen-title .start-card input,
-  #screen-title .start-card select,
+  #screen-title .start-card input
+  #screen-title .start-card select
   #screen-title .start-card button{
     width:100% !important;
     max-width:100% !important;
@@ -2999,8 +2999,8 @@ body{
     white-space:nowrap !important;
     text-overflow:ellipsis !important;
   }
-  #screen-title .login-status,
-  #screen-title .guest-guide,
+  #screen-title .login-status
+  #screen-title .guest-guide
   #screen-title .grade-lock-status{
     overflow-wrap:anywhere !important;
   }
@@ -3130,8 +3130,8 @@ body{
   color:#90a697;
   letter-spacing:.06em;
 }
-.status-card strong,
-.status-card .inning,
+.status-card strong
+.status-card .inning
 .status-role-value{
   font-size:clamp(26px,3vw,40px);
   font-weight:1000;
@@ -3258,8 +3258,8 @@ body{
     margin-bottom:5px;
     font-size:11px;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:17px;
   }
@@ -3311,8 +3311,8 @@ body{
     letter-spacing:.02em !important;
     text-align:center;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:13px !important;
     line-height:1.1 !important;
@@ -3431,8 +3431,8 @@ body{
     margin-bottom:4px !important;
     letter-spacing:0 !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:12px !important;
     line-height:1.08 !important;
@@ -3458,8 +3458,8 @@ body{
   .status-label{
     font-size:8px !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:11px !important;
   }
@@ -3527,8 +3527,8 @@ body{
     letter-spacing:0 !important;
     white-space:nowrap !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:11px !important;
     line-height:1.05 !important;
@@ -3563,8 +3563,8 @@ body{
     padding-left:2px !important;
     padding-right:2px !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:10px !important;
   }
@@ -3599,8 +3599,8 @@ body{
     letter-spacing:0 !important;
     white-space:nowrap !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:14px !important;
     line-height:1.12 !important;
@@ -3644,8 +3644,8 @@ body{
   .status-label{
     font-size:9px !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:12px !important;
   }
@@ -3748,8 +3748,8 @@ body{
     margin-bottom:4px !important;
     line-height:1.1 !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:13px !important;
     line-height:1.1 !important;
@@ -3797,8 +3797,8 @@ body{
     min-height:66px !important;
   }
   .status-label{font-size:8px !important;}
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{font-size:12px !important;}
 }
 
@@ -3867,9 +3867,9 @@ body{
     transform:translateY(78px) !important;
   }
 }
-.gj-ball,
-.gj-glove,
-.gj-bat,
+.gj-ball
+.gj-glove
+.gj-bat
 .gj-impact{
   display:block !important;
 }
@@ -4837,13 +4837,13 @@ body{
   font-size:.92rem;
   line-height:1.55;
 }
-.weak-tags,
+.weak-tags
 .mistake-tags{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
 }
-.weak-tags span,
+.weak-tags span
 .mistake-tags em{
   display:inline-flex;
   align-items:center;
@@ -4985,14 +4985,14 @@ body{
   letter-spacing:.05em;
   font-size:1.05rem;
 }
-.mistake-transfer-actions,
+.mistake-transfer-actions
 .mistake-transfer-import{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
   margin-top:8px;
 }
-.mistake-transfer-actions button,
+.mistake-transfer-actions button
 .mistake-transfer-import button{
   border:none;
   border-radius:12px;
@@ -5019,16 +5019,16 @@ body{
   background:rgba(7,34,22,.90) !important;
   border-color:rgba(255,255,255,.20) !important;
 }
-.mistake-review h3,
-.mistake-review h4,
-.mistake-title,
-.mistake-item-head,
+.mistake-review h3
+.mistake-review h4
+.mistake-title
+.mistake-item-head
 .mistake-advice p{
   color:#f7fff8 !important;
 }
-.mistake-review .mypage-empty,
-.mistake-note,
-.mistake-meta,
+.mistake-review .mypage-empty
+.mistake-note
+.mistake-meta
 .mistake-transfer-box p{
   color:#dceee3 !important;
 }
@@ -5050,7 +5050,7 @@ body{
 .mistake-advice summary{
   color:#ffe16a !important;
 }
-.weak-tags span,
+.weak-tags span
 .mistake-tags em{
   color:#fff2b5 !important;
   background:rgba(255,210,75,.18) !important;
@@ -5079,7 +5079,7 @@ body{
   gap:2px !important;
   white-space:normal !important;
 }
-.latest-play-time .latest-date,
+.latest-play-time .latest-date
 .latest-play-time .latest-time{
   display:block !important;
 }
@@ -5169,7 +5169,7 @@ body{
     gap:1px !important;
     margin:0 !important;
   }
-  .mypage-summary .summary-grid .latest-play-time .latest-date,
+  .mypage-summary .summary-grid .latest-play-time .latest-date
   .mypage-summary .summary-grid .latest-play-time .latest-time{
     width:100% !important;
     text-align:center !important;
@@ -5237,22 +5237,22 @@ body{
 
 
 /* v510/v514: マイページ上位ランキングの外枠を非表示 */
-.mypage-rank-awards,
+.mypage-rank-awards
 .overall-awards{
   border:none !important;
   background:transparent !important;
   box-shadow:none !important;
   padding:0 !important;
 }
-.mypage-rank-awards .overall-award-list,
-.mypage-rank-awards .overall-award-hero,
-.overall-awards .overall-award-list,
+.mypage-rank-awards .overall-award-list
+.mypage-rank-awards .overall-award-hero
+.overall-awards .overall-award-list
 .overall-awards .overall-award-hero{
   border:none !important;
   box-shadow:none !important;
 }
 @media(max-width:700px){
-  .mypage-rank-awards,
+  .mypage-rank-awards
   .overall-awards{
     margin-top:18px !important;
   }
@@ -5433,8 +5433,8 @@ body{
     font-size:15px !important;
     margin-bottom:7px !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:24px !important;
   }
@@ -5549,8 +5549,8 @@ body{
     font-size:12px !important;
     margin-bottom:6px !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:20px !important;
   }
@@ -5568,8 +5568,8 @@ body{
     grid-template-columns:1fr !important;
     grid-template-areas:none !important;
   }
-  .topbar.topbar-v420,
-  .field-panel,
+  .topbar.topbar-v420
+  .field-panel
   .question-card{
     grid-area:auto !important;
   }
@@ -5636,8 +5636,8 @@ body{
     font-size:13px !important;
     margin-bottom:5px !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:21px !important;
   }
@@ -5710,8 +5710,8 @@ body{
     font-size:11px !important;
     margin-bottom:4px !important;
   }
-  .status-card strong,
-  .status-card .inning,
+  .status-card strong
+  .status-card .inning
   .status-role-value{
     font-size:18px !important;
   }
@@ -5740,7 +5740,7 @@ body{
     grid-template-rows:auto minmax(0,1fr) !important;
     align-items:stretch !important;
   }
-  .field-panel,
+  .field-panel
   .question-card{
     align-self:stretch !important;
     min-height:0 !important;
@@ -5809,7 +5809,7 @@ body{
     grid-template-rows:auto minmax(0,1fr) !important;
     align-items:stretch !important;
   }
-  .field-panel,
+  .field-panel
   .question-card{
     align-self:stretch !important;
     min-height:0 !important;
@@ -5978,16 +5978,16 @@ body{
 
 
 /* v535: オプション機能未解放時のUI完全非表示保険 */
-body:not(.feature-mistake-review-unlocked) #myPageMistakes .mistake-review,
+body:not(.feature-mistake-review-unlocked) #myPageMistakes .mistake-review
 body:not(.feature-device-transfer-unlocked) .mistake-transfer-box{
   display:none !important;
 }
 
 
 /* v536: 未解放UIの完全非表示をさらに強化 */
-body:not(.feature-mistake-review-unlocked) #myPageMistakes,
-body:not(.feature-mistake-review-unlocked) #myPageMistakes *,
-body:not(.feature-device-transfer-unlocked) .mistake-transfer-box,
+body:not(.feature-mistake-review-unlocked) #myPageMistakes
+body:not(.feature-mistake-review-unlocked) #myPageMistakes *
+body:not(.feature-device-transfer-unlocked) .mistake-transfer-box
 body:not(.feature-device-transfer-unlocked) .mistake-transfer-box *{
   display:none !important;
 }
@@ -6001,7 +6001,7 @@ body:not(.feature-device-transfer-unlocked) .mistake-transfer-box *{
   color:#fff !important;
   box-shadow:0 16px 34px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.08);
 }
-.option-feature-section h3,
+.option-feature-section h3
 .option-feature-section h4{
   color:#fff !important;
 }
@@ -6041,7 +6041,7 @@ body:not(.feature-device-transfer-unlocked) .mistake-transfer-box *{
 .option-feature-section .grade-grid{
   gap:18px !important;
 }
-.option-feature-card,
+.option-feature-card
 .option-feature-section .option-feature-card{
   overflow:hidden;
   border:3px solid #ffd84f !important;
@@ -6351,12 +6351,12 @@ body{
 .screen{
   min-height:calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
 }
-#screen-title,
-#screen-game,
-#screen-result,
-#screen-mypage,
-#screen-how,
-#screen-settings,
+#screen-title
+#screen-game
+#screen-result
+#screen-mypage
+#screen-how
+#screen-settings
 #screen-ranking{
   padding-bottom:calc(env(safe-area-inset-bottom, 0px) + 12px);
 }
@@ -6487,14 +6487,14 @@ body{
   min-height:100dvh;
   overflow-x:hidden;
 }
-#screen-title::before,
+#screen-title::before
 #screen-title::after{
   background-repeat:no-repeat !important;
   background-size:cover !important;
 }
-#screen-title .stadium-bg,
-.title-bg,
-.top-background,
+#screen-title .stadium-bg
+.title-bg
+.top-background
 .stadium-bg{
   background-repeat:no-repeat !important;
   background-position:center bottom !important;
@@ -6527,7 +6527,7 @@ body{
 #screen-game .question-card .q-meta .qmeta-interrupt-btn{
   margin-left:auto;
 }
-#screen-game .qmeta-interrupt-btn,
+#screen-game .qmeta-interrupt-btn
 #screen-game .game-interrupt-btn.qmeta-interrupt-btn{
   width:auto;
   min-width:0;
@@ -6553,7 +6553,7 @@ body{
   #screen-game .question-card .q-meta{
     gap:6px;
   }
-  #screen-game .qmeta-interrupt-btn,
+  #screen-game .qmeta-interrupt-btn
   #screen-game .game-interrupt-btn.qmeta-interrupt-btn{
     font-size:11px;
     padding:5px 10px;
@@ -6564,13 +6564,13 @@ body{
 /* v628: PWA top background single-layer fix
    The baseball ground image was visible twice on tall iPhone PWA screens because multiple
    background layers/elements were contributing at the bottom. Keep only one fixed body layer. */
-html,
+html
 body{
   min-height:100%;
   background:#053b88 url("../assets/top_background.webp") center bottom / cover no-repeat fixed !important;
 }
 @supports (height: 100dvh){
-  html,
+  html
   body{
     min-height:100dvh;
   }
@@ -6585,26 +6585,26 @@ body{
 #screen-title.active{
   min-height:100dvh !important;
 }
-#screen-title::before,
+#screen-title::before
 #screen-title::after{
   content:none !important;
   display:none !important;
   background:none !important;
 }
-#screen-title .stadium-bg,
-#screen-title .title-bg,
-#screen-title .top-background,
+#screen-title .stadium-bg
+#screen-title .title-bg
+#screen-title .top-background
 #screen-title [class*="background"]{
   background:transparent !important;
   background-image:none !important;
 }
 @media (display-mode: standalone){
-  html,
+  html
   body{
     min-height:100svh;
     background:#053b88 url("../assets/top_background.webp") center bottom / cover no-repeat fixed !important;
   }
-  #screen-title,
+  #screen-title
   #screen-title.active{
     min-height:100svh !important;
     background:transparent !important;
@@ -6612,11 +6612,11 @@ body{
   }
 }
 @media (max-width:720px){
-  html,
+  html
   body{
     background:#053b88 url("../assets/top_background.webp") center bottom / cover no-repeat fixed !important;
   }
-  #screen-title,
+  #screen-title
   #screen-title.active{
     background:transparent !important;
     background-image:none !important;
@@ -6649,7 +6649,7 @@ body{
   gap:10px;
   flex-wrap:wrap;
 }
-.pwa-guide-actions .secondary,
+.pwa-guide-actions .secondary
 .pwa-guide-actions .ghost-small{
   flex:1 1 150px;
   border-radius:16px;
@@ -6687,7 +6687,7 @@ body{
 
 
 /* v632: mobile/PWA-only ID registration guidance and LINE browser block */
-.line-browser-warning,
+.line-browser-warning
 .mobile-pwa-required-notice{
   margin:0 0 16px;
   padding:15px 16px;
@@ -6705,13 +6705,13 @@ body{
   background:rgba(232,245,255,.97);
   color:#05315f;
 }
-.line-warning-title,
+.line-warning-title
 .mobile-pwa-title{
   font-weight:900;
   font-size:clamp(16px,4.1vw,20px);
   margin-bottom:8px;
 }
-.line-browser-warning p,
+.line-browser-warning p
 .mobile-pwa-required-notice p{
   margin:0 0 8px;
   font-size:clamp(13px,3.4vw,15px);
@@ -6739,7 +6739,7 @@ body{
   flex-wrap:wrap;
   margin-top:12px;
 }
-.line-open-actions .secondary,
+.line-open-actions .secondary
 .external-open-button{
   display:inline-flex;
   align-items:center;
@@ -6992,14 +6992,14 @@ body:not(.show-how) > .id-change-note{
 
 
 /* v646: keep ID change note only inside how-to page and clean settings top spacing */
-body > .id-change-note,
+body > .id-change-note
 body > .lp-section.id-change-note{
   display:none !important;
 }
 .id-change-note-inline{
   margin-top:18px;
 }
-#screen-settings > .id-change-note,
+#screen-settings > .id-change-note
 #screen-settings .id-change-note{
   display:none !important;
 }
@@ -7220,24 +7220,24 @@ body > .lp-section.id-change-note{
 
 
 /* v679: prevent top background image from appearing during gameplay */
-body.screen-game-active,
+body.screen-game-active
 body.screen-result-active{
   background:#113a1d !important;
   background-image:none !important;
 }
-html:has(body.screen-game-active),
+html:has(body.screen-game-active)
 html:has(body.screen-result-active){
   background:#113a1d !important;
   background-image:none !important;
 }
-body.screen-game-active #screen-game,
-body.screen-game-active #gameShell,
-#screen-game.active,
+body.screen-game-active #screen-game
+body.screen-game-active #gameShell
+#screen-game.active
 #screen-game.active .game-shell{
   background:#113a1d !important;
   background-image:none !important;
 }
-body.screen-game-active #screen-title,
+body.screen-game-active #screen-title
 body.screen-game-active #screen-title .stadium-bg{
   display:none !important;
 }
@@ -7371,7 +7371,7 @@ body.screen-game-active #screen-title .stadium-bg{
   margin-top:10px;
   min-height:1.2em;
 }
-#pushNotificationMessage.settings-message,
+#pushNotificationMessage.settings-message
 #pushNotificationMessage.request-message{
   white-space:normal;
 }
@@ -7522,9 +7522,9 @@ html:has(body.screen-quiz-master-active){
   overflow:hidden;
   padding:18px clamp(10px,3vw,30px) 22px;
   background:
-    radial-gradient(circle at 52% 0%,rgba(255,44,174,.28),transparent 34%),
-    radial-gradient(circle at 50% 100%,rgba(0,120,255,.36),transparent 42%),
-    linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.52)),
+    radial-gradient(circle at 52% 0%,rgba(255,44,174,.28),transparent 34%)
+    radial-gradient(circle at 50% 100%,rgba(0,120,255,.36),transparent 42%)
+    linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.52))
     url("quiz_master_bg.webp") center/cover no-repeat;
   isolation:isolate;
 }
@@ -7555,7 +7555,7 @@ html:has(body.screen-quiz-master-active){
   object-fit:contain;
   filter:drop-shadow(0 6px 2px #000) drop-shadow(0 0 12px rgba(255,214,81,.35));
 }
-.quiz-master-round,
+.quiz-master-round
 .quiz-master-count{
   min-height:74px;
   display:flex;
@@ -7581,7 +7581,7 @@ html:has(body.screen-quiz-master-active){
   border-color:#d8e7ff;
   font-size:clamp(22px,3.5vw,42px);
 }
-.quiz-master-round-no,
+.quiz-master-round-no
 .quiz-master-count-no{
   color:#ffd41f;
   font-size:1.24em;
@@ -7610,7 +7610,7 @@ html:has(body.screen-quiz-master-active){
   color:#fff;
   font-weight:1000;
 }
-.quiz-master-score,
+.quiz-master-score
 .quiz-master-timer{
   justify-self:start;
   padding:8px 14px;
@@ -7726,7 +7726,7 @@ html:has(body.screen-quiz-master-active){
   cursor:pointer;
   transition:transform .16s ease,filter .16s ease,box-shadow .16s ease,border-color .16s ease;
 }
-.quiz-master-choice:hover,
+.quiz-master-choice:hover
 .quiz-master-choice.is-selected{
   transform:translateY(-2px);
   filter:brightness(1.15);
@@ -7797,7 +7797,7 @@ html:has(body.screen-quiz-master-active){
   max-width:1380px;
   margin:0 auto;
 }
-.quiz-master-lifeline,
+.quiz-master-lifeline
 .quiz-master-confirm{
   min-height:74px;
   border-radius:14px;
@@ -7879,16 +7879,16 @@ html:has(body.screen-quiz-master-active){
 .qtb-rays{
   position:absolute;
   inset:-50%;
-  background:conic-gradient(from 0deg at 50% 50%,
-    transparent 0deg,rgba(255,200,50,.05) 18deg,transparent 36deg,
-    rgba(255,200,50,.07) 54deg,transparent 72deg,
-    rgba(255,200,50,.05) 90deg,transparent 108deg,
-    rgba(255,200,50,.07) 126deg,transparent 144deg,
-    rgba(255,200,50,.05) 162deg,transparent 180deg,
-    rgba(255,200,50,.07) 198deg,transparent 216deg,
-    rgba(255,200,50,.05) 234deg,transparent 252deg,
-    rgba(255,200,50,.07) 270deg,transparent 288deg,
-    rgba(255,200,50,.05) 306deg,transparent 324deg,
+  background:conic-gradient(from 0deg at 50% 50%
+    transparent 0deg,rgba(255,200,50,.05) 18deg,transparent 36deg
+    rgba(255,200,50,.07) 54deg,transparent 72deg
+    rgba(255,200,50,.05) 90deg,transparent 108deg
+    rgba(255,200,50,.07) 126deg,transparent 144deg
+    rgba(255,200,50,.05) 162deg,transparent 180deg
+    rgba(255,200,50,.07) 198deg,transparent 216deg
+    rgba(255,200,50,.05) 234deg,transparent 252deg
+    rgba(255,200,50,.07) 270deg,transparent 288deg
+    rgba(255,200,50,.05) 306deg,transparent 324deg
     rgba(255,200,50,.07) 342deg,transparent 360deg);
   animation:qtbRaysRotate 12s linear infinite,qtbRaysFade 3.5s ease both;
   animation-delay:0s,1s;
@@ -7933,7 +7933,7 @@ html:has(body.screen-quiz-master-active){
 /* ランキング行アイコン — 名前の左に単独表示 */
 .qm-icon-rank{width:100px;height:auto;justify-self:center;}
 /* 結果画面ランキングは大きめに */
-#screen-quiz-master-result .qm-icon-rank,
+#screen-quiz-master-result .qm-icon-rank
 #screen-quiz-master-ranking .qm-icon-rank{width:120px !important;height:auto !important;}
 /* マイページ現在称号アイコン */
 .qm-icon-mypage{width:clamp(140px,26vw,220px);height:auto;margin:4px auto 2px;}
@@ -7993,10 +7993,10 @@ img.qtb-badge-icon{
   line-height:1;
   -webkit-text-stroke:clamp(2px,.42vw,7px) rgba(255,255,255,.92);
   text-shadow:
-    0 0 14px rgba(255,240,120,.95),
-    0 0 36px rgba(255,66,214,.82),
-    0 0 78px rgba(65,180,255,.75),
-    0 12px 0 rgba(24,0,45,.82),
+    0 0 14px rgba(255,240,120,.95)
+    0 0 36px rgba(255,66,214,.82)
+    0 0 78px rgba(65,180,255,.75)
+    0 12px 0 rgba(24,0,45,.82)
     0 24px 34px rgba(0,0,0,.82);
   transform:scale(.7);
   visibility:hidden;
@@ -8294,7 +8294,7 @@ img.qtb-badge-icon{
   overflow:hidden;
   text-align:left;
 }
-.quiz-master-ranking-page-card .quiz-master-kicker,
+.quiz-master-ranking-page-card .quiz-master-kicker
 .quiz-master-ranking-page-card h2{
   text-align:center;
 }
@@ -8313,7 +8313,7 @@ img.qtb-badge-icon{
   color:#fff;
   text-shadow:0 0 22px rgba(255,226,106,.6),0 4px 2px #000;
 }
-.quiz-master-result-detail,
+.quiz-master-result-detail
 .quiz-master-ranking{
   margin-top:10px;
   line-height:1.5;
@@ -8390,7 +8390,7 @@ img.qtb-badge-icon{
   border:0;
   background:transparent;
 }
-.quiz-master-current-title b,
+.quiz-master-current-title b
 .quiz-master-title-badge{
   display:inline-flex;
   align-items:center;
@@ -8446,7 +8446,7 @@ img.qtb-badge-icon{
   gap:10px;
   margin:12px 0;
 }
-.quiz-master-ranking-summary span,
+.quiz-master-ranking-summary span
 .quiz-master-my-best{
   display:grid;
   gap:2px;
@@ -8456,7 +8456,7 @@ img.qtb-badge-icon{
   background:rgba(0,19,47,.72);
   box-shadow:inset 0 0 18px rgba(0,126,255,.22);
 }
-.quiz-master-ranking-summary b,
+.quiz-master-ranking-summary b
 .quiz-master-my-best b{
   color:#fff;
   font-size:1.35em;
@@ -8467,8 +8467,8 @@ img.qtb-badge-icon{
   border-color:#ffe26a;
   box-shadow:0 0 18px rgba(255,226,106,.18),inset 0 0 18px rgba(255,226,106,.12);
 }
-.quiz-master-my-best span,
-.quiz-master-my-best em,
+.quiz-master-my-best span
+.quiz-master-my-best em
 .quiz-master-recent-list small{
   color:#cfe6ff;
   font-style:normal;
@@ -8506,7 +8506,7 @@ img.qtb-badge-icon{
   text-align:center;
   justify-self:center;
 }
-.quiz-master-ranking li span,
+.quiz-master-ranking li span
 .quiz-master-ranking li em{
   color:#ffe26a;
   font-style:normal;
@@ -8567,7 +8567,7 @@ img.qtb-badge-icon{
 #screen-quiz-master-result .quiz-master-ranking ol{
   margin-top:8px;
 }
-#screen-quiz-master-result .quiz-master-ranking li,
+#screen-quiz-master-result .quiz-master-ranking li
 #screen-quiz-master-ranking .quiz-master-ranking li{
   padding:10px 12px;
   grid-template-columns:50px 70px 1fr 250px 80px;
@@ -8575,7 +8575,7 @@ img.qtb-badge-icon{
 #screen-quiz-master-result .quiz-master-ranking-summary{
   margin:8px 0;
 }
-#screen-quiz-master-result .quiz-master-ranking-summary span,
+#screen-quiz-master-result .quiz-master-ranking-summary span
 #screen-quiz-master-result .quiz-master-my-best{
   padding:8px 10px;
 }
@@ -8652,7 +8652,7 @@ body.quiz-master-failed .quiz-master-shell{
     gap:8px;
     margin-bottom:6px;
   }
-  .quiz-master-score,
+  .quiz-master-score
   .quiz-master-timer{
     padding:6px 10px;
   }
@@ -8707,7 +8707,7 @@ body.quiz-master-failed .quiz-master-shell{
     grid-template-columns:1fr;
     gap:8px;
   }
-  .quiz-master-lifeline,
+  .quiz-master-lifeline
   .quiz-master-confirm{
     min-height:56px;
     font-size:16px;
@@ -8756,8 +8756,7 @@ body.quiz-master-failed .quiz-master-shell{
     padding:4px 2px !important;
     align-items:center !important;
   }
-  #screen-quiz-master-ranking .quiz-master-ranking li > .rank-rank,
-  #screen-quiz-master-result .quiz-master-ranking li > .rank-rank{
+  #screen-quiz-master-ranking .quiz-master-ranking li > .rank-rank{
     grid-column:1 !important;
     grid-row:1 / 3 !important;
     font-size:.85em;
@@ -8766,8 +8765,7 @@ body.quiz-master-failed .quiz-master-shell{
     justify-self:center !important;
     align-self:center !important;
   }
-  #screen-quiz-master-ranking .quiz-master-ranking li > .rank-score,
-  #screen-quiz-master-result .quiz-master-ranking li > .rank-score{
+  #screen-quiz-master-ranking .quiz-master-ranking li > .rank-score{
     grid-column:2 !important;
     grid-row:1 !important;
     font-size:.75em;
@@ -8775,8 +8773,7 @@ body.quiz-master-failed .quiz-master-shell{
     white-space:nowrap;
     justify-self:start !important;
   }
-  #screen-quiz-master-ranking .quiz-master-ranking li > .rank-name,
-  #screen-quiz-master-result .quiz-master-ranking li > .rank-name{
+  #screen-quiz-master-ranking .quiz-master-ranking li > .rank-name{
     grid-column:2 !important;
     grid-row:2 !important;
     display:flex !important;
@@ -8787,8 +8784,7 @@ body.quiz-master-failed .quiz-master-shell{
     overflow:hidden !important;
     justify-self:start !important;
   }
-  #screen-quiz-master-ranking .quiz-master-ranking li > .rank-name b,
-  #screen-quiz-master-result .quiz-master-ranking li > .rank-name b{
+  #screen-quiz-master-ranking .quiz-master-ranking li > .rank-name b{
     min-width:0;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -8807,7 +8803,7 @@ body.quiz-master-failed .quiz-master-shell{
     justify-content:center !important;
     justify-self:start !important;
   }
-  #screen-quiz-master-ranking .quiz-master-ranking li .rank-plays small,
+  #screen-quiz-master-ranking .quiz-master-ranking li .rank-plays small
   #screen-quiz-master-ranking .quiz-master-ranking li .rank-plays small{
     font-size:.65em;
     white-space:nowrap;
@@ -8907,7 +8903,7 @@ body.quiz-master-failed .quiz-master-shell{
     margin:0 auto;
     font-size:clamp(14px,1.25vw,20px);
   }
-  .quiz-master-score,
+  .quiz-master-score
   .quiz-master-timer{
     padding:7px 14px;
   }
@@ -8966,7 +8962,7 @@ body.quiz-master-failed .quiz-master-shell{
     gap:clamp(10px,1.2vw,18px);
     margin:0 auto;
   }
-  .quiz-master-lifeline,
+  .quiz-master-lifeline
   .quiz-master-confirm{
     min-height:clamp(56px,7vh,78px);
     font-size:clamp(20px,2vw,34px);
@@ -8995,7 +8991,7 @@ body.quiz-master-failed .quiz-master-shell{
     width:clamp(220px,15.2vw,315px);
     max-height:clamp(78px,10vh,108px);
   }
-  .quiz-master-round,
+  .quiz-master-round
   .quiz-master-count{
     min-height:clamp(52px,6.7vh,76px);
     padding:5px clamp(18px,1.7vw,30px);
@@ -9021,7 +9017,7 @@ body.quiz-master-failed .quiz-master-shell{
   .quiz-master-hud{
     margin:-2px auto -2px;
   }
-  .quiz-master-score,
+  .quiz-master-score
   .quiz-master-timer{
     padding:6px 13px;
   }
@@ -9076,7 +9072,7 @@ body.quiz-master-failed .quiz-master-shell{
   .quiz-master-controls{
     gap:clamp(8px,.9vw,14px);
   }
-  .quiz-master-lifeline,
+  .quiz-master-lifeline
   .quiz-master-confirm{
     min-height:clamp(48px,5.6vh,64px);
     font-size:clamp(17px,1.65vw,28px);
@@ -9228,7 +9224,7 @@ body.quiz-master-failed .quiz-master-shell{
     padding:0 10px;
     transform:none;
   }
-  .quiz-master-lifeline,
+  .quiz-master-lifeline
   .quiz-master-confirm{
     min-height:52px;
     font-size:25px;
@@ -9305,7 +9301,7 @@ body.quiz-master-failed .quiz-master-shell{
     font-size:23px;
     line-height:1.16;
   }
-  .quiz-master-lifeline,
+  .quiz-master-lifeline
   .quiz-master-confirm{
     min-height:46px;
     font-size:22px;
@@ -9394,7 +9390,7 @@ body.quiz-master-failed .quiz-master-shell{
     margin:0 auto !important;
     align-items:center !important;
   }
-  .quiz-master-lifeline,
+  .quiz-master-lifeline
   .quiz-master-confirm{
     height:52px !important;
     min-height:52px !important;
@@ -9426,7 +9422,7 @@ body.quiz-master-failed .quiz-master-shell{
     min-height:52px !important;
     max-height:52px !important;
   }
-  .quiz-master-lifeline,
+  .quiz-master-lifeline
   .quiz-master-confirm{
     height:48px !important;
     min-height:48px !important;
@@ -9462,8 +9458,8 @@ body.quiz-master-failed .quiz-master-shell{
   }
 }
 /* v841: quiz round entrance/exit sequence */
-.quiz-master-question-panel,
-.quiz-master-choice,
+.quiz-master-question-panel
+.quiz-master-choice
 .quiz-master-message{
   will-change:transform,filter;
 }
@@ -9548,13 +9544,13 @@ body.quiz-master-failed .quiz-master-shell{
 .quiz-master-shell{
   isolation:isolate;
 }
-.quiz-master-brand,
-.quiz-master-topbar,
-.quiz-master-hud,
-.quiz-master-message,
-.quiz-master-question-panel,
-.quiz-master-choices,
-.quiz-master-controls,
+.quiz-master-brand
+.quiz-master-topbar
+.quiz-master-hud
+.quiz-master-message
+.quiz-master-question-panel
+.quiz-master-choices
+.quiz-master-controls
 .quiz-master-point-burst{
   position:relative;
   z-index:3;
@@ -9787,7 +9783,7 @@ body.quiz-master-failed .quiz-master-shell{
     grid-template-columns:1fr;
     text-align:center;
   }
-  .quiz-master-my-best b,
+  .quiz-master-my-best b
   .quiz-master-my-best em{
     justify-self:center;
   }
@@ -9804,9 +9800,9 @@ body.quiz-master-failed .quiz-master-shell{
 /* ===== Quiz Master メニュー ===== */
 #screen-quiz-master-menu.active{
   background:
-    radial-gradient(circle at 52% 0%,rgba(255,44,174,.12),transparent 34%),
-    radial-gradient(circle at 50% 100%,rgba(0,120,255,.18),transparent 42%),
-    linear-gradient(180deg,rgba(0,0,0,.32),rgba(0,0,0,.72)),
+    radial-gradient(circle at 52% 0%,rgba(255,44,174,.12),transparent 34%)
+    radial-gradient(circle at 50% 100%,rgba(0,120,255,.18),transparent 42%)
+    linear-gradient(180deg,rgba(0,0,0,.32),rgba(0,0,0,.72))
     url("quiz_master_bg.webp") center/cover no-repeat;
   background-attachment:fixed;
   display:flex;
@@ -9989,7 +9985,7 @@ body.quiz-master-failed .quiz-master-shell{
   }
   .quiz-master-shell::before{
     background:
-      linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.05) 46%,rgba(0,0,0,.46)),
+      linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.05) 46%,rgba(0,0,0,.46))
       url("quiz_master_chair.webp") center 56% / auto clamp(140px,24vh,300px) no-repeat;
   }
 }
@@ -9997,9 +9993,9 @@ body.quiz-master-failed .quiz-master-shell{
 /* v971+: 起動中（app-booting）はログイン状態に依存する条件付きコントロールを
    隠し、JSが状態を確定してから正しいボタンだけを表示する。
    これにより「不要ボタンが一瞬出て消える」チラつきを防ぐ。 */
-body.app-booting #screen-title .registration-control,
-body.app-booting #screen-title .game-start-control,
-body.app-booting #quizMasterBtn,
+body.app-booting #screen-title .registration-control
+body.app-booting #screen-title .game-start-control
+body.app-booting #quizMasterBtn
 body.app-booting #quizMasterRankingBtn{
   display:none !important;
 }
