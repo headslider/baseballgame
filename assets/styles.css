@@ -8798,9 +8798,9 @@ body.quiz-master-failed .quiz-master-shell{
     flex-wrap:nowrap !important;
     gap:1px !important;
     min-width:0 !important;
-    text-align:right;
+    text-align:left;
     justify-content:center !important;
-    justify-self:end !important;
+    justify-self:start !important;
   }
   .quiz-master-ranking li .rank-plays small{
     font-size:.65em;
