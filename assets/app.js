@@ -1732,7 +1732,7 @@ function renderQuizMasterStartButton(label){
 function updateQuizMasterDailyUI(){
   const remaining=STATE.adminMode?QUIZ_MASTER_DAILY_LIMIT:quizMasterRemainingToday();
   const life=$("quizMasterLifelineBtn");
-  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ <span class="qm-life-heart">♥</span>×${remaining}<br><small>毎日24時リセット</small>`:`ライフ <span class="qm-life-heart">♥</span>×∞<br><small>テスト中は無制限</small>`;
+  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ <span class="qm-life-heart">♥</span>×${remaining}<br><small>毎日24時リセット</small>`:`ライフ <span class="qm-life-heart">♥</span>×∞`;
   const start=$("quizMasterBtn");
   if(start){
     start.disabled=QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!STATE.adminMode&&remaining<=0;
