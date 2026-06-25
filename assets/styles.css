@@ -8522,13 +8522,11 @@ img.qtb-badge-icon{
   color:#cfe6ff;
   white-space:nowrap;
 }
-.rank-plays{display:flex;flex-direction:row;align-items:center;gap:14px;text-align:left;}
+.rank-plays{display:flex;flex-direction:row;align-items:center;gap:14px;text-align:left;white-space:nowrap;}
 .rank-plays small{font-size:.85em;white-space:nowrap;}
-.rank-name{display:flex;flex-direction:row;align-items:baseline;gap:12px;min-width:0;width:100%;justify-content:space-between;}
-.rank-name b{text-align:left;}
-.rank-name em{text-align:right;}
-.rank-name b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.rank-name em{white-space:nowrap;flex-shrink:0;}
+.rank-name{display:flex;flex-direction:row;align-items:center;gap:0;min-width:0;overflow:hidden;}
+.rank-name b{text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rank-name em{text-align:right;white-space:nowrap;flex-shrink:0;}
 .quiz-master-recent-title{
   margin-top:18px;
   color:#8fdcff;
