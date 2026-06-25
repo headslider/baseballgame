@@ -1732,7 +1732,7 @@ function renderQuizMasterStartButton(label){
 function updateQuizMasterDailyUI(){
   const remaining=STATE.adminMode?QUIZ_MASTER_DAILY_LIMIT:quizMasterRemainingToday();
   const life=$("quizMasterLifelineBtn");
-  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ <span class="qm-life-heart">♥</span>×${remaining}<br><small>毎日24時リセット</small>`:`ライフ <span class="qm-life-heart">♥</span>×∞`;
+  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ <span class="qm-life-heart">♥</span>×${remaining}<br><small>毎日24時リセット</small>`:`ライフ <span class="qm-life-heart">♥</span>×∞<br><small>テスト中は無制限</small>`;
   const start=$("quizMasterBtn");
   if(start){
     start.disabled=QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!STATE.adminMode&&remaining<=0;
@@ -1924,7 +1924,7 @@ async function startQuizMaster(){
   show("screen-quiz-master");
   updateQuizMasterDailyUI();
   setTextSafe("quizMasterQuestion","問題データを読み込み中...");
-  setTextSafe("quizMasterMessage","");
+  setTextSafe("quizMasterMessage",guestTest?"テストプレイ中です。結果はランキングに保存されません。":"");
   setTextSafe("quizMasterScore","0");
   const choices=$("quizMasterChoices");if(choices)choices.innerHTML="";
   try{
@@ -1979,7 +1979,8 @@ function renderQuizMasterQuestion(){
   setTextSafe("quizMasterProgress",`${questionNo}/${QUIZ_MASTER_TOTAL_QUESTIONS}`);
   setTextSafe("quizMasterScore",String(QUIZ_MASTER_STATE.score));
   setTextSafe("quizMasterTimer",String(QUIZ_MASTER_STATE.remaining));
-  setTextSafe("quizMasterMessage",q.category?`カテゴリ: ${q.category}`:"")
+  const prefix=QUIZ_MASTER_STATE.guestTest?"テストプレイ / ":"";
+  setTextSafe("quizMasterMessage",q.category?`${prefix}カテゴリ: ${q.category}`:(QUIZ_MASTER_STATE.guestTest?"テストプレイ中です。結果はランキングに保存されません。":""));
   const rateText=quizMasterCorrectRateText(q);
   setTextSafe("quizMasterQuestion",rateText?`${q.question} ${rateText}`:q.question);
   const box=$("quizMasterChoices");
@@ -2022,7 +2023,8 @@ async function startQuizMasterRoundIntro(token){
   }
   if(token!==QUIZ_MASTER_STATE.roundToken||$("screen-quiz-master")?.classList.contains("active")===false)return;
   clearQuizMasterStageClasses();
-  setTextSafe("quizMasterMessage",q.category?`カテゴリ: ${q.category}`:"")
+  const prefix=QUIZ_MASTER_STATE.guestTest?"テストプレイ / ":"";
+  setTextSafe("quizMasterMessage",q.category?`${prefix}カテゴリ: ${q.category}`:(QUIZ_MASTER_STATE.guestTest?"テストプレイ中です。結果はランキングに保存されません。":""));
   QUIZ_MASTER_STATE.animating=false;
   QUIZ_MASTER_STATE.questionStartedAt=Date.now();
   updateQuizMasterFiftyButton();
