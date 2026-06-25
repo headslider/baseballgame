@@ -53,6 +53,13 @@ $request_data = [
 ];
 
 if (file_put_contents($request_file, json_encode($request_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT))) {
+    // メール送信（オプション）
+    $player_email = isset($_POST['email']) ? trim($_POST['email']) : '';
+    if ($player_email) {
+        require_once __DIR__ . '/send_deletion_confirmation_email.php';
+        send_deletion_confirmation_email($player_id, $request_id, $player_email);
+    }
+
     http_response_code(200);
     echo json_encode([
         'ok' => true,

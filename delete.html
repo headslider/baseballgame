@@ -135,10 +135,23 @@
         <li>その他アカウントに紐づくすべてのデータ</li>
       </ul>
 
+      <h3>削除ワークフロー</h3>
+      <ol>
+        <li><strong>申請：</strong>下記フォームで削除申請を送信</li>
+        <li><strong>確認：</strong>管理チームが削除内容を確認（3営業日以内）</li>
+        <li><strong>実行：</strong>管理チームによる削除実行</li>
+        <li><strong>完了：</strong>削除完了通知メール送信</li>
+      </ol>
+
       <form class="delete-form" id="deleteForm">
         <div class="form-group">
-          <label for="playerId">プレイヤーID</label>
+          <label for="playerId">プレイヤーID <span style="color: #dc3545;">*</span></label>
           <input type="text" id="playerId" name="player_id" required placeholder="削除するプレイヤーIDを入力してください">
+        </div>
+
+        <div class="form-group">
+          <label for="email">メールアドレス（削除完了通知用）</label>
+          <input type="email" id="email" name="email" placeholder="削除完了時にメール受け取りを希望する場合は入力してください">
         </div>
 
         <div class="form-group">
@@ -149,13 +162,17 @@
         <div class="form-group">
           <label>
             <input type="checkbox" id="confirm" name="confirm" required>
-            上記の通り、すべてのデータが削除されることを理解し、同意します
+            上記の通り、すべてのデータが削除されることを理解し、同意します <span style="color: #dc3545;">*</span>
           </label>
         </div>
 
         <div class="delete-note">
-          削除リクエストは管理チームで確認後、3営業日以内に実行されます。<br>
-          ご質問やご不明な点は、お問い合わせフォームよりお気軽にご連絡ください。
+          <strong>削除完了までの流れ：</strong><br>
+          1. 削除申請を送信します<br>
+          2. 管理チームが確認します（通常3営業日以内）<br>
+          3. 承認後、アカウントと関連データをすべて削除します<br>
+          4. 削除完了通知をお送りします（メール入力時）<br><br>
+          削除前にキャンセルしたい場合は、お問い合わせフォームよりご連絡ください。
         </div>
 
         <div class="form-actions">
