@@ -1,12 +1,12 @@
 {
-  "current_public_version": "v1.1.65",
+  "current_public_version": "v1.1.67",
   "internal": {
-    "app_version": "v904-production",
-    "cache_version": "yakyu-yarouze-v904-production",
-    "updated_at": "2026-06-22T00:00:00+09:00",
+    "app_version": "v1016-production",
+    "cache_version": "yakyu-yarouze-v1016-production",
+    "updated_at": "2026-06-25T12:00:00+09:00",
     "start_url": "/baseball/",
     "scope": "/baseball/",
-    "change_summary": "野球博士チャレンジの称号表示とランキング配置を調整。"
+    "change_summary": "野球博士チャレンジUIの改善：メニュー遊び方ボタン、チュートリアルデザイン統一、点数表示アニメーション強化、問題データ更新（v69）。"
   },
   "rules": [
     {
@@ -30,6 +30,21 @@
   ],
   "versions": [
     {
+      "id": "v1.1.67-20260625-v1016",
+      "public_version": "v1.1.67",
+      "release_type": "minor",
+      "released_at": "2026-06-25",
+      "title": "野球博士チャレンジUI改善",
+      "public_summary": "野球博士チャレンジのUIを大幅に改善しました。メニューに遊び方ボタンを追加、チュートリアルのデザイン統一、正解時の点数表示を高級感のあるデザインに変更。",
+      "admin_note": "v1016-production更新。メニュー画面に遊び方ボタン追加、クリック時にチュートリアル表示。チュートリアルカードを結果ページデザインに統一（ゴールドボーダー、背景グラデーション）。ライフとロングスロー説明をハイライト、説明文を問題範囲に合わせて更新。ランク説明追加。メニュー離脱警告背景を完全黒に。正解時点数表示をゴールドボーダーフレームにリデザイン、回転効果削除。モバイルページネーション最適化。問題データをv69に更新（ロングスロー定義修正）。assets/quiz_master_questions.js をv69・323問に同期。JSON取得URLを?v=904から?v=1016に更新。",
+      "internal_version": "v1016-production",
+      "cache_version": "yakyu-yarouze-v1016-production",
+      "visible": true,
+      "is_current": true,
+      "created_at": "2026-06-25T12:00:00+09:00",
+      "updated_at": "2026-06-25T12:00:00+09:00"
+    },
+    {
       "id": "v1.1.65-20260622-v904",
       "public_version": "v1.1.65",
       "release_type": "patch",
@@ -40,7 +55,7 @@
       "internal_version": "v904-production",
       "cache_version": "yakyu-yarouze-v904-production",
       "visible": true,
-      "is_current": true,
+      "is_current": false,
       "created_at": "2026-06-22T00:00:00+09:00",
       "updated_at": "2026-06-22T00:00:00+09:00"
     },
