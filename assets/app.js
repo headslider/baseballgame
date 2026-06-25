@@ -63,7 +63,7 @@ const QUIZ_MASTER_TITLE_DEFAULTS=[
   {level:11,title:"オールスター",point:2500000},{level:12,title:"甲子園スター",point:3080000},{level:13,title:"ドラフト候補",point:3730000},{level:14,title:"プロ野球選手",point:4440000},{level:15,title:"メジャーリーガー",point:5210000},
   {level:16,title:"首位打者",point:6040000},{level:17,title:"ホームラン王",point:6930000},{level:18,title:"サイヤング賞",point:7890000},{level:19,title:"MVP",point:8910000},{level:20,title:"野球殿堂",point:10000000}
 ];
-const QUIZ_MASTER_STATE={questions:[],questionStats:{},titles:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,guestTest:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
+const QUIZ_MASTER_STATE={questions:[],questionStats:{},titles:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
 const INNING_SLOTS=[
   ["1回表",0,"1B","attack"],["1回表",1,"2B","attack"],["1回表",2,"3B","attack"],
   ["1回裏",0,"1B","defense"],["1回裏",1,"2B","defense"],["1回裏",2,"3B","defense"],
@@ -1901,7 +1901,6 @@ function validateQuizMasterSequence(sequence){
   });
 }
 async function startQuizMaster(){
-  const guestTest=!(STATE.loggedIn&&STATE.playerId);
   closeTopMenu();
   clearQuizMasterTimer();
   if(!(await ensureQuizMasterProductionAccess())){
@@ -1920,7 +1919,7 @@ async function startQuizMaster(){
     show("screen-title");
     return;
   }
-  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:20,answered:false,startedAt:Date.now(),questionStartedAt:0,logs:[],challenge:false,guestTest,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]});
+  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:20,answered:false,startedAt:Date.now(),questionStartedAt:0,logs:[],challenge:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]});
   show("screen-quiz-master");
   updateQuizMasterDailyUI();
   setTextSafe("quizMasterQuestion","問題データを読み込み中...");
@@ -2330,7 +2329,7 @@ function renderQuizMasterResultDetail(message,cleared){
   el.innerHTML=`<p>${escapeHtml(message)}</p><div class="quiz-master-answer-review"><div><span>問題</span><b>${escapeHtml(review.question||"")}</b></div>${selectedHtml}<div><span>正解</span><b>${escapeHtml(answerLabel)}</b></div><p><span>理由</span>${escapeHtml(review.explanation||"この問題の解説は登録されていません。")}</p></div>`;
 }
 async function saveQuizMasterScore(cleared){
-  if(STATE.adminMode||QUIZ_MASTER_STATE.guestTest||!STATE.loggedIn||!STATE.playerId)return null;
+  if(STATE.adminMode||!STATE.loggedIn||!STATE.playerId)return null;
   try{
     const res=await fetch("api/save_quiz_master_score.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
       player_id:STATE.playerId,
