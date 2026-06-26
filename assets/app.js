@@ -44,46 +44,9 @@ const GRADE_TIME_LIMITS={3:30,4:25,5:20,6:15};
 const OPTION_FEATURES={
   mistake_review:{label:"間違いプレイチェック機能",restricted:true},
   device_transfer:{label:"端末引継ぎ機能",restricted:true},
-  quiz_master:{label:"野球博士チャレンジ",restricted:true},
   admin_mode:{label:"管理者用モード",restricted:true}
 };
 const $=id=>document.getElementById(id);
-const QUIZ_MASTER_DAILY_LIMIT=5;
-const QUIZ_MASTER_DAILY_LIMIT_ENABLED=true;
-// production_hold_enabled.flag=true（メンテ中プレビュー）のとき true。
-// このとき野球博士チャレンジのライフは無制限（×∞）になる。flag=false なら通常の5回制限。
-let QUIZ_MASTER_HOLD_PREVIEW=false;
-// 実際にデイリー制限を適用するか。メンテ中プレビュー時は無制限にするため制限を無効化する。
-function quizMasterLimitActive(){return QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!QUIZ_MASTER_HOLD_PREVIEW;}
-// production_hold_enabled.flag を読み、メンテ中プレビューかどうかを反映する。
-async function refreshQuizMasterHoldPreview(){
-  try{
-    const res=await fetch("production_hold_enabled.flag",{cache:"no-store"});
-    if(res&&res.ok){
-      const v=(await res.text()).trim().toLowerCase();
-      QUIZ_MASTER_HOLD_PREVIEW=(v==="true"||v==="1"||v==="on"||v==="yes");
-    }else{
-      QUIZ_MASTER_HOLD_PREVIEW=false;
-    }
-  }catch(e){
-    QUIZ_MASTER_HOLD_PREVIEW=false;
-  }
-  try{if(typeof updateQuizMasterDailyUI==="function")updateQuizMasterDailyUI();}catch(e){}
-}
-const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
-const QUIZ_MASTER_TOTAL_QUESTIONS=20;
-const QUIZ_MASTER_CHECKPOINT_LEVEL=14;
-const QUIZ_MASTER_CHALLENGE_START_LEVEL=15;
-const QUIZ_MASTER_CHALLENGE_MULTIPLIER_STEP=.2;
-const QUIZ_MASTER_TIME_LIMITS={1:20,2:20,3:20,4:20,5:20,6:17,7:17,8:15,9:15,10:13,11:13,12:13,13:13,14:13,15:13,16:13,17:13,18:13,19:13,20:13};
-const QUIZ_MASTER_TITLE_AWARD_ALWAYS_FOR_TEST=false;
-const QUIZ_MASTER_TITLE_DEFAULTS=[
-  {level:1,title:"ボールボーイ",point:0},{level:2,title:"バットボーイ",point:10000},{level:3,title:"ベンチ入り",point:40000},{level:4,title:"代打の切り札",point:130000},{level:5,title:"スタメン",point:290000},
-  {level:6,title:"クリーンアップ",point:500000},{level:7,title:"四番打者",point:770000},{level:8,title:"エース",point:1110000},{level:9,title:"キャプテン",point:1510000},{level:10,title:"ベストナイン",point:1970000},
-  {level:11,title:"オールスター",point:2500000},{level:12,title:"甲子園スター",point:3080000},{level:13,title:"ドラフト候補",point:3730000},{level:14,title:"プロ野球選手",point:4440000},{level:15,title:"メジャーリーガー",point:5210000},
-  {level:16,title:"首位打者",point:6040000},{level:17,title:"ホームラン王",point:6930000},{level:18,title:"サイヤング賞",point:7890000},{level:19,title:"MVP",point:8910000},{level:20,title:"野球殿堂",point:10000000}
-];
-const QUIZ_MASTER_STATE={questions:[],questionStats:{},titles:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
 const INNING_SLOTS=[
   ["1回表",0,"1B","attack"],["1回表",1,"2B","attack"],["1回表",2,"3B","attack"],
   ["1回裏",0,"1B","defense"],["1回裏",1,"2B","defense"],["1回裏",2,"3B","defense"],
@@ -270,16 +233,9 @@ function pickDynamicSlot(typ,baseSlot,index,usedSlotKeys,usedQuestionIds){
 function maxScoreForCurrentGame(){return (STATE.sequence&&STATE.sequence.length?STATE.sequence.length:18)*3}
 function show(id){
   if(id!=="screen-game")clearQuestionTimer();
-  if(id!=="screen-quiz-master")clearQuizMasterTimer();
-  console.log(`[show] Transitioning to ${id}`);
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   const target=$(id);
-  if(target){
-    target.classList.add("active");
-    console.log(`[show] Added active class to ${id}`, target);
-  }else{
-    console.warn(`[show] Target element not found: ${id}`);
-  }
+  if(target)target.classList.add("active");
 
   // v679: トップ背景がゲーム中に見えないよう、現在画面のbodyクラスを明示する。
   document.body.classList.toggle("screen-title-active",id==="screen-title");
@@ -290,7 +246,6 @@ function show(id){
   document.body.classList.toggle("screen-settings-active",id==="screen-settings");
   document.body.classList.toggle("screen-how-active",id==="screen-how");
   document.body.classList.toggle("screen-notices-active",id==="screen-notices");
-  document.body.classList.toggle("screen-quiz-master-active",id==="screen-quiz-master"||id==="screen-quiz-master-result"||id==="screen-quiz-master-ranking"||id==="screen-quiz-master-menu"||id==="screen-quiz-master-ranks");
   // v798: iPhone/iPadなどでは、ID取得導線はPWAのトップ画面だけに表示する。
   // トップ以外の画面へ移動した時や、Safari等の通常ブラウザ表示では非表示に戻す。
   if(typeof updateIssueKeyActions==="function")updateIssueKeyActions();
@@ -466,8 +421,7 @@ async function refreshFeatureFlags(pid=STATE.playerId){
     renderFeatureUnlockSection();
     return null;
   }
-  // ネットワーク確認中もキャッシュ済みフラグを保持し、解放ボタンが消えないようにする。
-  STATE.featureFlags=loadLocalFeatureFlags(pid);
+  STATE.featureFlags={};
   STATE.featureStatus=null;
   try{
     const res=await fetch("api/get_features.php",{
@@ -494,7 +448,6 @@ async function refreshFeatureFlags(pid=STATE.playerId){
   updateAdminModeUI();
   renderFeatureUnlockSection();
   syncMistakeReviewToggleUI();
-  updateLoginUI();
   updateIssueKeyActions();
     return STATE.featureFlags;
 }
@@ -1441,19 +1394,6 @@ async function init(){
   loadAdminMode();
   detectIssueKeyUrl();
   loadPublicVersionInfo().catch(()=>{});
-  // production_hold_enabled.flag を読み、メンテ中プレビューならライフ無制限にする（完了時にUI更新）。
-  refreshQuizMasterHoldPreview().catch(()=>{});
-
-  // ログイン状態の確定とボタン表示は、ネットワーク取得（game_config等）より先に行う。
-  // キャッシュ済みフラグで即時描画し、起動ガードを外すことで描画遅延・チラつきを防ぐ。
-  const savedId=localStorage.getItem("baseballPlayerId")||"";
-  $("playerId").value=savedId;
-  STATE.playerId=savedId;
-  STATE.loggedIn=!!savedId;
-  if(savedId)STATE.featureFlags=loadLocalFeatureFlags(savedId);
-  loadMistakeReviewSetting(savedId);
-  updateLoginUI();
-  document.body.classList.remove("app-booting");
 
   // トップ画面を早く出すため、初期表示で不要な重い処理は後回しにする。
   // 問題データ questions.json はゲーム開始時に遅延読み込みする。
@@ -1476,6 +1416,12 @@ async function init(){
     sel.dataset.loaded="1";
   }
 
+  const savedId=localStorage.getItem("baseballPlayerId")||"";
+  $("playerId").value=savedId;
+  STATE.playerId=savedId;
+  STATE.loggedIn=!!savedId;
+  loadMistakeReviewSetting(savedId);
+  updateLoginUI();
   updateGradeOptions();
 
   // サーバー確認系はトップ表示をブロックしない。
@@ -1504,33 +1450,10 @@ async function init(){
   const adminIssueExternalBtn=$("adminIssueExternalBtn");if(adminIssueExternalBtn)adminIssueExternalBtn.addEventListener("click",handleIssueExternalButtonClick);
   $("myPageBtn").addEventListener("click",()=>{closeTopMenu();openMyPage()});
   $("rankingBtn").addEventListener("click",openRanking);
-  const quizMasterBtn=$("quizMasterBtn");if(quizMasterBtn)quizMasterBtn.addEventListener("click",()=>{closeTopMenu();openQuizMasterMenu()});
-  const quizMasterRankingBtn=$("quizMasterRankingBtn");if(quizMasterRankingBtn)quizMasterRankingBtn.addEventListener("click",()=>{closeTopMenu();openQuizMasterRanking()});
   const noticesMenuBtn=$("noticesMenuBtn");if(noticesMenuBtn)noticesMenuBtn.addEventListener("click",openNotices);
   $("logoutBtn").addEventListener("click",()=>{closeTopMenu();logoutPlayer()});
   $("myPageBackBtn").addEventListener("click",()=>show("screen-title"));
   $("rankingBackBtn").addEventListener("click",()=>show("screen-title"));
-  const quizMasterExitBtn=$("quizMasterExitBtn");if(quizMasterExitBtn)quizMasterExitBtn.addEventListener("click",async()=>{
-    clearQuizMasterTimer(); // 警告表示中は制限時間を停止する
-    const ok=await confirmQuizMasterExitWarning();
-    if(ok){
-      clearQuizMasterTimer();
-      show("screen-quiz-master-menu");
-    }else{
-      resumeQuizMasterTimerAfterPrompt(); // ゲームに戻る場合は再開
-    }
-  });
-  const quizMasterResultBackBtn=$("quizMasterResultBackBtn");if(quizMasterResultBackBtn)quizMasterResultBackBtn.addEventListener("click",openQuizMasterMenu);
-  const quizMasterRetryBtn=$("quizMasterRetryBtn");if(quizMasterRetryBtn)quizMasterRetryBtn.addEventListener("click",startQuizMaster);
-  const quizMasterRankingBackBtn=$("quizMasterRankingBackBtn");if(quizMasterRankingBackBtn)quizMasterRankingBackBtn.addEventListener("click",()=>show("screen-quiz-master-menu"));
-  const quizMasterRankingPlayBtn=$("quizMasterRankingPlayBtn");if(quizMasterRankingPlayBtn)quizMasterRankingPlayBtn.addEventListener("click",startQuizMaster);
-  const quizMasterMenuStartBtn=$("quizMasterMenuStartBtn");if(quizMasterMenuStartBtn)quizMasterMenuStartBtn.addEventListener("click",startQuizMaster);
-  const quizMasterMenuRankingBtn=$("quizMasterMenuRankingBtn");if(quizMasterMenuRankingBtn)quizMasterMenuRankingBtn.addEventListener("click",openQuizMasterRanking);
-  const quizMasterMenuRanksBtn=$("quizMasterMenuRanksBtn");if(quizMasterMenuRanksBtn)quizMasterMenuRanksBtn.addEventListener("click",showQuizMasterRanks);
-  const quizMasterMenuHowtoBtn=$("quizMasterMenuHowtoBtn");if(quizMasterMenuHowtoBtn)quizMasterMenuHowtoBtn.addEventListener("click",async()=>{show("screen-quiz-master");await new Promise(r=>setTimeout(r,50));showQuizMasterTutorial(true);});
-  const quizMasterMenuBackBtn=$("quizMasterMenuBackBtn");if(quizMasterMenuBackBtn)quizMasterMenuBackBtn.addEventListener("click",()=>show("screen-title"));
-  const quizMasterRanksBackBtn=$("quizMasterRanksBackBtn");if(quizMasterRanksBackBtn)quizMasterRanksBackBtn.addEventListener("click",openQuizMasterMenu);
-  const quizMasterFiftyBtn=$("quizMasterFiftyBtn");if(quizMasterFiftyBtn)quizMasterFiftyBtn.addEventListener("click",useQuizMasterFifty);
   const noticesBackBtn=$("noticesBackBtn");if(noticesBackBtn)noticesBackBtn.addEventListener("click",()=>show("screen-title"));
   $("resultMyPageBtn").addEventListener("click",openMyPage);
   $("startBtn").addEventListener("click",startGame);
@@ -1571,919 +1494,6 @@ async function init(){
   document.body.classList.add("screen-title-active");
   const adminTestReq=readAdminQuestionTestRequest();
   if(adminTestReq)await startAdminQuestionTest(adminTestReq);
-}
-
-function clearQuizMasterTimer(){
-  if(QUIZ_MASTER_STATE.timer){
-    clearInterval(QUIZ_MASTER_STATE.timer);
-    QUIZ_MASTER_STATE.timer=null;
-  }
-  hideQuizMasterCountdown();
-}
-function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
-function quizMasterShell(){return document.querySelector(".quiz-master-shell")}
-function hideQuizMasterCountdown(){
-  const el=$("quizMasterCountdownOverlay");
-  if(!el)return;
-  el.classList.remove("show","danger");
-  el.textContent="";
-}
-function updateQuizMasterCountdown(){
-  const el=$("quizMasterCountdownOverlay");
-  if(!el)return;
-  const remaining=Math.max(0,Number(QUIZ_MASTER_STATE.remaining)||0);
-  if(QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating||remaining>10||remaining<=0){
-    hideQuizMasterCountdown();
-    return;
-  }
-  el.textContent=String(remaining);
-  el.classList.toggle("danger",remaining<=3);
-  el.classList.remove("show");
-  void el.offsetWidth;
-  el.classList.add("show");
-}
-function clearQuizMasterStageClasses(){
-  const shell=quizMasterShell();
-  if(shell)shell.classList.remove("quiz-master-round-intro","quiz-master-round-exit","quiz-master-starting");
-  const panel=document.querySelector(".quiz-master-question-panel");
-  if(panel)panel.classList.remove("is-entering","is-exiting");
-  document.querySelectorAll(".quiz-master-choice").forEach(btn=>btn.classList.remove("is-entering","is-exiting"));
-  const startOverlay=$("quizMasterStartOverlay");
-  if(startOverlay)startOverlay.classList.remove("show");
-  const tutorialOverlay=$("quizMasterTutorialOverlay");
-  if(tutorialOverlay)tutorialOverlay.classList.remove("show");
-  const checkpointOverlay=$("quizMasterCheckpointOverlay");
-  if(checkpointOverlay)checkpointOverlay.classList.remove("show");
-  const fiftyOverlay=$("quizMasterFiftyConfirmOverlay");
-  if(fiftyOverlay)fiftyOverlay.classList.remove("show");
-  hideQuizMasterCountdown();
-}
-function quizMasterPointForLevel(level){
-  const n=Number(level);
-  if(!Number.isFinite(n)||n<1||n>QUIZ_MASTER_TOTAL_QUESTIONS)return 0;
-  const base=(5*n*n)-(5*n)+10;
-  const multiplier=n>=QUIZ_MASTER_CHALLENGE_START_LEVEL
-    ? 1+((n-QUIZ_MASTER_CHALLENGE_START_LEVEL+1)*QUIZ_MASTER_CHALLENGE_MULTIPLIER_STEP)
-    : 1;
-  return Math.round(base*multiplier);
-}
-function quizMasterTimeForLevel(level){return QUIZ_MASTER_TIME_LIMITS[Number(level)]||15}
-function quizMasterTodayKey(){
-  const now=new Date();
-  const jst=new Date(now.getTime()+9*60*60*1000);
-  return jst.toISOString().slice(0,10);
-}
-function quizMasterLimitPlayerKey(){
-  const pid=STATE.loggedIn&&STATE.playerId?STATE.playerId:(currentInputPlayerId&&currentInputPlayerId()?currentInputPlayerId():"guest");
-  return String(pid||"guest").toUpperCase();
-}
-function quizMasterDailyStorageKey(){
-  return `baseballQuizMasterDaily:${quizMasterLimitPlayerKey()}:${quizMasterTodayKey()}`;
-}
-function quizMasterQuestionHistoryStorageKey(){
-  return `baseballQuizMasterQuestionHistory:${quizMasterLimitPlayerKey()}:${quizMasterTodayKey()}`;
-}
-function quizMasterTutorialStorageKey(){
-  return `baseballQuizMasterTutorialSeen:${quizMasterLimitPlayerKey()}`;
-}
-function quizMasterHasSeenTutorial(){
-  try{
-    return localStorage.getItem(quizMasterTutorialStorageKey())==="1";
-  }catch(e){
-    return false;
-  }
-}
-function quizMasterMarkTutorialSeen(){
-  try{
-    localStorage.setItem(quizMasterTutorialStorageKey(),"1");
-  }catch(e){}
-}
-function quizMasterBonusLifeStorageKey(){
-  return `baseballQuizMasterBonusLife:${quizMasterLimitPlayerKey()}:${quizMasterTodayKey()}`;
-}
-function quizMasterHasBonusLifeToday(){
-  try{return localStorage.getItem(quizMasterBonusLifeStorageKey())==="1";}catch(e){return false;}
-}
-// 通常の野球やろうぜ！を1日1回完了したとき、その日だけ野球博士チャレンジのライフを+1する（当日初回のみ加算）。
-function quizMasterGrantBonusLifeToday(){
-  try{
-    if(localStorage.getItem(quizMasterBonusLifeStorageKey())==="1")return false;
-    localStorage.setItem(quizMasterBonusLifeStorageKey(),"1");
-    return true;
-  }catch(e){return false;}
-}
-// 当日の実効ライフ上限（基本5 + 通常ゲーム完了ボーナス）。
-function quizMasterDailyLimitToday(){
-  return QUIZ_MASTER_DAILY_LIMIT+(quizMasterHasBonusLifeToday()?1:0);
-}
-function quizMasterReadDailyUsed(){
-  try{
-    const n=Number(localStorage.getItem(quizMasterDailyStorageKey())||"0");
-    return Number.isFinite(n)?Math.max(0,Math.min(quizMasterDailyLimitToday(),n)):0;
-  }catch(e){
-    return 0;
-  }
-}
-function quizMasterRemainingToday(){
-  if(!quizMasterLimitActive())return quizMasterDailyLimitToday();
-  return Math.max(0,quizMasterDailyLimitToday()-quizMasterReadDailyUsed());
-}
-function quizMasterConsumeDailyAttempt(){
-  const limitToday=quizMasterDailyLimitToday();
-  if(!quizMasterLimitActive())return {ok:true,remaining:limitToday};
-  if(STATE.adminMode)return {ok:true,remaining:limitToday};
-  const used=quizMasterReadDailyUsed();
-  if(used>=limitToday)return {ok:false,remaining:0};
-  try{
-    localStorage.setItem(quizMasterDailyStorageKey(),String(used+1));
-  }catch(e){}
-  return {ok:true,remaining:Math.max(0,limitToday-used-1)};
-}
-function quizMasterReadTodayQuestionHistory(){
-  try{
-    const raw=localStorage.getItem(quizMasterQuestionHistoryStorageKey())||"[]";
-    const arr=JSON.parse(raw);
-    return Array.isArray(arr)?arr.map(id=>String(id||"").trim()).filter(Boolean):[];
-  }catch(e){
-    return [];
-  }
-}
-function quizMasterSaveTodayQuestionHistory(ids){
-  try{
-    const unique=Array.from(new Set((ids||[]).map(id=>String(id||"").trim()).filter(Boolean)));
-    localStorage.setItem(quizMasterQuestionHistoryStorageKey(),JSON.stringify(unique.slice(-400)));
-  }catch(e){}
-}
-function quizMasterMarkQuestionShown(q){
-  if(!q||!q.id)return;
-  const ids=quizMasterReadTodayQuestionHistory();
-  if(ids.includes(q.id))return;
-  ids.push(q.id);
-  quizMasterSaveTodayQuestionHistory(ids);
-}
-function hasQuizMasterFeatureAccess(){
-  if(isFeatureUnlocked("quiz_master"))return true;
-  if(STATE.adminMode||isFeatureUnlocked("admin_mode"))return true;
-  return false;
-}
-async function ensureQuizMasterProductionAccess(){
-  if(!QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED)return true;
-  if(!STATE.loggedIn||!STATE.playerId){
-    alert("野球博士チャレンジは、プレイヤーIDでログインし、オプション機能を解放した方のみ利用できます。");
-    return false;
-  }
-  try{await refreshFeatureFlags(STATE.playerId);}catch(e){console.warn("quiz master access refresh failed",e)}
-  if(!hasQuizMasterFeatureAccess()){
-    alert("野球博士チャレンジはオプション機能です。マイページで招待IDまたは管理者IDを登録し、野球博士チャレンジ機能を解放してください。");
-    return false;
-  }
-  return true;
-}
-function renderQuizMasterStartButton(label){
-  const start=$("quizMasterBtn");
-  if(!start)return;
-  start.textContent="";
-  const title=document.createElement("span");
-  title.className="quiz-master-start-title";
-  title.textContent=label;
-  const badge=document.createElement("span");
-  badge.className="quiz-master-start-new";
-  badge.textContent="NEW!";
-  start.append(title,badge);
-}
-function updateQuizMasterDailyUI(){
-  const remaining=STATE.adminMode?QUIZ_MASTER_DAILY_LIMIT:quizMasterRemainingToday();
-  const life=$("quizMasterLifelineBtn");
-  if(life)life.innerHTML=quizMasterLimitActive()?`ライフ <span class="qm-life-heart">♥</span>×${remaining}<br><small>毎日24時リセット</small>`:`ライフ <span class="qm-life-heart">♥</span>×∞`;
-  const start=$("quizMasterBtn");
-  if(start){
-    start.disabled=quizMasterLimitActive()&&!STATE.adminMode&&remaining<=0;
-    renderQuizMasterStartButton(quizMasterLimitActive()?(remaining>0||STATE.adminMode?`野球博士チャレンジ（本日残り${remaining}回）`:"野球博士チャレンジ（本日終了）"):"野球博士チャレンジ");
-  }
-}
-function showQuizMasterTutorial(fromMenu=false){
-  return new Promise(resolve=>{
-    const overlay=$("quizMasterTutorialOverlay");
-    if(!overlay){resolve(true);return}
-    const topButtonText=fromMenu?"メニューに戻る":"トップに戻る";
-    const startButtonHtml=fromMenu?"":'<button type="button" class="secondary quiz-master-lifeline" data-quiz-tutorial="start">ゲームを始める</button>';
-    overlay.innerHTML='<div class="quiz-master-tutorial-card" role="dialog" aria-modal="true" aria-label="野球博士チャレンジ はじめに"><p class="quiz-master-tutorial-kicker">はじめに</p><h2>野球博士チャレンジ</h2><div class="quiz-master-tutorial-body"><p>少年野球・学童野球の基本ルール、用具、安全知識から、高度な競技規則、高校野球、プロ野球、国際大会、野球記録まで、幅広い野球知識が問われるクイズです。</p><ul><li>全20問。各問に制限時間があります。</li><li>正解するたびに点数が加算され、後半ほど1問あたりの点数が大きく伸びます。</li><li>第15問以降はチャレンジゾーンです。正解するたびに加算率が上がり、得点の伸びがさらに強くなります。</li><li class="quiz-master-tutorial-danger">第15問以降で失敗すると獲得点数は0点になります。</li><li><span class="quiz-master-tutorial-life">本番では1日5ライフまで。通常の野球やろうぜ！を1回クリアすると、その日だけライフが1つ増えます。毎日24時にリセットされます（テスト中は無制限）。</span></li><li>獲得スコアに応じて、野球博士ランク1〜20が決定されます。ランキングで他のプレイヤーと競い、自分の順位を確認できます。</li><li><span class="quiz-master-tutorial-life">50:50は1ゲームに1回だけ、誤答を1つ消せます。</span></li></ul></div><div class="quiz-master-tutorial-actions"><button type="button" class="secondary" data-quiz-tutorial="top">'+topButtonText+'</button>'+startButtonHtml+'</div></div>';
-    overlay.setAttribute("aria-hidden","false");
-    overlay.classList.add("show");
-    overlay.querySelector('[data-quiz-tutorial="top"]')?.addEventListener("click",()=>{
-      overlay.classList.remove("show");
-      overlay.setAttribute("aria-hidden","true");
-      overlay.innerHTML="";
-      if(fromMenu)show("screen-quiz-master-menu");
-      resolve(false);
-    },{once:true});
-    overlay.querySelector('[data-quiz-tutorial="start"]')?.addEventListener("click",()=>{
-      quizMasterMarkTutorialSeen();
-      overlay.classList.remove("show");
-      overlay.setAttribute("aria-hidden","true");
-      overlay.innerHTML="";
-      resolve(true);
-    },{once:true});
-  });
-}
-async function ensureQuizMasterTutorial(){
-  if(quizMasterHasSeenTutorial())return true;
-  show("screen-quiz-master");
-  updateQuizMasterDailyUI();
-  setTextSafe("quizMasterQuestion","野球博士チャレンジを始めます。");
-  setTextSafe("quizMasterMessage","初回のはじめにを確認してください。");
-  const choices=$("quizMasterChoices");if(choices)choices.innerHTML="";
-  return await showQuizMasterTutorial();
-}
-function normalizeQuizMasterQuestions(payload){
-  const rows=Array.isArray(payload)?payload:(Array.isArray(payload&&payload.questions)?payload.questions:[]);
-  return rows.map(q=>({
-    id:String(q&&q.id||"").trim(),
-    level:Number(q&&q.level||0),
-    category:String(q&&q.category||"").trim(),
-    question:String(q&&q.question||"").trim(),
-    choices:Array.isArray(q&&q.choices)?q.choices.map(c=>String(c||"")):[],
-    answer:Number(q&&q.answer),
-    explanation:String(q&&q.explanation||"").trim()
-  })).filter(q=>q.id&&q.level>=1&&q.level<=QUIZ_MASTER_TOTAL_QUESTIONS&&q.question&&q.choices.length===3&&q.answer>=0&&q.answer<3);
-}
-async function loadQuizMasterQuestions(){
-  if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
-  let data=null;
-  const candidates=[
-    "data/quiz_master_questions.json?v=1066",
-    "./data/quiz_master_questions.json?v=1066",
-    new URL("data/quiz_master_questions.json?v=1066",document.baseURI).href
-  ];
-  for(const url of Array.from(new Set(candidates))){
-    try{
-      const res=await fetch(url,{cache:"no-store"});
-      if(res.ok){data=await res.json();break}
-    }catch(e){
-      console.warn("quiz data fetch candidate failed",url,e);
-    }
-  }
-  if(!data&&(window.QUIZ_MASTER_QUESTIONS_FALLBACK||window.QUIZ_MASTER_QUESTIONS)){
-    data=window.QUIZ_MASTER_QUESTIONS_FALLBACK||window.QUIZ_MASTER_QUESTIONS;
-  }
-  if(!data)throw new Error("quiz data load failed");
-  const rows=normalizeQuizMasterQuestions(data);
-  QUIZ_MASTER_STATE.questions=rows;
-  return rows;
-}
-async function loadQuizMasterQuestionStats(){
-  try{
-    const res=await fetch("api/get_quiz_master_question_stats.php?v=1066",{cache:"no-store"});
-    const data=await res.json();
-    QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
-  }catch(e){
-    console.warn("quiz question stats fetch failed",e);
-    QUIZ_MASTER_STATE.questionStats={};
-  }
-  return QUIZ_MASTER_STATE.questionStats;
-}
-function quizMasterCorrectRateText(q){
-  const stat=q&&q.id?QUIZ_MASTER_STATE.questionStats[q.id]:null;
-  const attempts=Number(stat&&stat.attempts||0);
-  const rate=Number(stat&&stat.correct_rate);
-  if(!attempts||!Number.isFinite(rate))return "";
-  return `（正解率${Math.round(rate)}%）`;
-}
-function normalizeQuizMasterTitles(rows){
-  const list=(Array.isArray(rows)?rows:QUIZ_MASTER_TITLE_DEFAULTS).map(row=>({
-    title:String(row&&row.title||"").trim(),
-    point:Math.max(0,Number(row&&row.point||0))
-  })).filter(row=>row.title&&Number.isFinite(row.point));
-  list.sort((a,b)=>a.point-b.point||a.title.localeCompare(b.title,"ja"));
-  const out=list.length?list:QUIZ_MASTER_TITLE_DEFAULTS.slice();
-  out.forEach((row,i)=>{row.level=i+1;});
-  return out;
-}
-function quizMasterLevelIconUrl(level){
-  const lv=Math.max(1,Math.min(20,Number(level)||1));
-  return `assets/quiz_icon/${lv}.png`;
-}
-function quizMasterLevelIconHtml(level,cssClass){
-  return `<img src="${quizMasterLevelIconUrl(level)}" class="qm-level-icon${cssClass?' '+cssClass:''}" alt="" loading="eager">`;
-}
-async function loadQuizMasterTitles(){
-  if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
-  try{
-    const res=await fetch("api/get_quiz_master_titles.php?v=1066",{cache:"no-store"});
-    const data=await res.json();
-    QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(res.ok&&data&&data.ok?data.titles:null);
-  }catch(e){
-    console.warn("quiz title fetch failed",e);
-    QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles();
-  }
-  return QUIZ_MASTER_STATE.titles;
-}
-function quizMasterTitleForScore(score,titles){
-  const rows=normalizeQuizMasterTitles(titles||QUIZ_MASTER_STATE.titles);
-  const n=Number(score||0);
-  let current=rows[0];
-  rows.forEach(row=>{if(n>=row.point)current=row});
-  return current;
-}
-function quizMasterTitleBadgeHtml(score,titles){
-  const info=quizMasterTitleForScore(score,titles);
-  return `<span class="quiz-master-title-badge">${quizMasterLevelIconHtml(info.level,'qm-icon-sm')}${escapeHtml(info.title)}</span>`;
-}
-function quizMasterNewTitlesBetween(before,after,titles){
-  const b=Number(before||0),a=Number(after||0);
-  if(a<=b)return [];
-  return normalizeQuizMasterTitles(titles).filter(row=>row.point>b&&row.point<=a);
-}
-function pickQuizMasterSequence(rows){
-  const sequence=[];
-  const used=new Set();
-  const shownToday=new Set(quizMasterReadTodayQuestionHistory());
-  for(let level=1;level<=QUIZ_MASTER_TOTAL_QUESTIONS;level++){
-    let pool=rows.filter(q=>q.level===level&&!used.has(q.id)&&!shownToday.has(q.id));
-    if(!pool.length)pool=rows.filter(q=>q.level===level&&!used.has(q.id));
-    if(!pool.length)throw new Error(`第${level}問の問題プールがありません。`);
-    const q=pool[Math.floor(Math.random()*pool.length)];
-    used.add(q.id);
-    sequence.push(q);
-  }
-  validateQuizMasterSequence(sequence);
-  return sequence;
-}
-function validateQuizMasterSequence(sequence){
-  if(!Array.isArray(sequence)||sequence.length!==QUIZ_MASTER_TOTAL_QUESTIONS){
-    throw new Error("野球博士チャレンジの出題数が不正です。");
-  }
-  sequence.forEach((q,idx)=>{
-    const expected=idx+1;
-    if(!q||Number(q.level)!==expected){
-      const actual=q&&q.level!==undefined?q.level:"未設定";
-      const id=q&&q.id?q.id:"IDなし";
-      throw new Error(`野球博士チャレンジの出題レベル不整合: 第${expected}問に level ${actual} (${id}) が選ばれました。`);
-    }
-  });
-}
-async function startQuizMaster(){
-  closeTopMenu();
-  clearQuizMasterTimer();
-  if(!(await ensureQuizMasterProductionAccess())){
-    show("screen-title");
-    return;
-  }
-  if(!(await ensureQuizMasterTutorial())){
-    show("screen-title");
-    return;
-  }
-  if(quizMasterLimitActive()&&!STATE.adminMode&&quizMasterRemainingToday()<=0){
-    updateQuizMasterDailyUI();
-    const status=$("loginStatus");
-    if(status)status.textContent="野球博士チャレンジは本日のライフを使い切りました。毎日24時にリセットされます。通常の野球やろうぜ！を1回クリアすると、本日だけライフが1つ増えます。";
-    alert("野球博士チャレンジは本日のライフを使い切りました。毎日24時にリセットされます。通常の野球やろうぜ！を1回クリアすると、本日だけライフが1つ増えます。");
-    show("screen-title");
-    return;
-  }
-  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:20,answered:false,startedAt:Date.now(),questionStartedAt:0,logs:[],challenge:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]});
-  show("screen-quiz-master");
-  updateQuizMasterDailyUI();
-  setTextSafe("quizMasterQuestion","問題データを読み込み中...");
-  setTextSafe("quizMasterMessage","");
-  setTextSafe("quizMasterScore","0");
-  const choices=$("quizMasterChoices");if(choices)choices.innerHTML="";
-  try{
-    const [rows]=await Promise.all([loadQuizMasterQuestions(),loadQuizMasterQuestionStats(),loadQuizMasterTitles()]);
-    const attempt=quizMasterConsumeDailyAttempt();
-    if(!attempt.ok){
-      updateQuizMasterDailyUI();
-      show("screen-title");
-      return;
-    }
-    updateQuizMasterDailyUI();
-    QUIZ_MASTER_STATE.sequence=pickQuizMasterSequence(rows);
-    renderQuizMasterQuestion();
-  }catch(e){
-    console.warn("quiz master start failed",e);
-    setTextSafe("quizMasterQuestion","問題データを読み込めませんでした。");
-    setTextSafe("quizMasterMessage",e&&e.message?e.message:"data/quiz_master_questions.json を確認してください。");
-  }
-}
-function setTextSafe(id,text){const el=$(id);if(el)el.textContent=text}
-function currentQuizMasterQuestion(){return QUIZ_MASTER_STATE.sequence[QUIZ_MASTER_STATE.currentIndex]||null}
-function buildQuizMasterChoiceOrder(q){
-  return shuffle((Array.isArray(q&&q.choices)?q.choices:[]).map((text,originalIndex)=>({
-    text:String(text||""),
-    originalIndex,
-    isAnswer:originalIndex===Number(q&&q.answer)
-  })));
-}
-function currentQuizMasterChoiceOrder(){return Array.isArray(QUIZ_MASTER_STATE.choiceOrder)?QUIZ_MASTER_STATE.choiceOrder:[]}
-function currentQuizMasterAnswerIndex(){return currentQuizMasterChoiceOrder().findIndex(choice=>choice&&choice.isAnswer)}
-function renderQuizMasterQuestion(){
-  const q=currentQuizMasterQuestion();
-  if(!q){finishQuizMaster(true);return}
-  const questionNo=QUIZ_MASTER_STATE.currentIndex+1;
-  if(Number(q.level)!==questionNo){
-    console.error("quiz master level mismatch",{questionNo,question:q});
-    finishQuizMaster(false,"問題レベルの不整合を検出したため終了しました。","level_mismatch");
-    return;
-  }
-  quizMasterMarkQuestionShown(q);
-  clearQuizMasterTimer();
-  clearQuizMasterStageClasses();
-  QUIZ_MASTER_STATE.selected=null;
-  QUIZ_MASTER_STATE.answered=false;
-  QUIZ_MASTER_STATE.animating=true;
-  QUIZ_MASTER_STATE.fiftyHidden=null;
-  QUIZ_MASTER_STATE.choiceOrder=buildQuizMasterChoiceOrder(q);
-  QUIZ_MASTER_STATE.roundToken+=1;
-  QUIZ_MASTER_STATE.remaining=quizMasterTimeForLevel(questionNo);
-  QUIZ_MASTER_STATE.questionStartedAt=0;
-  setTextSafe("quizMasterLevel",String(questionNo));
-  setTextSafe("quizMasterProgress",`${questionNo}/${QUIZ_MASTER_TOTAL_QUESTIONS}`);
-  setTextSafe("quizMasterScore",String(QUIZ_MASTER_STATE.score));
-  setTextSafe("quizMasterTimer",String(QUIZ_MASTER_STATE.remaining));
-  setTextSafe("quizMasterMessage",q.category?`カテゴリ: ${q.category}`:"")
-  const rateText=quizMasterCorrectRateText(q);
-  setTextSafe("quizMasterQuestion",rateText?`${q.question} ${rateText}`:q.question);
-  const box=$("quizMasterChoices");
-  if(box){
-    box.innerHTML="";
-    currentQuizMasterChoiceOrder().forEach((choice,idx)=>{
-      const btn=document.createElement("button");
-      btn.type="button";
-      btn.className=`quiz-master-choice choice-${idx}`;
-      btn.style.setProperty("--quiz-choice-order",String(idx));
-      btn.innerHTML=`<span class="quiz-master-choice-label">${String.fromCharCode(65+idx)}</span><b class="quiz-master-choice-text">${escapeHtml(choice.text)}</b>`;
-      btn.addEventListener("click",()=>selectQuizMasterChoice(idx));
-      box.appendChild(btn);
-    });
-  }
-  startQuizMasterRoundIntro(QUIZ_MASTER_STATE.roundToken);
-  updateQuizMasterFiftyButton();
-}
-async function startQuizMasterRoundIntro(token){
-  const shell=quizMasterShell();
-  const panel=document.querySelector(".quiz-master-question-panel");
-  const choices=Array.from(document.querySelectorAll(".quiz-master-choice"));
-  const q=currentQuizMasterQuestion();
-  if(!q)return;
-  if(shell)shell.classList.add("quiz-master-round-intro");
-  if(panel)panel.classList.add("is-entering");
-  choices.forEach(btn=>btn.classList.add("is-entering"));
-  await wait(1250);
-  if(token!==QUIZ_MASTER_STATE.roundToken||$("screen-quiz-master")?.classList.contains("active")===false)return;
-  const startOverlay=$("quizMasterStartOverlay");
-  if(q.level===1&&startOverlay){
-    if(shell)shell.classList.add("quiz-master-starting");
-    startOverlay.classList.remove("show");
-    void startOverlay.offsetWidth;
-    startOverlay.classList.add("show");
-    await wait(720);
-  }else{
-    if(startOverlay)startOverlay.classList.remove("show");
-    await wait(120);
-  }
-  if(token!==QUIZ_MASTER_STATE.roundToken||$("screen-quiz-master")?.classList.contains("active")===false)return;
-  clearQuizMasterStageClasses();
-  setTextSafe("quizMasterMessage",q.category?`カテゴリ: ${q.category}`:"")
-  QUIZ_MASTER_STATE.animating=false;
-  QUIZ_MASTER_STATE.questionStartedAt=Date.now();
-  updateQuizMasterFiftyButton();
-  updateQuizMasterCountdown();
-  QUIZ_MASTER_STATE.timer=setInterval(tickQuizMasterTimer,1000);
-}
-function selectQuizMasterChoice(idx){
-  if(QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating)return;
-  if(QUIZ_MASTER_STATE.fiftyHidden===idx)return;
-  QUIZ_MASTER_STATE.selected=idx;
-  document.querySelectorAll(".quiz-master-choice").forEach((b,i)=>b.classList.toggle("is-selected",i===idx));
-  setTimeout(()=>confirmQuizMasterChoice(false),120);
-}
-function updateQuizMasterFiftyButton(){
-  const btn=$("quizMasterFiftyBtn");
-  if(!btn)return;
-  const unavailable=QUIZ_MASTER_STATE.fiftyUsed||QUIZ_MASTER_STATE.fiftyPromptOpen||QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating||!currentQuizMasterQuestion();
-  btn.disabled=unavailable;
-  btn.classList.toggle("is-used",QUIZ_MASTER_STATE.fiftyUsed);
-  btn.innerHTML=QUIZ_MASTER_STATE.fiftyUsed?'50:50<br><small>使用済み</small>':'50:50<br><small>1回まで</small>';
-}
-function askQuizMasterFiftyConfirm(){
-  return new Promise(resolve=>{
-    const overlay=$("quizMasterFiftyConfirmOverlay");
-    if(!overlay){resolve(false);return}
-    overlay.innerHTML='<div class="quiz-master-fifty-confirm-card" role="dialog" aria-modal="true" aria-label="50:50確認"><h2>50:50</h2><p>50:50は1度だけ間違えた問題を減らすことができます!<br>この問題で利用しますか?</p><div class="quiz-master-fifty-confirm-actions"><button type="button" class="primary" data-quiz-fifty="yes">はい</button><button type="button" class="secondary" data-quiz-fifty="no">いいえ</button></div></div>';
-    overlay.classList.add("show");
-    overlay.setAttribute("aria-hidden","false");
-    const done=answer=>{
-      overlay.classList.remove("show");
-      overlay.setAttribute("aria-hidden","true");
-      overlay.innerHTML="";
-      resolve(answer);
-    };
-    overlay.querySelector('[data-quiz-fifty="yes"]')?.addEventListener("click",()=>done(true),{once:true});
-    overlay.querySelector('[data-quiz-fifty="no"]')?.addEventListener("click",()=>done(false),{once:true});
-  });
-}
-function resumeQuizMasterTimerAfterPrompt(){
-  if(QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating||QUIZ_MASTER_STATE.remaining<=0)return;
-  updateQuizMasterCountdown();
-  QUIZ_MASTER_STATE.timer=setInterval(tickQuizMasterTimer,1000);
-}
-async function useQuizMasterFifty(){
-  const q=currentQuizMasterQuestion();
-  if(!q||QUIZ_MASTER_STATE.fiftyUsed||QUIZ_MASTER_STATE.fiftyPromptOpen||QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating)return;
-  const answerIndex=currentQuizMasterAnswerIndex();
-  const wrongIndexes=[0,1,2].filter(i=>i!==answerIndex);
-  if(!wrongIndexes.length)return;
-  QUIZ_MASTER_STATE.fiftyPromptOpen=true;
-  QUIZ_MASTER_STATE.animating=true;
-  clearQuizMasterTimer();
-  updateQuizMasterFiftyButton();
-  const accepted=await askQuizMasterFiftyConfirm();
-  QUIZ_MASTER_STATE.fiftyPromptOpen=false;
-  QUIZ_MASTER_STATE.animating=false;
-  if(!accepted){
-    resumeQuizMasterTimerAfterPrompt();
-    updateQuizMasterFiftyButton();
-    return;
-  }
-  if(QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.fiftyUsed||!currentQuizMasterQuestion())return;
-  const hidden=wrongIndexes[Math.floor(Math.random()*wrongIndexes.length)];
-  QUIZ_MASTER_STATE.fiftyUsed=true;
-  QUIZ_MASTER_STATE.fiftyHidden=hidden;
-  if(QUIZ_MASTER_STATE.selected===hidden)QUIZ_MASTER_STATE.selected=null;
-  document.querySelectorAll(".quiz-master-choice").forEach((btn,i)=>{
-    if(i===hidden){
-      btn.classList.add("is-fifty-hidden");
-      btn.disabled=true;
-      btn.setAttribute("aria-disabled","true");
-    }
-    btn.classList.remove("is-selected");
-  });
-  setTextSafe("quizMasterMessage","50:50を使用しました。誤答を1つ消しました。");
-  resumeQuizMasterTimerAfterPrompt();
-  updateQuizMasterFiftyButton();
-}
-function tickQuizMasterTimer(){
-  if(QUIZ_MASTER_STATE.answered)return;
-  QUIZ_MASTER_STATE.remaining-=1;
-  setTextSafe("quizMasterTimer",String(Math.max(0,QUIZ_MASTER_STATE.remaining)));
-  updateQuizMasterCountdown();
-  if(QUIZ_MASTER_STATE.remaining<=0){
-    confirmQuizMasterChoice(true);
-  }
-}
-function playQuizMasterTone(correct){
-  try{
-    const AudioContext=window.AudioContext||window.webkitAudioContext;
-    if(!AudioContext)return;
-    const ctx=new AudioContext();
-    const gain=ctx.createGain();
-    const osc=ctx.createOscillator();
-    gain.connect(ctx.destination);
-    osc.connect(gain);
-    osc.type=correct?"triangle":"sawtooth";
-    const now=ctx.currentTime;
-    osc.frequency.setValueAtTime(correct?740:160,now);
-    if(correct){
-      osc.frequency.exponentialRampToValueAtTime(1108,now+.16);
-      gain.gain.setValueAtTime(.0001,now);
-      gain.gain.exponentialRampToValueAtTime(.22,now+.02);
-      gain.gain.exponentialRampToValueAtTime(.0001,now+.35);
-      osc.stop(now+.38);
-    }else{
-      osc.frequency.exponentialRampToValueAtTime(76,now+.28);
-      gain.gain.setValueAtTime(.0001,now);
-      gain.gain.exponentialRampToValueAtTime(.18,now+.02);
-      gain.gain.exponentialRampToValueAtTime(.0001,now+.44);
-      osc.stop(now+.48);
-    }
-    osc.start(now);
-    setTimeout(()=>ctx.close().catch(()=>{}),650);
-  }catch(e){
-    console.warn("quiz tone skipped",e);
-  }
-}
-async function confirmQuizMasterChoice(timeout=false){
-  const q=currentQuizMasterQuestion();
-  const choices=currentQuizMasterChoiceOrder();
-  const answerIndex=currentQuizMasterAnswerIndex();
-  if(!q||QUIZ_MASTER_STATE.answered)return;
-  if(!timeout&&QUIZ_MASTER_STATE.selected===null)return;
-  QUIZ_MASTER_STATE.answered=true;
-  QUIZ_MASTER_STATE.animating=true;
-  updateQuizMasterFiftyButton();
-  clearQuizMasterTimer();
-  const selected=timeout?-1:QUIZ_MASTER_STATE.selected;
-  const correct=selected===answerIndex;
-  const answerMs=Date.now()-QUIZ_MASTER_STATE.questionStartedAt;
-  document.querySelectorAll(".quiz-master-choice").forEach((b,i)=>{
-    b.classList.toggle("is-correct",i===answerIndex);
-    b.classList.toggle("is-wrong",selected===i&&!correct);
-  });
-  QUIZ_MASTER_STATE.logs.push({id:q.id,level:q.level,selected,answer:answerIndex,selected_original_index:selected>=0&&choices[selected]?choices[selected].originalIndex:-1,answer_original_index:Number(q.answer),correct,answer_time_ms:answerMs});
-  playQuizMasterTone(correct);
-  if(correct){
-    const point=quizMasterPointForLevel(q.level);
-    QUIZ_MASTER_STATE.score+=point;
-    setTextSafe("quizMasterScore",String(QUIZ_MASTER_STATE.score));
-    setTextSafe("quizMasterMessage","正解！");
-    await showQuizMasterPointBurst(point);
-    setTextSafe("quizMasterMessage",q.explanation||"正解です。");
-    if(q.level===QUIZ_MASTER_CHECKPOINT_LEVEL){
-      const go=await showQuizMasterCheckpoint();
-      if(!go){
-        await playQuizMasterRoundExit();
-        finishQuizMaster(false,`第${QUIZ_MASTER_CHECKPOINT_LEVEL}問クリアで終了しました。`,"checkpoint_end");
-        return;
-      }
-      QUIZ_MASTER_STATE.challenge=true;
-    }
-    // 第15問以降は正解するたびに、中断（現在の点数を確保）か継続かを確認する。
-    if(q.level>=QUIZ_MASTER_CHALLENGE_START_LEVEL){
-      const nextQ=QUIZ_MASTER_STATE.sequence[QUIZ_MASTER_STATE.currentIndex+1];
-      if(nextQ){
-        const cont=await showQuizMasterContinuePrompt(QUIZ_MASTER_STATE.score,quizMasterPointForLevel(nextQ.level));
-        if(!cont){
-          await playQuizMasterRoundExit();
-          finishQuizMaster(false,"ここで中断して点数を確保しました。","stopped");
-          return;
-        }
-      }
-    }
-    QUIZ_MASTER_STATE.currentIndex+=1;
-    await playQuizMasterRoundExit();
-    renderQuizMasterQuestion();
-  }else{
-    QUIZ_MASTER_STATE.failureReview={
-      question:q.question,
-      selected,
-      selectedText:selected>=0&&choices[selected]?(choices[selected].text||""):"時間切れ",
-      answer:answerIndex,
-      answerText:answerIndex>=0&&choices[answerIndex]?(choices[answerIndex].text||""):"",
-      explanation:q.explanation||"",
-      timeout:!!timeout
-    };
-    setTextSafe("quizMasterMessage",timeout?"時間切れです。":(q.explanation||"不正解です。"));
-    document.body.classList.add("quiz-master-failed");
-    setTimeout(()=>document.body.classList.remove("quiz-master-failed"),900);
-    const finalScore=q.level>=QUIZ_MASTER_CHALLENGE_START_LEVEL?0:QUIZ_MASTER_STATE.score;
-    QUIZ_MASTER_STATE.score=finalScore;
-    await playQuizMasterRoundExit();
-    finishQuizMaster(false,timeout?"時間切れで終了しました。":"不正解で終了しました。",q.level>=QUIZ_MASTER_CHALLENGE_START_LEVEL?"challenge_failed":(timeout?"timeout":"wrong"));
-  }
-}
-async function playQuizMasterRoundExit(){
-  const shell=quizMasterShell();
-  const panel=document.querySelector(".quiz-master-question-panel");
-  const choices=Array.from(document.querySelectorAll(".quiz-master-choice"));
-  if(shell)shell.classList.add("quiz-master-round-exit");
-  if(panel)panel.classList.add("is-exiting");
-  choices.forEach((btn,idx)=>{
-    btn.style.setProperty("--quiz-choice-order",String(idx));
-    btn.classList.add("is-exiting");
-  });
-  await wait(540);
-  clearQuizMasterStageClasses();
-}
-function showQuizMasterCheckpoint(){
-  return new Promise(resolve=>{
-    const overlay=$("quizMasterCheckpointOverlay");
-    if(!overlay){resolve(true);return}
-    const checkpointPoint=QUIZ_MASTER_STATE.score;
-    overlay.innerHTML=`<div class="quiz-master-checkpoint-card" role="dialog" aria-modal="true" aria-label="チャレンジ確認"><strong>${checkpointPoint}ポイント獲得。</strong><p>第15問からは正解するたびに加算率が上がり、得点の伸びがさらに強くなります。<br>ただし失敗すると獲得点数は0点になります!<br>ここで終了しますか？</p><div class="quiz-master-checkpoint-actions"><button type="button" class="secondary" data-quiz-checkpoint="end">終了する</button><button type="button" class="primary" data-quiz-checkpoint="go">挑戦する</button></div></div>`;
-    overlay.setAttribute("aria-hidden","false");
-    overlay.classList.add("show");
-    overlay.querySelectorAll("[data-quiz-checkpoint]").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        const go=btn.getAttribute("data-quiz-checkpoint")==="go";
-        overlay.classList.remove("show");
-        overlay.setAttribute("aria-hidden","true");
-        overlay.innerHTML="";
-        setTextSafe("quizMasterMessage",go?"チャレンジモードに進みます。":`第${QUIZ_MASTER_CHECKPOINT_LEVEL}問クリアで終了します。`);
-        resolve(go);
-      },{once:true});
-    });
-  });
-}
-function confirmQuizMasterExitWarning(){
-  return new Promise(resolve=>{
-    const overlay=$("quizMasterCheckpointOverlay");
-    if(!overlay){resolve(true);return}
-    overlay.innerHTML=`<div class="quiz-master-exit-card" role="dialog" aria-modal="true" aria-label="メニューに戻る確認">`+
-      `<p class="quiz-master-exit-title">⚠ 本当にメニューに戻りますか？</p>`+
-      `<ul class="quiz-master-exit-notes"><li>今のゲームは終了し、<b>獲得した点数は記録されません。</b></li><li><b>ライフを1つ消費</b>し、本日プレイできる回数が1回減ります。</li></ul>`+
-      `<div class="quiz-master-exit-actions"><button type="button" class="primary" data-quiz-exit="back">ゲームに戻る</button><button type="button" class="secondary" data-quiz-exit="ok">OK</button></div>`+
-      `</div>`;
-    overlay.setAttribute("aria-hidden","false");
-    overlay.classList.add("show");
-    overlay.querySelectorAll("[data-quiz-exit]").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        const ok=btn.getAttribute("data-quiz-exit")==="ok";
-        overlay.classList.remove("show");
-        overlay.setAttribute("aria-hidden","true");
-        overlay.innerHTML="";
-        resolve(ok);
-      },{once:true});
-    });
-  });
-}
-function showQuizMasterContinuePrompt(currentScore,nextPoint){
-  return new Promise(resolve=>{
-    const overlay=$("quizMasterCheckpointOverlay");
-    if(!overlay){resolve(true);return}
-    overlay.innerHTML=`<div class="quiz-master-continue-card" role="dialog" aria-modal="true" aria-label="中断確認">`+
-      `<p class="quiz-master-continue-lead">今中断するとこちらの点数が獲得できます!</p>`+
-      `<div class="quiz-master-continue-score">${escapeHtml(currentScore)} pt</div>`+
-      `<p class="quiz-master-continue-next-label">次の問題で獲得できる点数は</p>`+
-      `<div class="quiz-master-continue-next">+${escapeHtml(nextPoint)} pt</div>`+
-      `<div class="quiz-master-continue-actions"><button type="button" class="secondary" data-quiz-continue="stop">中断する</button><button type="button" class="primary" data-quiz-continue="go">続ける</button></div>`+
-      `</div>`;
-    overlay.setAttribute("aria-hidden","false");
-    overlay.classList.add("show");
-    overlay.querySelectorAll("[data-quiz-continue]").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        const go=btn.getAttribute("data-quiz-continue")==="go";
-        overlay.classList.remove("show");
-        overlay.setAttribute("aria-hidden","true");
-        overlay.innerHTML="";
-        resolve(go);
-      },{once:true});
-    });
-  });
-}
-function showQuizMasterPointBurst(point){
-  return new Promise(resolve=>{
-    const el=$("quizMasterPointBurst");
-    if(!el){resolve();return}
-    el.textContent=`+${point} pt`;
-    el.classList.remove("show");
-    void el.offsetWidth;
-    el.classList.add("show");
-    setTextSafe("quizMasterScore",String(point));
-    setTimeout(()=>{el.classList.remove("show");resolve();},1450);
-  });
-}
-async function finishQuizMaster(cleared=false,message="",reason=""){
-  clearQuizMasterTimer();
-  QUIZ_MASTER_STATE.endReason=cleared?"cleared":(reason||QUIZ_MASTER_STATE.endReason||"ended");
-  // 中断（stopped）はその時点の累積スコアをそのまま獲得する（0点化しない）。
-  const stopped=QUIZ_MASTER_STATE.endReason==="stopped";
-  const score=QUIZ_MASTER_STATE.score;
-  QUIZ_MASTER_STATE.score=score;
-  show("screen-quiz-master-result");
-  setTextSafe("quizMasterResultTitle",cleared?"完全制覇！":(stopped?"中断して獲得！":"チャレンジ終了"));
-  setTextSafe("quizMasterFinalScore",`${score} pt`);
-  renderQuizMasterResultDetail(message||`${QUIZ_MASTER_STATE.logs.length}問に挑戦しました。`,cleared);
-  const rankingBox=$("quizMasterRanking");
-  if(rankingBox)rankingBox.innerHTML="";
-  const saveResult=await saveQuizMasterScore(cleared);
-  await showQuizMasterTitleAwards(saveResult);
-}
-function renderQuizMasterResultDetail(message,cleared){
-  const el=$("quizMasterResultDetail");
-  if(!el)return;
-  const review=!cleared?QUIZ_MASTER_STATE.failureReview:null;
-  if(!review){
-    el.textContent=message;
-    return;
-  }
-  const answerLabel=`${String.fromCharCode(65+review.answer)}. ${review.answerText}`;
-  const selectedHtml=review.timeout?"":`<div><span>選んだ答え</span><b>${escapeHtml(`${String.fromCharCode(65+review.selected)}. ${review.selectedText}`)}</b></div>`;
-  el.innerHTML=`<p>${escapeHtml(message)}</p><div class="quiz-master-answer-review"><div><span>問題</span><b>${escapeHtml(review.question||"")}</b></div>${selectedHtml}<div><span>正解</span><b>${escapeHtml(answerLabel)}</b></div><p><span>理由</span>${escapeHtml(review.explanation||"この問題の解説は登録されていません。")}</p></div>`;
-}
-async function saveQuizMasterScore(cleared){
-  if(STATE.adminMode||!STATE.loggedIn||!STATE.playerId)return null;
-  try{
-    const res=await fetch("api/save_quiz_master_score.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-      player_id:STATE.playerId,
-      client_token:getClientToken(),
-      score:QUIZ_MASTER_STATE.score,
-      reached_level:QUIZ_MASTER_STATE.logs.length,
-      answered_count:QUIZ_MASTER_STATE.logs.length,
-      correct_count:QUIZ_MASTER_STATE.logs.filter(l=>l.correct).length,
-      cleared:!!cleared,
-      challenge:!!QUIZ_MASTER_STATE.challenge,
-      result_reason:QUIZ_MASTER_STATE.endReason,
-      duration_sec:Math.round((Date.now()-QUIZ_MASTER_STATE.startedAt)/1000),
-      question_ids:QUIZ_MASTER_STATE.logs.map(l=>l.id),
-      answer_summary:QUIZ_MASTER_STATE.logs.map(l=>({id:l.id,level:l.level,selected:l.selected,answer:l.answer,selected_original_index:l.selected_original_index,answer_original_index:l.answer_original_index,correct:!!l.correct}))
-    })});
-    const data=await res.json().catch(()=>null);
-    if(data&&data.titles)QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(data.titles);
-    return data&&data.ok?data:null;
-  }catch(e){console.warn("quiz score save failed",e);return null}
-}
-async function showQuizMasterTitleAwards(saveResult){
-  if(!saveResult||!saveResult.ok)return;
-  const titles=normalizeQuizMasterTitles(saveResult.titles||QUIZ_MASTER_STATE.titles);
-  const titleAfter=quizMasterTitleForScore(saveResult.total_after,titles);
-  const newly=quizMasterNewTitlesBetween(saveResult.total_before,saveResult.total_after,titles);
-  if(QUIZ_MASTER_TITLE_AWARD_ALWAYS_FOR_TEST&&titleAfter&&titleAfter.title&&!newly.some(row=>row.title===titleAfter.title&&row.point===titleAfter.point)){
-    newly.push(titleAfter);
-  }
-  if(!newly.length)return;
-  const el=$("quizMasterTitleBurst");
-  if(!el)return;
-  for(const row of newly){
-    el.innerHTML=
-      `<div class="qtb-backdrop"></div>`+
-      `<div class="qtb-rays"></div>`+
-      `<div class="qtb-kicker-wrap"><span class="qtb-kicker">新しい野球博士ランクを獲得!</span></div>`+
-      `${quizMasterLevelIconHtml(row.level,'qtb-badge-icon')}`;
-    el.classList.remove("show");
-    void el.offsetWidth;
-    el.classList.add("show");
-    await wait(4800);
-    el.classList.remove("show");
-    await wait(250);
-  }
-}
-async function fetchQuizMasterRanking(){
-  const canPost=STATE.loggedIn&&STATE.playerId&&!STATE.adminMode;
-  const options=canPost?{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({player_id:STATE.playerId,client_token:getClientToken()})
-  }:{cache:"no-store"};
-  const res=await fetch("api/get_quiz_master_ranking.php",options);
-  return await res.json();
-}
-function quizMasterResultReasonText(reason){
-  if(reason==="cleared")return "完全制覇";
-  if(reason==="challenge_failed")return "チャレンジ失敗";
-  if(reason==="timeout")return "時間切れ";
-  if(reason==="wrong")return "不正解";
-  if(reason==="checkpoint_end")return `第${QUIZ_MASTER_CHECKPOINT_LEVEL}問で終了`;
-  if(reason==="stopped")return "途中で中断";
-  return "終了";
-}
-function renderQuizMasterRanking(box,data,mode="result"){
-  const rows=Array.isArray(data&&data.ranking)?data.ranking:[];
-  const myBest=data&&data.my_best?data.my_best:null;
-  const myTotal=data&&data.my_total?data.my_total:null;
-  const summary=data&&data.summary?data.summary:{};
-  const topRows=rows.slice(0,20);
-  const summaryHtml=mode==="page"?`<div class="quiz-master-ranking-summary"><span>参加者 <b>${escapeHtml(summary.total_players||0)}</b></span><span>プレイ数 <b>${escapeHtml(summary.total_plays||0)}</b></span><span>完全制覇 <b>${escapeHtml(summary.cleared_count||0)}</b></span></div>`:"";
-  const formatScore=s=>{
-    if(s>=10000000)return`${Math.floor(s/10000)}万`;
-    return s;
-  };
-  const renderRow=(r,extraClass)=>{
-    const score=Number(r.total_score||r.score||0);
-    const displayScore=formatScore(score);
-    const title=r.title_info||quizMasterTitleForScore(score,data&&data.titles);
-    const cls=[(r.player_id===STATE.playerId?"me":""),extraClass||""].filter(Boolean).join(" ");
-    return `<li class="${cls}"><span class="rank-rank">${escapeHtml(r.rank)}位</span><em class="rank-score">${escapeHtml(displayScore)}${score>=10000000?"":"pt"}</em><div class="rank-name"><b>${escapeHtml(r.player_id)}</b></div><div class="rank-plays"><small>プレイ数 ${escapeHtml(r.plays||0)}回</small><small>完全制覇 ${escapeHtml(r.cleared_count||0)}回</small></div>${quizMasterLevelIconHtml(title.level,'qm-icon-rank')}</li>`;
-  };
-  let listItems=topRows.map(r=>renderRow(r)).join("");
-  // 自分がトップ20圏外なら、最下部に同じデザインで自分のカードを21個目として追加する。
-  const inTop=!!STATE.playerId&&topRows.some(r=>r.player_id===STATE.playerId);
-  if(!inTop&&myTotal&&STATE.playerId){
-    listItems+=renderRow(myTotal,"rank-outside");
-  }
-  const rankingHtml=listItems?`<ol class="quiz-master-ranking">${listItems}</ol>`:'<p>まだランキングはありません。</p>';
-  box.innerHTML=`<div class="quiz-master-ranking-board"><div class="quiz-master-ranking-title">野球博士総合点ランキング TOP20</div>${summaryHtml}${rankingHtml}</div>`;
-}
-async function loadQuizMasterRanking(targetId="quizMasterRanking",mode="result"){
-  const box=$(targetId);if(!box)return;
-  box.innerHTML='<div class="quiz-master-ranking-title">ランキングを読み込み中...</div>';
-  try{
-    renderQuizMasterRanking(box,await fetchQuizMasterRanking(),mode);
-  }catch(e){
-    box.innerHTML='<div class="quiz-master-ranking-title">ランキングを読み込めませんでした。</div>';
-  }
-}
-async function openQuizMasterRanking(){
-  show("screen-quiz-master-ranking");
-  await loadQuizMasterRanking("quizMasterRankingPage","page");
-}
-function openQuizMasterMenu(){
-  show("screen-quiz-master-menu");
-}
-async function showQuizMasterRanks(){
-  show("screen-quiz-master-ranks");
-  await renderQuizMasterRanks();
-}
-async function renderQuizMasterRanks(){
-  try{
-    const data=await fetchQuizMasterRanking();
-    const titles=normalizeQuizMasterTitles(data&&data.titles?data.titles:QUIZ_MASTER_STATE.titles);
-    const myTotal=data&&data.my_total?data.my_total:null;
-    const myScore=Number((myTotal&&(myTotal.total_score||myTotal.score))||(STATE.loggedIn?(STATE.quizMasterTotal||{}).total_score:0)||0);
-    const myTitle=(STATE.loggedIn||myTotal)?quizMasterTitleForScore(myScore,titles):null;
-    const box=$("quizMasterRanksContainer");
-    if(!box)return;
-    const rankUserCounts=data&&data.rank_user_counts?data.rank_user_counts:{};
-    const ranksHtml=titles.map((title,idx)=>{
-      const isCurrentRank=STATE.loggedIn&&myTitle&&myTitle.level===title.level;
-      const userCount=rankUserCounts[title.level]||rankUserCounts[idx+1]||0;
-      return `<div class="rank-item${isCurrentRank?' current-rank':''}"><div class="rank-icon-wrapper">${quizMasterLevelIconHtml(title.level,'rank-icon')}</div><div class="rank-details"><div class="rank-name">${escapeHtml(title.title)}</div><div class="rank-points">必要点数: ${escapeHtml(title.point)} pt</div><div class="rank-users">到達人数: ${escapeHtml(userCount)}人</div></div></div>`;
-    }).join("");
-    box.innerHTML=`<div class="ranks-grid">${ranksHtml}</div>`;
-  }catch(e){
-    console.error("ランク情報の読み込みエラー:",e);
-    const box=$("quizMasterRanksContainer");
-    if(box)box.innerHTML='<p>ランク情報を読み込めませんでした。</p>';
-  }
 }
 
 function normalizeSimilarText(v){
@@ -3141,7 +2151,7 @@ function handleInitialOpenAction(){
 }
 
 function logoutPlayer(){STATE.playerId="";STATE.loggedIn=false;STATE.progress={};STATE.featureFlags={};STATE.featureStatus=null;STATE.mistakeReviewEnabled=false;STATE.adminMode=false;localStorage.setItem("mistakeReviewEnabled","0");localStorage.setItem("adminMode","0");localStorage.removeItem("baseballPlayerId");$("playerId").value="";updateLoginUI();updateGradeOptions();updateAdminModeUI();show("screen-title")}
-function updateLoginUI(){const pid=STATE.loggedIn&&STATE.playerId?STATE.playerId:"";const idForChange=$("currentPlayerIdForChange");if(idForChange)idForChange.textContent=pid||"未ログイン";const inputId=currentInputPlayerId?currentInputPlayerId():"";const status=$("loginStatus");if(status){if(STATE.adminMode){status.textContent=pid?`プレイヤーID：${pid}（管理者用モード中：制限時間なし・ランキング反映なし）`:"管理者用モード中：制限時間なし・ランキング反映なし";}else{status.textContent=pid?`プレイヤーID：${pid}`:"野球博士チャレンジは、プレイヤーIDでログインし、オプション機能を解放した方のみ利用できます。";}}const inputArea=$("playerIdInputArea");if(inputArea)inputArea.style.display=pid?"none":"";const topRule=$("topPlayerIdRuleAccordion");if(topRule)topRule.style.display=pid?"none":"";const guide=$("guestGuide");if(guide)guide.style.display=(!STATE.adminMode&&!pid&&!inputId)?"block":"none";const login=$("loginBtn");if(login)login.style.display=pid?"none":"inline-block";const my=$("myPageBtn");if(my){my.disabled=!pid;my.style.display=pid?"inline-block":"none"}const ranking=$("rankingBtn");if(ranking){ranking.disabled=!pid;ranking.style.display=pid?"inline-block":"none"}const out=$("logoutBtn");if(out)out.style.display=pid?"inline-block":"none";const start=$("startBtn");if(start){start.style.display=pid?"block":"none";start.disabled=!pid}const canShowQuizMaster=!!pid&&hasQuizMasterFeatureAccess();const quiz=$("quizMasterBtn");if(quiz){quiz.style.display=canShowQuizMaster?"block":"none";quiz.disabled=!canShowQuizMaster}const quizRank=$("quizMasterRankingBtn");if(quizRank){quizRank.style.display=canShowQuizMaster?"block":"none";quizRank.disabled=!canShowQuizMaster}updateQuizMasterDailyUI();updateIssueKeyActions();updateRequestMenuVisibility();updatePwaInstallGuide()}
+function updateLoginUI(){const pid=STATE.loggedIn&&STATE.playerId?STATE.playerId:"";const idForChange=$("currentPlayerIdForChange");if(idForChange)idForChange.textContent=pid||"未ログイン";const inputId=currentInputPlayerId?currentInputPlayerId():"";const status=$("loginStatus");if(status){if(STATE.adminMode){status.textContent=pid?`プレイヤーID：${pid}（管理者用モード中：制限時間なし・ランキング反映なし）`:"管理者用モード中：制限時間なし・ランキング反映なし";}else{status.textContent=pid?`プレイヤーID：${pid}`:"プレイする場合はプレイヤーIDを入力してください。";}}const inputArea=$("playerIdInputArea");if(inputArea)inputArea.style.display=pid?"none":"";const topRule=$("topPlayerIdRuleAccordion");if(topRule)topRule.style.display=pid?"none":"";const guide=$("guestGuide");if(guide)guide.style.display=(!STATE.adminMode&&!pid&&!inputId)?"block":"none";const login=$("loginBtn");if(login)login.style.display=pid?"none":"inline-block";const my=$("myPageBtn");if(my){my.disabled=!pid;my.style.display=pid?"inline-block":"none"}const ranking=$("rankingBtn");if(ranking){ranking.disabled=!pid;ranking.style.display=pid?"inline-block":"none"}const out=$("logoutBtn");if(out)out.style.display=pid?"inline-block":"none";const start=$("startBtn");if(start){start.style.display=pid?"block":"none";start.disabled=!pid}updateIssueKeyActions();updateRequestMenuVisibility();updatePwaInstallGuide()}
 
 function latestPlayHtml(value){
   return escapeHtml(fmtDate(value));
@@ -3396,10 +2406,6 @@ function mistakeReviewItemHtml(view){
 
 
 
-let MISTAKE_REVIEW_PAGE=1;
-let MISTAKE_REVIEW_UNAVAILABLE_PAGE=1;
-let MISTAKE_REVIEW_LIST_OPEN=true;
-let MISTAKE_REVIEW_UNAVAILABLE_OPEN=true;
 function renderMistakeReviewSection(){
   const box=$("myPageMistakes");
   if(!box)return;
@@ -3430,85 +2436,9 @@ function renderMistakeReviewSection(){
   const unavailableViews=views.filter(v=>v.unavailable);
   const tags=tagSummaryFromMistakes(activeViews.map(v=>({...(v.raw||{}),tags:v.tags||[]})));
   const tagHtml=tags.length?`<div class="weak-tags">${tags.map(([t,n])=>`<span>${escapeHtml(t)} <b>${escapeHtml(n)}</b></span>`).join("")}</div>`:"";
-
-  // ページネーション（10個以上で10個/ページ）
-  const itemsPerPage=10;
-  const totalPages=Math.ceil(activeViews.length/itemsPerPage);
-  const showPagination=activeViews.length>=10;
-  if(showPagination)MISTAKE_REVIEW_PAGE=Math.max(1,Math.min(MISTAKE_REVIEW_PAGE,totalPages));
-
-  const startIdx=(MISTAKE_REVIEW_PAGE-1)*itemsPerPage;
-  const endIdx=startIdx+itemsPerPage;
-  const pageViews=showPagination?activeViews.slice(startIdx,endIdx):activeViews.slice(0,30);
-  const listHtml=pageViews.map(mistakeReviewItemHtml).join("");
-
-  // ページネーションコントロール
-  const paginationHtml=showPagination?`<div class="mistake-review-pagination">
-    <button class="secondary" data-page-action="prev" ${MISTAKE_REVIEW_PAGE<=1?'disabled':''}>&lt; 前へ</button>
-    <span class="page-info">ページ ${MISTAKE_REVIEW_PAGE} / ${totalPages}</span>
-    <button class="secondary" data-page-action="next" ${MISTAKE_REVIEW_PAGE>=totalPages?'disabled':''}>次へ &gt;</button>
-  </div>`:"";
-
-  // 「更新または停止された問題」ページネーション（5個/ページ）
-  const unavailableItemsPerPage=5;
-  const unavailableTotalPages=Math.ceil(unavailableViews.length/unavailableItemsPerPage);
-  const showUnavailablePagination=unavailableViews.length>=5;
-  if(showUnavailablePagination)MISTAKE_REVIEW_UNAVAILABLE_PAGE=Math.max(1,Math.min(MISTAKE_REVIEW_UNAVAILABLE_PAGE,unavailableTotalPages));
-
-  const unavailableStartIdx=(MISTAKE_REVIEW_UNAVAILABLE_PAGE-1)*unavailableItemsPerPage;
-  const unavailableEndIdx=unavailableStartIdx+unavailableItemsPerPage;
-  const unavailablePageViews=showUnavailablePagination?unavailableViews.slice(unavailableStartIdx,unavailableEndIdx):unavailableViews.slice(0,20);
-
-  const unavailablePaginationHtml=showUnavailablePagination?`<div class="mistake-review-pagination">
-    <button class="secondary" data-unavailable-page-action="prev" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE<=1?'disabled':''}>&lt; 前へ</button>
-    <span class="page-info">ページ ${MISTAKE_REVIEW_UNAVAILABLE_PAGE} / ${unavailableTotalPages}</span>
-    <button class="secondary" data-unavailable-page-action="next" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE>=unavailableTotalPages?'disabled':''}>次へ &gt;</button>
-  </div>`:"";
-
-  const unavailableHtml=unavailableViews.length?`<h4 class="mistake-accordion-title" data-accordion="unavailable"><span class="accordion-icon">${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'▼':'▶'}</span> 更新または停止された問題</h4><div class="mistake-accordion-content" data-accordion-content="unavailable" style="display:${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'block':'none'}">${unavailablePaginationHtml}<p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailablePageViews.map(mistakeReviewItemHtml).join("")}</div>`:"";
-  box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4 class="mistake-accordion-title" data-accordion="list"><span class="accordion-icon">${MISTAKE_REVIEW_LIST_OPEN?'▼':'▶'}</span> 間違えた問題一覧</h4><div class="mistake-accordion-content" data-accordion-content="list" style="display:${MISTAKE_REVIEW_LIST_OPEN?'block':'none'}">${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}</div>${unavailableHtml}</div>`;
-
-  // 「間違えた問題一覧」ページネーションボタンのイベントリスナー
-  if(showPagination){
-    box.querySelectorAll('[data-page-action]').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        if(btn.getAttribute('data-page-action')==='prev'&&MISTAKE_REVIEW_PAGE>1){
-          MISTAKE_REVIEW_PAGE--;
-        }else if(btn.getAttribute('data-page-action')==='next'&&MISTAKE_REVIEW_PAGE<totalPages){
-          MISTAKE_REVIEW_PAGE++;
-        }
-        renderMistakeReviewSection();
-      });
-    });
-  }
-
-  // 「更新または停止された問題」ページネーションボタンのイベントリスナー
-  if(showUnavailablePagination){
-    box.querySelectorAll('[data-unavailable-page-action]').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        if(btn.getAttribute('data-unavailable-page-action')==='prev'&&MISTAKE_REVIEW_UNAVAILABLE_PAGE>1){
-          MISTAKE_REVIEW_UNAVAILABLE_PAGE--;
-        }else if(btn.getAttribute('data-unavailable-page-action')==='next'&&MISTAKE_REVIEW_UNAVAILABLE_PAGE<unavailableTotalPages){
-          MISTAKE_REVIEW_UNAVAILABLE_PAGE++;
-        }
-        renderMistakeReviewSection();
-      });
-    });
-  }
-
-  // アコーディオン制御
-  box.querySelectorAll('[data-accordion]').forEach(title=>{
-    title.style.cursor='pointer';
-    title.addEventListener('click',()=>{
-      const accordion=title.getAttribute('data-accordion');
-      if(accordion==='list'){
-        MISTAKE_REVIEW_LIST_OPEN=!MISTAKE_REVIEW_LIST_OPEN;
-      }else if(accordion==='unavailable'){
-        MISTAKE_REVIEW_UNAVAILABLE_OPEN=!MISTAKE_REVIEW_UNAVAILABLE_OPEN;
-      }
-      renderMistakeReviewSection();
-    });
-  });
+  const listHtml=activeViews.slice(0,30).map(mistakeReviewItemHtml).join("");
+  const unavailableHtml=unavailableViews.length?`<h4>更新または停止された問題</h4><p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailableViews.slice(0,20).map(mistakeReviewItemHtml).join("")}`:"";
+  box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4>間違えた問題一覧</h4>${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}${unavailableHtml}</div>`;
 }
 function recordMistakeReview(q,choice,score){
   if(isAdminQuestionTestMode())return;
@@ -3577,27 +2507,7 @@ function localScoreHistoryKey(pid){
 
 
 
-function renderQuizMasterMyPage(data){
-  const box=$("myPageQuizMaster");
-  if(!box)return;
-  if(!data||!data.ok){
-    box.innerHTML='<div class="mypage-empty">野球博士チャレンジの成績を読み込めませんでした。</div>';
-    return;
-  }
-  const best=data.my_best||null;
-  const total=data.my_total||null;
-  const recent=Array.isArray(data.my_recent)?data.my_recent:[];
-  if(!best&&!recent.length){
-    box.innerHTML='<div class="quiz-master-mypage-card"><h3>野球博士チャレンジ</h3><div class="mypage-empty">まだ保存された点数がありません。ログインしてプレイするとここに表示されます。</div></div>';
-    return;
-  }
-  const latest=recent[0]||null;
-  const totalScore=Number(total&&total.total_score!==undefined?total.total_score:recent.reduce((sum,r)=>sum+Number(r.score||0),0));
-  const titleInfo=(total&&total.title_info)||quizMasterTitleForScore(totalScore,data.titles);
-  const recentRows=recent.length?`<div class="records-table quiz-master-mypage-table"><table><thead><tr><th>日時</th><th>得点</th><th>到達</th><th>結果</th></tr></thead><tbody>${recent.slice(0,5).map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td><b>${escapeHtml(r.score||0)} pt</b></td><td>第${escapeHtml(r.reached_level||0)}問</td><td>${escapeHtml(quizMasterResultReasonText(r.result_reason))}</td></tr>`).join("")}</tbody></table></div>`:"";
-  box.innerHTML=`<div class="quiz-master-mypage-card"><h3>野球博士チャレンジ</h3><div class="quiz-master-current-title">${quizMasterLevelIconHtml(titleInfo.level,'qm-icon-mypage')}<em>${escapeHtml(totalScore)} pt</em></div><div class="summary-grid quiz-master-mypage-summary"><div><b>${escapeHtml(best?best.score:0)} pt</b><span>最高点</span></div><div><b>${escapeHtml(total&&total.rank?total.rank:"-")}位</b><span>総合順位</span></div><div><b>${escapeHtml(latest?latest.score:0)} pt</b><span>最新得点</span></div><div><b>${escapeHtml(totalScore)} pt</b><span>総合点</span></div></div>${recentRows}</div>`;
-}
-function renderMyPage(data,rankingData,quizMasterData){
+function renderMyPage(data,rankingData){
   const summary=(data&&data.summary)||{};
   const records=Array.isArray(data&&data.records)?data.records:[];
   const playerId=(data&&data.player_id)||STATE.playerId||"";
@@ -3615,7 +2525,6 @@ function renderMyPage(data,rankingData,quizMasterData){
       recordsEl.innerHTML=`<h3>過去の結果</h3><div class="records-table"><table><thead><tr><th>日時</th><th>学年</th><th>守備</th><th>合計</th><th>クリア問題数</th><th>攻撃</th><th>守備</th></tr></thead><tbody>${records.map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td>${escapeHtml(r.grade||"")}年</td><td>${escapeHtml((STATE.config.positions&&STATE.config.positions[r.position])||r.position||"")}</td><td><b>${escapeHtml(r.total_score||0)}/${escapeHtml(r.max_score||54)}</b></td><td>${escapeHtml(r.correct_count||0)}問</td><td>${escapeHtml(r.attack_score||0)}</td><td>${escapeHtml(r.defense_score||0)}</td></tr>`).join("")}</tbody></table></div>`;
     }
   }
-  renderQuizMasterMyPage(quizMasterData);
 
   try{renderFeatureUnlockSection();}catch(e){console.warn("renderFeatureUnlockSection failed",e);}
   try{renderMistakeReviewSection();}catch(e){console.warn("renderMistakeReviewSection failed",e);}
@@ -3760,18 +2669,14 @@ function renderNotices(notices){
 
 function renderMyPageLoading(){
   const summary=$("myPageSummary");
-  const quiz=$("myPageQuizMaster");
   const records=$("myPageRecords");
   if(summary)summary.innerHTML='<div class="mypage-empty">成績を読み込み中...</div>';
-  if(quiz)quiz.innerHTML='<div class="mypage-empty">野球博士チャレンジの成績を読み込み中...</div>';
   if(records)records.innerHTML='<div class="mypage-empty">成績を読み込み中...</div>';
 }
 function renderMyPageError(message){
   const summary=$("myPageSummary");
-  const quiz=$("myPageQuizMaster");
   const records=$("myPageRecords");
   if(summary)summary.innerHTML='<div class="mypage-empty">成績を読み込めませんでした。</div>';
-  if(quiz)quiz.innerHTML="";
   if(records)records.innerHTML=`<div class="mypage-empty">${escapeHtml(message||"通信環境を確認して再度お試しください。")}</div>`;
 }
 async function openMyPage(){
@@ -3785,7 +2690,6 @@ async function openMyPage(){
 
   let scoreData=null;
   let rankingData=null;
-  let quizMasterData=null;
 
   try{
     const scoreResult=await fetchJsonWithTimeout("api/get_scores.php",{
@@ -3815,18 +2719,6 @@ async function openMyPage(){
     console.warn("mypage ranking load failed",rankingErr);
     rankingData=null;
   }
-  try{
-    const quizResult=await fetchJsonWithTimeout("api/get_quiz_master_ranking.php",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({player_id:STATE.playerId,client_token:getClientToken(),t:Date.now()})
-    },7000);
-    const tmp=quizResult.data;
-    if(quizResult.res.ok&&tmp&&tmp.ok)quizMasterData=tmp;
-  }catch(quizErr){
-    console.warn("mypage quiz master load failed",quizErr);
-    quizMasterData=null;
-  }
 
   try{
     await refreshFeatureFlags(STATE.playerId);
@@ -3836,7 +2728,7 @@ async function openMyPage(){
   loadMistakeReviewSetting(STATE.playerId);
 
   try{
-    renderMyPage(scoreData,rankingData,quizMasterData);
+    renderMyPage(scoreData,rankingData);
   }catch(renderErr){
     console.warn("renderMyPage failed",renderErr);
     renderMyPageError("成績データは取得できましたが、表示処理で問題が発生しました。");
@@ -4609,6 +3501,7 @@ const RUBY_ENTRIES=[
   ["捕られる", "<ruby>捕<rt>と</rt></ruby>られる"],
   ["捕られ", "<ruby>捕<rt>と</rt></ruby>られ"],
   ["線の内側", "<ruby>線<rt>せん</rt></ruby>の<ruby>内側<rt>うちがわ</rt></ruby>"],
+  ["線", "<ruby>線<rt>せん</rt></ruby>"],
   ["内側", "<ruby>内側<rt>うちがわ</rt></ruby>"],
   ["打たないで", "<ruby>打<rt>う</rt></ruby>たないで"],
   ["打たない", "<ruby>打<rt>う</rt></ruby>たない"],
@@ -4632,6 +3525,7 @@ const RUBY_ENTRIES=[
   ["球は", "<ruby>球<rt>たま</rt></ruby>は"],
   ["球に", "<ruby>球<rt>たま</rt></ruby>に"],
   ["球の", "<ruby>球<rt>たま</rt></ruby>の"],
+  ["球", "<ruby>球<rt>たま</rt></ruby>"],
   ["選手", "<ruby>選手<rt>せんしゅ</rt></ruby>"],
   ["地面", "<ruby>地面<rt>じめん</rt></ruby>"],
   ["投げられたボール", "<ruby>投<rt>な</rt></ruby>げられたボール"],
@@ -4794,347 +3688,106 @@ const RUBY_ENTRIES=[
   ["座る", "<ruby>座<rt>すわ</rt></ruby>る"],
   ["受け", "<ruby>受<rt>う</rt></ruby>け"],
   ["必ず", "<ruby>必<rt>かなら</rt></ruby>ず"],
-  // v840残件補完: 自動監査で残った7件の未ルビ語句を追加。
-  ["当たり", "<ruby>当<rt>あ</rt></ruby>たり"],
-  ["空振り後", "<ruby>空振<rt>からぶ</rt></ruby>り<ruby>後<rt>ご</rt></ruby>"],
-  ["塁で", "<ruby>塁<rt>るい</rt></ruby>で"],
-  ["塁は", "<ruby>塁<rt>るい</rt></ruby>は"],
-  ["その後", "その<ruby>後<rt>あと</rt></ruby>"],
-  ["塁の方", "<ruby>塁<rt>るい</rt></ruby>の<ruby>方<rt>ほう</rt></ruby>"],
-  ["投げる人", "<ruby>投<rt>な</rt></ruby>げる<ruby>人<rt>ひと</rt></ruby>"],
-  ["受ける人", "<ruby>受<rt>う</rt></ruby>ける<ruby>人<rt>ひと</rt></ruby>"],
-  ["塁の近く", "<ruby>塁<rt>るい</rt></ruby>の<ruby>近<rt>ちか</rt></ruby>く"],
-  ["出して", "<ruby>出<rt>だ</rt></ruby>して"],
-  // v840最終補完: 監査で残った2年生以下表示語のルビを追加。
-  ["ポジション名", "ポジション<ruby>名<rt>めい</rt></ruby>"],
-  ["名", "<ruby>名<rt>な</rt></ruby>"],
-  ["何でしょう", "<ruby>何<rt>なん</rt></ruby>でしょう"],
-  ["何を", "<ruby>何<rt>なに</rt></ruby>を"],
-  ["何", "<ruby>何<rt>なに</rt></ruby>"],
-  ["場合でも", "<ruby>場合<rt>ばあい</rt></ruby>でも"],
-  ["場合が", "<ruby>場合<rt>ばあい</rt></ruby>が"],
-  ["場合", "<ruby>場合<rt>ばあい</rt></ruby>"],
-  ["場で", "<ruby>場<rt>ば</rt></ruby>で"],
-  ["場", "<ruby>場<rt>ば</rt></ruby>"],
-  ["時点", "<ruby>時点<rt>じてん</rt></ruby>"],
-  ["時です", "<ruby>時<rt>とき</rt></ruby>です"],
-  ["時", "<ruby>時<rt>とき</rt></ruby>"],
-  ["三つ", "<ruby>三<rt>みっ</rt></ruby>つ"],
-  ["二つ", "<ruby>二<rt>ふた</rt></ruby>つ"],
-  ["外へ飛んだ", "<ruby>外<rt>そと</rt></ruby>へ<ruby>飛<rt>と</rt></ruby>んだ"],
-  ["外へ飛んで", "<ruby>外<rt>そと</rt></ruby>へ<ruby>飛<rt>と</rt></ruby>んで"],
-  ["外へ出た", "<ruby>外<rt>そと</rt></ruby>へ<ruby>出<rt>で</rt></ruby>た"],
-  ["外なら", "<ruby>外<rt>そと</rt></ruby>なら"],
-  ["外を", "<ruby>外<rt>そと</rt></ruby>を"],
-  ["外で", "<ruby>外<rt>そと</rt></ruby>で"],
-  ["外へ", "<ruby>外<rt>そと</rt></ruby>へ"],
-  ["外", "<ruby>外<rt>そと</rt></ruby>"],
-  ["右", "<ruby>右<rt>みぎ</rt></ruby>"],
-  ["左", "<ruby>左<rt>ひだり</rt></ruby>"],
-  ["中", "<ruby>中<rt>なか</rt></ruby>"],
-  ["上で", "<ruby>上<rt>うえ</rt></ruby>で"],
-  ["上から", "<ruby>上<rt>うえ</rt></ruby>から"],
-  ["上の", "<ruby>上<rt>うえ</rt></ruby>の"],
-  ["上", "<ruby>上<rt>うえ</rt></ruby>"],
-  ["体当たり", "<ruby>体当<rt>たいあ</rt></ruby>たり"],
-  ["体に", "<ruby>体<rt>からだ</rt></ruby>に"],
-  ["体が", "<ruby>体<rt>からだ</rt></ruby>が"],
-  ["体の", "<ruby>体<rt>からだ</rt></ruby>の"],
-  ["体", "<ruby>体<rt>からだ</rt></ruby>"],
-  ["直し", "<ruby>直<rt>なお</rt></ruby>し"],
-  ["直す", "<ruby>直<rt>なお</rt></ruby>す"],
-  ["直", "<ruby>直<rt>なお</rt></ruby>"],
-  ["空だけ", "<ruby>空<rt>そら</rt></ruby>だけ"],
-  ["空", "<ruby>空<rt>そら</rt></ruby>"],
-  ["誰にも", "<ruby>誰<rt>だれ</rt></ruby>にも"],
-  ["誰", "<ruby>誰<rt>だれ</rt></ruby>"],
-  ["行ける", "<ruby>行<rt>い</rt></ruby>ける"],
-  ["行けるわけ", "<ruby>行<rt>い</rt></ruby>けるわけ"],
-  ["行", "<ruby>行<rt>い</rt></ruby>"],
-  ["取れない", "<ruby>取<rt>と</rt></ruby>れない"],
-  ["取れば", "<ruby>取<rt>と</rt></ruby>れば"],
-  ["取", "<ruby>取<rt>と</rt></ruby>"],
-  ["走れる", "<ruby>走<rt>はし</rt></ruby>れる"],
-  ["走れません", "<ruby>走<rt>はし</rt></ruby>れません"],
-  ["走れば", "<ruby>走<rt>はし</rt></ruby>れば"],
-  ["走らず", "<ruby>走<rt>はし</rt></ruby>らず"],
-  ["走", "<ruby>走<rt>はし</rt></ruby>"],
-  ["通っていない", "<ruby>通<rt>とお</rt></ruby>っていない"],
-  ["通り", "<ruby>通<rt>とお</rt></ruby>り"],
-  ["通", "<ruby>通<rt>とお</rt></ruby>"],
-  ["言える", "<ruby>言<rt>い</rt></ruby>える"],
-  ["言いにくい", "<ruby>言<rt>い</rt></ruby>いにくい"],
-  ["言", "<ruby>言<rt>い</rt></ruby>"],
-  ["曲げた", "<ruby>曲<rt>ま</rt></ruby>げた"],
-  ["曲", "<ruby>曲<rt>ま</rt></ruby>"],
-  ["勢い", "<ruby>勢<rt>いきお</rt></ruby>い"],
-  ["気を", "<ruby>気<rt>き</rt></ruby>を"],
-  ["気", "<ruby>気<rt>き</rt></ruby>"],
-  ["胸の", "<ruby>胸<rt>むね</rt></ruby>の"],
-  ["入れすぎず", "<ruby>入<rt>い</rt></ruby>れすぎず"],
-  ["入れ", "<ruby>入<rt>い</rt></ruby>れ"],
-  ["合わ", "<ruby>合<rt>あ</rt></ruby>わ"],
-  ["合", "<ruby>合<rt>あ</rt></ruby>"],
-  // v840追加監査: 2年生以下の問題文・選択肢で未ルビだった語句を補完。
-  ["弱い", "<ruby>弱<rt>よわ</rt></ruby>い"],
-  ["前への", "<ruby>前<rt>まえ</rt></ruby>への"],
-  ["間に合いにくい", "<ruby>間<rt>ま</rt></ruby>に<ruby>合<rt>あ</rt></ruby>いにくい"],
-  ["間に合わない", "<ruby>間<rt>ま</rt></ruby>に<ruby>合<rt>あ</rt></ruby>わない"],
-  ["間に合", "<ruby>間<rt>ま</rt></ruby>に<ruby>合<rt>あ</rt></ruby>"],
-  ["合う", "<ruby>合<rt>あ</rt></ruby>う"],
-  ["見る", "<ruby>見<rt>み</rt></ruby>る"],
-  ["見て", "<ruby>見<rt>み</rt></ruby>て"],
-  ["見ず", "<ruby>見<rt>み</rt></ruby>ず"],
-  ["見ない", "<ruby>見<rt>み</rt></ruby>ない"],
-  ["見える", "<ruby>見<rt>み</rt></ruby>える"],
-  ["声", "<ruby>声<rt>こえ</rt></ruby>"],
-  ["来ていない", "<ruby>来<rt>き</rt></ruby>ていない"],
-  ["来る", "<ruby>来<rt>く</rt></ruby>る"],
-  ["来ました", "<ruby>来<rt>き</rt></ruby>ました"],
-  ["走路", "<ruby>走路<rt>そうろ</rt></ruby>"],
-  ["立っています", "<ruby>立<rt>た</rt></ruby>っています"],
-  ["立つ", "<ruby>立<rt>た</rt></ruby>つ"],
-  ["立った", "<ruby>立<rt>た</rt></ruby>った"],
-  ["立って", "<ruby>立<rt>た</rt></ruby>って"],
-  ["捕球後", "<ruby>捕球後<rt>ほきゅうご</rt></ruby>"],
-  ["直後", "<ruby>直後<rt>ちょくご</rt></ruby>"],
-  ["後、", "<ruby>後<rt>あと</rt></ruby>、"],
-  ["役割", "<ruby>役割<rt>やくわり</rt></ruby>"],
-  ["二塁手", "<ruby>二塁手<rt>にるいしゅ</rt></ruby>"],
-  ["球", "<ruby>球<rt>たま</rt></ruby>"],
-  ["無理", "<ruby>無理<rt>むり</rt></ruby>"],
-  ["手", "<ruby>手<rt>て</rt></ruby>"],
-  ["先", "<ruby>先<rt>さき</rt></ruby>"],
-  ["投げます", "<ruby>投<rt>な</rt></ruby>げます"],
-  ["歩く", "<ruby>歩<rt>ある</rt></ruby>く"],
-  ["当たりません", "<ruby>当<rt>あ</rt></ruby>たりません"],
-  ["当たらなければ", "<ruby>当<rt>あ</rt></ruby>たらなければ"],
-  ["当たった", "<ruby>当<rt>あ</rt></ruby>たった"],
-  ["当たりました", "<ruby>当<rt>あ</rt></ruby>たりました"],
-  ["行きません", "<ruby>行<rt>い</rt></ruby>きません"],
-  ["行く", "<ruby>行<rt>い</rt></ruby>く"],
-  ["走ります", "<ruby>走<rt>はし</rt></ruby>ります"],
-  ["走りました", "<ruby>走<rt>はし</rt></ruby>りました"],
-  ["走っています", "<ruby>走<rt>はし</rt></ruby>っています"],
-  ["走り", "<ruby>走<rt>はし</rt></ruby>り"],
-  ["触りました", "<ruby>触<rt>さわ</rt></ruby>りました"],
-  ["触れる", "<ruby>触<rt>ふ</rt></ruby>れる"],
-  ["言います", "<ruby>言<rt>い</rt></ruby>います"],
-  ["言う", "<ruby>言<rt>い</rt></ruby>う"],
-  ["同じ", "<ruby>同<rt>おな</rt></ruby>じ"],
-  ["人が", "<ruby>人<rt>ひと</rt></ruby>が"],
-  ["人は", "<ruby>人<rt>ひと</rt></ruby>は"],
-  ["人の", "<ruby>人<rt>ひと</rt></ruby>の"],
-  ["人に", "<ruby>人<rt>ひと</rt></ruby>に"],
-  ["人で", "<ruby>人<rt>ひと</rt></ruby>で"],
-  ["人", "<ruby>人<rt>ひと</rt></ruby>"],
-  ["走り方", "<ruby>走<rt>はし</rt></ruby>り<ruby>方<rt>かた</rt></ruby>"],
-  ["方", "<ruby>方<rt>かた</rt></ruby>"],
-  ["目を", "<ruby>目<rt>め</rt></ruby>を"],
-  ["目の", "<ruby>目<rt>め</rt></ruby>の"],
-  ["目", "<ruby>目<rt>め</rt></ruby>"],
-  ["力", "<ruby>力<rt>ちから</rt></ruby>"],
-  ["膝", "<ruby>膝<rt>ひざ</rt></ruby>"],
-  ["頭", "<ruby>頭<rt>あたま</rt></ruby>"],
-  ["顔", "<ruby>顔<rt>かお</rt></ruby>"],
+  ["代", "<ruby>代<rt>だい</rt></ruby>"],
+  ["件", "<ruby>件<rt>けん</rt></ruby>"],
+  ["位", "<ruby>位<rt>い</rt></ruby>"],
+  ["側", "<ruby>側<rt>がわ</rt></ruby>"],
+  ["備", "<ruby>備<rt>び</rt></ruby>"],
+  ["全", "<ruby>全<rt>ぜん</rt></ruby>"],
+  ["初", "<ruby>初<rt>しょ</rt></ruby>"],
+  ["判", "<ruby>判<rt>はん</rt></ruby>"],
+  ["加", "<ruby>加<rt>か</rt></ruby>"],
+  ["動", "<ruby>動<rt>どう</rt></ruby>"],
+  ["勝", "<ruby>勝<rt>しょう</rt></ruby>"],
+  ["勢", "<ruby>勢<rt>せい</rt></ruby>"],
+  ["印", "<ruby>印<rt>いん</rt></ruby>"],
+  ["可", "<ruby>可<rt>か</rt></ruby>"],
+  ["善", "<ruby>善<rt>ぜん</rt></ruby>"],
+  ["基", "<ruby>基<rt>き</rt></ruby>"],
+  ["塁", "<ruby>塁<rt>るい</rt></ruby>"],
+  ["増", "<ruby>増<rt>ぞう</rt></ruby>"],
+  ["守", "<ruby>守<rt>しゅ</rt></ruby>"],
+  ["安", "<ruby>安<rt>あん</rt></ruby>"],
+  ["定", "<ruby>定<rt>てい</rt></ruby>"],
+  ["審", "<ruby>審<rt>しん</rt></ruby>"],
+  ["席", "<ruby>席<rt>せき</rt></ruby>"],
+  ["度", "<ruby>度<rt>ど</rt></ruby>"],
+  ["得", "<ruby>得<rt>とく</rt></ruby>"],
+  ["性", "<ruby>性<rt>せい</rt></ruby>"],
+  ["意", "<ruby>意<rt>い</rt></ruby>"],
+  ["所", "<ruby>所<rt>しょ</rt></ruby>"],
+  ["抜", "<ruby>抜<rt>ぬ</rt></ruby>"],
+  ["指", "<ruby>指<rt>し</rt></ruby>"],
+  ["接", "<ruby>接<rt>せつ</rt></ruby>"],
+  ["撃", "<ruby>撃<rt>げき</rt></ruby>"],
+  ["攻", "<ruby>攻<rt>こう</rt></ruby>"],
+  ["断", "<ruby>断<rt>だん</rt></ruby>"],
+  ["最", "<ruby>最<rt>さい</rt></ruby>"],
+  ["条", "<ruby>条<rt>じょう</rt></ruby>"],
+  ["果", "<ruby>果<rt>か</rt></ruby>"],
+  ["決", "<ruby>決<rt>けつ</rt></ruby>"],
+  ["注", "<ruby>注<rt>ちゅう</rt></ruby>"],
+  ["準", "<ruby>準<rt>じゅん</rt></ruby>"],
+  ["無", "<ruby>無<rt>む</rt></ruby>"],
+  ["的", "<ruby>的<rt>てき</rt></ruby>"],
+  ["盗", "<ruby>盗<rt>とう</rt></ruby>"],
+  ["真", "<ruby>真<rt>ま</rt></ruby>"],
+  ["着", "<ruby>着<rt>ちゃく</rt></ruby>"],
+  ["結", "<ruby>結<rt>けつ</rt></ruby>"],
+  ["継", "<ruby>継<rt>けい</rt></ruby>"],
+  ["続", "<ruby>続<rt>ぞく</rt></ruby>"],
+  ["置", "<ruby>置<rt>ち</rt></ruby>"],
+  ["者", "<ruby>者<rt>しゃ</rt></ruby>"],
+  ["背", "<ruby>背<rt>せ</rt></ruby>"],
   ["胸", "<ruby>胸<rt>むね</rt></ruby>"],
-  ["足", "<ruby>足<rt>あし</rt></ruby>"],
-  ["構え", "<ruby>構<rt>かま</rt></ruby>え"],
-  ["構える", "<ruby>構<rt>かま</rt></ruby>える"],
-  ["反応", "<ruby>反応<rt>はんのう</rt></ruby>"],
-  ["止まり", "<ruby>止<rt>と</rt></ruby>まり"],
-  ["止まら", "<ruby>止<rt>と</rt></ruby>まら"],
-  ["止め", "<ruby>止<rt>と</rt></ruby>め"],
-  ["止まる", "<ruby>止<rt>と</rt></ruby>まる"],
-  ["固まって", "<ruby>固<rt>かた</rt></ruby>まって"],
-  ["固まり", "<ruby>固<rt>かた</rt></ruby>まり"],
-  ["上がって", "<ruby>上<rt>あ</rt></ruby>がって"],
-  ["上がりました", "<ruby>上<rt>あ</rt></ruby>がりました"],
-  ["上を", "<ruby>上<rt>うえ</rt></ruby>を"],
-  ["下", "<ruby>下<rt>した</rt></ruby>"],
-  ["左右", "<ruby>左右<rt>さゆう</rt></ruby>"],
-  ["回れる", "<ruby>回<rt>まわ</rt></ruby>れる"],
-  ["回り", "<ruby>回<rt>まわ</rt></ruby>り"],
-  ["向かって", "<ruby>向<rt>む</rt></ruby>かって"],
-  ["向かいました", "<ruby>向<rt>む</rt></ruby>かいました"],
-  ["間で", "<ruby>間<rt>あいだ</rt></ruby>で"],
-  ["間に", "<ruby>間<rt>あいだ</rt></ruby>に"],
-  ["間を", "<ruby>間<rt>あいだ</rt></ruby>を"],
-  ["間", "<ruby>間<rt>あいだ</rt></ruby>"],
-  // v840: 2年生以下ルビ精査。1文字汎用ルビの誤読を避けるため、低学年問題で使う語句単位の読みを追加。
-  ["三塁側", "<ruby>三塁側<rt>さんるいがわ</rt></ruby>"],
-  ["攻撃側", "<ruby>攻撃側<rt>こうげきがわ</rt></ruby>"],
-  ["意識", "<ruby>意識<rt>いしき</rt></ruby>"],
-  ["注意", "<ruby>注意<rt>ちゅうい</rt></ruby>"],
-  ["意思", "<ruby>意思<rt>いし</rt></ruby>"],
-  ["遅れる", "<ruby>遅<rt>おく</rt></ruby>れる"],
-  ["遅れます", "<ruby>遅<rt>おく</rt></ruby>れます"],
-  ["遅く", "<ruby>遅<rt>おそ</rt></ruby>く"],
-  ["基本的", "<ruby>基本的<rt>きほんてき</rt></ruby>"],
-  ["基本", "<ruby>基本<rt>きほん</rt></ruby>"],
-  ["あり得る", "あり<ruby>得<rt>え</rt></ruby>る"],
-  ["得る", "<ruby>得<rt>え</rt></ruby>る"],
-  ["有無", "<ruby>有無<rt>うむ</rt></ruby>"],
-  ["要求する", "<ruby>要求<rt>ようきゅう</rt></ruby>する"],
-  ["要求しない", "<ruby>要求<rt>ようきゅう</rt></ruby>しない"],
-  ["要求", "<ruby>要求<rt>ようきゅう</rt></ruby>"],
-  ["準備", "<ruby>準備<rt>じゅんび</rt></ruby>"],
-  ["備える", "<ruby>備<rt>そな</rt></ruby>える"],
-  ["備えます", "<ruby>備<rt>そな</rt></ruby>えます"],
-  ["備え", "<ruby>備<rt>そな</rt></ruby>え"],
-  ["姿勢", "<ruby>姿勢<rt>しせい</rt></ruby>"],
-  ["接触", "<ruby>接触<rt>せっしょく</rt></ruby>"],
-  ["取りつつ", "<ruby>取<rt>と</rt></ruby>りつつ"],
-  ["取りました", "<ruby>取<rt>と</rt></ruby>りました"],
-  ["取りそこね", "<ruby>取<rt>と</rt></ruby>りそこね"],
-  ["取られず", "<ruby>取<rt>と</rt></ruby>られず"],
-  ["取られました", "<ruby>取<rt>と</rt></ruby>られました"],
-  ["取られ", "<ruby>取<rt>と</rt></ruby>られ"],
-  ["次の", "<ruby>次<rt>つぎ</rt></ruby>の"],
-  ["次に", "<ruby>次<rt>つぎ</rt></ruby>に"],
-  ["返球", "<ruby>返球<rt>へんきゅう</rt></ruby>"],
-  ["完全", "<ruby>完全<rt>かんぜん</rt></ruby>"],
-  ["全部", "<ruby>全部<rt>ぜんぶ</rt></ruby>"],
-  ["飛んだ", "<ruby>飛<rt>と</rt></ruby>んだ"],
-  ["飛びました", "<ruby>飛<rt>と</rt></ruby>びました"],
-  ["覚えましょう", "<ruby>覚<rt>おぼ</rt></ruby>えましょう"],
-  ["攻撃", "<ruby>攻撃<rt>こうげき</rt></ruby>"],
-  ["打撃", "<ruby>打撃<rt>だげき</rt></ruby>"],
-  ["一塁線", "<ruby>一塁線<rt>いちるいせん</rt></ruby>"],
-  ["三塁線", "<ruby>三塁線<rt>さんるいせん</rt></ruby>"],
-  ["塁から", "<ruby>塁<rt>るい</rt></ruby>から"],
-  ["塁へ", "<ruby>塁<rt>るい</rt></ruby>へ"],
-  ["塁を", "<ruby>塁<rt>るい</rt></ruby>を"],
-  ["塁に", "<ruby>塁<rt>るい</rt></ruby>に"],
-  ["踏んだ", "<ruby>踏<rt>ふ</rt></ruby>んだ"],
-  ["踏みます", "<ruby>踏<rt>ふ</rt></ruby>みます"],
-  ["危険", "<ruby>危険<rt>きけん</rt></ruby>"],
-  ["座って", "<ruby>座<rt>すわ</rt></ruby>って"],
-  ["勝手", "<ruby>勝手<rt>かって</rt></ruby>"],
-  ["離さない", "<ruby>離<rt>はな</rt></ruby>さない"],
-  ["背中", "<ruby>背中<rt>せなか</rt></ruby>"],
-  ["背筋", "<ruby>背筋<rt>せすじ</rt></ruby>"],
-  ["増えます", "<ruby>増<rt>ふ</rt></ruby>えます"],
-  ["一度", "<ruby>一度<rt>いちど</rt></ruby>"],
-  ["打席", "<ruby>打席<rt>だせき</rt></ruby>"],
-  ["二塁打", "<ruby>二塁打<rt>にるいだ</rt></ruby>"],
-  ["振って", "<ruby>振<rt>ふ</rt></ruby>って"],
-  ["振りました", "<ruby>振<rt>ふ</rt></ruby>りました"],
-  ["振らなければ", "<ruby>振<rt>ふ</rt></ruby>らなければ"],
-  ["振りません", "<ruby>振<rt>ふ</rt></ruby>りません"],
-  ["振らなかった", "<ruby>振<rt>ふ</rt></ruby>らなかった"],
-  ["向こう", "<ruby>向<rt>む</rt></ruby>こう"],
-  ["向きました", "<ruby>向<rt>む</rt></ruby>きました"],
-  ["転がれば", "<ruby>転<rt>ころ</rt></ruby>がれば"],
-  ["最初", "<ruby>最初<rt>さいしょ</rt></ruby>"],
-  ["最善", "<ruby>最善<rt>さいぜん</rt></ruby>"],
-  ["最も", "<ruby>最<rt>もっと</rt></ruby>も"],
-  ["最後", "<ruby>最後<rt>さいご</rt></ruby>"],
-  ["戻りません", "<ruby>戻<rt>もど</rt></ruby>りません"],
-  ["戻ります", "<ruby>戻<rt>もど</rt></ruby>ります"],
-  ["順番", "<ruby>順番<rt>じゅんばん</rt></ruby>"],
-  ["攻守交代", "<ruby>攻守交代<rt>こうしゅこうたい</rt></ruby>"],
-  ["着けば", "<ruby>着<rt>つ</rt></ruby>けば"],
-  ["着き", "<ruby>着<rt>つ</rt></ruby>き"],
-  ["持った", "<ruby>持<rt>も</rt></ruby>った"],
-  ["持って", "<ruby>持<rt>も</rt></ruby>って"],
-  ["中継", "<ruby>中継<rt>ちゅうけい</rt></ruby>"],
-  ["落ちました", "<ruby>落<rt>お</rt></ruby>ちました"],
-  ["結果", "<ruby>結果<rt>けっか</rt></ruby>"],
-  ["違います", "<ruby>違<rt>ちが</rt></ruby>います"],
-  ["目指せる", "<ruby>目指<rt>めざ</rt></ruby>せる"],
-  ["可能性", "<ruby>可能性<rt>かのうせい</rt></ruby>"],
-  ["真ん中", "<ruby>真<rt>ま</rt></ruby>ん<ruby>中<rt>なか</rt></ruby>"],
-  ["審判", "<ruby>審判<rt>しんぱん</rt></ruby>"],
-  ["低学年", "<ruby>低学年<rt>ていがくねん</rt></ruby>"],
-  ["目安", "<ruby>目安<rt>めやす</rt></ruby>"],
-  ["決める", "<ruby>決<rt>き</rt></ruby>める"],
-  ["限りません", "<ruby>限<rt>かぎ</rt></ruby>りません"],
-  ["続く", "<ruby>続<rt>つづ</rt></ruby>く"],
-  ["待ち方", "<ruby>待<rt>ま</rt></ruby>ち<ruby>方<rt>かた</rt></ruby>"],
-  ["動ける", "<ruby>動<rt>うご</rt></ruby>ける"],
-  ["打球処理", "<ruby>打球処理<rt>だきゅうしょり</rt></ruby>"],
-  ["処理", "<ruby>処理<rt>しょり</rt></ruby>"],
-  ["空ける", "<ruby>空<rt>あ</rt></ruby>ける"],
-  ["空く", "<ruby>空<rt>あ</rt></ruby>く"],
-  ["空けたり", "<ruby>空<rt>あ</rt></ruby>けたり"],
-  ["付近", "<ruby>付近<rt>ふきん</rt></ruby>"],
-  ["助ける", "<ruby>助<rt>たす</rt></ruby>ける"],
-  ["助け", "<ruby>助<rt>たす</rt></ruby>け"],
-  ["時は", "<ruby>時<rt>とき</rt></ruby>は"],
-  ["時の", "<ruby>時<rt>とき</rt></ruby>の"],
-  ["時に", "<ruby>時<rt>とき</rt></ruby>に"],
-  ["入って", "<ruby>入<rt>はい</rt></ruby>って"],
-  ["入った", "<ruby>入<rt>はい</rt></ruby>った"],
-  ["入らない", "<ruby>入<rt>はい</rt></ruby>らない"],
-  ["入る", "<ruby>入<rt>はい</rt></ruby>る"],
-  ["入り", "<ruby>入<rt>はい</rt></ruby>り"],
-  ["作る", "<ruby>作<rt>つく</rt></ruby>る"],
-  ["空けること", "<ruby>空<rt>あ</rt></ruby>けること"],
-  ["考える", "<ruby>考<rt>かんが</rt></ruby>える"],
-  ["受ける", "<ruby>受<rt>う</rt></ruby>ける"],
-  ["受けた", "<ruby>受<rt>う</rt></ruby>けた"],
-  ["受けて", "<ruby>受<rt>う</rt></ruby>けて"],
-  ["優先", "<ruby>優先<rt>ゆうせん</rt></ruby>"],
-  ["様子", "<ruby>様子<rt>ようす</rt></ruby>"],
-  ["状況", "<ruby>状況<rt>じょうきょう</rt></ruby>"],
-  ["中心", "<ruby>中心<rt>ちゅうしん</rt></ruby>"],
-  ["周辺", "<ruby>周辺<rt>しゅうへん</rt></ruby>"],
-  ["両方", "<ruby>両方<rt>りょうほう</rt></ruby>"],
-  ["正確", "<ruby>正確<rt>せいかく</rt></ruby>"],
-  ["確実", "<ruby>確実<rt>かくじつ</rt></ruby>"],
-  ["迷わず", "<ruby>迷<rt>まよ</rt></ruby>わず"],
-  ["安全策", "<ruby>安全策<rt>あんぜんさく</rt></ruby>"],
-  ["合いにくい", "<ruby>合<rt>あ</rt></ruby>いにくい"],
-  ["合わない", "<ruby>合<rt>あ</rt></ruby>わない"],
-  ["動き出し", "<ruby>動<rt>うご</rt></ruby>き<ruby>出<rt>だ</rt></ruby>し"],
-  ["出す", "<ruby>出<rt>だ</rt></ruby>す"],
-  ["出た", "<ruby>出<rt>で</rt></ruby>た"],
-  ["出たり", "<ruby>出<rt>で</rt></ruby>たり"],
-  ["出ました", "<ruby>出<rt>で</rt></ruby>ました"],
-  ["下がる", "<ruby>下<rt>さ</rt></ruby>がる"],
-  ["大きな", "<ruby>大<rt>おお</rt></ruby>きな"],
-  ["大きく", "<ruby>大<rt>おお</rt></ruby>きく"],
-  ["多い", "<ruby>多<rt>おお</rt></ruby>い"],
-  ["少し", "<ruby>少<rt>すこ</rt></ruby>し"],
-  ["近く", "<ruby>近<rt>ちか</rt></ruby>く"],
-  ["近い", "<ruby>近<rt>ちか</rt></ruby>い"],
-  ["上がり", "<ruby>上<rt>あ</rt></ruby>がり"],
-  ["上がる", "<ruby>上<rt>あ</rt></ruby>がる"],
-  ["上がった", "<ruby>上<rt>あ</rt></ruby>がった"],
-  ["高く", "<ruby>高<rt>たか</rt></ruby>く"],
-  ["高い", "<ruby>高<rt>たか</rt></ruby>い"],
-  ["高さ", "<ruby>高<rt>たか</rt></ruby>さ"],
-  ["低すぎ", "<ruby>低<rt>ひく</rt></ruby>すぎ"],
-  ["高すぎ", "<ruby>高<rt>たか</rt></ruby>すぎ"],
-  ["通り過ぎ", "<ruby>通<rt>とお</rt></ruby>り<ruby>過<rt>す</rt></ruby>ぎ"],
-  ["通りました", "<ruby>通<rt>とお</rt></ruby>りました"],
-  ["通った", "<ruby>通<rt>とお</rt></ruby>った"],
-  ["通る", "<ruby>通<rt>とお</rt></ruby>る"],
-  ["曲げて", "<ruby>曲<rt>ま</rt></ruby>げて"],
-  ["伸ばして", "<ruby>伸<rt>の</rt></ruby>ばして"],
-  ["軽く", "<ruby>軽<rt>かる</rt></ruby>く"],
-  ["野手", "<ruby>野手<rt>やしゅ</rt></ruby>"],
-  ["人数", "<ruby>人数<rt>にんずう</rt></ruby>"],
-  ["何人", "<ruby>何人<rt>なんにん</rt></ruby>"],
-  ["分かり", "<ruby>分<rt>わ</rt></ruby>かり"],
-  ["分かる", "<ruby>分<rt>わ</rt></ruby>かる"],
-  ["大切", "<ruby>大切<rt>たいせつ</rt></ruby>"],
-  ["先に", "<ruby>先<rt>さき</rt></ruby>に"],
-  ["先なら", "<ruby>先<rt>さき</rt></ruby>なら"],
-  ["後に", "<ruby>後<rt>あと</rt></ruby>に"],
-  ["後の", "<ruby>後<rt>あと</rt></ruby>の"],
-  ["前に", "<ruby>前<rt>まえ</rt></ruby>に"],
-  ["前の", "<ruby>前<rt>まえ</rt></ruby>の"],
-  ["前へ", "<ruby>前<rt>まえ</rt></ruby>へ"],
-  ["後ろ", "<ruby>後<rt>うし</rt></ruby>ろ"],
-  ["前後", "<ruby>前後<rt>ぜんご</rt></ruby>"],
-  ["線の", "<ruby>線<rt>せん</rt></ruby>の"],
-  ["線外", "<ruby>線外<rt>せんがい</rt></ruby>"],
-  ["線内", "<ruby>線内<rt>せんない</rt></ruby>"],
-  ["走塁妨害", "<ruby>走塁妨害<rt>そうるいぼうがい</rt></ruby>"],
-  ["遠く", "<ruby>遠<rt>とお</rt></ruby>く"],
-  ["遠くへ", "<ruby>遠<rt>とお</rt></ruby>くへ"],
+  ["能", "<ruby>能<rt>のう</rt></ruby>"],
+  ["要", "<ruby>要<rt>よう</rt></ruby>"],
+  ["試", "<ruby>試<rt>し</rt></ruby>"],
+  ["誰", "<ruby>誰<rt>だれ</rt></ruby>"],
+  ["送", "<ruby>送<rt>そう</rt></ruby>"],
+  ["逃", "<ruby>逃<rt>に</rt></ruby>"],
+  ["速", "<ruby>速<rt>はや</rt></ruby>"],
+  ["遅", "<ruby>遅<rt>おそ</rt></ruby>"],
+  ["限", "<ruby>限<rt>げん</rt></ruby>"],
+  ["険", "<ruby>険<rt>けん</rt></ruby>"],
+  ["面", "<ruby>面<rt>めん</rt></ruby>"],
+  ["順", "<ruby>順<rt>じゅん</rt></ruby>"],
+  ["低", "<ruby>低<rt>ひく</rt></ruby>"],
+  ["危", "<ruby>危<rt>あぶ</rt></ruby>"],
+  ["取", "<ruby>取<rt>と</rt></ruby>"],
+  ["受", "<ruby>受<rt>う</rt></ruby>"],
+  ["向", "<ruby>向<rt>む</rt></ruby>"],
+  ["呼", "<ruby>呼<rt>よ</rt></ruby>"],
+  ["座", "<ruby>座<rt>すわ</rt></ruby>"],
+  ["待", "<ruby>待<rt>ま</rt></ruby>"],
+  ["必", "<ruby>必<rt>ひつ</rt></ruby>"],
+  ["戻", "<ruby>戻<rt>もど</rt></ruby>"],
+  ["打", "<ruby>打<rt>だ</rt></ruby>"],
+  ["投", "<ruby>投<rt>とう</rt></ruby>"],
+  ["持", "<ruby>持<rt>も</rt></ruby>"],
+  ["振", "<ruby>振<rt>ふ</rt></ruby>"],
+  ["捕", "<ruby>捕<rt>ほ</rt></ruby>"],
+  ["次", "<ruby>次<rt>つぎ</rt></ruby>"],
+  ["狙", "<ruby>狙<rt>ねら</rt></ruby>"],
+  ["相", "<ruby>相<rt>あい</rt></ruby>"],
+  ["終", "<ruby>終<rt>しゅう</rt></ruby>"],
+  ["良", "<ruby>良<rt>よ</rt></ruby>"],
+  ["落", "<ruby>落<rt>お</rt></ruby>"],
+  ["覚", "<ruby>覚<rt>おぼ</rt></ruby>"],
+  ["触", "<ruby>触<rt>ふ</rt></ruby>"],
+  ["起", "<ruby>起<rt>お</rt></ruby>"],
+  ["踏", "<ruby>踏<rt>ふ</rt></ruby>"],
+  ["転", "<ruby>転<rt>てん</rt></ruby>"],
+  ["返", "<ruby>返<rt>かえ</rt></ruby>"],
+  ["追", "<ruby>追<rt>お</rt></ruby>"],
+  ["進", "<ruby>進<rt>しん</rt></ruby>"],
+  ["過", "<ruby>過<rt>す</rt></ruby>"],
+  ["違", "<ruby>違<rt>ちが</rt></ruby>"],
+  ["選", "<ruby>選<rt>えら</rt></ruby>"],
+  ["部", "<ruby>部<rt>ぶ</rt></ruby>"],
+  ["離", "<ruby>離<rt>はな</rt></ruby>"],
+  ["飛", "<ruby>飛<rt>と</rt></ruby>"],
+  ["駆", "<ruby>駆<rt>か</rt></ruby>"]
 ];
 const RUBY_MAP=Object.fromEntries(RUBY_ENTRIES);
 const RUBY_PATTERN=new RegExp(
@@ -5389,25 +4042,6 @@ async function answer(q,c){
 }
 function disableChoices(){$("choices").querySelectorAll("button").forEach(b=>b.disabled=true)}
 function showGoodJob(mode){return new Promise(resolve=>{const el=$("goodJobToast");if(!el){resolve();return}const sceneMode=mode==="defense"?"defense":"attack";el.className=`goodjob-toast ${sceneMode}`;el.style.display="block";el.style.opacity="1";void el.offsetWidth;el.classList.add("show");setTimeout(()=>{el.className="goodjob-toast";el.style.display="none";el.style.opacity="";resolve()},1500)})}
-function showQuizMasterBonusLifeAnimation(){
-  try{
-    let el=document.getElementById("quizMasterBonusLifeOverlay");
-    if(!el){
-      el=document.createElement("div");
-      el.id="quizMasterBonusLifeOverlay";
-      el.className="qm-bonus-life-overlay";
-      el.setAttribute("aria-hidden","true");
-      el.innerHTML=`<div class="qm-bonus-life-heart" aria-hidden="true"><svg viewBox="0 0 32 29.6" xmlns="http://www.w3.org/2000/svg"><path d="M23.6,0c-2.7,0-5.1,1.4-6.6,3.6C15.5,1.4,13.1,0,10.4,0C4.7,0,0,4.7,0,10.4 c0,7.4,7.5,12.3,16,19.2c8.5-6.9,16-11.8,16-19.2C32,4.7,27.3,0,23.6,0z" fill="#dd0e2d"/></svg></div>`+
-        `<div class="qm-bonus-life-band" aria-hidden="true"></div>`+
-        `<div class="qm-bonus-life-text">野球博士デイリーライフをゲット!</div>`;
-      document.body.appendChild(el);
-    }
-    el.classList.remove("show");
-    void el.offsetWidth;
-    el.classList.add("show");
-    setTimeout(()=>{if(el)el.classList.remove("show");},2700);
-  }catch(e){}
-}
 function finishGame(){
   clearQuestionTimer();
   const maxScore=maxScoreForCurrentGame();
@@ -5417,10 +4051,6 @@ function finishGame(){
   $("rank").textContent=r;
   const didClear=STATE.score>=GRADE_CLEAR_SCORE&&STATE.grade>=3;
   const nextGrade=Math.min(6,STATE.grade+1);
-  // 新仕様: 通常ゲームを1日1回完了すると、その日だけ野球博士チャレンジのライフを+1（当日初回のみ）。
-  const earnedQuizLife=(STATE.loggedIn&&STATE.playerId&&!STATE.adminMode&&!isAdminQuestionTestMode()&&typeof hasQuizMasterFeatureAccess==="function"&&hasQuizMasterFeatureAccess())?quizMasterGrantBonusLifeToday():false;
-  const quizLifeMsg=earnedQuizLife?`<p class="unlock-note">野球博士チャレンジのライフが1つ増えました！（本日のみ・毎日24時にリセット）</p>`:"";
-  if(earnedQuizLife)setTimeout(showQuizMasterBonusLifeAnimation,450);
   const adminMsg=isAdminQuestionTestMode()
     ?`<p class="unlock-note locked">管理者テストプレイのため、この結果はスコア・ランキング・間違い記録・学年解放に反映されません。</p>`
     :(STATE.adminMode?`<p class="unlock-note locked">管理者用モードのため、この結果は保存・ランキング反映・学年解放されません。</p>`:"");
@@ -5429,7 +4059,7 @@ function finishGame(){
     :(isBasic
       ?`<p class="unlock-note">基本動作モード完了！10問の基本問題をくり返し練習しよう。</p>`
       :(didClear?(STATE.grade<6?`<p class="unlock-note">${GRADE_CLEAR_SCORE}点以上達成！この学年をクリアしました。次回から同じ守備位置で${nextGrade}年生が選べます。</p>`:`<p class="unlock-note">${GRADE_CLEAR_SCORE}点以上達成！この守備位置の6年生をクリアしました。</p>`):`<p class="unlock-note locked">${GRADE_CLEAR_SCORE}点以上で次の学年が開放されます。もう一度チャレンジしよう！</p>`));
-  $("breakdown").innerHTML=isBasic?`<p>基本動作：${STATE.score}/${maxScore}点</p>${adminMsg}${unlockMsg}${quizLifeMsg}`:`<p>攻撃：${STATE.attackScore}/27点　守備：${STATE.defenseScore}/27点</p>${adminMsg}${unlockMsg}${quizLifeMsg}`;
+  $("breakdown").innerHTML=isBasic?`<p>基本動作：${STATE.score}/${maxScore}点</p>${adminMsg}${unlockMsg}`:`<p>攻撃：${STATE.attackScore}/27点　守備：${STATE.defenseScore}/27点</p>${adminMsg}${unlockMsg}`;
   $("answerLog").innerHTML=STATE.logs.map(l=>`<div class="logrow"><b>${escapeHtml(l.inning)}</b><span>${escapeHtml(outsLabel(l.outs))} ${escapeHtml(stageLabel(l.stage))}<br>${(STATE.adminMode||isAdminQuestionTestMode())?`${escapeHtml(l.id)}：`:"選択："}${rubyHtml(l.selected)}<br><small>${rubyHtml(l.explain)}${l.answer_time_ms?`　回答時間：${(Number(l.answer_time_ms)/1000).toFixed(1)}秒`:""}</small></span><b>${escapeHtml(l.score)}点</b></div>`).join("");
   setScoreSaveNotice("",false);
   saveScore().then(data=>{
@@ -5831,6 +4461,8 @@ function playArrowFromTo(q, POS){
 }
 
 init();
+
+
 
 
 

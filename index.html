@@ -1,12 +1,12 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>少年野球シミュレーター「野球やろうぜ！」</title><link rel="stylesheet" href="assets/styles.css?v=1070">  <script>(function(){try{var p=new URLSearchParams(location.search||"");var issue=(p.get("issue")||p.get("id_issue")||"").toLowerCase();var invite=p.get("invite_key")||p.get("inviteIssueKey")||p.get("issue_invite")||"";var admin=p.get("admin_key")||p.get("adminIssueKey")||p.get("issue_admin")||"";function ck(n,v){try{document.cookie=encodeURIComponent(n)+"="+encodeURIComponent(v||"")+"; Max-Age="+(90*24*60*60)+"; Path=/; SameSite=Lax"+(location.protocol==="https:"?"; Secure":"");}catch(e){}}function ls(n,v){try{localStorage.setItem(n,v||"");}catch(e){}}var href="manifest.webmanifest";if(((issue==="admin")&&admin)||(!issue&&admin)){ck("baseballPendingAdminIssueUrl",admin);ck("baseballPendingIssueType","admin");ls("baseballPendingAdminIssueUrl",admin);ls("baseballPendingIssueType","admin");href="api/issue_manifest.php?openExternalBrowser=1&issue=admin&admin_key="+encodeURIComponent(admin);}else if(((issue==="invite")&&invite)||(!issue&&invite)){ck("baseballPendingInviteIssueUrl",invite);ck("baseballPendingIssueType","invite");ls("baseballPendingInviteIssueUrl",invite);ls("baseballPendingIssueType","invite");href="api/issue_manifest.php?openExternalBrowser=1&issue=invite&invite_key="+encodeURIComponent(invite);}document.write('<link rel="manifest" href="'+href.replace(/"/g,"%22")+'">');}catch(e){document.write('<link rel="manifest" href="manifest.webmanifest">');}})();</script>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>少年野球シミュレーター「野球やろうぜ！」</title><link rel="stylesheet" href="assets/styles.css?v=838">  <script>(function(){try{var p=new URLSearchParams(location.search||"");var issue=(p.get("issue")||p.get("id_issue")||"").toLowerCase();var invite=p.get("invite_key")||p.get("inviteIssueKey")||p.get("issue_invite")||"";var admin=p.get("admin_key")||p.get("adminIssueKey")||p.get("issue_admin")||"";function ck(n,v){try{document.cookie=encodeURIComponent(n)+"="+encodeURIComponent(v||"")+"; Max-Age="+(90*24*60*60)+"; Path=/; SameSite=Lax"+(location.protocol==="https:"?"; Secure":"");}catch(e){}}function ls(n,v){try{localStorage.setItem(n,v||"");}catch(e){}}var href="manifest.webmanifest";if(((issue==="admin")&&admin)||(!issue&&admin)){ck("baseballPendingAdminIssueUrl",admin);ck("baseballPendingIssueType","admin");ls("baseballPendingAdminIssueUrl",admin);ls("baseballPendingIssueType","admin");href="api/issue_manifest.php?openExternalBrowser=1&issue=admin&admin_key="+encodeURIComponent(admin);}else if(((issue==="invite")&&invite)||(!issue&&invite)){ck("baseballPendingInviteIssueUrl",invite);ck("baseballPendingIssueType","invite");ls("baseballPendingInviteIssueUrl",invite);ls("baseballPendingIssueType","invite");href="api/issue_manifest.php?openExternalBrowser=1&issue=invite&invite_key="+encodeURIComponent(invite);}document.write('<link rel="manifest" href="'+href.replace(/"/g,"%22")+'">');}catch(e){document.write('<link rel="manifest" href="manifest.webmanifest">');}})();</script>
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
   <meta name="theme-color" content="#0046b8">
-  <meta name="app-version" content="v1070-production">
+  <meta name="app-version" content="v838-production">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="野球やろうぜ">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-</head><body class="home home-screen app-booting" ><div id="transitionOverlay" class="transition-overlay"></div><div id="timerBox" class="timer-box" hidden></div><div id="countdownOverlay" class="countdown-overlay" aria-hidden="true"></div><div id="goodJobToast" class="goodjob-toast" aria-hidden="true"><div class="goodjob-scene" aria-hidden="true"><span class="gj-ball"></span><span class="gj-glove"></span><span class="gj-bat"></span><span class="gj-impact"></span></div><span class="gj-text">GoodJob!</span></div>
+</head><body class="home home-screen" ><div id="transitionOverlay" class="transition-overlay"></div><div id="timerBox" class="timer-box" hidden></div><div id="countdownOverlay" class="countdown-overlay" aria-hidden="true"></div><div id="goodJobToast" class="goodjob-toast" aria-hidden="true"><div class="goodjob-scene" aria-hidden="true"><span class="gj-ball"></span><span class="gj-glove"></span><span class="gj-bat"></span><span class="gj-impact"></span></div><span class="gj-text">GoodJob!</span></div>
 <div style="display:none">
 <img src="assets/sprite_batter_blue.webp?v=822" alt="">
 <img src="assets/sprite_batter_red.webp?v=822" alt="">
@@ -113,7 +113,7 @@
     不適切な言葉、公式と誤認される表現、個人情報、企業名・商標・有名キャラクター名にあたる表現は使用できません。
   </div>
 </details></div>
-<div id="loginStatus" class="login-status registration-control">野球博士チャレンジは、プレイヤーIDでログインし、オプション機能を解放した方のみ利用できます。</div><div id="guestGuide" class="guest-guide registration-control"><b>野球博士チャレンジはオプション機能です。</b><br>プレイヤーIDでログインし、マイページで招待IDまたは管理者IDを登録して機能を解放すると利用できます。<button id="guestHowBtn" class="guest-how-link" type="button">遊び方を見る</button></div><div id="loginActions" class="login-actions registration-control"><button id="loginBtn" class="secondary" type="button">ログイン</button><button id="rankingBtn" class="secondary ranking" type="button">ランキング</button></div><div id="issueKeyActions" class="issue-key-actions" style="display:none" aria-live="polite"><div class="issue-key-title">ID取得用URLから開いています</div><p class="issue-key-note">プレイヤーID登録後、対象のID取得ページを外部ブラウザで開けます。</p><div class="issue-key-buttons"><a id="inviteIssueExternalBtn" class="secondary issue-key-button" href="invite_issue.html" target="_blank" rel="noopener" style="display:none">招待IDを受け取る</a><a id="adminIssueExternalBtn" class="secondary issue-key-button" href="admin_id_issue.html" target="_blank" rel="noopener" style="display:none">管理者IDを受け取る</a></div></div><label id="gradeSelectLabel" class="game-start-control">学年<select id="grade"><option value="2">3年生以下（制限時間なし）</option><option value="3">3年生（制限時間30秒）</option><option value="4">4年生（制限時間25秒）</option><option value="5">5年生（制限時間20秒）</option><option value="6">6年生（制限時間15秒）</option></select></label><div id="gradeLockStatus" class="grade-lock-status game-start-control">各ポジションは3年生からスタートします。クリアすると次の学年が選べます。</div><label id="positionSelectLabel" class="game-start-control">守備位置<select id="position"></select></label><button id="startBtn" class="primary game-start-control">ゲームスタート</button><button id="quizMasterBtn" class="primary quiz-master-start" type="button" style="display:none"><span class="quiz-master-start-title">野球博士チャレンジ</span><span class="quiz-master-start-new">NEW!</span></button></div><div id="topPublicVersion" class="public-version-badge">v1.0.0</div><div class="top-copyright">© REALEMOTIONFACTORY.COM</div></div></section><section id="screen-how" class="screen">
+<div id="loginStatus" class="login-status registration-control">プレイする場合はプレイヤーIDを入力してください。同じプレイヤーIDは別のユーザーと共有できません。</div><div id="guestGuide" class="guest-guide registration-control"><b>まずはプレイヤーIDを入力してください。</b><br>同じプレイヤーIDでログインすると、成績や学年解放状況を保存できます。別の人と同じプレイヤーIDは使えません。<button id="guestHowBtn" class="guest-how-link" type="button">遊び方を見る</button></div><div id="loginActions" class="login-actions registration-control"><button id="loginBtn" class="secondary" type="button">ログイン</button><button id="rankingBtn" class="secondary ranking" type="button">ランキング</button></div><div id="issueKeyActions" class="issue-key-actions" style="display:none" aria-live="polite"><div class="issue-key-title">ID取得用URLから開いています</div><p class="issue-key-note">プレイヤーID登録後、対象のID取得ページを外部ブラウザで開けます。</p><div class="issue-key-buttons"><a id="inviteIssueExternalBtn" class="secondary issue-key-button" href="invite_issue.html" target="_blank" rel="noopener" style="display:none">招待IDを受け取る</a><a id="adminIssueExternalBtn" class="secondary issue-key-button" href="admin_id_issue.html" target="_blank" rel="noopener" style="display:none">管理者IDを受け取る</a></div></div><label id="gradeSelectLabel" class="game-start-control">学年<select id="grade"><option value="2">3年生以下（制限時間なし）</option><option value="3">3年生（制限時間30秒）</option><option value="4">4年生（制限時間25秒）</option><option value="5">5年生（制限時間20秒）</option><option value="6">6年生（制限時間15秒）</option></select></label><div id="gradeLockStatus" class="grade-lock-status game-start-control">各ポジションは3年生からスタートします。クリアすると次の学年が選べます。</div><label id="positionSelectLabel" class="game-start-control">守備位置<select id="position"></select></label><button id="startBtn" class="primary game-start-control">ゲームスタート</button></div><div id="topPublicVersion" class="public-version-badge">v1.0.0</div><div class="top-copyright">© REALEMOTIONFACTORY.COM</div></div></section><section id="screen-how" class="screen">
   <div class="lp-page">
     <div class="lp-hero">
       <div class="mypage-head how-page-head">
@@ -210,15 +210,6 @@
       </ul>
     </div>
 
-    <div class="lp-section">
-      <h3>クリアとランキング</h3>
-      <ul class="lp-list">
-        <li>通常モードは満点<b>54点</b>。<b>40点以上</b>で次の学年が解放されます。</li>
-        <li>学年解放は守備位置ごとに判定されます。</li>
-        <li>マイページで成績、ランキングで全体順位を確認できます。</li>
-      </ul>
-    </div>
-
     <div class="lp-section option-feature-section">
       <div class="option-feature-heading">
         <span class="option-feature-badge">招待IDで解放</span>
@@ -236,25 +227,17 @@
           <figure class="device-transfer-sample"><img src="assets/howto/device_transfer_sample.webp" alt="端末引き継ぎ機能のサンプル画面"></figure>
         </div>
       </div>
-
-      <div class="grade-card option-feature-card quiz-master-howto-section">
-        <h4><span class="option-feature-new-badge">NEW!</span> 野球博士チャレンジ</h4>
-        <div class="quiz-master-howto-layout">
-          <figure class="quiz-master-howto-shot"><img src="assets/howto/quiz_master_howto.webp" alt="野球博士チャレンジのクイズ画面"></figure>
-          <div class="quiz-master-howto-body">
-            <p>トップ画面の「野球博士チャレンジ」から始める、野球知識クイズです。守備・走塁判断ではなく、用具、安全、少年野球ルール、施設知識などを学びます。</p>
-            <ul class="lp-list">
-              <li><b>全20問</b>のクイズに挑戦します。</li>
-              <li><b>制限時間あり</b>。残り10秒から中央にカウントダウンが表示されます。</li>
-              <li><b>50:50</b>は1ゲームに1回だけ、間違いの選択肢を1つ消せます。</li>
-              <li><b>第15問以降</b>は高得点チャレンジです。正解するたびに加算率が上がり、失敗すると獲得点数は0点になります。</li>
-              <li>野球博士チャレンジ機能が解放されたプレイヤーIDで遊ぶと、ランキングとマイページの記録に反映されます。</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <p class="lp-note">オプション機能は招待ID登録済みのプレイヤーIDで利用できます。</p>
     </div>
-    <p class="lp-note">オプション機能は、招待IDまたは管理者IDで対象機能が解放されたプレイヤーIDで利用できます。</p>
+
+    <div class="lp-section">
+      <h3>クリアとランキング</h3>
+      <ul class="lp-list">
+        <li>通常モードは満点<b>54点</b>。<b>40点以上</b>で次の学年が解放されます。</li>
+        <li>学年解放は守備位置ごとに判定されます。</li>
+        <li>マイページで成績、ランキングで全体順位を確認できます。</li>
+      </ul>
+    </div>
 
     <div class="lp-section lp-goal">
       <h3>目標</h3>
@@ -266,91 +249,7 @@
   </div>
 </section>
 
-<section id="screen-mypage" class="screen"><div class="mypage-card"><div class="mypage-head"><div><p class="mypage-kicker">マイページ</p><h2>自分のIDと成績</h2></div><button id="myPageBackBtn" class="secondary" type="button">トップへ戻る</button></div><div id="myPageProfile" class="mypage-profile"></div><div id="myPageFeatureUnlock" class="mypage-feature-unlock"></div><div id="myPageSummary" class="mypage-summary"></div><div id="myPageRecords" class="mypage-records"></div><div id="myPageMistakes" class="mypage-mistakes"></div><div id="myPageQuizMaster" class="mypage-quiz-master"></div></div></section><section id="screen-ranking" class="screen"><div class="mypage-card ranking-card"><div class="mypage-head"><div><p class="mypage-kicker">ランキング</p><h2>全ユーザー成績ランキング</h2></div><button id="rankingBackBtn" class="secondary" type="button">トップへ戻る</button></div><div id="rankingSummary" class="mypage-profile"></div><div id="rankingRecords" class="mypage-records"></div></div></section>
-<section id="screen-quiz-master" class="screen quiz-master-screen">
-  <div class="quiz-master-shell">
-    <div class="quiz-master-topbar">
-      <div class="quiz-master-brand">
-        <img class="quiz-master-logo" src="assets/quiz_master_logo.webp" alt="野球博士チャレンジ">
-      </div>
-      <div class="quiz-master-round"><span>第</span><strong id="quizMasterLevel" class="quiz-master-round-no">1</strong><span>問</span></div>
-      <div class="quiz-master-count"><strong id="quizMasterProgress" class="quiz-master-count-no">1/20</strong><span>問</span></div>
-    </div>
-    <div class="quiz-master-hud">
-      <div class="quiz-master-score"><span>現在得点</span> <strong id="quizMasterScore">0</strong></div>
-      <div class="quiz-master-timer"><span>残り</span> <strong id="quizMasterTimer">20</strong><span>秒</span></div>
-    </div>
-    <div id="quizMasterMessage" class="quiz-master-message" aria-live="polite"></div>
-    <div class="quiz-master-question-panel">
-      <div class="quiz-master-qmark">Q.</div>
-      <div id="quizMasterQuestion" class="quiz-master-question">問題データを読み込み中...</div>
-      <img class="quiz-master-question-icon" src="assets/quiz_master_icon.webp" alt="">
-    </div>
-    <img class="quiz-master-chair" src="assets/quiz_master_chair.webp" alt="">
-    <div id="quizMasterPointBurst" class="quiz-master-point-burst" aria-hidden="true"></div>
-    <div id="quizMasterStartOverlay" class="quiz-master-start-overlay" aria-hidden="true">スタート!</div>
-    <div id="quizMasterCountdownOverlay" class="quiz-master-countdown-overlay" aria-hidden="true"></div>
-    <div id="quizMasterFiftyConfirmOverlay" class="quiz-master-fifty-confirm-overlay" aria-hidden="true"></div>
-    <div id="quizMasterTutorialOverlay" class="quiz-master-tutorial-overlay" aria-hidden="true"></div>
-    <div id="quizMasterCheckpointOverlay" class="quiz-master-checkpoint-overlay" aria-hidden="true"></div>
-    <div id="quizMasterChoices" class="quiz-master-choices"></div>
-    <div class="quiz-master-controls">
-      <button id="quizMasterLifelineBtn" class="secondary quiz-master-lifeline" type="button" disabled>ライフライン ❤×3</button>
-      <button id="quizMasterFiftyBtn" class="secondary quiz-master-lifeline quiz-master-fifty" type="button">50:50<br><small>1回まで</small></button>
-      <button id="quizMasterExitBtn" class="secondary quiz-master-lifeline" type="button">メニューに戻る</button>
-    </div>
-  </div>
-</section>
-<section id="screen-quiz-master-result" class="screen quiz-master-screen">
-  <div class="quiz-master-result-card">
-    <img class="quiz-master-menu-icon" src="assets/quiz_master_logo.webp" alt="野球博士チャレンジ" loading="eager">
-    <h2 id="quizMasterResultTitle">結果</h2>
-    <div id="quizMasterFinalScore" class="quiz-master-final-score">0 pt</div>
-    <div id="quizMasterResultDetail" class="quiz-master-result-detail"></div>
-    <div id="quizMasterRanking" class="quiz-master-ranking"></div>
-    <div class="quiz-master-result-actions">
-      <button id="quizMasterRetryBtn" class="primary" type="button">もう一度挑戦</button>
-      <button id="quizMasterResultBackBtn" class="secondary" type="button">メニューに戻る</button>
-    </div>
-  </div>
-</section>
-<section id="screen-quiz-master-ranking" class="screen quiz-master-screen">
-  <div class="quiz-master-result-card quiz-master-ranking-page-card">
-    <img class="quiz-master-menu-icon" src="assets/quiz_master_logo.webp" alt="野球博士チャレンジ" loading="eager">
-    <h2>ランキング</h2>
-    <div id="quizMasterRankingPage" class="quiz-master-ranking quiz-master-ranking-page"></div>
-    <div class="quiz-master-result-actions">
-      <button id="quizMasterRankingPlayBtn" class="primary" type="button">挑戦する</button>
-      <button id="quizMasterRankingBackBtn" class="secondary" type="button">メニューに戻る</button>
-    </div>
-  </div>
-</section>
-<section id="screen-quiz-master-menu" class="screen quiz-master-screen">
-  <div class="quiz-master-result-card">
-    <img class="quiz-master-menu-icon" src="assets/quiz_master_logo.webp" alt="野球博士チャレンジ" loading="eager">
-    <h2>Menu</h2>
-    <div class="quiz-master-menu-buttons">
-      <button id="quizMasterMenuStartBtn" class="secondary quiz-master-lifeline" type="button">ゲームスタート</button>
-      <button id="quizMasterMenuRankingBtn" class="secondary quiz-master-lifeline" type="button">ランキング</button>
-      <button id="quizMasterMenuRanksBtn" class="secondary quiz-master-lifeline" type="button">野球博士ランク一覧</button>
-      <button id="quizMasterMenuHowtoBtn" class="secondary quiz-master-lifeline" type="button">遊び方</button>
-    </div>
-    <div class="quiz-master-result-actions">
-      <button id="quizMasterMenuBackBtn" class="secondary" type="button">トップへ戻る</button>
-    </div>
-  </div>
-</section>
-<section id="screen-quiz-master-ranks" class="screen quiz-master-screen">
-  <div class="quiz-master-result-card quiz-master-ranking-page-card">
-    <img class="quiz-master-menu-icon" src="assets/quiz_master_logo.webp" alt="野球博士チャレンジ" loading="eager">
-    <h2>野球博士ランク一覧</h2>
-    <div id="quizMasterRanksContainer" class="quiz-master-ranks-container"></div>
-    <div class="quiz-master-result-actions">
-      <button id="quizMasterRanksBackBtn" class="secondary" type="button">メニューへ戻る</button>
-    </div>
-  </div>
-</section>
-<div id="quizMasterTitleBurst" class="quiz-master-title-burst" aria-hidden="true"></div>
+<section id="screen-mypage" class="screen"><div class="mypage-card"><div class="mypage-head"><div><p class="mypage-kicker">マイページ</p><h2>自分のIDと成績</h2></div><button id="myPageBackBtn" class="secondary" type="button">トップへ戻る</button></div><div id="myPageProfile" class="mypage-profile"></div><div id="myPageFeatureUnlock" class="mypage-feature-unlock"></div><div id="myPageSummary" class="mypage-summary"></div><div id="myPageRecords" class="mypage-records"></div><div id="myPageMistakes" class="mypage-mistakes"></div></div></section><section id="screen-ranking" class="screen"><div class="mypage-card ranking-card"><div class="mypage-head"><div><p class="mypage-kicker">ランキング</p><h2>全ユーザー成績ランキング</h2></div><button id="rankingBackBtn" class="secondary" type="button">トップへ戻る</button></div><div id="rankingSummary" class="mypage-profile"></div><div id="rankingRecords" class="mypage-records"></div></div></section>
 <section id="screen-notices" class="screen">
   <div class="mypage-card notice-page-card">
     <div class="mypage-head">
@@ -515,9 +414,9 @@
 <div id="timeProgressWrap" class="time-progress-wrap" aria-live="polite">
   <div class="time-progress-track"><div id="timeProgressBar" class="time-progress-bar"></div></div>
   <div id="timeProgressLabel" class="time-progress-label">制限時間なし</div>
-</div></div><div class="question-card"><div class="q-meta"><span id="qType"></span><span id="qId"></span><span id="qTheme"></span><span id="qStage"></span><span id="qHolder"></span><button id="interruptGameBtn" class="game-interrupt-btn qmeta-interrupt-btn" type="button">ゲームを中断する</button></div><h2 id="qTitle"></h2><p id="qSituation"></p><p id="qPrompt"></p><div id="choices" class="choices"></div></div></div></section><section id="screen-result" class="screen"><div class="result-card"><h2>試合終了！</h2><div id="resultScore" class="result-score"></div><div id="scoreSaveNotice" class="score-save-notice" aria-live="polite"></div><div id="rank" class="rank"></div><div id="breakdown"></div><div id="answerLog" class="answer-log"></div><div class="result-actions"><button id="retryBtn" class="primary">もう一回</button><button id="resultMyPageBtn" class="secondary" type="button">マイページで成績を見る</button></div></div></section></main><script src="assets/quiz_master_questions.js?v=1070"></script><script src="assets/app.js?v=1070"></script><script src="api/user_delete_dialog.js"></script><script>
-window.YAKYU_APP_VERSION = 'v1070-production';
-window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v1070-production';
+</div></div><div class="question-card"><div class="q-meta"><span id="qType"></span><span id="qId"></span><span id="qTheme"></span><span id="qStage"></span><span id="qHolder"></span><button id="interruptGameBtn" class="game-interrupt-btn qmeta-interrupt-btn" type="button">ゲームを中断する</button></div><h2 id="qTitle"></h2><p id="qSituation"></p><p id="qPrompt"></p><div id="choices" class="choices"></div></div></div></section><section id="screen-result" class="screen"><div class="result-card"><h2>試合終了！</h2><div id="resultScore" class="result-score"></div><div id="scoreSaveNotice" class="score-save-notice" aria-live="polite"></div><div id="rank" class="rank"></div><div id="breakdown"></div><div id="answerLog" class="answer-log"></div><div class="result-actions"><button id="retryBtn" class="primary">もう一回</button><button id="resultMyPageBtn" class="secondary" type="button">マイページで成績を見る</button></div></div></section></main><script src="assets/app.js?v=838"></script><script>
+window.YAKYU_APP_VERSION = 'v838-production';
+window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v838-production';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
@@ -557,4 +456,3 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 </body></html>
-
