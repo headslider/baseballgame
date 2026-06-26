@@ -1,7 +1,7 @@
 {
-  "app_version": "v1071-production",
-  "cache_version": "yakyu-yarouze-v1071-production",
-  "public_version": "v1.1.71",
+  "app_version": "v1072-production",
+  "cache_version": "yakyu-yarouze-v1072-production",
+  "public_version": "v1.1.72",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
