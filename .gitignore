@@ -7,7 +7,6 @@ scores/*
 # Request runtime data
 requests/*
 !requests/.keep
-!requests/.htaccess
 
 # Production flags
 production_hold_enabled.flag
