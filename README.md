@@ -8,9 +8,9 @@ Codexは、本READMEのルールを優先し、曖昧な場合は勝手に判断
 
 ## 0. 現在の本番安定版
 
-- 本番安定版: `v1016-production`
+- 本番安定版: `v1062-production`
 - ユーザー向け公開版: `v1.1.67` 
-- PWA cache version: `yakyu-yarouze-v1016-production`
+- PWA cache version: `yakyu-yarouze-v1062-production`
 - 本番URL: `/baseball/`
 - テストURL: `/baseball_test/`
 - 問題プール（通常ゲーム）: 600問
@@ -21,7 +21,7 @@ Codexは、本READMEのルールを優先し、曖昧な場合は勝手に判断
   - 第1～14問：少年野球・学童野球の基本
   - 第15～20問：高度な競技規則・プロ野球・国際大会
 
-今後の修正・機能追加・問題追加は、**必ず `v1016-production` を基準**に行います。  
+今後の修正・機能追加・問題追加は、**必ず `v1062-production` を基準**に行います。  
 古いZIP、古いブランチ、古いローカルファイルをベースにしないでください。
 
 ### 主な追加機能（v1000～v1016）
