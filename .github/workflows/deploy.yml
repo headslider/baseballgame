@@ -45,6 +45,8 @@ jobs:
             README.md
             DEPLOY.md
             HANDOVER.md
+            CLAUDE.md
+            docs/**
             **/*.zip
             **/*.bak
             **/*.tmp
@@ -74,6 +76,8 @@ jobs:
             README.md
             DEPLOY.md
             HANDOVER.md
+            CLAUDE.md
+            docs/**
             **/*.zip
             **/*.bak
             **/*.tmp

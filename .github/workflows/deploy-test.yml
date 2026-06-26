@@ -67,6 +67,8 @@ jobs:
             --exclude '.github/' \
             --exclude '.codex/' \
             --exclude 'deploy-package/' \
+            --exclude 'CLAUDE.md' \
+            --exclude 'docs/' \
             --exclude 'scores/' \
             --exclude 'requests/' \
             --exclude 'vendor/'
@@ -88,6 +90,8 @@ jobs:
             **/.git*/**
             **/.github/**
             **/.codex/**
+            CLAUDE.md
+            docs/**
             **/scores/**
             **/requests/**
             **/vendor/**
