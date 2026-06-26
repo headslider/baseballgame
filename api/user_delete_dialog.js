@@ -238,10 +238,23 @@ function submitUserDeleteRequest(playerId) {
   formData.append('reason', '');
 
   const xhr = new XMLHttpRequest();
-  xhr.onload = function() {
+  xhr.onload = async function() {
     if (xhr.status === 200) {
       const response = JSON.parse(xhr.responseText);
       if (response.ok) {
+        // Push通知登録を削除（サーバー側削除とクライアント側 unsubscribe を並行実行）
+        try {
+          if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+            if (subscription) {
+              await subscription.unsubscribe();
+            }
+          }
+        } catch (e) {
+          console.warn('Push通知登録の削除に失敗:', e);
+        }
+
         alert(
           'アカウントが削除されました。\n\n' +
           '削除日時: ' + response.deleted_at + '\n\n' +
