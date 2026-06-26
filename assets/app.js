@@ -891,6 +891,7 @@ function updatePwaHowToStepsByBrowser(){
 }
 
 function canRegisterPlayerOnThisEnvironment(){
+  if(window.location.hostname==="localhost")return true;
   if(!isLikelyMobileOrTablet())return true;
   return isPwaStandalone() && !isLineInAppBrowser();
 }
@@ -1310,7 +1311,7 @@ async function ensureQuestionsLoaded(forceReload=false){
     // 非公開（下書き）・停止の問題をゲームに出さないため、
     // ゲーム本体では data/questions.json を直接読まず、サーバー側で公開問題だけに絞ったAPIを読む。
     // APIが読めない場合は安全側に倒し、未フィルタのquestions.jsonへフォールバックしない。
-    questionLoadPromise=fetch("api/get_game_questions.php?v=1072",{cache:"no-store"})
+    questionLoadPromise=fetch("api/get_game_questions.php?v=1073",{cache:"no-store"})
       .then(r=>{if(!r.ok)throw new Error("published questions fetch failed");return r.json();})
       .then(data=>{
         if(!data||data.ok!==true||!Array.isArray(data.questions))throw new Error("published questions payload invalid");
@@ -1339,13 +1340,13 @@ function normalizeAdminMasterQuestionRow(row){
 }
 async function loadAdminQuestionTestQuestions(){
   try{
-    const data=await fetchJsonNoStore("data/questions_admin_master.json?v=1072");
+    const data=await fetchJsonNoStore("data/questions_admin_master.json?v=1073");
     if(Array.isArray(data))return data.map(normalizeAdminMasterQuestionRow);
     if(data&&Array.isArray(data.questions))return data.questions.map(normalizeAdminMasterQuestionRow);
     throw new Error("admin master payload invalid");
   }catch(e){
     console.warn("admin master questions fallback",e);
-    const data=await fetchJsonNoStore("data/questions.json?v=1072");
+    const data=await fetchJsonNoStore("data/questions.json?v=1073");
     if(Array.isArray(data))return data;
     if(data&&Array.isArray(data.questions))return data.questions;
     throw new Error("questions payload invalid");
@@ -1459,7 +1460,7 @@ async function init(){
   // 問題データ questions.json はゲーム開始時に遅延読み込みする。
   let cfg={positions:{}};
   try{
-    cfg=await fetch("data/game_config.json?v=1072").then(r=>r.json());
+    cfg=await fetch("data/game_config.json?v=1073").then(r=>r.json());
   }catch(e){
     console.warn("game config load failed",e);
   }
@@ -1811,9 +1812,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=1072",
-    "./data/quiz_master_questions.json?v=1072",
-    new URL("data/quiz_master_questions.json?v=1072",document.baseURI).href
+    "data/quiz_master_questions.json?v=1073",
+    "./data/quiz_master_questions.json?v=1073",
+    new URL("data/quiz_master_questions.json?v=1073",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1833,7 +1834,7 @@ async function loadQuizMasterQuestions(){
 }
 async function loadQuizMasterQuestionStats(){
   try{
-    const res=await fetch("api/get_quiz_master_question_stats.php?v=1072",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_question_stats.php?v=1073",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
   }catch(e){
@@ -1869,7 +1870,7 @@ function quizMasterLevelIconHtml(level,cssClass){
 async function loadQuizMasterTitles(){
   if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
   try{
-    const res=await fetch("api/get_quiz_master_titles.php?v=1072",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_titles.php?v=1073",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(res.ok&&data&&data.ok?data.titles:null);
   }catch(e){
@@ -5714,20 +5715,20 @@ function sideColorFor(kind, code){
 
 function spriteHrefFor(kind, code, label){
   const color = sideColorFor(kind, code);
-  if(kind === "fielder" && code === "C") return `assets/sprite_catcher_${color}.webp?v=1072`;
-  if(kind === "fielder") return `assets/sprite_fielder_${color}.webp?v=1072`;
-  if(code === "BATTER") return `assets/sprite_batter_${color}.webp?v=1072`;
-  if(code === "BR") return `assets/sprite_batterrunner_${color}.webp?v=1072`;
+  if(kind === "fielder" && code === "C") return `assets/sprite_catcher_${color}.webp?v=1073`;
+  if(kind === "fielder") return `assets/sprite_fielder_${color}.webp?v=1073`;
+  if(code === "BATTER") return `assets/sprite_batter_${color}.webp?v=1073`;
+  if(code === "BR") return `assets/sprite_batterrunner_${color}.webp?v=1073`;
   if(label === "自分"){
     const q = STATE && STATE.sequence ? STATE.sequence[STATE.current] : null;
-    if(q && q.stage === "1B") return `assets/sprite_runner1_${color}.webp?v=1072`;
-    if(q && q.stage === "2B") return `assets/sprite_runner2_${color}.webp?v=1072`;
-    if(q && q.stage === "3B") return `assets/sprite_runner3_${color}.webp?v=1072`;
+    if(q && q.stage === "1B") return `assets/sprite_runner1_${color}.webp?v=1073`;
+    if(q && q.stage === "2B") return `assets/sprite_runner2_${color}.webp?v=1073`;
+    if(q && q.stage === "3B") return `assets/sprite_runner3_${color}.webp?v=1073`;
   }
-  if(code === "1B") return `assets/sprite_runner1_${color}.webp?v=1072`;
-  if(code === "2B") return `assets/sprite_runner2_${color}.webp?v=1072`;
-  if(code === "3B") return `assets/sprite_runner3_${color}.webp?v=1072`;
-  return `assets/sprite_runner1_${color}.webp?v=1072`;
+  if(code === "1B") return `assets/sprite_runner1_${color}.webp?v=1073`;
+  if(code === "2B") return `assets/sprite_runner2_${color}.webp?v=1073`;
+  if(code === "3B") return `assets/sprite_runner3_${color}.webp?v=1073`;
+  return `assets/sprite_runner1_${color}.webp?v=1073`;
 }
 
 function isBattedBallSituation(q){
