@@ -1,0 +1,21 @@
+# requests ディレクトリのアクセス制限
+# 削除申請・削除ログ・その他の機密データへの外部直接アクセスをブロック
+
+# すべてのアクセスを拒否
+Require all denied
+Deny from all
+
+# JSON ファイルへのアクセスブロック
+<FilesMatch "\.json$">
+    Require all denied
+    Deny from all
+</FilesMatch>
+
+# CSV ファイルへのアクセスブロック
+<FilesMatch "\.csv$">
+    Require all denied
+    Deny from all
+</FilesMatch>
+
+# API 経由のアクセスのみ許可するため、
+# このディレクトリの直接 HTTP アクセスは禁止
