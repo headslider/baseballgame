@@ -27,7 +27,8 @@
 - manifest の `start_url` は `/baseball/`（＝メンテ中はメンテ画面）。秘密URLからインストールするとアイコンがメンテ画面に飛ぶ。検証はブラウザで秘密URLを直接開く。
 
 ### 0-4. 🔴 公開切替時はキャッシュバージョンを必ず bump
-- 公開（メンテ→実アプリ）切替時は `version.json` / `service-worker.js` / `index.html` を**新バージョンへ同期**（現行 staging=v1064 → 公開=v1065）。SW再インストールで既存ユーザーへ確実に配信する。
+- 公開（メンテ→実アプリ）切替時は `version.json` / `service-worker.js` / `index.html` を**新バージョンへ同期**（現行 staging=v1065 → 公開=v1066）。SW再インストールで既存ユーザーへ確実に配信する。
+- 補足：staging 中に app.js / service-worker.js を変更した場合は、その都度キャッシュバージョンを上げないと SW が旧アセットを配信し続ける（同一 `?v=` だとキャッシュが更新されない）。
 
 ### 0-5. 🟡 運用データは触らない
 - `scores/` `requests/` `vendor/` は本番デプロイで除外。変更・初期化しない。
@@ -118,7 +119,7 @@
 
 ### フェーズ1：トップ停止＋全データアップ（ステージング）
 1. リポジトリを「`index.html`＝メンテ／`index-preview-<token>.php`＝実アプリ」の状態にする（本ドキュメント時点で構成済み）。
-2. PWA キャッシュ整合性（v1064）を確認：`version.json` / `service-worker.js` / `index.html`。
+2. PWA キャッシュ整合性（v1065）を確認：`version.json` / `service-worker.js` / `index.html`。
    - 注：この段階の `index.html` はメンテ版。SW は `index.html`（メンテ）を precache する。
 3. 本番へ反映（`main` にマージ → `deploy.yml` を `apply=true`）。`production_hold_enabled.flag`（既定 `true`）も一緒に配備され、秘密URLは有効状態になる。
 4. （任意）一時的に秘密URLを止めたい場合のみ、サーバーの `production_hold_enabled.flag` を `false`／削除。
@@ -134,7 +135,7 @@
 ### フェーズ4：公開切替（リリース）
 1. `index.html` を実アプリ版に差し替える（メンテ版を置換）。
 2. `index-preview-<token>.php` を削除する。
-3. **PWA キャッシュを v1065 へ bump**（`version.json` / `service-worker.js` の `CACHE_VERSION`・アセットクエリ / `index.html` の `YAKYU_CACHE_VERSION`・CSS/JSクエリ・`app-version`）。
+3. **PWA キャッシュを v1066 へ bump**（`version.json` / `service-worker.js` の `CACHE_VERSION`・アセットクエリ / `index.html` の `YAKYU_CACHE_VERSION`・CSS/JSクエリ・`app-version`）。
    - これにより既存ユーザーの SW が再インストールされ、メンテ版 `index.html` を新アプリへ更新する。
 4. `service-worker.js` の `NETWORK_FIRST_PATTERNS` から秘密URL用パターンを削除（任意。ファイル削除済みなら実害なし）。
 5. `production_hold_enabled.flag` を `false` にしてコミット（または秘密URLファイル削除済みのため任意）。
