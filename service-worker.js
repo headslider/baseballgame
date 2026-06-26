@@ -6,7 +6,6 @@ const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const STATIC_ASSETS = [
   './',
   './index.html',
-  './delete.html',
   './invite_issue.html',
   './admin_id_issue.html',
   './manifest.webmanifest',
