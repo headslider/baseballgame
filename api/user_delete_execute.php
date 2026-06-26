@@ -4,8 +4,8 @@
  * プレイヤーアカウントとすべての関連データを削除
  *
  * セキュリティ対応:
- * - 管理者キー認証（ADMIN_DELETE_KEY）
- * - 削除対象データの詳細ログ記録
+ * - 削除トークン検証（クライアントから提供）
+ * - 管理者キー認証（環境変数必須）
  * - 削除ファイル・レコード数を監査ログに記録
  */
 
@@ -20,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // パラメータ取得
 $player_id = isset($_POST['player_id']) ? trim($_POST['player_id']) : '';
+$delete_token = isset($_POST['token']) ? trim($_POST['token']) : '';
 $admin_key = isset($_POST['admin_key']) ? trim($_POST['admin_key']) : '';
 
 // バリデーション
@@ -29,27 +30,69 @@ if (empty($player_id)) {
     exit;
 }
 
-// 管理者キー認証
-$expected_admin_key = getenv('ADMIN_DELETE_KEY');
-if (empty($expected_admin_key)) {
-    // 環境変数が未設定の場合、テスト環境での簡易キーを使用
-    $expected_admin_key = 'test-admin-key-12345';
-}
-
-if (empty($admin_key) || $admin_key !== $expected_admin_key) {
-    http_response_code(403);
-    echo json_encode(['ok' => false, 'error' => 'Unauthorized. Valid admin key required.']);
+if (empty($delete_token)) {
+    http_response_code(400);
+    echo json_encode(['ok' => false, 'error' => 'token required']);
     exit;
 }
 
-// 削除実行管理者を記録
-$executed_by = 'api_key';
+if (empty($admin_key)) {
+    http_response_code(400);
+    echo json_encode(['ok' => false, 'error' => 'admin_key required']);
+    exit;
+}
+
+// 管理者キー認証（環境変数必須）
+$expected_admin_key = getenv('ADMIN_DELETE_KEY');
+if (empty($expected_admin_key)) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'error' => 'Server configuration error: ADMIN_DELETE_KEY not set']);
+    exit;
+}
+
+if ($admin_key !== $expected_admin_key) {
+    http_response_code(403);
+    echo json_encode(['ok' => false, 'error' => 'Unauthorized. Invalid admin key.']);
+    exit;
+}
+
+// 削除トークン検証
+$request_file = __DIR__ . '/../requests/delete_requests/' . $player_id . '.json';
+if (!file_exists($request_file)) {
+    http_response_code(404);
+    echo json_encode(['ok' => false, 'error' => 'Delete request not found']);
+    exit;
+}
+
+$request_data = json_decode(file_get_contents($request_file), true);
+if (!$request_data || !isset($request_data['token'])) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'error' => 'Invalid request data']);
+    exit;
+}
+
+// トークン一致確認
+if (!hash_equals($request_data['token'], $delete_token)) {
+    http_response_code(401);
+    echo json_encode(['ok' => false, 'error' => 'Invalid deletion token']);
+    exit;
+}
+
+// トークン有効期限確認
+if (isset($request_data['token_expires_at'])) {
+    $expires_at = strtotime($request_data['token_expires_at']);
+    if ($expires_at && $expires_at < time()) {
+        http_response_code(400);
+        echo json_encode(['ok' => false, 'error' => 'Deletion token expired']);
+        exit;
+    }
+}
 
 // 削除内容の記録（詳細化）
 $deletion_summary = [
     'player_id' => $player_id,
     'deleted_at' => date('c'),
-    'executed_by' => $executed_by,
+    'executed_by' => 'admin_key',
     'deleted_files_and_records' => []
 ];
 
@@ -74,9 +117,9 @@ if (file_exists($player_registry_file)) {
     $registry_rows = [];
     $found = false;
     if (($handle = fopen($player_registry_file, 'r')) !== false) {
-        while (($row = fgetcsv($handle)) !== false) {
+        while (($row = fgetcsv($handle, 0, ',', '"')) !== false) {
             if (isset($row[0]) && $row[0] === $player_id) {
-                $found = true; // このレコードは削除
+                $found = true;
             } else {
                 $registry_rows[] = $row;
             }
@@ -102,9 +145,9 @@ if (file_exists($score_log_file)) {
     $log_rows = [];
     $deleted_count = 0;
     if (($handle = fopen($score_log_file, 'r')) !== false) {
-        while (($row = fgetcsv($handle)) !== false) {
+        while (($row = fgetcsv($handle, 0, ',', '"')) !== false) {
             if (isset($row[0]) && $row[0] === $player_id) {
-                $deleted_count++; // このレコードは削除
+                $deleted_count++;
             } else {
                 $log_rows[] = $row;
             }
@@ -171,19 +214,11 @@ $delete_log = array_merge($deletion_summary, [
 file_put_contents($delete_log_file, json_encode($delete_log, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
 // 削除要求ファイルを完了状態に更新
-$request_dir = __DIR__ . '/../requests/delete_requests/';
-if (is_dir($request_dir)) {
-    $files = glob($request_dir . $player_id . '_*.json');
-    foreach ($files as $file) {
-        $request_data = json_decode(file_get_contents($file), true);
-        if ($request_data) {
-            $request_data['status'] = 'completed';
-            $request_data['completed_at'] = date('c');
-            file_put_contents($file, json_encode($request_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        }
-    }
-}
+$request_data['status'] = 'completed';
+$request_data['completed_at'] = date('c');
+file_put_contents($request_file, json_encode($request_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
+// レスポンス
 echo json_encode([
     'ok' => true,
     'message' => 'Player account and all related data deleted successfully',
