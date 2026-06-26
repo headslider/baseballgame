@@ -68,14 +68,16 @@ function migrate_mistake_review_change_id($file, $old_id, $new_id) {
     $db = read_json_file_change_id($file, ['records'=>[]]);
     if (!isset($db['records']) || !is_array($db['records'])) return 0;
     $changed = 0;
-    foreach ($db['records'] as &$r) {
-        if (is_array($r) && (($r['player_id'] ?? '') === $old_id)) {
-            $r['player_id'] = $new_id;
-            $r['updated_at'] = date('Y-m-d H:i:s');
+    // mistake_review.json は { "records": { "TRANSFER-ID": {...} } } 形式
+    // キーは転送IDで、値のオブジェクトに player_id を変更
+    foreach ($db['records'] as $transfer_id => &$record) {
+        if (is_array($record) && (($record['player_id'] ?? '') === $old_id)) {
+            $record['player_id'] = $new_id;
+            $record['updated_at'] = date('Y-m-d H:i:s');
             $changed++;
         }
     }
-    unset($r);
+    unset($record);
     if ($changed > 0) {
         if (!write_json_file_locked_change_id($file, $db)) respond_change_id(500, ['ok'=>false,'message'=>'mistake_review.json を更新できませんでした。']);
     }

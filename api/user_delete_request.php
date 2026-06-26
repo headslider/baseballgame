@@ -296,7 +296,8 @@ if (file_exists($features_file)) {
     }
 }
 
-// 【削除対象5】mistake_review.json（{"records": [{player_id, ...}, ...]} 形式）
+// 【削除対象5】mistake_review.json（{"records": {"TRANSFER-ID": {player_id, ...}}} 形式）
+// ⚠️ キーは転送IDのため array_values で再採番してはいけない（他ユーザーのキーが壊れる）
 $mistake_review_file = __DIR__ . '/../scores/mistake_review.json';
 if (file_exists($mistake_review_file)) {
     if (($handle = fopen($mistake_review_file, 'r+')) !== false) {
@@ -308,13 +309,14 @@ if (file_exists($mistake_review_file)) {
 
             $deleted_count = 0;
             if (is_array($db['records'])) {
-                $db['records'] = array_values(array_filter($db['records'], function($record) use ($player_id, &$deleted_count) {
+                // 転送IDをキーとする連想配列なので、該当レコードをアンセット（キー名は保持）
+                foreach ($db['records'] as $transfer_id => &$record) {
                     if (is_array($record) && (($record['player_id'] ?? '') === $player_id)) {
+                        unset($db['records'][$transfer_id]);
                         $deleted_count++;
-                        return false;
                     }
-                    return true;
-                }));
+                }
+                unset($record);
             }
 
             if ($deleted_count > 0) {
