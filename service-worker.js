@@ -20,7 +20,7 @@ const STATIC_ASSETS = [
   './assets/quiz_master_logo.webp',
   './assets/quiz_master_icon.webp',
   './assets/quiz_master_chair.webp',
-  './assets/quiz_master_questions.js?v=1042',
+  './assets/quiz_master_questions.js?v=1065',
   './data/quiz_master_questions.json',
   './data/quiz_master_titles.json',
   './assets/icons/icon-192.png',

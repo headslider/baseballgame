@@ -1811,9 +1811,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=1016",
-    "./data/quiz_master_questions.json?v=1016",
-    new URL("data/quiz_master_questions.json?v=1016",document.baseURI).href
+    "data/quiz_master_questions.json?v=1065",
+    "./data/quiz_master_questions.json?v=1065",
+    new URL("data/quiz_master_questions.json?v=1065",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1823,8 +1823,8 @@ async function loadQuizMasterQuestions(){
       console.warn("quiz data fetch candidate failed",url,e);
     }
   }
-  if(!data&&window.QUIZ_MASTER_QUESTIONS){
-    data=window.QUIZ_MASTER_QUESTIONS;
+  if(!data&&(window.QUIZ_MASTER_QUESTIONS_FALLBACK||window.QUIZ_MASTER_QUESTIONS)){
+    data=window.QUIZ_MASTER_QUESTIONS_FALLBACK||window.QUIZ_MASTER_QUESTIONS;
   }
   if(!data)throw new Error("quiz data load failed");
   const rows=normalizeQuizMasterQuestions(data);
@@ -1833,7 +1833,7 @@ async function loadQuizMasterQuestions(){
 }
 async function loadQuizMasterQuestionStats(){
   try{
-    const res=await fetch("api/get_quiz_master_question_stats.php?v=1016",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_question_stats.php?v=1065",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
   }catch(e){
@@ -1869,7 +1869,7 @@ function quizMasterLevelIconHtml(level,cssClass){
 async function loadQuizMasterTitles(){
   if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
   try{
-    const res=await fetch("api/get_quiz_master_titles.php?v=1016",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_titles.php?v=1065",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(res.ok&&data&&data.ok?data.titles:null);
   }catch(e){
