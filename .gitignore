@@ -22,3 +22,12 @@ production_hold_enabled.flag
 Thumbs.db
 .vscode/
 .idea/
+
+# Claude Code development environment
+.claude/
+
+# Git metadata (explicit exclusion for safety)
+.git/
+
+# Development / preview files
+unminified_preview.css
