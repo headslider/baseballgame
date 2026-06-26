@@ -1,18 +1,19 @@
 /* PWA Service Worker for 野球やろうぜ！ */
-const CACHE_VERSION = 'yakyu-yarouze-v1067-production';
+const CACHE_VERSION = 'yakyu-yarouze-v1068-production';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
 const STATIC_ASSETS = [
   './',
+  './index.php',
   './index.html',
   './invite_issue.html',
   './admin_id_issue.html',
   './manifest.webmanifest',
   './api/issue_manifest.php',
   './version.json',
-  './assets/styles.css?v=1067',
-  './assets/app.js?v=1067',
+  './assets/styles.css?v=1068',
+  './assets/app.js?v=1068',
   './assets/top_background.webp',
   './assets/top_title_mobile.webp',
   './assets/top_title_pc.webp',
@@ -20,7 +21,7 @@ const STATIC_ASSETS = [
   './assets/quiz_master_logo.webp',
   './assets/quiz_master_icon.webp',
   './assets/quiz_master_chair.webp',
-  './assets/quiz_master_questions.js?v=1067',
+  './assets/quiz_master_questions.js?v=1068',
   './data/quiz_master_questions.json',
   './data/quiz_master_titles.json',
   './assets/icons/icon-192.png',
@@ -100,21 +101,6 @@ async function cacheFirst(request) {
   return response;
 }
 
-// production_hold_enabled.flag を読み、メンテナンス（公開停止）中かを判定する。
-//   true / 1 / on / yes → メンテ中（hold有効）
-//   false / 空 / 不在 / 取得失敗 → 公開（hold無効）
-// SWスクリプトと同階層（/baseball/ または /baseball_test/）のフラグを参照する。
-async function isHoldEnabled() {
-  try {
-    const res = await fetch('production_hold_enabled.flag', { cache: 'no-store' });
-    if (!res || !res.ok) return false;
-    const v = (await res.text()).trim().toLowerCase();
-    return v === 'true' || v === '1' || v === 'on' || v === 'yes';
-  } catch (e) {
-    return false;
-  }
-}
-
 self.addEventListener('fetch', event => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -128,18 +114,14 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // ページ遷移（HTMLナビゲーション = index.html 等）は
-  // production_hold_enabled.flag で配信戦略を切り替える：
-  //   - hold有効（メンテ中, flag=true） → networkFirst
-  //       index.html を cacheFirst にすると旧SWがキャッシュ済みの実アプリを
-  //       返してしまう（ゲート漏れ）ため、メンテ中は常に最新を配信する。
-  //   - hold無効（公開後, flag=false/不在） → cacheFirst
-  //       通常の PWA 高速表示に戻す。
+  // ページ遷移（HTMLナビゲーション = `/`＝index.php）は常に networkFirst。
+  // 入口ドキュメント index.php が production_hold_enabled.flag を読み、
+  // メンテ画面(index.html) / 実アプリ(app_shell.html) をサーバー側で出し分けるため、
+  // SW は最新ドキュメントを取得するだけでよい。これにより flag の true/false 切替が
+  // キャッシュ版数 bump 無しで全ユーザーに即時反映される（オフライン時のみ
+  // 直近キャッシュにフォールバック）。CSS/JS 等のアセットは下段の cacheFirst で高速配信。
   if (request.mode === 'navigate') {
-    event.respondWith((async () => {
-      const hold = await isHoldEnabled();
-      return hold ? networkFirst(request) : cacheFirst(request);
-    })());
+    event.respondWith(networkFirst(request));
     return;
   }
 

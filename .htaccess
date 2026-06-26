@@ -3,6 +3,24 @@ AddType application/manifest+json .webmanifest
 AddType application/json .json
 AddCharset UTF-8 .webmanifest .json .js .css .html
 
+# 公開トップの入口は index.php（production_hold_enabled.flag でメンテ/実アプリを出し分ける）。
+# index.php を index.html より優先して DirectoryIndex に設定する。
+DirectoryIndex index.php index.html
+
+# app_shell.html は実アプリHTMLの正本だが、直アクセスは禁止する。
+# index.php / index-preview-*.php がサーバー側 readfile で読み込むため、
+# 直アクセス禁止（HTTPレベル）でも出力には影響しない。
+# これにより flag=true（メンテ中）に app_shell.html を直接開いて実アプリを
+# 覗き見されることを防ぐ。
+<Files "app_shell.html">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</Files>
+
 <IfModule mod_headers.c>
   <Files "manifest.webmanifest">
     Header set Content-Type "application/manifest+json; charset=UTF-8"

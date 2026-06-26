@@ -1,8 +1,23 @@
 # 段階リリース（メンテ＋秘密URLプレビュー）運用ガイド
 
-更新日: 2026-06-26
+更新日: 2026-06-27
 
 大型リリース時に「公開トップを一旦停止 → 全データを本番へアップ → 秘密URLで本番検証 → 告知・時刻決定 → 公開切替」を行うための仕組みと手順をまとめる。
+
+---
+
+## ★ 2026-06-27 仕様変更（重要）：公開トップを `index.php` 化、フラグ1つで切替
+
+**従来の「手動で `index.html` を実アプリ版へ差し替える」手順は廃止された。** 現在は次の構成で、`production_hold_enabled.flag` 1つで公開トップを自動的に出し分ける。
+
+- **`index.php`（新・入口）**：`/baseball/`（DirectoryIndex）の実体。フラグを読み、`true`→`index.html`(メンテ) / `false`・不在→`app_shell.html`(実アプリ) を `readfile` で出力。
+- **`app_shell.html`（新・正本）**：実アプリHTMLの単一の正本。バージョン参照もここに集約。`index.php` と秘密URLが共有（重複・不整合の根絶）。`.htaccess` で直アクセス禁止。
+- **`index.html`**：メンテナンス画面（静的）。
+- **`index-preview-<token>.php`**：秘密URL。フラグ有効時のみ `app_shell.html` を出力（メンテ中の本番プレビュー）。noindex は `X-Robots-Tag` ヘッダで付与。
+- **Service Worker**：ナビゲーション（`/`=index.php）は**常時 networkFirst**。フラグ切替がキャッシュ版数 bump 無しで即時反映される。旧 `isHoldEnabled()` は廃止。
+- **公開手順**：`flag=false` にしてデプロイするだけで `/` が実アプリに切替わる（下記「リリース手順」参照）。
+
+以下の本文中、旧記述（手動 index.html 差し替え等）は本仕様変更で置き換わっている点に注意（順次改訂）。
 
 ---
 

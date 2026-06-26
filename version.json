@@ -1,13 +1,13 @@
 {
-  "app_version": "v1067-production",
-  "cache_version": "yakyu-yarouze-v1067-production",
-  "public_version": "v1.1.67",
+  "app_version": "v1068-production",
+  "cache_version": "yakyu-yarouze-v1068-production",
+  "public_version": "v1.1.68",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "2年生以下のルビ辞書を精査。1文字汎用ルビによる誤読を抑止し、低学年問題で使う語句単位のルビを補完。",
+  "change_summary": "公開トップを index.php 化し、production_hold_enabled.flag でメンテ画面/実アプリを出し分け。実アプリHTMLを app_shell.html に単一化し index.php と秘密URLで共有。ナビゲーションは常時 networkFirst でフラグ切替を即時反映。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
