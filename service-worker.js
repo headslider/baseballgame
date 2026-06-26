@@ -1,5 +1,5 @@
 /* PWA Service Worker for 野球やろうぜ！ */
-const CACHE_VERSION = 'yakyu-yarouze-v1061-production';
+const CACHE_VERSION = 'yakyu-yarouze-v1062-production';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 

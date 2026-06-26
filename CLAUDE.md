@@ -119,6 +119,45 @@ git diff
 - 「何を変えたか」だけでなく、**なぜ変更したか**を残す。
 - キャッシュ版を更新した場合は、更新対象と新旧バージョンを明記する。
 
+### 🔴 必須：コミット・PUSH 前の PWA キャッシュ整合性チェック
+
+**これは絶対ルールです。すべての修正後、コミット前に必ず実施してください。**
+
+| ファイル | 確認項目 | 例 |
+|---------|---------|-----|
+| `version.json` | `app_version` と `cache_version` を確認 | v1017、yakyu-yarouze-v1062-production |
+| `service-worker.js` | `CACHE_VERSION` が `version.json` の `cache_version` と一致 | const CACHE_VERSION = 'yakyu-yarouze-v1062-production' |
+| `index.html` | `styles.css?v=...` と `app.js?v=...` のクエリ + `window.YAKYU_CACHE_VERSION` が `version.json` と一致 | styles.css?v=1062、app.js?v=1062、window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v1062-production' |
+| `manifest.webmanifest` | PWA メタデータ確認（通常変更なし） | display: "standalone" など |
+
+**チェック手順**:
+```powershell
+# 1. version.json の現在値確認
+Get-Content version.json | ConvertFrom-Json | Select-Object app_version, cache_version
+
+# 2. service-worker.js の CACHE_VERSION 確認
+Select-String -Path service-worker.js -Pattern "const CACHE_VERSION = " | Select-Object -First 1
+
+# 3. index.html の styles.css、app.js、YAKYU_CACHE_VERSION 確認
+Select-String -Path index.html -Pattern "styles\.css\?v=|app\.js\?v=|YAKYU_CACHE_VERSION"
+
+# 4. 上記 3 つが一致していることを確認
+```
+
+**不整合のリスク**:
+- ユーザー端末に古い JS/CSS がキャッシュされ続ける（セキュリティ修正が反映されない）
+- 新しい API 仕様と古い JS が動作を一致させない
+- 管理画面表示と実際のキャッシュが一貫性を失う
+- PWA では古いコードが数日～数週間残る可能性
+
+**コミット前チェックリスト**:
+- [ ] `version.json` の `cache_version` を新バージョンに更新
+- [ ] `service-worker.js` の `CACHE_VERSION` を同じバージョンに更新
+- [ ] `index.html` の CSS/JS クエリを同じバージョンに更新
+- [ ] `index.html` の `window.YAKYU_CACHE_VERSION` を同じバージョンに更新
+- [ ] 上記 4 つのバージョン文字列が **完全に一致** していることを確認
+- [ ] `git status` で修正対象のファイルのみが変更されていることを確認（scores/ などは含まない）
+
 例：
 ```text
 fix: ランキングのスコア表示を読みやすくする

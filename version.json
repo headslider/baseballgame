@@ -1,8 +1,8 @@
 {
-  "app_version": "v1016-production",
-  "cache_version": "yakyu-yarouze-v1016-production",
+  "app_version": "v1017-production",
+  "cache_version": "yakyu-yarouze-v1062-production",
   "public_version": "v1.1.67",
-  "updated_at": "2026-06-25T12:00:00+09:00",
+  "updated_at": "2026-06-26T11:00:00+09:00",
   "release_date": "2026-06-25",
   "environment": "production",
   "start_url": "/baseball/",
