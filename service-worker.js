@@ -39,7 +39,11 @@ const NETWORK_FIRST_PATTERNS = [
   /\/data\/game_config\.json(\?.*)?$/,
   /\/data\/quiz_master_questions\.json(\?.*)?$/,
   /\/api\//,
-  /\/admin\.html(\?.*)?$/
+  /\/admin\.html(\?.*)?$/,
+  // 段階リリース用プレビュー（秘密URL）は常にサーバーのゲート判定を通すため
+  // キャッシュせずネットワーク優先にする。production_hold_enabled.flag による
+  // true/false 制御がキャッシュ済み端末でも即時に効くようにする。
+  /\/index-preview-[a-z0-9]+\.php(\?.*)?$/
 ];
 
 self.addEventListener('install', event => {
