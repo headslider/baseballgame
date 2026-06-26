@@ -1,58 +1,84 @@
 <?php
 /**
- * プレイヤー削除API（1段階）
- * ユーザーの削除要求を受け付け、即座に削除を実行
+ * プレイヤー削除API（2段階認証）
+ * セッション不要、client_token ベース認証で ID 変更対応
  *
  * セキュリティ対応:
- * - セッション中のプレイヤーID確認（必須）
- * - POST player_id とセッション ID の一致確認（必須）
- * - 5つのデータファイルから完全削除
+ * - client_token で認証（register_player.php と同じ検証方式）
+ * - POST player_id を削除対象（セッション不依存で ID 変更後も削除可能）
+ * - トークンハッシュ検証（hash_equals タイミング攻撃対策）
+ * - 8つのデータファイルから完全削除（quiz_master, push登録含む）
+ * - 全ファイル操作を排他ロック（flock）
  * - 削除ログを監査証跡として記録
  */
 
+require_once __DIR__ . '/feature_common.php';
+
 header('Content-Type: application/json; charset=utf-8');
 
-// リクエスト方法チェック
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['ok' => false, 'error' => 'POST only']);
     exit;
 }
 
-// セッション開始（既に開始されている場合はスキップ）
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// ログイン状態確認（必須）
-if (!isset($_SESSION['baseballPlayerId']) || empty($_SESSION['baseballPlayerId'])) {
-    http_response_code(401);
-    echo json_encode(['ok' => false, 'error' => 'Not logged in']);
-    exit;
-}
-
-$session_player_id = $_SESSION['baseballPlayerId'];
-
-// 【フェーズ1】トークン生成リクエスト
-// method が GET または POST に token がない場合 → トークン生成のみ
 $delete_token = isset($_POST['token']) ? trim($_POST['token']) : '';
+$player_id = isset($_POST['player_id']) ? trim($_POST['player_id']) : '';
+$client_token = isset($_POST['client_token']) ? trim($_POST['client_token']) : '';
+$reason = isset($_POST['reason']) ? trim($_POST['reason']) : '';
 
+// 【フェーズ1】トークン生成（token なし）
 if (empty($delete_token)) {
-    // トークン生成フェーズ
-    $new_token = bin2hex(random_bytes(16)); // 32文字のランダムトークン
-    $token_hash = hash('sha256', $new_token); // サーバー側ではハッシュを保存
-    $token_expires_at = date('c', time() + 30 * 24 * 60 * 60); // 30日有効
+    if (empty($player_id) || empty($client_token)) {
+        http_response_code(400);
+        echo json_encode(['ok' => false, 'error' => 'player_id and client_token required']);
+        exit;
+    }
 
-    // トークン保存ディレクトリ
+    // client_token で認証（register_player と同じ方式）
+    if (!verify_player_client($player_id, $client_token)) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'error' => 'Invalid player_id or client_token']);
+        exit;
+    }
+
+    // プレイヤー存在確認
+    $player_registry_file = __DIR__ . '/../scores/player_registry.csv';
+    $player_exists = false;
+    if (file_exists($player_registry_file)) {
+        if (($handle = fopen($player_registry_file, 'r')) !== false) {
+            if (flock($handle, LOCK_SH)) {
+                while (($row = fgetcsv($handle)) !== false) {
+                    if (isset($row[0]) && $row[0] === $player_id) {
+                        $player_exists = true;
+                        break;
+                    }
+                }
+                flock($handle, LOCK_UN);
+            }
+            fclose($handle);
+        }
+    }
+
+    if (!$player_exists) {
+        http_response_code(404);
+        echo json_encode(['ok' => false, 'error' => 'Player not found']);
+        exit;
+    }
+
+    // トークン生成
+    $new_token = bin2hex(random_bytes(16));
+    $token_hash = hash('sha256', $new_token);
+    $token_expires_at = date('c', time() + 30 * 24 * 60 * 60);
+
     $token_dir = __DIR__ . '/../requests/delete_tokens/';
     if (!is_dir($token_dir)) {
         mkdir($token_dir, 0755, true);
     }
 
-    // トークンをサーバー側に保存（ハッシュ + 有効期限）
-    $token_file = $token_dir . $session_player_id . '.json';
+    $token_file = $token_dir . $player_id . '.json';
     $token_data = [
-        'player_id' => $session_player_id,
+        'player_id' => $player_id,
         'token_hash' => $token_hash,
         'created_at' => date('c'),
         'expires_at' => $token_expires_at
@@ -69,34 +95,20 @@ if (empty($delete_token)) {
     exit;
 }
 
-// 【フェーズ2】削除実行リクエスト
-// token がある場合 → 削除実行
-
-// パラメータ取得
-$player_id = isset($_POST['player_id']) ? trim($_POST['player_id']) : '';
-$reason = isset($_POST['reason']) ? trim($_POST['reason']) : '';
-
-// バリデーション
+// 【フェーズ2】削除実行（token あり）
 if (empty($player_id)) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'player_id required']);
     exit;
 }
 
-// 本人確認：POST player_id とセッション player_id の一致確認（必須）
-if ($player_id !== $session_player_id) {
-    http_response_code(403);
-    echo json_encode(['ok' => false, 'error' => 'Unauthorized: player_id mismatch']);
-    exit;
-}
-
-// トークン検証：サーバー側で保存されたトークンと照合
+// トークン検証
 $token_dir = __DIR__ . '/../requests/delete_tokens/';
 $token_file = $token_dir . $player_id . '.json';
 
 if (!file_exists($token_file)) {
     http_response_code(401);
-    echo json_encode(['ok' => false, 'error' => 'Invalid or expired token: no token on server']);
+    echo json_encode(['ok' => false, 'error' => 'Invalid or expired token']);
     exit;
 }
 
@@ -107,55 +119,23 @@ if (!is_array($token_data)) {
     exit;
 }
 
-// トークンハッシュ比較（タイミング攻撃対策）
+// トークンハッシュ検証
 $provided_token_hash = hash('sha256', $delete_token);
 if (!hash_equals($token_data['token_hash'] ?? '', $provided_token_hash)) {
     http_response_code(401);
-    echo json_encode(['ok' => false, 'error' => 'Invalid token: hash mismatch']);
+    echo json_encode(['ok' => false, 'error' => 'Invalid token']);
     exit;
 }
 
-// トークン有効期限確認
+// 有効期限確認
 if (strtotime($token_data['expires_at']) < time()) {
     http_response_code(401);
-    unlink($token_file); // 期限切れトークンを削除
+    unlink($token_file);
     echo json_encode(['ok' => false, 'error' => 'Token expired']);
     exit;
 }
 
-// プレイヤー存在確認：プレイヤーレジストリから player_id の存在を確認
-$player_registry_file = __DIR__ . '/../scores/player_registry.csv';
-if (!file_exists($player_registry_file)) {
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'error' => 'Player registry not found']);
-    exit;
-}
-
-$player_exists = false;
-if (($handle = fopen($player_registry_file, 'r')) !== false) {
-    if (!flock($handle, LOCK_SH)) {
-        fclose($handle);
-        http_response_code(500);
-        echo json_encode(['ok' => false, 'error' => 'Cannot lock player registry']);
-        exit;
-    }
-    while (($row = fgetcsv($handle, 0, ',', '"')) !== false) {
-        if (isset($row[0]) && $row[0] === $player_id) {
-            $player_exists = true;
-            break;
-        }
-    }
-    flock($handle, LOCK_UN);
-    fclose($handle);
-}
-
-if (!$player_exists) {
-    http_response_code(404);
-    echo json_encode(['ok' => false, 'error' => 'Player not found']);
-    exit;
-}
-
-// 削除内容の記録（詳細化）
+// 削除内容の記録
 $deletion_summary = [
     'player_id' => $player_id,
     'deleted_at' => date('c'),
@@ -163,185 +143,287 @@ $deletion_summary = [
     'deleted_files_and_records' => []
 ];
 
-// 削除対象 1：quiz_master_scores.json から削除
-$scores_file = __DIR__ . '/../scores/quiz_master_scores.json';
-if (file_exists($scores_file)) {
-    $scores = json_decode(file_get_contents($scores_file), true) ?? [];
-    if (isset($scores[$player_id])) {
-        unset($scores[$player_id]);
-        file_put_contents($scores_file, json_encode($scores, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        $deletion_summary['deleted_files_and_records'][] = [
-            'file' => 'scores/quiz_master_scores.json',
-            'action' => 'removed player score record',
-            'count' => 1
-        ];
+// 【削除対象1】quiz_master_scores.json（scores配列をフィルタリング、totals削除）
+$quiz_master_scores_file = __DIR__ . '/../scores/quiz_master_scores.json';
+if (file_exists($quiz_master_scores_file)) {
+    if (($handle = fopen($quiz_master_scores_file, 'r+')) !== false) {
+        if (flock($handle, LOCK_EX)) {
+            $content = stream_get_contents($handle);
+            $db = $content ? json_decode($content, true) : [];
+            if (!is_array($db)) $db = [];
+
+            $deleted_from_scores = 0;
+            if (isset($db['scores']) && is_array($db['scores'])) {
+                $db['scores'] = array_values(array_filter($db['scores'], function($score) use ($player_id, &$deleted_from_scores) {
+                    if (isset($score['player_id']) && $score['player_id'] === $player_id) {
+                        $deleted_from_scores++;
+                        return false;
+                    }
+                    return true;
+                }));
+            }
+
+            if (isset($db['totals'][$player_id])) {
+                unset($db['totals'][$player_id]);
+            }
+
+            rewind($handle);
+            ftruncate($handle, 0);
+            fwrite($handle, json_encode($db, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            fflush($handle);
+            flock($handle, LOCK_UN);
+
+            if ($deleted_from_scores > 0 || isset($db['totals'])) {
+                $deletion_summary['deleted_files_and_records'][] = [
+                    'file' => 'scores/quiz_master_scores.json',
+                    'action' => 'removed quiz master scores and totals',
+                    'scores_removed' => $deleted_from_scores
+                ];
+            }
+        }
+        fclose($handle);
     }
 }
 
-// 削除対象 2：player_registry.csv から削除
+// 【削除対象2】player_registry.csv（CSVヘッダーを正しく処理）
 $player_registry_file = __DIR__ . '/../scores/player_registry.csv';
 if (file_exists($player_registry_file)) {
-    $registry_rows = [];
-    $found = false;
     if (($handle = fopen($player_registry_file, 'r+')) !== false) {
-        if (!flock($handle, LOCK_EX)) {
-            fclose($handle);
-            http_response_code(500);
-            echo json_encode(['ok' => false, 'error' => 'Cannot lock player registry']);
-            exit;
-        }
-        rewind($handle);
-        while (($row = fgetcsv($handle, 0, ',', '"')) !== false) {
-            if (isset($row[0]) && $row[0] === $player_id) {
-                $found = true;
-            } else {
-                $registry_rows[] = $row;
-            }
-        }
-        if ($found) {
+        if (flock($handle, LOCK_EX)) {
+            $rows = [];
+            $header = null;
+            $found = false;
+
             rewind($handle);
-            ftruncate($handle, 0);
-            fputcsv($handle, ['player_id','client_hash','created_at','last_login_at']);
-            foreach ($registry_rows as $row) {
-                fputcsv($handle, $row);
+            while (($row = fgetcsv($handle)) !== false) {
+                if ($header === null) {
+                    $header = $row;
+                } elseif (isset($row[0]) && $row[0] === $player_id) {
+                    $found = true;
+                } else {
+                    $rows[] = $row;
+                }
             }
-            fflush($handle);
+
+            if ($found) {
+                rewind($handle);
+                ftruncate($handle, 0);
+                if ($header) fputcsv($handle, $header);
+                foreach ($rows as $row) {
+                    fputcsv($handle, $row);
+                }
+                fflush($handle);
+
+                $deletion_summary['deleted_files_and_records'][] = [
+                    'file' => 'scores/player_registry.csv',
+                    'action' => 'removed player registration',
+                    'count' => 1
+                ];
+            }
+            flock($handle, LOCK_UN);
         }
-        flock($handle, LOCK_UN);
         fclose($handle);
-        if ($found) {
-            $deletion_summary['deleted_files_and_records'][] = [
-                'file' => 'scores/player_registry.csv',
-                'action' => 'removed player registration',
-                'count' => 1
-            ];
-        }
     }
 }
 
-// 削除対象 3：score_log.csv から削除
+// 【削除対象3】score_log.csv
 $score_log_file = __DIR__ . '/../scores/score_log.csv';
 if (file_exists($score_log_file)) {
-    $log_rows = [];
-    $deleted_count = 0;
     if (($handle = fopen($score_log_file, 'r+')) !== false) {
-        if (!flock($handle, LOCK_EX)) {
-            fclose($handle);
-            http_response_code(500);
-            echo json_encode(['ok' => false, 'error' => 'Cannot lock score log']);
-            exit;
-        }
-        rewind($handle);
-        while (($row = fgetcsv($handle, 0, ',', '"')) !== false) {
-            if (isset($row[0]) && $row[0] === $player_id) {
-                $deleted_count++;
-            } else {
-                $log_rows[] = $row;
-            }
-        }
-        if ($deleted_count > 0) {
+        if (flock($handle, LOCK_EX)) {
+            $rows = [];
+            $header = null;
+            $deleted_count = 0;
+
             rewind($handle);
-            ftruncate($handle, 0);
-            foreach ($log_rows as $row) {
-                fputcsv($handle, $row);
+            while (($row = fgetcsv($handle)) !== false) {
+                if ($header === null) {
+                    $header = $row;
+                } elseif (isset($row[0]) && $row[0] === $player_id) {
+                    $deleted_count++;
+                } else {
+                    $rows[] = $row;
+                }
             }
-            fflush($handle);
-            $deletion_summary['deleted_files_and_records'][] = [
-                'file' => 'scores/score_log.csv',
-                'action' => 'removed score log records',
-                'count' => $deleted_count
-            ];
+
+            if ($deleted_count > 0) {
+                rewind($handle);
+                ftruncate($handle, 0);
+                if ($header) fputcsv($handle, $header);
+                foreach ($rows as $row) {
+                    fputcsv($handle, $row);
+                }
+                fflush($handle);
+
+                $deletion_summary['deleted_files_and_records'][] = [
+                    'file' => 'scores/score_log.csv',
+                    'action' => 'removed score log records',
+                    'count' => $deleted_count
+                ];
+            }
+            flock($handle, LOCK_UN);
         }
-        flock($handle, LOCK_UN);
         fclose($handle);
     }
 }
 
-// 削除対象 4：player_features.json から削除
+// 【削除対象4】player_features.json
 $features_file = __DIR__ . '/../scores/player_features.json';
 if (file_exists($features_file)) {
     if (($handle = fopen($features_file, 'r+')) !== false) {
-        if (!flock($handle, LOCK_EX)) {
-            fclose($handle);
-            http_response_code(500);
-            echo json_encode(['ok' => false, 'error' => 'Cannot lock player features']);
-            exit;
+        if (flock($handle, LOCK_EX)) {
+            $content = stream_get_contents($handle);
+            $features = $content ? json_decode($content, true) : [];
+            if (!is_array($features)) $features = [];
+
+            if (isset($features[$player_id])) {
+                unset($features[$player_id]);
+                rewind($handle);
+                ftruncate($handle, 0);
+                fwrite($handle, json_encode($features, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                fflush($handle);
+
+                $deletion_summary['deleted_files_and_records'][] = [
+                    'file' => 'scores/player_features.json',
+                    'action' => 'removed feature unlock status',
+                    'count' => 1
+                ];
+            }
+            flock($handle, LOCK_UN);
         }
-        $content = file_get_contents($features_file);
-        $features = $content ? json_decode($content, true) : [];
-        if (!is_array($features)) $features = [];
-        if (isset($features[$player_id])) {
-            unset($features[$player_id]);
-            file_put_contents($features_file, json_encode($features, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-            $deletion_summary['deleted_files_and_records'][] = [
-                'file' => 'scores/player_features.json',
-                'action' => 'removed feature unlock status',
-                'count' => 1
-            ];
-        }
-        flock($handle, LOCK_UN);
         fclose($handle);
     }
 }
 
-// 削除対象 5：mistake_review.json から削除
+// 【削除対象5】mistake_review.json
 $mistake_review_file = __DIR__ . '/../scores/mistake_review.json';
 if (file_exists($mistake_review_file)) {
     if (($handle = fopen($mistake_review_file, 'r+')) !== false) {
-        if (!flock($handle, LOCK_EX)) {
-            fclose($handle);
-            http_response_code(500);
-            echo json_encode(['ok' => false, 'error' => 'Cannot lock mistake review']);
-            exit;
+        if (flock($handle, LOCK_EX)) {
+            $content = stream_get_contents($handle);
+            $mistakes = $content ? json_decode($content, true) : [];
+            if (!is_array($mistakes)) $mistakes = [];
+
+            if (isset($mistakes[$player_id])) {
+                unset($mistakes[$player_id]);
+                rewind($handle);
+                ftruncate($handle, 0);
+                fwrite($handle, json_encode($mistakes, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                fflush($handle);
+
+                $deletion_summary['deleted_files_and_records'][] = [
+                    'file' => 'scores/mistake_review.json',
+                    'action' => 'removed mistake review history',
+                    'count' => 1
+                ];
+            }
+            flock($handle, LOCK_UN);
         }
-        $content = file_get_contents($mistake_review_file);
-        $mistakes = $content ? json_decode($content, true) : [];
-        if (!is_array($mistakes)) $mistakes = [];
-        if (isset($mistakes[$player_id])) {
-            unset($mistakes[$player_id]);
-            file_put_contents($mistake_review_file, json_encode($mistakes, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-            $deletion_summary['deleted_files_and_records'][] = [
-                'file' => 'scores/mistake_review.json',
-                'action' => 'removed mistake review history',
-                'count' => 1
-            ];
-        }
-        flock($handle, LOCK_UN);
         fclose($handle);
     }
 }
 
-// 削除ログファイル保存（詳細）
+// 【削除対象6】save_push_subscription.json（Push登録）
+$push_file = __DIR__ . '/../scores/save_push_subscription.json';
+if (file_exists($push_file)) {
+    if (($handle = fopen($push_file, 'r+')) !== false) {
+        if (flock($handle, LOCK_EX)) {
+            $content = stream_get_contents($handle);
+            $subs = $content ? json_decode($content, true) : [];
+            if (!is_array($subs)) $subs = [];
+
+            if (isset($subs[$player_id])) {
+                unset($subs[$player_id]);
+                rewind($handle);
+                ftruncate($handle, 0);
+                fwrite($handle, json_encode($subs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                fflush($handle);
+
+                $deletion_summary['deleted_files_and_records'][] = [
+                    'file' => 'scores/save_push_subscription.json',
+                    'action' => 'removed push notification registration',
+                    'count' => 1
+                ];
+            }
+            flock($handle, LOCK_UN);
+        }
+        fclose($handle);
+    }
+}
+
+// 【削除対象7】access_log.json（アクセス履歴）
+$access_log_file = __DIR__ . '/../scores/access_log.json';
+if (file_exists($access_log_file)) {
+    if (($handle = fopen($access_log_file, 'r+')) !== false) {
+        if (flock($handle, LOCK_EX)) {
+            $content = stream_get_contents($handle);
+            $logs = $content ? json_decode($content, true) : [];
+            if (!is_array($logs)) $logs = [];
+
+            $deleted_logs = 0;
+            if (isset($logs['access_records']) && is_array($logs['access_records'])) {
+                $original_count = count($logs['access_records']);
+                $logs['access_records'] = array_values(array_filter($logs['access_records'], function($record) use ($player_id) {
+                    return !isset($record['player_id']) || $record['player_id'] !== $player_id;
+                }));
+                $deleted_logs = $original_count - count($logs['access_records']);
+            }
+
+            if ($deleted_logs > 0) {
+                rewind($handle);
+                ftruncate($handle, 0);
+                fwrite($handle, json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                fflush($handle);
+
+                $deletion_summary['deleted_files_and_records'][] = [
+                    'file' => 'scores/access_log.json',
+                    'action' => 'removed access log records',
+                    'count' => $deleted_logs
+                ];
+            }
+            flock($handle, LOCK_UN);
+        }
+        fclose($handle);
+    }
+}
+
+// 【削除対象8】削除ログファイル保存
 $delete_log_dir = __DIR__ . '/../requests/delete_logs/';
 if (!is_dir($delete_log_dir)) {
     mkdir($delete_log_dir, 0755, true);
 }
 
 $delete_log_file = $delete_log_dir . $player_id . '_deleted_' . date('YmdHis') . '.json';
-
-// 削除ログに詳細情報を記録
 $delete_log = array_merge($deletion_summary, [
     'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
     'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
     'reason' => $reason
 ]);
 
-$log_handle = fopen($delete_log_file, 'w');
-if ($log_handle && flock($log_handle, LOCK_EX)) {
-    fwrite($log_handle, json_encode($delete_log, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-    fflush($log_handle);
-    flock($log_handle, LOCK_UN);
-    fclose($log_handle);
-} else if ($log_handle) {
-    fclose($log_handle);
+if (($handle = fopen($delete_log_file, 'w')) !== false) {
+    if (flock($handle, LOCK_EX)) {
+        fwrite($handle, json_encode($delete_log, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        fflush($handle);
+        flock($handle, LOCK_UN);
+    }
+    fclose($handle);
 }
 
-// 削除トークンをクリア
+// 削除トークンクリア
 if (file_exists($token_file)) {
     unlink($token_file);
 }
 
-// レスポンス
+// セッション更新（存在する場合）
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (isset($_SESSION['baseballPlayerId']) && $_SESSION['baseballPlayerId'] === $player_id) {
+    unset($_SESSION['baseballPlayerId']);
+    session_destroy();
+}
+
+// 成功レスポンス
 http_response_code(200);
 echo json_encode([
     'ok' => true,
@@ -349,4 +431,4 @@ echo json_encode([
     'player_id' => $player_id,
     'deleted_at' => $delete_log['deleted_at'],
     'deletion_summary' => $deletion_summary['deleted_files_and_records']
-]);
+], JSON_UNESCAPED_UNICODE);

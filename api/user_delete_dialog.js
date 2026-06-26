@@ -14,6 +14,17 @@ function showUserDeleteDialog() {
 }
 
 function getDeleteToken(playerId) {
+  // client_token を取得（localStorage から）
+  const clientToken = localStorage.getItem('baseballClientToken') || '';
+  if (!clientToken) {
+    alert('クライアントトークンが見つかりません。ログインし直してください。');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('player_id', playerId);
+  formData.append('client_token', clientToken);
+
   const xhr = new XMLHttpRequest();
   xhr.onload = function() {
     if (xhr.status === 200) {
@@ -28,6 +39,10 @@ function getDeleteToken(playerId) {
       } else {
         alert('削除トークン取得に失敗しました: ' + (response.error || '不明なエラー'));
       }
+    } else if (xhr.status === 401) {
+      alert('クライアント認証に失敗しました。ログインし直してください。');
+    } else if (xhr.status === 404) {
+      alert('プレイヤーが見つかりません。');
     } else {
       alert('削除トークン取得に失敗しました（ステータス: ' + xhr.status + '）');
     }
@@ -36,7 +51,7 @@ function getDeleteToken(playerId) {
     alert('削除トークン取得に失敗しました');
   };
   xhr.open('POST', 'api/user_delete_request.php');
-  xhr.send(); // token パラメータなし → トークン生成フェーズ
+  xhr.send(formData);
 }
 
 function showDeleteConfirmationDialog(playerId) {
