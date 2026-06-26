@@ -4,12 +4,9 @@
  * ユーザーがアカウント削除を要求する際に使用
  *
  * セキュリティ対応:
- * - セッション確認（ログイン中のプレイヤーのみ）
- * - 本人確認（POST player_id がセッション player_id と一致）
- * - パスハッシュ確認（確実な本人確認用）
+ * - パスハッシュ確認（本人確認用）
+ * - プレイヤーレジストリから登録済みハッシュと照合
  */
-
-session_start();
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -19,15 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['ok' => false, 'error' => 'POST only']);
     exit;
 }
-
-// セッション確認：ログイン中のプレイヤーか確認
-if (!isset($_SESSION['player_id'])) {
-    http_response_code(401);
-    echo json_encode(['ok' => false, 'error' => 'Not authenticated. Please log in first.']);
-    exit;
-}
-
-$session_player_id = $_SESSION['player_id'];
 
 // パラメータ取得
 $player_id = isset($_POST['player_id']) ? trim($_POST['player_id']) : '';
@@ -42,21 +30,19 @@ if (empty($player_id)) {
     exit;
 }
 
+if (empty($password_hash)) {
+    http_response_code(400);
+    echo json_encode(['ok' => false, 'error' => 'password_hash required']);
+    exit;
+}
+
 if ($confirm !== 1) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'confirmation required']);
     exit;
 }
 
-// 本人確認：セッション player_id と POST player_id が一致するか
-if ($session_player_id !== $player_id) {
-    http_response_code(403);
-    echo json_encode(['ok' => false, 'error' => 'Permission denied. You can only delete your own account.']);
-    exit;
-}
-
-// パスハッシュ確認（強化された本人確認）
-// プレイヤーレジストリから登録済みハッシュを取得して照合
+// パスハッシュ確認：プレイヤーレジストリから登録済みハッシュを取得して照合
 $player_registry_file = __DIR__ . '/../scores/player_registry.csv';
 if (!file_exists($player_registry_file)) {
     http_response_code(500);
@@ -66,7 +52,7 @@ if (!file_exists($player_registry_file)) {
 
 $registry_data = [];
 if (($handle = fopen($player_registry_file, 'r')) !== false) {
-    while (($row = fgetcsv($handle)) !== false) {
+    while (($row = fgetcsv($handle, 0, ',', '"')) !== false) {
         if (isset($row[0]) && $row[0] === $player_id) {
             $registry_data = $row;
             break;
@@ -75,16 +61,15 @@ if (($handle = fopen($player_registry_file, 'r')) !== false) {
     fclose($handle);
 }
 
-if (empty($registry_data) || empty($password_hash)) {
-    http_response_code(400);
-    echo json_encode(['ok' => false, 'error' => 'Invalid player ID or password hash missing']);
+if (empty($registry_data)) {
+    http_response_code(404);
+    echo json_encode(['ok' => false, 'error' => 'Player not found']);
     exit;
 }
 
-// パスハッシュの検証（CSV の該当カラムと比較）
-// 注：実装上、パスハッシュ位置を確認してください（CSV フォーマットに依存）
-$stored_hash = isset($registry_data[2]) ? $registry_data[2] : ''; // 仮定：位置 2
-if (!hash_equals($stored_hash, $password_hash)) {
+// パスハッシュの検証（CSV フォーマット: [0]player_id, [1]client_hash, [2]created_at, [3]last_login_at）
+$stored_hash = isset($registry_data[1]) ? $registry_data[1] : ''; // 位置 1: client_hash
+if (empty($stored_hash) || !hash_equals($stored_hash, $password_hash)) {
     http_response_code(401);
     echo json_encode(['ok' => false, 'error' => 'Invalid password. Deletion cancelled.']);
     exit;

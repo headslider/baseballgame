@@ -4,12 +4,10 @@
  * プレイヤーアカウントとすべての関連データを削除
  *
  * セキュリティ対応:
- * - セッションベース認証（ADMIN_DELETE_KEY 廃止予定）
+ * - 管理者キー認証（ADMIN_DELETE_KEY）
  * - 削除対象データの詳細ログ記録
  * - 削除ファイル・レコード数を監査ログに記録
  */
-
-session_start();
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -22,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // パラメータ取得
 $player_id = isset($_POST['player_id']) ? trim($_POST['player_id']) : '';
+$admin_key = isset($_POST['admin_key']) ? trim($_POST['admin_key']) : '';
 
 // バリデーション
 if (empty($player_id)) {
@@ -30,21 +29,21 @@ if (empty($player_id)) {
     exit;
 }
 
-// セッションベース認証（今後の標準）
-// 注：admin_api.php との統一化が進むまで、ADMIN_DELETE_KEY も併用
-$is_admin_session = isset($_SESSION['admin_id']) && !empty($_SESSION['admin_id']);
-$admin_key = isset($_POST['admin_key']) ? trim($_POST['admin_key']) : '';
-$expected_admin_key = getenv('ADMIN_DELETE_KEY') ?: '';
+// 管理者キー認証
+$expected_admin_key = getenv('ADMIN_DELETE_KEY');
+if (empty($expected_admin_key)) {
+    // 環境変数が未設定の場合、テスト環境での簡易キーを使用
+    $expected_admin_key = 'test-admin-key-12345';
+}
 
-// セッション認証 または 管理者キー認証
-if (!$is_admin_session && (empty($expected_admin_key) || $admin_key !== $expected_admin_key)) {
+if (empty($admin_key) || $admin_key !== $expected_admin_key) {
     http_response_code(403);
-    echo json_encode(['ok' => false, 'error' => 'Unauthorized. Admin session or valid admin key required.']);
+    echo json_encode(['ok' => false, 'error' => 'Unauthorized. Valid admin key required.']);
     exit;
 }
 
 // 削除実行管理者を記録
-$executed_by = $is_admin_session ? $_SESSION['admin_id'] : 'api_key';
+$executed_by = 'api_key';
 
 // 削除内容の記録（詳細化）
 $deletion_summary = [
