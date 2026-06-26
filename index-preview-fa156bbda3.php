@@ -56,4 +56,13 @@ if (!$enabled) {
 // 秘密URLでは検索インデックス回避を HTTP ヘッダ（X-Robots-Tag）で付与する。
 header('Content-Type: text/html; charset=UTF-8');
 header('X-Robots-Tag: noindex, nofollow');
-readfile(__DIR__ . '/index.html');
+$filePath = __DIR__ . '/index.html';
+if (file_exists($filePath) && is_readable($filePath)) {
+    readfile($filePath);
+} else {
+    http_response_code(500);
+    echo '<html><head><meta charset="utf-8"><title>エラー</title></head><body>';
+    echo '<h1>エラー</h1>';
+    echo '<p>ファイルが見つかりません: ' . htmlspecialchars($filePath) . '</p>';
+    echo '</body></html>';
+}
