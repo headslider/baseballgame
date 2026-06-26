@@ -4,30 +4,9 @@
  *
  * production_hold_enabled.flag の内容で、`/baseball/`（DirectoryIndex）の表示を切り替える。
  *   - "true"（または 1 / on / yes、大小文字不問） : メンテ中 → index.html（アップデート準備中ページ）を出力
- *   - "false" / 空 / その他 / ファイル不在        : 公開     → app_shell.html（実アプリ）を出力
+ *   - "false" / 空 / その他 / ファイル不在        : 公開     → index.html（本番仕様の実アプリ）を出力
  *
- * CLAUDE.md セクション 3.6 参照。
+ * シンプル化：app_shell.html は廃止し、index.html が実アプリ・メンテ画面の両方を兼ねるようにした。
+ * フラグは Java Script 側で参照される（app.js の quizMasterLimitActive() など）。
  */
-
-// フラグファイルを読み込む
-$flagFile = __DIR__ . '/production_hold_enabled.flag';
-$isHoldEnabled = false;
-
-if (file_exists($flagFile)) {
-  $flagContent = trim(file_get_contents($flagFile));
-  // 大小文字不問で判定
-  $flagContent = strtolower($flagContent);
-  if ($flagContent === 'true' || $flagContent === '1' ||
-      $flagContent === 'on' || $flagContent === 'yes') {
-    $isHoldEnabled = true;
-  }
-}
-
-// フラグに基づいて出し分け
-if ($isHoldEnabled) {
-  // メンテ中：index.html（メンテナンス画面）を出力
-  readfile(__DIR__ . '/index.html');
-} else {
-  // 公開：app_shell.html（実アプリ）を出力
-  readfile(__DIR__ . '/app_shell.html');
-}
+readfile(__DIR__ . '/index.html');
