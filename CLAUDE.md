@@ -171,6 +171,88 @@ CSSセレクタの構文エラーによりスタイルが適用されなかっ�
 
 ---
 
+## 3.5. 🔴【最重要】デプロイの仕組みと GitHub 認証・連携
+
+> **このセクションは過去にデプロイ事故（本番未反映）を起こした最重要事項である。デプロイ作業前に必ず全文を読むこと。**
+
+### 🔴 大原則：`git push` だけでは本番に反映されない
+
+`main` への `git push` は **GitHub リポジトリにコミットを反映するだけ**であり、
+**本番サーバー（CORESERVER `/baseball/`）には一切反映されない。**
+本番反映は **`deploy.yml` ワークフローを `apply=true` で手動起動した時のみ** 行われる。
+
+| 操作 | 効果 | 本番反映 |
+|------|------|---------|
+| `git push origin main` | origin/main にコミット反映 | ❌ されない |
+| `deploy.yml` を `apply=false` で実行 | dry-run（FTPシミュレーションのみ） | ❌ されない |
+| **`deploy.yml` を `apply=true` で実行** | **FTPで本番へ実アップロード** | **✅ される** |
+
+### デプロイ用ワークフローの構成（`.github/workflows/`）
+
+| ファイル | トリガー | 対象環境 | 反映条件 |
+|---------|---------|---------|---------|
+| `deploy.yml` | `workflow_dispatch`（手動のみ） | 本番 `/baseball/` | `apply=true` 入力が必須 |
+| `deploy-test.yml` | `codex/` ブランチからの PR | テスト `/baseball_test/` | PR作成・更新で自動 |
+
+- **本番（`deploy.yml`）には push トリガーが存在しない。** 必ず手動起動が必要。
+- ワークフローは起動時点の `main` HEAD をチェックアウトする。**最新コミットを push してから起動すること。**
+- 起動後は GitHub API で `head_sha` が最新コミットと一致するか必ず確認する（古いコミットで動いていないか）。
+
+### 🔴 必須：デプロイ後の `head_sha` 検証
+
+過去に「ワークフローは success だが古いコミット（push 前）で実行されており本番未反映」という事故が発生した。
+**デプロイ実行後は、対象 run の `head_sha` がローカル/リモートの最新 `main` と一致することを必ず確認する。**
+
+```powershell
+# リモート main の最新SHA
+git ls-remote origin main
+# 直近の deploy.yml run の head_sha と run_number / conclusion を確認し、上記と一致するか照合
+```
+
+### GitHub 認証・連携について（API 経由でのワークフロー起動）
+
+- このリポジトリのリモートは SSH（`git@github.com:headslider/baseballgame.git`）。
+- ワークフローの手動起動には GitHub REST API を使う。認証トークンは
+  **ローカルの git 認証ヘルパーに保存済み**であり、以下で取得できる（**トークンは絶対に画面出力・ログ・コミットに残さない**）。
+
+```bash
+# トークンを変数に取得（出力しない）
+TOKEN=$(printf "protocol=https\nhost=github.com\n\n" | git credential fill 2>/dev/null | grep "^password=" | cut -d= -f2)
+
+# deploy.yml を本番反映(apply=true)で起動。HTTP 204 が成功。
+curl -s -o /dev/null -w "%{http_code}" -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/headslider/baseballgame/actions/workflows/deploy.yml/dispatches \
+  -d '{"ref":"main","inputs":{"apply":"true"}}'
+
+# 起動後、最新 run の head_sha / conclusion を確認
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "https://api.github.com/repos/headslider/baseballgame/actions/workflows/deploy.yml/runs?per_page=1"
+```
+
+- claude.ai 側の「GitHub連携」パネルは Chat / Projects / リモートセッション用であり、
+  **このローカルセッションから Actions を起動する権限は付与しない。** Actions 起動は上記 API 経由で行う。
+- `gh` CLI はこの環境に未インストール。インストール不要で上記 API 方式を使う。
+
+### 🔴 トークン取り扱いの絶対ルール
+
+- トークンを `echo` / `Write` / コミット / PR / チャットに**絶対に出力しない**。
+- 取得は同一コマンド内の変数代入に留め、`curl` に渡したらそのコマンドで完結させる。
+- レスポンス本文を保存する場合もトークンが含まれないことを確認する。
+
+### デプロイ作業の標準手順（本番）
+
+1. 作業ブランチで実装・検証し、PWAキャッシュ3ファイルの整合性を確認する。
+2. `main` に統合し、`git push origin main` する。
+3. `git ls-remote origin main` でリモート最新SHAを控える。
+4. 上記 API で `deploy.yml` を `apply=true` 起動（HTTP 204 を確認）。
+5. 最新 run の `head_sha` が手順3のSHAと一致し、`conclusion=success` であることを確認する。
+6. 本番 `/baseball/` を実機確認する。PWAキャッシュが残る場合はスーパーリロード／Service Worker 再登録を案内する。
+
+---
+
 ## 4. タスク管理方針
 
 ### Issue作成テンプレート
