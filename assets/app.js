@@ -5837,19 +5837,19 @@ init();
 // それを検知してリロードすることで、全ユーザーに即座に新しいアプリが配信される。
 (function(){
   const localCacheVersion = window.YAKYU_CACHE_VERSION || '';
-  let lastDetectedVersion = localCacheVersion;
+  let hasReloaded = false;  // 無限リロードループ防止
 
   async function checkVersionAndReload() {
+    if (hasReloaded) return;  // 既にリロードした場合はチェック停止
     try {
       const res = await fetch('version.json?nocache=' + Date.now(), { cache: 'no-store' });
       if (!res.ok) return;
       const data = await res.json();
       const serverCacheVersion = data.cache_version || '';
 
-      if (serverCacheVersion && serverCacheVersion !== lastDetectedVersion && serverCacheVersion !== localCacheVersion) {
-        // キャッシュ版数が変わった → Service Worker または config が更新された
-        // リロードして新しい version を activate させる
-        lastDetectedVersion = serverCacheVersion;
+      // ローカル版数とサーバー版数が異なったら、Service Worker が更新された
+      if (serverCacheVersion && localCacheVersion && serverCacheVersion !== localCacheVersion) {
+        hasReloaded = true;
         window.location.reload();
       }
     } catch (e) {
