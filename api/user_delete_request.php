@@ -97,7 +97,7 @@ if (file_put_contents($request_file, json_encode($request_data, JSON_UNESCAPED_U
         'message' => 'Delete request submitted successfully',
         'token' => $delete_token,
         'token_expires_at' => $token_expires_at,
-        'instruction' => 'Token saved on your device. You can now proceed with deletion execution. The token will be valid for 30 days.'
+        'instruction' => 'You can now proceed with deletion execution.'
     ]);
 } else {
     http_response_code(500);
