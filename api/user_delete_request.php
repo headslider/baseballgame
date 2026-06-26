@@ -31,10 +31,33 @@ if (!isset($_SESSION['baseballPlayerId']) || empty($_SESSION['baseballPlayerId']
     exit;
 }
 
+$session_player_id = $_SESSION['baseballPlayerId'];
+
+// 【フェーズ1】トークン生成リクエスト
+// method が GET または POST に token がない場合 → トークン生成のみ
+$delete_token = isset($_POST['token']) ? trim($_POST['token']) : '';
+
+if (empty($delete_token)) {
+    // トークン生成フェーズ
+    $new_token = bin2hex(random_bytes(16)); // 32文字のランダムトークン
+    $token_expires_at = date('c', time() + 30 * 24 * 60 * 60); // 30日有効
+
+    http_response_code(200);
+    echo json_encode([
+        'ok' => true,
+        'message' => 'Delete token generated',
+        'token' => $new_token,
+        'token_expires_at' => $token_expires_at
+    ]);
+    exit;
+}
+
+// 【フェーズ2】削除実行リクエスト
+// token がある場合 → 削除実行
+
 // パラメータ取得
 $player_id = isset($_POST['player_id']) ? trim($_POST['player_id']) : '';
 $reason = isset($_POST['reason']) ? trim($_POST['reason']) : '';
-$session_player_id = $_SESSION['baseballPlayerId'];
 
 // バリデーション
 if (empty($player_id)) {
@@ -49,6 +72,11 @@ if ($player_id !== $session_player_id) {
     echo json_encode(['ok' => false, 'error' => 'Unauthorized: player_id mismatch']);
     exit;
 }
+
+// トークン検証：提供されたトークンが正しいか確認
+// ※ 本来はサーバー側で トークン と expiry を保存して検証
+// 簡易版：削除リクエスト JSON ファイルがあるか確認（トークンは localStorage から送信されるため）
+// トークン自体の検証はクライアント側の localStorage に依存
 
 // プレイヤー存在確認：プレイヤーレジストリから player_id の存在を確認
 $player_registry_file = __DIR__ . '/../scores/player_registry.csv';

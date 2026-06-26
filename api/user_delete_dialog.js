@@ -9,8 +9,34 @@ function showUserDeleteDialog() {
     return;
   }
 
-  // カスタム警告ダイアログを表示
-  showDeleteConfirmationDialog(playerId);
+  // ステップ1：サーバーからトークンを取得
+  getDeleteToken(playerId);
+}
+
+function getDeleteToken(playerId) {
+  const xhr = new XMLHttpRequest();
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      const response = JSON.parse(xhr.responseText);
+      if (response.ok && response.token) {
+        // トークンを localStorage に保存
+        localStorage.setItem(`delete_token_${playerId}`, response.token);
+        localStorage.setItem(`delete_token_expires_${playerId}`, response.token_expires_at);
+
+        // ステップ2：削除確認ダイアログを表示
+        showDeleteConfirmationDialog(playerId);
+      } else {
+        alert('削除トークン取得に失敗しました: ' + (response.error || '不明なエラー'));
+      }
+    } else {
+      alert('削除トークン取得に失敗しました（ステータス: ' + xhr.status + '）');
+    }
+  };
+  xhr.onerror = function() {
+    alert('削除トークン取得に失敗しました');
+  };
+  xhr.open('POST', 'api/user_delete_request.php');
+  xhr.send(); // token パラメータなし → トークン生成フェーズ
 }
 
 function showDeleteConfirmationDialog(playerId) {
@@ -173,8 +199,27 @@ function showDeleteConfirmationDialog(playerId) {
 }
 
 function submitUserDeleteRequest(playerId) {
+  // localStorage からトークンを取得
+  const deleteToken = localStorage.getItem(`delete_token_${playerId}`);
+  const tokenExpires = localStorage.getItem(`delete_token_expires_${playerId}`);
+
+  if (!deleteToken) {
+    alert('削除トークンが見つかりません。削除申請をやり直してください。');
+    return;
+  }
+
+  // トークン有効期限確認
+  if (tokenExpires && new Date(tokenExpires) < new Date()) {
+    alert('削除トークンが期限切れです。削除申請をやり直してください。');
+    localStorage.removeItem(`delete_token_${playerId}`);
+    localStorage.removeItem(`delete_token_expires_${playerId}`);
+    location.reload();
+    return;
+  }
+
   const formData = new FormData();
   formData.append('player_id', playerId);
+  formData.append('token', deleteToken); // トークン送信（必須）
   formData.append('reason', '');
 
   const xhr = new XMLHttpRequest();
@@ -187,6 +232,9 @@ function submitUserDeleteRequest(playerId) {
           '削除日時: ' + response.deleted_at + '\n\n' +
           'システムからログアウトします。'
         );
+        // トークンをクリア
+        localStorage.removeItem(`delete_token_${playerId}`);
+        localStorage.removeItem(`delete_token_expires_${playerId}`);
         // ログアウト
         logoutPlayer();
       } else {
