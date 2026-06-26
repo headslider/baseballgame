@@ -96,39 +96,87 @@ function showDeleteConfirmationDialog(playerId) {
     color: #dc3545;
     font-weight: bold;
   `;
-  title.textContent = '⚠️ アカウントを本当に削除しますか？';
+  title.textContent = 'アカウントを本当に削除しますか？';
 
-  // 警告メッセージ
-  const message = document.createElement('p');
-  message.style.cssText = `
+  // 副タイトル
+  const subtitle = document.createElement('p');
+  subtitle.style.cssText = `
     margin: 0 0 16px 0;
     color: #6c757d;
     line-height: 1.6;
     font-weight: bold;
   `;
-  message.textContent = 'この操作は取り消すことができません。アカウントと関連するすべてのデータが永久に削除されます。';
+  subtitle.textContent = 'この操作は取り消すことができません。';
+
+  // 削除対象データセクション
+  const deletedSection = document.createElement('div');
+  deletedSection.style.cssText = `
+    margin: 0 0 16px 0;
+    padding: 12px;
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+  `;
+
+  const deletedTitle = document.createElement('p');
+  deletedTitle.style.cssText = `
+    margin: 0 0 8px 0;
+    font-weight: bold;
+    color: #212529;
+  `;
+  deletedTitle.textContent = '■この端末で使用しているプレイヤーIDに紐づく以下のデータを削除します。';
+  deletedSection.appendChild(deletedTitle);
 
   // 削除対象データリスト
   const list = document.createElement('ul');
   list.style.cssText = `
-    margin: 0 0 24px 0;
-    padding-left: 20px;
+    margin: 0 0 0 20px;
     color: #6c757d;
   `;
   const dataItems = [
     'プレイヤー登録情報',
-    'ゲーム成績・スコア',
-    'スコアログ記録',
-    '間違いプレイチェック履歴',
+    'ランキング・解放情報',
     '野球博士チャレンジの成績',
-    '機能解放状態'
+    '間違い復習データ',
+    'Push通知の登録情報',
+    'アクセス履歴'
   ];
   dataItems.forEach(item => {
     const li = document.createElement('li');
-    li.style.marginBottom = '8px';
+    li.style.marginBottom = '4px';
     li.textContent = item;
     list.appendChild(li);
   });
+  deletedSection.appendChild(list);
+
+  // 保持されるデータセクション
+  const retainedSection = document.createElement('div');
+  retainedSection.style.cssText = `
+    margin: 0 0 16px 0;
+    padding: 12px;
+    background: #e7f3ff;
+    border-left: 4px solid #0066cc;
+    border-radius: 4px;
+  `;
+
+  const retainedTitle = document.createElement('p');
+  retainedTitle.style.cssText = `
+    margin: 0 0 8px 0;
+    font-weight: bold;
+    color: #212529;
+  `;
+  retainedTitle.textContent = '■保持されるデータ';
+  retainedSection.appendChild(retainedTitle);
+
+  const retainedMessage = document.createElement('p');
+  retainedMessage.style.cssText = `
+    margin: 0;
+    color: #6c757d;
+    line-height: 1.6;
+    font-size: 14px;
+  `;
+  retainedMessage.textContent = '通常ゲームのプレイ履歴・スコアログは、ゲーム運営、不正利用対策およびサービス改善のため、削除後も一定期間保持される場合があります。';
+  retainedSection.appendChild(retainedMessage);
 
   // プレイヤーID表示
   const idDisplay = document.createElement('div');
@@ -196,8 +244,9 @@ function showDeleteConfirmationDialog(playerId) {
 
   // ダイアログに要素を追加
   dialog.appendChild(title);
-  dialog.appendChild(message);
-  dialog.appendChild(list);
+  dialog.appendChild(subtitle);
+  dialog.appendChild(deletedSection);
+  dialog.appendChild(retainedSection);
   dialog.appendChild(idDisplay);
   dialog.appendChild(buttonContainer);
 
