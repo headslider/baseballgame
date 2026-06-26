@@ -253,6 +253,98 @@ curl -s -H "Authorization: Bearer $TOKEN" \
 
 ---
 
+## 3.6. 🔴【最重要】秘密URL `index-preview-fa156bbda3.php` と `production_hold_enabled.flag` の仕様
+
+> **段階リリース（メンテ→秘密URL検証→公開）の中核。詳細運用は `docs/staged_release_preview.md` を正とし、本セクションはその要点を集約する。両者は常に同期させること。**
+
+### 全体像：段階リリースの3状態
+
+大型リリース時は「①公開トップを停止（メンテ画面）→ ②全データを本番へアップ → ③秘密URLで本番検証 → ④告知・時刻決定 → ⑤公開切替」を行う。この挙動を **`production_hold_enabled.flag` 1つ**で一括制御する。
+
+### 🔴 `production_hold_enabled.flag` の仕様
+
+#### 判定ルール（安全側デフォルト）
+内容を小文字化・trim して判定する。
+
+| フラグの値 | 判定 | 意味 |
+|---|---|---|
+| `true` / `1` / `on` / `yes`（大小文字不問） | **有効** | メンテ中／プレビュー状態 |
+| `false` / 空 / その他の文字列 | **無効** | 公開状態 |
+| **ファイル不在** / 取得失敗 | **無効**（安全側） | 公開状態 |
+
+#### このフラグが制御する3つの挙動
+
+| # | 対象 | `true`（メンテ中／プレビュー） | `false`・不在（公開後） | 実装箇所 |
+|---|---|---|---|---|
+| ① | 秘密URL `index-preview-fa156bbda3.php` | 利用可（本番アプリ表示・HTTP 200） | 利用不可（案内ページ・HTTP 403） | php先頭ゲート |
+| ② | ページ遷移（`index.html`）の配信戦略 | **networkFirst**（常に最新＝メンテ画面を配信。実アプリのキャッシュ漏れ防止） | **cacheFirst**（通常のPWA高速表示） | `service-worker.js` の `isHoldEnabled()` |
+| ③ | 野球博士チャレンジのライフ | **無制限（×∞）** | **通常 1日5ライフ** | `app.js` の `quizMasterLimitActive()` |
+
+#### 配置・管理
+- **リポジトリ管理・Git追跡対象。既定値は `true`。**
+- `deploy.yml`／`deploy-test.yml` 双方で配備され、本番（`/baseball/`）・テスト（`/baseball_test/`）の**各直下に独立して**置かれる（PHPの `__DIR__` 基準で同階層を参照）。
+- **常に最新値が使われる**：`service-worker.js` の `NETWORK_FIRST_PATTERNS` に `/production_hold_enabled\.flag$` を登録済み。アプリ・SWとも古い値で固定されない。
+
+#### 切替方法（2通り）
+1. **リポジトリで切替（恒久的・推奨）**：フラグの中身を `true`/`false` にしてコミット＆デプロイ。
+2. **サーバーで切替（即時・一時的）**：FTPで該当環境のフラグを直接編集／削除。**ただし次回デプロイでリポジトリの値（既定 `true`）に上書きされる**点に注意。
+
+#### 反映タイミングの注意
+- **②の networkFirst↔cacheFirst 切替**：新しい `service-worker.js` が有効化済みの端末でのみ即時反映。**旧SW端末は切替直後の1回だけ旧キャッシュが表示され得る**（旧SWの挙動は遡れない）。確実に切り替えるには再読み込み1〜2回、またはDevTools→Application→Service Workers→Unregister後に再読み込み。
+- **③のライフ判定**：アプリ**起動時**に確定する。プレイ中にフラグを変えても反映は次回起動（再読み込み）後。
+
+### 🔴 秘密URL `index-preview-fa156bbda3.php` の仕様
+
+#### 役割
+**本番仕様の実アプリを、公開前に本番環境で検証するための秘密URL。** 公開トップ（`index.html`）がメンテ画面の間も、このURLからは実アプリにアクセスできる。
+
+- 本番URL例：`https://www.realemotionfactory.com/baseball/index-preview-fa156bbda3.php`
+- ファイル名の `fa156bbda3` 部分が秘密トークン（推測困難値）。
+
+#### 構造（PHP先頭ゲート + 実アプリ）
+1. **先頭ゲート**：同階層の `production_hold_enabled.flag` を読む。
+   - 有効（`true`等）→ そのまま下部の本番実アプリHTMLを出力（HTTP 200）。
+   - 無効（`false`・空・不在）→ HTTP 403 + 「現在利用できません」案内ページを出力して `exit`（安全側デフォルト）。
+2. **下部**：`production_hold_enabled.flag` が有効なときのみ出力される本番仕様アプリ本体（`index.html` の実アプリ版と同等のマークアップ）。
+
+#### Service Worker との整合
+- `service-worker.js` の `NETWORK_FIRST_PATTERNS` に `/index-preview-[a-z0-9]+\.php` を登録済み。
+- 秘密URLは**フラグに関係なく常に networkFirst**（ゲートを必ずサーバーで評価するため）。
+- そのため**一度キャッシュ済みの端末でも、フラグを `false` にすれば即座に利用不可**になる（オフライン時のみ最後のキャッシュにフォールバック）。
+
+#### 🟡 秘密URLからPWAをホーム追加しない
+- `manifest.webmanifest` の `start_url` は `/baseball/`（＝メンテ中はメンテ画面）。秘密URLからインストールするとアイコンがメンテ画面に飛ぶ。**検証はブラウザで秘密URLを直接開く**こと。
+
+#### 🟡 noindex
+- 秘密URLファイルには `noindex,nofollow` 付与済み（検索インデックス回避）。
+
+### 🔴 バージョン整合性の注意（秘密URLは index.html と別ファイル）
+
+`index-preview-fa156bbda3.php` は `index.html` とは**別ファイルでバージョン参照を独自に持つ**。フロント更新・キャッシュbump時は、**このファイル内の以下すべて**を他3ファイル（version.json／service-worker.js／index.html）と同一バージョンへ揃えること。揃え漏れると秘密URL検証時に旧アセットが配信され、本番未反映の原因になる（本セッションで実際に発生）。
+
+- `styles.css?v=...`
+- `app.js?v=...`
+- `quiz_master_questions.js?v=...`
+- `<meta name="app-version" content="v...">`
+- `window.YAKYU_APP_VERSION`
+- `window.YAKYU_CACHE_VERSION`
+
+```powershell
+# 秘密URLファイル内のバージョン参照を一括確認
+Select-String -Path index-preview-fa156bbda3.php -Pattern "v=10|YAKYU_APP_VERSION|YAKYU_CACHE_VERSION|app-version"
+```
+
+### 公開切替（リリース）時のクリーンアップ
+公開へ切り替える際は `docs/staged_release_preview.md` フェーズ4に従う：
+1. `index.html` を実アプリ版へ差し替え。
+2. `index-preview-fa156bbda3.php` を削除。
+3. PWAキャッシュを次バージョンへ bump（4ファイル同期＋秘密URLファイル）。
+4. `service-worker.js` の秘密URL用パターン削除（任意）。
+5. `production_hold_enabled.flag` を `false` にしてコミット。
+6. `deploy.yml` を `apply=true` で本番反映。
+
+---
+
 ## 4. タスク管理方針
 
 ### Issue作成テンプレート
