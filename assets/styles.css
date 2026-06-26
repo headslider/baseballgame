@@ -8296,7 +8296,7 @@ img.qtb-badge-icon{
   overflow:hidden;
   text-align:left;
 }
-.quiz-master-ranking-page-card .quiz-master-kicker
+.quiz-master-ranking-page-card .quiz-master-kicker,
 .quiz-master-ranking-page-card h2{
   text-align:center;
 }
@@ -8305,6 +8305,7 @@ img.qtb-badge-icon{
   color:#ffe26a;
   font-size:clamp(28px,4vw,42px);
   line-height:1.16;
+  text-align:center;
   text-shadow:0 3px 2px #000;
 }
 .quiz-master-final-score{
