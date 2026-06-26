@@ -1,458 +1,85 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>少年野球シミュレーター「野球やろうぜ！」</title><link rel="stylesheet" href="assets/styles.css?v=1071">  <script>(function(){try{var p=new URLSearchParams(location.search||"");var issue=(p.get("issue")||p.get("id_issue")||"").toLowerCase();var invite=p.get("invite_key")||p.get("inviteIssueKey")||p.get("issue_invite")||"";var admin=p.get("admin_key")||p.get("adminIssueKey")||p.get("issue_admin")||"";function ck(n,v){try{document.cookie=encodeURIComponent(n)+"="+encodeURIComponent(v||"")+"; Max-Age="+(90*24*60*60)+"; Path=/; SameSite=Lax"+(location.protocol==="https:"?"; Secure":"");}catch(e){}}function ls(n,v){try{localStorage.setItem(n,v||"");}catch(e){}}var href="manifest.webmanifest";if(((issue==="admin")&&admin)||(!issue&&admin)){ck("baseballPendingAdminIssueUrl",admin);ck("baseballPendingIssueType","admin");ls("baseballPendingAdminIssueUrl",admin);ls("baseballPendingIssueType","admin");href="api/issue_manifest.php?openExternalBrowser=1&issue=admin&admin_key="+encodeURIComponent(admin);}else if(((issue==="invite")&&invite)||(!issue&&invite)){ck("baseballPendingInviteIssueUrl",invite);ck("baseballPendingIssueType","invite");ls("baseballPendingInviteIssueUrl",invite);ls("baseballPendingIssueType","invite");href="api/issue_manifest.php?openExternalBrowser=1&issue=invite&invite_key="+encodeURIComponent(invite);}document.write('<link rel="manifest" href="'+href.replace(/"/g,"%22")+'">');}catch(e){document.write('<link rel="manifest" href="manifest.webmanifest">');}})();</script>
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <meta name="theme-color" content="#0046b8">
-  <meta name="app-version" content="v1071-production">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="野球やろうぜ">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-</head><body class="home home-screen" ><div id="transitionOverlay" class="transition-overlay"></div><div id="timerBox" class="timer-box" hidden></div><div id="countdownOverlay" class="countdown-overlay" aria-hidden="true"></div><div id="goodJobToast" class="goodjob-toast" aria-hidden="true"><div class="goodjob-scene" aria-hidden="true"><span class="gj-ball"></span><span class="gj-glove"></span><span class="gj-bat"></span><span class="gj-impact"></span></div><span class="gj-text">GoodJob!</span></div>
-<div style="display:none">
-<img src="assets/sprite_batter_blue.webp?v=1071" alt="">
-<img src="assets/sprite_batter_red.webp?v=1071" alt="">
-<img src="assets/sprite_batterrunner_blue.webp?v=1071" alt="">
-<img src="assets/sprite_batterrunner_red.webp?v=1071" alt="">
-<img src="assets/sprite_catcher_blue.webp?v=1071" alt="">
-<img src="assets/sprite_catcher_red.webp?v=1071" alt="">
-<img src="assets/sprite_fielder_blue.webp?v=1071" alt="">
-<img src="assets/sprite_fielder_red.webp?v=1071" alt="">
-<img src="assets/sprite_runner1_blue.webp?v=1071" alt="">
-<img src="assets/sprite_runner1_red.webp?v=1071" alt="">
-<img src="assets/sprite_runner2_blue.webp?v=1071" alt="">
-<img src="assets/sprite_runner2_red.webp?v=1071" alt="">
-<img src="assets/sprite_runner3_blue.webp?v=1071" alt="">
-<img src="assets/sprite_runner3_red.webp?v=1071" alt="">
-<img src="assets/sprite_runner_blue.webp?v=1071" alt="">
-<img src="assets/sprite_runner_red.webp?v=1071" alt="">
-</div>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>少年野球シミュレーター「野球やろうぜ！」</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#0046b8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="野球やろうぜ">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+    color:#fff;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:clamp(20px,4vh,40px);
+    padding:24px;
+    /* 背景：球場画像（読みやすさ確保のため上に軽い暗幕） */
+    background:
+      linear-gradient(rgba(0,0,0,.30),rgba(0,0,0,.45)),
+      #053b88 url("assets/top_background.webp") center center / cover no-repeat fixed;
+  }
+  /* 野球やろうぜ ロゴ（中央） */
+  .maint-logo{
+    width:min(640px,86vw);
+    height:auto;
+    display:block;
+    filter:drop-shadow(0 8px 18px rgba(0,0,0,.45));
+  }
+  /* 「現在メンテナンス中...」の見やすい枠 */
+  .maint-box{
+    width:min(560px,90vw);
+    background:rgba(255,255,255,.95);
+    color:#0b3a75;
+    border:4px solid #0b3a75;
+    border-radius:20px;
+    padding:clamp(22px,4.5vw,34px) clamp(20px,5vw,40px);
+    box-shadow:0 16px 44px rgba(0,0,0,.4);
+    text-align:center;
+  }
+  .maint-box .maint-title{
+    font-size:clamp(24px,6vw,38px);
+    font-weight:900;
+    letter-spacing:.04em;
+    margin:0;
+    line-height:1.4;
+  }
+  .maint-box .maint-sub{
+    margin:14px 0 0;
+    color:#33414f;
+    font-size:clamp(14px,3.6vw,17px);
+    line-height:1.8;
+    font-weight:600;
+  }
+  .maint-copyright{
+    margin:0;
+    font-size:clamp(12px,3vw,13px);
+    color:rgba(255,255,255,.85);
+    text-shadow:0 1px 3px rgba(0,0,0,.5);
+  }
+</style>
+</head>
+<body>
+  <picture class="maint-logo-pic">
+    <source media="(max-width: 720px)" srcset="assets/top_title_mobile.webp">
+    <img class="maint-logo" src="assets/top_title_pc.webp" alt="少年野球シミュレーター 野球やろうぜ！">
+  </picture>
 
-<div id="gameDataLoadingOverlay" class="game-data-loading-overlay" style="display:none" aria-live="polite" aria-busy="true">
-  <div class="game-data-loading-box">
-    <div class="game-data-spinner"></div>
-    <div class="game-data-loading-title">問題データを読み込んでいます</div>
-    <div class="game-data-loading-text">少しお待ちください。</div>
-  </div>
-</div>
-<main id="app"><section id="screen-title" class="screen active title-screen"><div class="stadium-bg"><picture class="top-title-visual"><source media="(max-width: 720px)" srcset="assets/top_title_mobile.webp"><img src="assets/top_title_pc.webp" alt="少年野球シミュレーター 野球やろうぜ！"></picture><div class="hero-title seo-only"><div class="sub">少年野球シミュレーター</div><h1>野球やろうぜ！</h1></div><button id="menuToggleBtn" class="menu-toggle" type="button" aria-expanded="false" aria-controls="topMenuPanel">☰ メニュー</button><div class="special-edition-label">調布大塚ファイターズ特別版</div><nav id="topMenuPanel" class="top-menu-panel" aria-label="トップメニュー"><button id="myPageBtn" class="secondary menu-btn" type="button">マイページ</button><button id="howBtn" class="secondary menu-btn" type="button">遊び方</button><button id="noticesMenuBtn" class="secondary menu-btn" type="button">お知らせ</button><button id="settingsBtn" class="secondary menu-btn" type="button">設定</button><button id="logoutBtn" class="secondary logout menu-btn" type="button">ログアウト</button></nav><div class="start-card"><div id="pwaInstallGuide" class="pwa-install-guide" style="display:none">
-  <div class="pwa-guide-title">📱 まずホーム画面に追加してください</div>
-  <p>
-    このゲームは、ホーム画面に追加してから使うと、アプリのようにすぐ開けてデータも安定して保存されます。<br>
-    <strong>プレイヤーIDを登録する前に、先にホーム画面へ追加することをおすすめします。</strong>
-  </p>
-  <div class="pwa-guide-actions">
-    <button id="pwaGuideHowBtn" class="secondary" type="button">追加方法を見る</button>
-    <button id="pwaGuideLaterBtn" class="ghost-small" type="button">あとで設定する</button>
-  </div>
-  <div id="pwaInstallSteps" class="pwa-install-steps" style="display:none">
-    <div class="pwa-step-ios">
-      <h4>iPhone / iPad の場合</h4>
-      <ol>
-        <li>Safariで<a id="openCurrentUrlSafariLink" class="external-open-link" href="#" title="URLをコピーして外部ブラウザで開く" target="_blank" rel="noopener">この</a>ページを開く</li>
-        <li>画面下の共有ボタンを押す</li>
-        <li>「ホーム画面に追加」を選ぶ</li>
-        <li>追加したアイコンからゲームを開く</li>
-        <li>その後、プレイヤーIDを登録してください</li>
-      </ol>
-    </div>
-    <div class="pwa-step-android">
-      <h4>Android の場合</h4>
-      <ol>
-        <li>Chromeで<a id="openCurrentUrlChromeLink" class="external-open-link" href="#" title="URLをコピーして外部ブラウザで開く" target="_blank" rel="noopener">この</a>ページを開く</li>
-        <li>メニューから「ホーム画面に追加」または「アプリをインストール」を選ぶ</li>
-        <li>追加したアイコンからゲームを開く</li>
-        <li>その後、プレイヤーIDを登録してください</li>
-      </ol>
-    </div>
-  </div>
-</div><div id="lineBrowserWarning" class="line-browser-warning" style="display:none">
-  <div class="line-warning-title">LINE内ブラウザではプレイヤーID登録できません</div>
-  <p>このゲームは、端末判定とデータ保存を安定させるため、LINE内ブラウザではプレイヤーID登録を表示しません。</p>
-  <p><strong>Safariで<a id="lineOpenSafariLink" class="external-open-link" href="#" target="_blank" rel="noopener">この</a>ページを開いてホーム画面に追加し、ホーム画面のアイコンから開いてからプレイヤーID登録してください。</strong></p>
-  <div class="line-open-actions">
-    <button id="copyCurrentUrlBtn" class="secondary" type="button">URLをコピー</button>
-    <a id="androidChromeIntentLink" class="secondary external-open-button" href="#" rel="noopener">Chromeで開く</a>
-  </div>
-  <div id="lineOpenHelp" class="line-open-help">
-    <b>iPhone / iPad：</b>「この」を押してSafariで開けない場合は、「URLをコピー」後、Safariを開いてアドレス欄に貼り付けてください。<br>
-    <b>Android：</b>「Chromeで開く」を試してください。開かない場合はURLをコピーしてChromeに貼り付けてください。
-  </div>
-</div>
-<div id="mobilePwaRequiredNotice" class="mobile-pwa-required-notice" style="display:none">
-  <div class="mobile-pwa-title">プレイヤーID登録はホーム画面アプリから行ってください</div>
-  <p>スマホ・iPadでは、ブラウザでプレイヤーID登録した後にPWA（プログレッシブWebアプリ）で開くと端末判定が変わる場合があります。</p>
-  <p><strong>先にホーム画面へ追加し、追加したアイコンから開いてからプレイヤーID登録してください。</strong></p>
-
-  <div id="iosPwaHowtoBlock" class="pwa-howto-block">
-    <div class="pwa-howto-device">iPhone / iPad の場合</div>
-    <ol class="pwa-howto-list">
-      <li id="iosSafariOpenStep">このページを <strong>Safari</strong> で開く</li>
-      <li>画面下または上の <strong>共有ボタン（□↑）</strong> を押す</li>
-      <li><strong>「ホーム画面に追加」</strong> を選ぶ</li>
-      <li><strong>「追加」</strong> を押す</li>
-      <li>ホーム画面に追加されたアイコンからゲームを開く</li>
-    </ol>
+  <div class="maint-box">
+    <p class="maint-title">現在メンテナンス中...</p>
+    <p class="maint-sub">より楽しく遊んでいただくため、アップデートの準備をしています。<br>公開までいましばらくお待ちください。</p>
   </div>
 
-  <div id="androidPwaHowtoBlock" class="pwa-howto-block">
-    <div class="pwa-howto-device">Android の場合</div>
-    <ol class="pwa-howto-list">
-      <li id="androidChromeOpenStep">このページを <strong>Chrome</strong> で開く</li>
-      <li>画面右上の <strong>メニュー（︙）</strong> を押す</li>
-      <li><strong>「ホーム画面に追加」</strong> または <strong>「アプリをインストール」</strong> を選ぶ</li>
-      <li><strong>「追加」</strong> または <strong>「インストール」</strong> を押す</li>
-      <li>ホーム画面に追加されたアイコンからゲームを開く</li>
-    </ol>
-  </div>
-</div>
-<div id="playerIdInputArea" class="player-id-input-area registration-control">
-<label id="playerIdLabel" class="registration-control">プレイヤーID<input id="playerId" maxlength="20" placeholder="例：TARO03"></label><details id="topPlayerIdRuleAccordion" class="player-id-rule-accordion player-id-rule-accordion-top">
-  <summary>IDの入力制限について</summary>
-  <div class="player-id-rule-accordion-body">
-    プレイヤーIDは <strong>4〜20文字</strong>、使える文字は <strong>半角英数字・ハイフン（-）・アンダーバー（_）のみ</strong> です。<br>
-    大文字・小文字は同じIDとして扱います。<br>
-    不適切な言葉、公式と誤認される表現、個人情報、企業名・商標・有名キャラクター名にあたる表現は使用できません。
-  </div>
-</details></div>
-<div id="loginStatus" class="login-status registration-control">プレイする場合はプレイヤーIDを入力してください。同じプレイヤーIDは別のユーザーと共有できません。</div><div id="guestGuide" class="guest-guide registration-control"><b>まずはプレイヤーIDを入力してください。</b><br>同じプレイヤーIDでログインすると、成績や学年解放状況を保存できます。別の人と同じプレイヤーIDは使えません。<button id="guestHowBtn" class="guest-how-link" type="button">遊び方を見る</button></div><div id="loginActions" class="login-actions registration-control"><button id="loginBtn" class="secondary" type="button">ログイン</button><button id="rankingBtn" class="secondary ranking" type="button">ランキング</button></div><div id="issueKeyActions" class="issue-key-actions" style="display:none" aria-live="polite"><div class="issue-key-title">ID取得用URLから開いています</div><p class="issue-key-note">プレイヤーID登録後、対象のID取得ページを外部ブラウザで開けます。</p><div class="issue-key-buttons"><a id="inviteIssueExternalBtn" class="secondary issue-key-button" href="invite_issue.html" target="_blank" rel="noopener" style="display:none">招待IDを受け取る</a><a id="adminIssueExternalBtn" class="secondary issue-key-button" href="admin_id_issue.html" target="_blank" rel="noopener" style="display:none">管理者IDを受け取る</a></div></div><label id="gradeSelectLabel" class="game-start-control">学年<select id="grade"><option value="2">3年生以下（制限時間なし）</option><option value="3">3年生（制限時間30秒）</option><option value="4">4年生（制限時間25秒）</option><option value="5">5年生（制限時間20秒）</option><option value="6">6年生（制限時間15秒）</option></select></label><div id="gradeLockStatus" class="grade-lock-status game-start-control">各ポジションは3年生からスタートします。クリアすると次の学年が選べます。</div><label id="positionSelectLabel" class="game-start-control">守備位置<select id="position"></select></label><button id="startBtn" class="primary game-start-control">ゲームスタート</button><button id="quizMasterBtn" class="primary quiz-master-start" type="button" style="display:none"><span class="quiz-master-start-title">野球博士チャレンジ</span><span class="quiz-master-start-new">NEW!</span></button></div><div id="topPublicVersion" class="public-version-badge">v1.0.0</div><div class="top-copyright">© REALEMOTIONFACTORY.COM</div></div></section><section id="screen-how" class="screen">
-  <div class="lp-page">
-    <div class="lp-hero">
-      <div class="mypage-head how-page-head">
-        <div><p class="lp-kicker">少年野球シミュレーター「野球やろうぜ！」</p></div>
-        <button class="secondary" data-back-title type="button">トップへ戻る</button>
-      </div>
-      <h2>試合で迷わない選手になる。<br>遊びながら判断力を鍛えよう。</h2>
-      <p class="lp-lead">
-        試合でよくある走塁・守備・カバー・声かけを、画面を見ながら選ぶ判断トレーニングです。
-        「次に何をするか」をすばやく考える力を育てます。
-      </p>
-    </div>
-
-    <div class="lp-section howto-env-summary">
-      <h3>動作環境</h3>
-      <p class="lp-note">
-        推奨環境は、iPhone/iPadはSafari、AndroidはChrome、PCはChrome・Edge・Safariです。
-        LINEやSNSアプリ内ブラウザ、古いOS・ブラウザ、プライベートブラウズでは、PWAインストール・通知・スコア保存が不安定になる場合があります。
-        うまく動かない場合は、Safari / Chrome / Edgeで開き直してください。
-      </p>
-    </div>
-
-    <div class="lp-sample-gallery">
-      <h3>画面イメージ</h3>
-      <div class="sample-gallery-grid">
-        <figure class="sample-shot">
-          <figcaption class="sample-shot-title">ゲーム画面</figcaption>
-          <img src="assets/howto/howto_game_screen.jpg" alt="ゲーム画面">
-        </figure>
-      </div>
-    </div>
-
-    <div class="lp-section">
-      <h3>このゲームで身につくこと</h3>
-      <div class="grade-grid">
-        <div class="grade-card"><h4>走塁判断</h4><p>打球・送球・牽制を見て、進む、戻る、確認する判断を練習します。</p></div>
-        <div class="grade-card"><h4>守備判断</h4><p>どこでアウトを取るか、どこへ送球するかを場面ごとに考えます。</p></div>
-        <div class="grade-card"><h4>カバーと声かけ</h4><p>送球ミスへの備え、ベースカバー、中継、声かけの基本を学びます。</p></div>
-        <div class="grade-card"><h4>高学年向け判断</h4><p>バント、牽制、打順、複数走者など難しい場面にも挑戦します。</p></div>
-      </div>
-    </div>
-
-    <div class="lp-section">
-      <h3>遊び方はかんたん</h3>
-      <ul class="lp-list">
-        <li><b>1. IDを入力</b>：成績を保存するためのプレイヤーIDを入力します。</li>
-        <li><b>2. 学年と守備位置を選ぶ</b>：学年ごとの制限時間でプレイします。</li>
-        <li><b>3. 場面を見て答える</b>：矢印、ランナー、守備位置を見て判断します。</li>
-        <li><b>4. 結果を確認</b>：3点、1点、0点で判定され、40点以上で次へ進めます。</li>
-      </ul>
-    </div>
-
-    <div class="lp-section">
-      <h3>出題のしくみ</h3>
-      <ul class="lp-list">
-        <li>通常モードは<b>全18問</b>。攻撃と守備の判断問題が出ます。</li>
-        <li>3年生以下は<b>基本動作モード</b>。10問でルールや名前を覚えます。</li>
-      </ul>
-    </div>
-
-    <div class="lp-section">
-      <h3>学年と制限時間</h3>
-      <div class="grade-grid">
-        <div class="grade-card">
-          <h4>3年生以下</h4>
-          <p>基本動作モード。制限時間なし。まずはルールと名前を覚えます。</p>
-        </div>
-        <div class="grade-card">
-          <h4>3年生 / 30秒</h4>
-          <p>走る・戻る・ボールを見るなど、基本判断を練習します。</p>
-        </div>
-        <div class="grade-card">
-          <h4>4年生 / 25秒</h4>
-          <p>守備位置ごとの役割、ベースカバー、タッチアップを学びます。</p>
-        </div>
-        <div class="grade-card">
-          <h4>5年生 / 20秒</h4>
-          <p>フォースプレイ、牽制、暴投・悪送球後の判断を練習します。</p>
-        </div>
-        <div class="grade-card">
-          <h4>6年生 / 15秒</h4>
-          <p>中継、カット、ボーク、打順を意識した高学年向け判断を学びます。</p>
-        </div>
-      </div>
-      
-    </div>
-
-    <div class="lp-section">
-      <h3>画面の見方</h3>
-      <ul class="lp-list">
-        <li><b>矢印</b>：打球や送球の方向です。</li>
-        <li><b>ランナー</b>：どの塁にいるかを確認します。</li>
-        <li><b>あなた</b>：自分が判断する守備位置や走者を表します。</li>
-      </ul>
-    </div>
-
-    <div class="lp-section option-feature-section">
-      <div class="option-feature-heading">
-        <span class="option-feature-badge">招待IDで解放</span>
-        <h3>オプション機能</h3>
-      </div>
-      <div class="grade-grid">
-        <div class="grade-card option-feature-card mistake-review-sample-card">
-          <h4>間違いプレイチェック</h4>
-          <p>0点・1点だった問題を記録し、復習ポイントを確認できます。</p>
-          <figure class="mistake-review-sample"><img src="assets/howto/mistake_review_sample.webp" alt="間違いプレイチェック機能のサンプル画面"></figure>
-        </div>
-        <div class="grade-card option-feature-card device-transfer-sample-card">
-          <h4>端末引継ぎ</h4>
-          <p>機種変更や別端末でも、引き継ぎIDで記録を引き継げます。</p>
-          <figure class="device-transfer-sample"><img src="assets/howto/device_transfer_sample.webp" alt="端末引き継ぎ機能のサンプル画面"></figure>
-        </div>
-      </div>
-      <p class="lp-note">オプション機能は招待ID登録済みのプレイヤーIDで利用できます。</p>
-    </div>
-
-    <div class="lp-section">
-      <h3>クリアとランキング</h3>
-      <ul class="lp-list">
-        <li>通常モードは満点<b>54点</b>。<b>40点以上</b>で次の学年が解放されます。</li>
-        <li>学年解放は守備位置ごとに判定されます。</li>
-        <li>マイページで成績、ランキングで全体順位を確認できます。</li>
-      </ul>
-    </div>
-
-    <div class="lp-section lp-goal">
-      <h3>目標</h3>
-      <p>「今、自分はどこへ動くべきか」を考えて動ける選手を目指します。くり返し遊びながら、走塁・守備・声かけ・カバーの判断力を高めましょう。</p>
-      <p class="goal-note-plain">高学年問題には複数の考え方がある場面もあります。基本判断を学ぶためのヒントとして利用してください。</p>
-    </div>
-
-    <button class="secondary lp-back" data-back-title>トップへ戻る</button>
-  </div>
-</section>
-
-<section id="screen-mypage" class="screen"><div class="mypage-card"><div class="mypage-head"><div><p class="mypage-kicker">マイページ</p><h2>自分のIDと成績</h2></div><button id="myPageBackBtn" class="secondary" type="button">トップへ戻る</button></div><div id="myPageProfile" class="mypage-profile"></div><div id="myPageFeatureUnlock" class="mypage-feature-unlock"></div><div id="myPageSummary" class="mypage-summary"></div><div id="myPageRecords" class="mypage-records"></div><div id="myPageMistakes" class="mypage-mistakes"></div></div></section><section id="screen-ranking" class="screen"><div class="mypage-card ranking-card"><div class="mypage-head"><div><p class="mypage-kicker">ランキング</p><h2>全ユーザー成績ランキング</h2></div><button id="rankingBackBtn" class="secondary" type="button">トップへ戻る</button></div><div id="rankingSummary" class="mypage-profile"></div><div id="rankingRecords" class="mypage-records"></div></div></section>
-<section id="screen-notices" class="screen">
-  <div class="mypage-card notice-page-card">
-    <div class="mypage-head">
-      <div>
-        <p class="mypage-kicker">お知らせ</p>
-        <h2>管理者からのお知らせ</h2>
-      </div>
-      <button id="noticesBackBtn" class="secondary" type="button">トップへ戻る</button>
-    </div>
-    <div class="notice-page-note">管理者から送信されたPUSH通知のお知らせ一覧です。タイトルをタップすると詳細を確認できます。</div>
-    <div id="noticeVersionInfo" class="version-info-box notice-version-box"></div>
-    <div id="noticeListSummary" class="mypage-profile"></div>
-    <div id="noticeListRecords" class="notice-list-records"></div>
-  </div>
-</section>
-<section id="screen-settings" class="screen">
-  <div class="mypage-card settings-card">
-    <div class="mypage-head">
-      <div>
-        <p class="mypage-kicker">設定</p>
-        <h2>ゲーム設定</h2>
-      </div>
-      <button id="settingsBackBtn" class="secondary" type="button">トップへ戻る</button>
-    </div>
-    <div id="adminModeSection" class="settings-section admin-only-section">
-      <h3>管理者用モード</h3>
-      <p class="settings-note">
-        管理者IDでログインしている場合、管理者用モードは常に有効です。オン・オフの切り替えはできません。<br>
-        学年ロックとポジション制限が解除され、すべての学年・守備位置を選択でき、制限時間なしで問題を検証できます。<br>
-        このモードでプレイした結果はランキング・マイページ成績・学年解放には反映されません。
-      </p>
-      <div id="adminModeStatus" class="admin-mode-status">現在：常時オン</div>
-
-      <div id="settingsRequestFormSection" class="settings-request-form-section">
-        <h3>要望フォーム</h3>
-    <div class="request-info">
-      問題の追加・削除に関する要望を保存します。送信内容は後日、新しい問題の追加や既存問題の削除・修正判断に利用します。
-    </div>
-
-    <form id="requestForm" class="request-form" method="post" action="api/submit_request.php">
-      <div class="request-grid">
-        <label>学年
-          <select id="requestGrade">
-            <option value="2">3年生以下</option>
-            <option value="3">3年生</option>
-            <option value="4">4年生</option>
-            <option value="5">5年生</option>
-            <option value="6">6年生</option>
-            <option value="all">全学年・共通</option>
-          </select>
-        </label>
-        <label>ポジション
-          <select id="requestPosition">
-            <option value="BASIC">基本動作</option>
-            <option value="P">ピッチャー</option>
-            <option value="C">キャッチャー</option>
-            <option value="1B">ファースト</option>
-            <option value="2B">セカンド</option>
-            <option value="SS">ショート</option>
-            <option value="3B">サード</option>
-            <option value="LF">レフト</option>
-            <option value="CF">センター</option>
-            <option value="RF">ライト</option>
-            <option value="ALL">全ポジション・共通</option>
-          </select>
-        </label>
-        <label>要望種別
-          <select id="requestType">
-            <option value="add">問題追加</option>
-            <option value="delete">問題削除</option>
-          </select>
-        </label>
-      </div>
-
-      <label>問題タイトル・要望タイトル
-        <input id="requestTitle" name="title" maxlength="80" placeholder="例：3年生以下にインフィールドフライの基本問題を追加">
-      </label>
-
-      <label>詳細内容
-        <textarea id="requestDetail" name="detail" rows="9" maxlength="3000" placeholder="追加してほしい問題パターン、選択肢、正解、解説、または削除してほしい問題の指摘と理由を書いてください。"></textarea>
-      </label>
-
-      <button id="requestSubmitBtn" class="primary" type="submit">送信</button>
-      <div id="requestMessage" class="request-message" aria-live="polite"></div>
-    </form>
-
-    <div class="request-list-wrap">
-      <h3>送信された要望データ</h3>
-      <div id="requestList" class="request-list"><div class="mypage-loading">読み込み中...</div></div>
-    </div>
-
-      </div>
-    </div>
-
-
-    <div id="optionFeatureSettingsSection" class="settings-section">
-      <h3>オプション機能</h3>
-      <p class="settings-note">
-        間違いプレイチェック機能をオンにすると、通常プレイで0点・1点だった問題をこの端末に記録し、マイページで復習できます。<br>
-        まずは端末内保存のオプション機能として実装しています。
-      </p>
-      <label class="admin-toggle">
-        <input id="mistakeReviewToggle" type="checkbox">
-        <span>間違いプレイチェック機能をオンにする</span>
-      </label>
-      <div id="mistakeReviewStatus" class="admin-mode-status">現在：オフ</div>
-    </div>
-    <div id="pushNotificationSettingsSection" class="settings-section">
-      <h3>プッシュ通知</h3>
-      <p class="settings-note">
-        通知をオンにすると、ホーム画面アプリにランキング更新やお知らせを送れるようになります。<br>
-        ※iPhone・iPadではホーム画面アプリから開いている時のみ通知設定できます。
-      </p>
-      <div id="pushFirstGuide" class="push-first-guide">
-        ランキング更新や新規問題追加のお知らせを受け取るには、通知をONにしてください。
-      </div>
-      <div class="push-status-box">
-        現在：<strong id="pushNotificationStatus">未設定</strong>
-      </div>
-      <button id="enablePushBtn" class="secondary" type="button">通知を受け取る</button>
-      <div id="pushNotificationMessage" class="request-message" aria-live="polite"></div>
-    </div>
-    <div id="changePlayerIdSection" class="settings-section">
-      <h3>プレイヤーID変更</h3>
-      <p class="settings-note">
-        現在のプレイヤーIDを新しいプレイヤーIDに変更できます。成績、ランキング、学年解放、間違いプレイ記録、招待IDの紐づきなどは新しいプレイヤーIDへ引き継がれます。 <span class="player-id-change-warning-red">※変更は1日1回までです。すでに使われているプレイヤーIDには変更できません。 スマホ・iPadではホーム画面アプリから開いている時のみ変更できます。</span>
-      </p>
-      <div class="id-change-current">現在のプレイヤーID：<strong id="currentPlayerIdForChange">未ログイン</strong></div>
-      <label>新しいプレイヤーID
-        <input id="newPlayerIdInput" maxlength="20" placeholder="例：TARO04">
-      </label>
-      <details class="player-id-rule-accordion player-id-rule-note-settings">
-        <summary>IDの入力制限について</summary>
-        <div class="player-id-rule-accordion-body">
-          新しいプレイヤーIDは <strong>4〜20文字</strong>、<strong>半角英数字・ハイフン（-）・アンダーバー（_）のみ</strong> 使用できます。<br>
-          大文字・小文字は同じIDとして重複判定します。<br>
-          不適切な言葉、公式と誤認される表現、個人情報、企業名・商標・有名キャラクター名にあたる表現は使用できません。
-        </div>
-      </details>
-      <button id="changePlayerIdBtn" class="secondary" type="button">プレイヤーIDを変更する</button>
-      <div id="changePlayerIdMessage" class="request-message" aria-live="polite"></div>
-    </div>
-  </div>
-</section><section id="screen-game" class="screen"><div id="gameShell" class="game-shell"><div class="topbar topbar-v420"><div class="game-title-wrap"><div class="game-title-mini">野球やろうぜ！</div><div id="topRoleBadge" class="top-role-badge">攻撃</div></div><div id="scoreMini" class="score-mini"><span class="score-now">0</span><span class="score-unit">点</span><span class="score-max">/ 54点</span></div></div><div class="field-panel"><div id="fieldCanvas" class="field-canvas" aria-label="野球場図"></div><div id="gameStatusPanel" class="game-status-panel">
-  <div class="status-card status-role-card">
-    <span id="roleCardLabel" class="status-label">ポジション</span>
-    <strong id="roleBadge" class="status-role-value">ショート</strong>
-  </div>
-  <div class="status-card">
-    <span class="status-label">回</span>
-    <strong id="inningLabel" class="inning">1回表</strong>
-  </div>
-  <div class="status-card status-outs">
-    <span class="status-label">アウト</span>
-    <div id="outDots" class="outs"></div>
-  </div>
-  <div class="status-card">
-    <span class="status-label">走者</span>
-    <strong id="statusRunner">走者なし</strong>
-  </div>
-</div>
-<div id="timeProgressWrap" class="time-progress-wrap" aria-live="polite">
-  <div class="time-progress-track"><div id="timeProgressBar" class="time-progress-bar"></div></div>
-  <div id="timeProgressLabel" class="time-progress-label">制限時間なし</div>
-</div></div><div class="question-card"><div class="q-meta"><span id="qType"></span><span id="qId"></span><span id="qTheme"></span><span id="qStage"></span><span id="qHolder"></span><button id="interruptGameBtn" class="game-interrupt-btn qmeta-interrupt-btn" type="button">ゲームを中断する</button></div><h2 id="qTitle"></h2><p id="qSituation"></p><p id="qPrompt"></p><div id="choices" class="choices"></div></div></div></section><section id="screen-result" class="screen"><div class="result-card"><h2>試合終了！</h2><div id="resultScore" class="result-score"></div><div id="scoreSaveNotice" class="score-save-notice" aria-live="polite"></div><div id="rank" class="rank"></div><div id="breakdown"></div><div id="answerLog" class="answer-log"></div><div class="result-actions"><button id="retryBtn" class="primary">もう一回</button><button id="resultMyPageBtn" class="secondary" type="button">マイページで成績を見る</button></div></div></section></main><script src="assets/app.js?v=1071"></script><script>
-window.YAKYU_APP_VERSION = 'v838-production';
-window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v1071-production';
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./service-worker.js').then(function (registration) {
-      function applyUpdate(worker) {
-        if (!worker) return;
-        worker.postMessage({ type: 'SKIP_WAITING' });
-      }
-
-      registration.addEventListener('updatefound', function () {
-        var newWorker = registration.installing;
-        if (!newWorker) return;
-        newWorker.addEventListener('statechange', function () {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            applyUpdate(newWorker);
-          }
-        });
-      });
-
-      if (registration.waiting) {
-        applyUpdate(registration.waiting);
-      }
-
-      setInterval(function () {
-        registration.update().catch(function () {});
-      }, 60 * 60 * 1000);
-    }).catch(function (error) {
-      console.warn('Service Worker registration failed:', error);
-    });
-
-    navigator.serviceWorker.addEventListener('controllerchange', function () {
-      if (window.__yakyuReloadingForUpdate) return;
-      window.__yakyuReloadingForUpdate = true;
-      window.location.reload();
-    });
-  });
-}
-</script>
-</body></html>
+  <p class="maint-copyright">© REALEMOTIONFACTORY.COM</p>
+</body>
+</html>
