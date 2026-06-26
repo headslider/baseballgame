@@ -51,7 +51,6 @@ jobs:
             **/*.bak
             **/*.tmp
             desktop.ini
-            production_hold_enabled.flag
             requests/**
             scores/**
             vendor/**
@@ -82,7 +81,6 @@ jobs:
             **/*.bak
             **/*.tmp
             desktop.ini
-            production_hold_enabled.flag
             requests/**
             scores/**
             vendor/**

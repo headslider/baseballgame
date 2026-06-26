@@ -8,9 +8,6 @@ scores/*
 requests/*
 !requests/.keep
 
-# Production flags
-production_hold_enabled.flag
-
 # Logs / backups / archives
 *.log
 *.bak

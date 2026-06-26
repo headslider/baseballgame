@@ -17,9 +17,10 @@
 - **残る制約**：networkFirst を含む**新SWが有効化される前の旧SW端末では、切替直後の1回だけ旧キャッシュが表示され得る**（旧SWの挙動は遡って変更不可）。新SW有効化後は毎回最新が配信される。
   - 確実に切り替えるには **再読み込みを1〜2回**、それでも残る場合は DevTools → Application → Service Workers → **Unregister** 後に再読み込み。
 
-### 0-2. 🔴 秘密URLは `production_hold_enabled.flag` で制御（既定は利用不可）
+### 0-2. 🔴 秘密URLは `production_hold_enabled.flag` で制御
 - `true`＝利用可／`false`・空・**ファイル不在＝利用不可**（安全側デフォルト）。
-- フラグは **Git追跡せず（.gitignore）・本番デプロイ除外**。テスト/本番ともサーバー上に**手動作成**して有効化する。
+- フラグは **Git追跡・コミット対象**。リポジトリの既定値は `true` で、テスト・本番の両方へ**自動デプロイされる**（deploy-test / deploy.yml）。これにより配備後すぐ秘密URLが使える。
+- 切替（無効化）方法は2通り：①リポジトリのフラグを `false` にしてコミット＆再デプロイ、または②サーバー上のフラグを `false`／削除（FTP。次回デプロイまで即時有効）。
 - 秘密URLは SW の `NETWORK_FIRST_PATTERNS` 登録済みで、**フラグ `false` 化はキャッシュ済み端末にも即時反映**される。
 
 ### 0-3. 🟡 秘密URLから PWA をホーム追加しない
@@ -30,7 +31,7 @@
 
 ### 0-5. 🟡 運用データは触らない
 - `scores/` `requests/` `vendor/` は本番デプロイで除外。変更・初期化しない。
-- `production_hold_enabled.flag` も本番自動デプロイ対象外（サーバー手動管理）。
+- `production_hold_enabled.flag` はリポジトリ管理・自動デプロイ対象（既定 `true`）。サーバー上で直接編集した場合は、次回デプロイでリポジトリの値に上書きされる点に注意。
 
 ### 0-6. 🟡 秘密URLは noindex
 - 秘密URLファイルには `noindex,nofollow` を付与済み（検索インデックス回避）。トークンは推測困難な値を使用。
@@ -43,7 +44,7 @@
 |---|---|---|---|
 | `index.html` | 公開トップ＝**アップデート準備中ページ**（メンテナンス） | する | 追跡 |
 | `index-preview-<token>.php` | **本番仕様の実アプリ（秘密URL）**。フラグで利用可否を判定 | する | 追跡 |
-| `production_hold_enabled.flag` | 秘密URLの利用可否スイッチ | **しない（手動管理）** | **.gitignore（追跡しない）** |
+| `production_hold_enabled.flag` | 秘密URLの利用可否スイッチ（既定 `true`） | **する（test/本番）** | 追跡 |
 
 現行の秘密URLファイル名: `index-preview-fa156bbda3.php`
 本番URL例: `https://www.realemotionfactory.com/baseball/index-preview-fa156bbda3.php`
@@ -60,9 +61,10 @@
 | 内容が `false` / 空 / その他 | **利用不可**：案内ページを表示（HTTP 403） |
 | ファイルが存在しない | **利用不可**（安全側デフォルト） |
 
-- フラグは **サーバー上に手動で作成・編集**する（FTP）。Git では `.gitignore` 済みでコミットされず、`deploy.yml`（本番）でもアップロード除外されている。CI のクリーンチェックアウトにも存在しないため、**初期状態は「利用不可」**。
-- 有効化：サーバーの `/baseball/`（テストは `/baseball_test/`）直下に `production_hold_enabled.flag` を置き、内容を `true` にする。
-- 無効化：内容を `false` にする、またはファイルを削除する。
+- フラグは **リポジトリで管理**し（既定値 `true`）、`/baseball/`・`/baseball_test/` 直下へ自動デプロイされる。配備後すぐに秘密URLが有効になる。
+- 有効化：リポジトリのフラグを `true` のままデプロイ（既定）。
+- 無効化：①リポジトリのフラグを `false` にしてコミット＆再デプロイ、または②サーバーの `production_hold_enabled.flag` を `false`／削除（FTP・即時。ただし次回デプロイでリポジトリ値に上書き）。
+- 置き場所は php と同階層（`__DIR__` 基準）。`/baseball/` と `/baseball_test/` でそれぞれ独立に存在する。
 
 ### Service Worker との整合
 秘密URLは `service-worker.js` の `NETWORK_FIRST_PATTERNS` に登録済み（`/index-preview-[a-z0-9]+\.php`）。常にネットワーク経由でゲートを評価するため、**一度アクセスしてキャッシュ済みの端末でも、フラグを `false` にすれば即座に利用不可**になる（オフライン時のみ最後のキャッシュにフォールバック）。
@@ -80,8 +82,8 @@
 1. リポジトリを「`index.html`＝メンテ／`index-preview-<token>.php`＝実アプリ」の状態にする（本ドキュメント時点で構成済み）。
 2. PWA キャッシュ整合性（v1064）を確認：`version.json` / `service-worker.js` / `index.html`。
    - 注：この段階の `index.html` はメンテ版。SW は `index.html`（メンテ）を precache する。
-3. 本番へ反映（`main` にマージ → `deploy.yml` を `apply=true`）。
-4. 本番サーバーに `production_hold_enabled.flag = true` を手動作成（秘密URLを有効化）。
+3. 本番へ反映（`main` にマージ → `deploy.yml` を `apply=true`）。`production_hold_enabled.flag`（既定 `true`）も一緒に配備され、秘密URLは有効状態になる。
+4. （任意）一時的に秘密URLを止めたい場合のみ、サーバーの `production_hold_enabled.flag` を `false`／削除。
 5. 既存ユーザーは SW 更新によりメンテ表示へ切り替わる。
 
 ### フェーズ2：秘密URLで本番検証
@@ -97,8 +99,8 @@
 3. **PWA キャッシュを v1065 へ bump**（`version.json` / `service-worker.js` の `CACHE_VERSION`・アセットクエリ / `index.html` の `YAKYU_CACHE_VERSION`・CSS/JSクエリ・`app-version`）。
    - これにより既存ユーザーの SW が再インストールされ、メンテ版 `index.html` を新アプリへ更新する。
 4. `service-worker.js` の `NETWORK_FIRST_PATTERNS` から秘密URL用パターンを削除（任意。ファイル削除済みなら実害なし）。
-5. 本番へ再反映（`deploy.yml` を `apply=true`）。
-6. 本番サーバーの `production_hold_enabled.flag` を `false`／削除（秘密URLを無効化。ファイル自体も削除済みのため二重に無効）。
+5. `production_hold_enabled.flag` を `false` にしてコミット（または秘密URLファイル削除済みのため任意）。
+6. 本番へ再反映（`deploy.yml` を `apply=true`）。秘密php は削除済み、フラグも `false` で二重に無効化される。
 7. 公開後、表示・保存・ランキング・キャッシュ更新を確認。
 
 ---
@@ -106,6 +108,6 @@
 ## 4. 注意事項
 
 - `scores/` `requests/` `vendor/` は本番デプロイで除外。運用データは変更・初期化しない。
-- `production_hold_enabled.flag` は **コミットしない／本番へ自動デプロイしない**。サーバーで手動管理する。
+- `production_hold_enabled.flag` はリポジトリ管理・自動デプロイ（既定 `true`）。サーバー直接編集は次回デプロイで上書きされる。
 - 秘密URLファイルには `noindex,nofollow` を付与済み（検索インデックス回避）。
 - トークン（ファイル名の `<token>` 部分）は推測困難な値にする。ローテーションする場合はファイル名を変更し、`service-worker.js` のパターンが `index-preview-[a-z0-9]+\.php` に一致することを確認する。
