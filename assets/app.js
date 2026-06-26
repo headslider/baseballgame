@@ -5831,7 +5831,6 @@ function playArrowFromTo(q, POS){
 }
 
 init();
-// checkVersionAndReload 機能は一時的に無効化（PWAリロード機能の問題調査のため）
 
 
 
