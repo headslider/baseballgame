@@ -1811,9 +1811,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=1065",
-    "./data/quiz_master_questions.json?v=1065",
-    new URL("data/quiz_master_questions.json?v=1065",document.baseURI).href
+    "data/quiz_master_questions.json?v=1066",
+    "./data/quiz_master_questions.json?v=1066",
+    new URL("data/quiz_master_questions.json?v=1066",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1833,7 +1833,7 @@ async function loadQuizMasterQuestions(){
 }
 async function loadQuizMasterQuestionStats(){
   try{
-    const res=await fetch("api/get_quiz_master_question_stats.php?v=1065",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_question_stats.php?v=1066",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
   }catch(e){
@@ -1869,7 +1869,7 @@ function quizMasterLevelIconHtml(level,cssClass){
 async function loadQuizMasterTitles(){
   if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
   try{
-    const res=await fetch("api/get_quiz_master_titles.php?v=1065",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_titles.php?v=1066",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(res.ok&&data&&data.ok?data.titles:null);
   }catch(e){

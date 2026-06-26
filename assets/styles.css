@@ -1237,15 +1237,16 @@ html, body{
 }
 
 
-/* v157: 問題文テキストを少し大きく、太く表示 */
-.question-card h2
+/* v158: 問題文テキストを大きく表示（カンマ復元＋拡大。081b0ffのカンマ抜けと
+   初期からの小さめ上書きを是正し、全環境で大きく一貫表示する） */
+.question-card h2,
 #qTitle{
   font-size: clamp(24px, 3.2vw, 34px) !important;
   font-weight: 900 !important;
   line-height: 1.35 !important;
 }
-.question-card p
-#qSituation
+.question-card p,
+#qSituation,
 #qPrompt{
   font-size: clamp(18px, 2.2vw, 24px) !important;
   font-weight: 800 !important;
@@ -1255,15 +1256,15 @@ html, body{
   color: #0b3a75 !important;
 }
 @media (max-width: 720px){
-  .question-card h2
+  .question-card h2,
   #qTitle{
-    font-size: 24px !important;
+    font-size: 30px !important;
   }
-  .question-card p
-  #qSituation
+  .question-card p,
+  #qSituation,
   #qPrompt{
-    font-size: 18px !important;
-    line-height: 1.65 !important;
+    font-size: 22px !important;
+    line-height: 1.6 !important;
   }
 }
 
@@ -5593,16 +5594,6 @@ body{
     padding:3px 6px !important;
     border-radius:7px !important;
   }
-  .question-card h2{
-    font-size:clamp(22px, 1.7vw, 30px) !important;
-    line-height:1.18 !important;
-    margin:6px 0 8px !important;
-  }
-  .question-card p{
-    font-size:clamp(15px, 1.05vw, 19px) !important;
-    line-height:1.42 !important;
-    margin:0 0 8px !important;
-  }
   .choices{
     gap:8px !important;
   }
@@ -5666,16 +5657,6 @@ body{
   .q-meta span{
     font-size:9px !important;
     padding:3px 5px !important;
-  }
-  .question-card h2{
-    font-size:21px !important;
-    line-height:1.18 !important;
-    margin:5px 0 7px !important;
-  }
-  .question-card p{
-    font-size:14px !important;
-    line-height:1.38 !important;
-    margin:0 0 7px !important;
   }
   .choices{
     gap:7px !important;
