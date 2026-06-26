@@ -98,15 +98,26 @@ function showDeleteConfirmationDialog(playerId) {
   `;
   title.textContent = 'アカウントを本当に削除しますか？';
 
-  // 副タイトル
-  const subtitle = document.createElement('p');
-  subtitle.style.cssText = `
+  // 説明文
+  const description = document.createElement('p');
+  description.style.cssText = `
     margin: 0 0 16px 0;
     color: #6c757d;
     line-height: 1.6;
-    font-weight: bold;
   `;
-  subtitle.textContent = 'この操作は取り消すことができません。';
+  const descPart1 = document.createElement('span');
+  descPart1.textContent = 'プレイヤー登録情報、ランキング・解放情報、野球博士チャレンジの成績、間違い復習データ、Push通知登録、アクセス履歴を削除します。';
+  descPart1.style.display = 'block';
+  descPart1.style.marginBottom = '8px';
+  descPart1.style.fontWeight = 'bold';
+
+  const descPart2 = document.createElement('span');
+  descPart2.textContent = '通常ゲームのプレイ履歴・スコアログは、ゲーム運営、不正利用対策およびサービス改善のため、削除後も一定期間保持される場合があります。';
+  descPart2.style.display = 'block';
+  descPart2.style.fontSize = '14px';
+
+  description.appendChild(descPart1);
+  description.appendChild(descPart2);
 
   // 削除対象データセクション
   const deletedSection = document.createElement('div');
@@ -244,7 +255,7 @@ function showDeleteConfirmationDialog(playerId) {
 
   // ダイアログに要素を追加
   dialog.appendChild(title);
-  dialog.appendChild(subtitle);
+  dialog.appendChild(description);
   dialog.appendChild(deletedSection);
   dialog.appendChild(retainedSection);
   dialog.appendChild(idDisplay);
