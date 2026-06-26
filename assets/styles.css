@@ -6591,9 +6591,9 @@ body{
   display:none !important;
   background:none !important;
 }
-#screen-title .stadium-bg
-#screen-title .title-bg
-#screen-title .top-background
+#screen-title .stadium-bg,
+#screen-title .title-bg,
+#screen-title .top-background,
 #screen-title [class*="background"]{
   background:transparent !important;
   background-image:none !important;
