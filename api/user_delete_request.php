@@ -69,11 +69,10 @@ $request_file = $request_dir . $player_id . '.json';
 // 削除対象データの明確化
 $deletion_targets = [
     'quiz_master_scores.json から該当プレイヤーのスコアレコード',
-    '管理者による削除実行時に以下を削除予定：',
-    '- player_registry.csv からのプレイヤー登録情報',
-    '- score_log.csv からの全スコアログ',
-    '- player_features.json からの機能解放状態',
-    '- mistake_review.json からの間違いプレイ履歴'
+    'player_registry.csv からのプレイヤー登録情報',
+    'score_log.csv からの全スコアログ',
+    'player_features.json からの機能解放状態',
+    'mistake_review.json からの間違いプレイ履歴'
 ];
 
 // トークン有効期限：30日
@@ -98,7 +97,7 @@ if (file_put_contents($request_file, json_encode($request_data, JSON_UNESCAPED_U
         'message' => 'Delete request submitted successfully',
         'token' => $delete_token,
         'token_expires_at' => $token_expires_at,
-        'instruction' => 'Save this token on your device to execute the deletion. The token will be valid for 30 days.'
+        'instruction' => 'Token saved on your device. You can now proceed with deletion execution. The token will be valid for 30 days.'
     ]);
 } else {
     http_response_code(500);
