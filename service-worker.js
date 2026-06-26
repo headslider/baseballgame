@@ -97,6 +97,21 @@ async function cacheFirst(request) {
   return response;
 }
 
+// production_hold_enabled.flag を読み、メンテナンス（公開停止）中かを判定する。
+//   true / 1 / on / yes → メンテ中（hold有効）
+//   false / 空 / 不在 / 取得失敗 → 公開（hold無効）
+// SWスクリプトと同階層（/baseball/ または /baseball_test/）のフラグを参照する。
+async function isHoldEnabled() {
+  try {
+    const res = await fetch('production_hold_enabled.flag', { cache: 'no-store' });
+    if (!res || !res.ok) return false;
+    const v = (await res.text()).trim().toLowerCase();
+    return v === 'true' || v === '1' || v === 'on' || v === 'yes';
+  } catch (e) {
+    return false;
+  }
+}
+
 self.addEventListener('fetch', event => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -104,18 +119,24 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // ページ遷移（HTMLナビゲーション）は常にネットワーク優先。
-  // index.html を cacheFirst にすると、メンテナンス公開後も旧SWが
-  // キャッシュ済みの実アプリを返してしまう（ゲートが漏れる）ため、
-  // オンライン時は必ず最新の index.html（=メンテ/公開版）を配信する。
-  // オフライン時のみキャッシュにフォールバックする。
-  if (request.mode === 'navigate') {
+  // 秘密URL・API・設定JSON等は常にネットワーク優先（ゲートを必ず評価する）。
+  if (isNetworkFirst(request)) {
     event.respondWith(networkFirst(request));
     return;
   }
 
-  if (isNetworkFirst(request)) {
-    event.respondWith(networkFirst(request));
+  // ページ遷移（HTMLナビゲーション = index.html 等）は
+  // production_hold_enabled.flag で配信戦略を切り替える：
+  //   - hold有効（メンテ中, flag=true） → networkFirst
+  //       index.html を cacheFirst にすると旧SWがキャッシュ済みの実アプリを
+  //       返してしまう（ゲート漏れ）ため、メンテ中は常に最新を配信する。
+  //   - hold無効（公開後, flag=false/不在） → cacheFirst
+  //       通常の PWA 高速表示に戻す。
+  if (request.mode === 'navigate') {
+    event.respondWith((async () => {
+      const hold = await isHoldEnabled();
+      return hold ? networkFirst(request) : cacheFirst(request);
+    })());
     return;
   }
 

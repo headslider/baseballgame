@@ -13,7 +13,7 @@
 ### 0-1. 🔴 切替直後の「キャッシュ漏れ（1回だけ）」は原理的に避けられない
 - **指摘**：メンテナンス公開後も、キャッシュが残っていて実アプリに「一回普通にアクセスできてしまう」事象を確認。
 - **原因**：Service Worker が `index.html` を `cacheFirst` で返していたため、**旧SWがキャッシュ済みの実アプリを返す**。
-- **対策（実施済み）**：HTMLナビゲーション（`request.mode === 'navigate'`）を **networkFirst** 化（[5. リリース手順](#5-リリース手順) 参照）。オンライン時は常に最新の `index.html`（メンテ/公開版）を配信。
+- **対策（実施済み）**：HTMLナビゲーション（`request.mode === 'navigate'`）の配信戦略を `production_hold_enabled.flag` で切替。**メンテ中（flag=true）は networkFirst**（常に最新＝メンテを配信しキャッシュ漏れを防ぐ）、**公開後（flag=false/不在）は cacheFirst**（通常のPWA高速表示に戻す）。
 - **残る制約**：networkFirst を含む**新SWが有効化される前の旧SW端末では、切替直後の1回だけ旧キャッシュが表示され得る**（旧SWの挙動は遡って変更不可）。新SW有効化後は毎回最新が配信される。
   - 確実に切り替えるには **再読み込みを1〜2回**、それでも残る場合は DevTools → Application → Service Workers → **Unregister** 後に再読み込み。
 
@@ -69,10 +69,17 @@
 ### Service Worker との整合
 秘密URLは `service-worker.js` の `NETWORK_FIRST_PATTERNS` に登録済み（`/index-preview-[a-z0-9]+\.php`）。常にネットワーク経由でゲートを評価するため、**一度アクセスしてキャッシュ済みの端末でも、フラグを `false` にすれば即座に利用不可**になる（オフライン時のみ最後のキャッシュにフォールバック）。
 
-### ページ遷移（index.html）のキャッシュ対策
-`service-worker.js` は **HTMLナビゲーション（`request.mode === 'navigate'`）を networkFirst** で処理する。
-これにより、メンテナンス公開後に**キャッシュ済みの実アプリが一度表示されてしまう問題を防ぐ**（オンライン時は常に最新の `index.html`＝メンテ/公開版を配信。オフライン時のみキャッシュにフォールバック）。
-- 注意：この networkFirst 化を含む新しい `service-worker.js` が**まだ有効化されていない旧SW端末では、切替直後の1回だけ旧キャッシュが表示され得る**（旧SWの挙動は遡って変えられないため）。新SWが有効化された以降は、毎回のページ遷移で最新が配信される。確実に切り替えたい場合はブラウザの再読み込みを1〜2回行う。
+### ページ遷移（index.html）のキャッシュ対策（フラグ連動）
+`service-worker.js` は **HTMLナビゲーション（`request.mode === 'navigate'`）の配信戦略を `production_hold_enabled.flag` で出し分ける**（`isHoldEnabled()` がフラグを読む）。
+
+| フラグ | ページ遷移の戦略 | 目的 |
+|---|---|---|
+| `true`（メンテ中） | **networkFirst** | 常に最新（メンテ画面）を配信。キャッシュ済みの実アプリが表示される漏れを防ぐ |
+| `false`／不在（公開後） | **cacheFirst** | 通常の PWA 高速表示に戻す（オフラインも安定） |
+
+- フラグ判定は SW がナビゲーション毎に `production_hold_enabled.flag` を `no-store` で取得して行う（取得失敗時は公開＝cacheFirst にフォールバック）。
+- 注意：この挙動を含む新しい `service-worker.js` が**まだ有効化されていない旧SW端末では、切替直後の1回だけ旧キャッシュが表示され得る**（旧SWの挙動は遡って変えられないため）。新SW有効化後は上表の通り動作する。確実に切り替えたい場合はブラウザの再読み込みを1〜2回行う。
+- 秘密URL（`index-preview-*.php`）はフラグに関係なく**常に networkFirst**（ゲートを必ず評価するため）。
 
 ---
 
