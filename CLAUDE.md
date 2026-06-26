@@ -1,452 +1,437 @@
-# CLAUDE.md
+# AGENTS.md / CLAUDE.md 運用ガイド
+## 少年野球シミュレーター「野球やろうぜ！」
 
-このファイルは Claude Code (claude.ai/code) がこのリポジトリで作業する際の指針を提供します。
+> **言語ルール**：このリポジトリに関する作業・報告・PR・Issueは、常に日本語で記載する。
 
-**🇯🇵 常に日本語を使用してください。このプロジェクトについてユーザーとコミュニケーションする際は、すべて日本語で対応してください。**
-
----
-
-## プロジェクト概要
-
-**野球やろうぜ！** — 少年野球の攻撃判断・守備判断・基本動作を学ぶ PWA
-
-- **タイプ**: PHP バックエンド付き Progressive Web App (PWA)
-- **フロントエンド**: 静的 HTML/CSS/JavaScript + Service Worker
-- **バックエンド**: PHP API
-- **現在の本番版**: v1065-production (index.html meta タグで追跡)
-- **現在のキャッシュ版**: v1061
-- **ビルドステップ不要** — `php -S localhost:8000` で直接実行
+| セクション | 内容 | PM視点の効果 |
+|---|---|---|
+| プロジェクト概要 | 目的・スコープ・技術スタック | エージェントの文脈理解 |
+| ディレクトリマップ | フォルダ構成と各フォルダの役割 | ファイル探索の効率化 |
+| ブランチ戦略 | 命名規則・PR運用・コミット方針 | 運用ルールの自動遵守 |
+| タスク管理方針 | Issue／PRテンプレート・完了条件 | 成果物フォーマットの統一 |
+| 品質基準 | テスト・レビュー・デプロイの基準 | 品質ゲートの自動適用 |
+| 禁止事項 | 破壊的操作・本番データ・本番接続 | リスク排除 |
 
 ---
 
-## クイックスタート
+## 1. プロジェクト概要
 
-### ローカル開発
+### 目的
+**野球やろうぜ！**は、小学生を主な対象に、少年野球の攻撃判断・守備判断・基本動作を学べる教育用PWAである。通常ゲームに加え、知識クイズモード「野球博士チャレンジ」を統合している。
 
-```powershell
-php -S localhost:8000
-```
+### スコープ
+- 通常ゲーム：攻撃・守備・基本動作の判断問題
+- 野球博士チャレンジ：知識クイズ、デイリーライフ、ランキング、20段階称号
+- プレイヤー登録、スコア保存、ランキング、マイページ、間違いチェック
+- 管理画面、招待ID・管理者ID、要望管理、アカウント削除申請
+- PWAキャッシュ、オフライン利用、Web Push通知
 
-その後、ブラウザで `http://localhost:8000/` を開きます。
+### 技術スタック
+| 領域 | 構成 |
+|---|---|
+| フロントエンド | HTML / CSS / Vanilla JavaScript |
+| バックエンド | PHP API |
+| PWA | Service Worker / Web App Manifest |
+| データ | JSON、CSV、サーバー上の運用データ |
+| 通知 | Composer管理のWeb Pushライブラリ |
+| ローカル起動 | `php -S localhost:8000` |
+| 本番環境 | `/baseball/` |
+| テスト環境 | `/baseball_test/` |
+| ローカルURL | `http://localhost:8000/` |
 
-### PHP 構文確認
-
-```powershell
-php -l path/to/file.php
-```
-
-コミット前に `api/` の修正済み `.php` ファイルすべてで実行してください。
-
-### JSON 有効性確認
-
-```powershell
-# Windows PowerShell: JSON をパース
-Get-Content data/questions.json | ConvertFrom-Json
-Get-Content data/game_config.json | ConvertFrom-Json
-```
-
-### Composer 依存関係
-
-```powershell
-composer install
-```
-
-（`composer.json` が変更された場合のみ必要。`vendor/` は Web Push 通知用）
+### 現在の管理対象
+- 本番版、キャッシュ版、公開版は `version.json` を正とする。
+- フロントエンド更新時は、`index.html`、`service-worker.js`、`version.json` のバージョン・参照整合性を必ず確認する。
+- ビルド工程は不要。PHP内蔵サーバーで直接動作確認する。
 
 ---
 
-## アーキテクチャ
+## 2. ディレクトリマップ
 
-### 静的ファイル
+```text
+/
+├─ index.html                    # メインPWA、ゲーム、ランキング、マイページ
+├─ admin.html                    # 最高位管理者用の管理画面
+├─ delete.html                   # アカウント削除申請フォーム
+├─ manifest.webmanifest          # PWA設定
+├─ service-worker.js             # キャッシュ、オフライン、Push通知
+├─ version.json                  # app/cache/publicのバージョン管理
+│
+├─ assets/
+│  ├─ app.js                     # ゲーム・採点・UI・ランキング・マイページの主ロジック
+│  ├─ styles.css                 # ユーザー画面のスタイル
+│  └─ quiz_icon/                 # 野球博士のランクアイコン
+│
+├─ api/
+│  ├─ *.php                      # ゲーム、採点、認証、ランキング、通知等のAPI
+│  ├─ admin_api.php              # 管理画面API
+│  └─ user_delete_*.php          # 削除申請ワークフロー
+│
+├─ data/
+│  ├─ questions.json             # 通常ゲーム問題
+│  ├─ game_config.json           # ルール、守備位置、学年、描画設定
+│  ├─ quiz_master_questions.json # 野球博士チャレンジ問題
+│  └─ quiz_master_titles.json    # ランク・称号定義
+│
+├─ scores/                       # 本番プレイヤー・スコア・ID・ログ（変更禁止）
+├─ requests/                     # 要望・削除申請・監査ログ（変更禁止）
+└─ vendor/                       # Composer依存（原則変更禁止）
+```
 
-| パス | 役割 |
-|------|------|
-| `index.html` | メイン PWA、ゲーム画面、チュートリアル、トップページ、ランキング、マイページ |
-| `admin.html` | 管理画面（最高位管理者用） |
-| `delete.html` | アカウント削除申請フォーム |
-| `manifest.webmanifest` | PWA マニフェスト（ホーム画面追加用） |
-| `service-worker.js` | PWA キャッシュ、プッシュ通知、オフライン対応 |
-| `assets/app.js` | ゲームロジック、採点、UI 切替、ランキング、マイページ、間違いチェック |
-| `assets/styles.css` | ユーザー画面のスタイル |
-
-### バックエンド API
-
-| パス | 役割 |
-|------|------|
-| `api/*.php` | ゲーム、採点、ランキング、認証、管理、通知、アカウント削除など |
-| `api/admin_api.php` | 管理画面バックエンド |
-| `api/user_delete_*.php` | アカウント削除ワークフロー |
-
-### データ・設定
-
-| パス | 役割 |
-|------|------|
-| `data/questions.json` | 600 問（攻撃 227、守備 325、基本 48） |
-| `data/game_config.json` | ゲームルール、守備位置、学年、レンダリング設定 |
-| `data/quiz_master_questions.json` | 野球博士チャレンジ（323 問） |
-| `data/quiz_master_titles.json` | ランク・称号（20 段階） |
-| `version.json` | 内部バージョン、キャッシュ版、公開版 |
-
-### 本番運用データ（変更禁止）
-
-| パス | 内容 |
-|------|------|
-| `scores/` | プレイヤー登録、スコア、設定、ログ、ID コード |
-| `requests/` | ユーザー要望、削除ワークフロー、監査ログ |
-| `vendor/` | Composer 依存（Web Push） |
+### ファイル探索の優先順
+1. **仕様・問題内容を確認する**：`data/`
+2. **画面・操作を確認する**：`index.html` → `assets/app.js` → `assets/styles.css`
+3. **API・保存処理を確認する**：該当する `api/*.php`
+4. **キャッシュ・更新不具合を確認する**：`service-worker.js` → `version.json` → `index.html`
+5. **管理機能を確認する**：`admin.html` → `api/admin_api.php`
+6. **運用データは閲覧のみ**：`scores/`、`requests/`
 
 ---
 
-## 重要な運用ルール
+## 3. ブランチ戦略
 
-### 🔴 絶対禁止事項
+### 採用方針
+- `main` 相当の既定ブランチは常にデプロイ可能な状態を維持する。
+- すべての変更は作業ブランチで行い、PRを通して統合する。
+- 本番への直接編集・直接コミットはしない。
 
-**以下を変更・削除・再初期化しないでください**：
-
-- `scores/` ディレクトリ全体
-- `requests/` ディレクトリ全体
-- `vendor/` （Composer 更新時を除く）
-- 本番ユーザー登録データ
-- スコアログ、監査ログ、アクセスログ
-- 招待 ID / 管理者 ID 台帳
-- `scores/release_versions.json` （管理画面経由で更新）
-- 本番の `.htaccess` （`/baseball/`）
-
-**例外を作る場合**: 理由、影響範囲、復旧方法を説明し、ユーザー確認を取ってください。
-
-### PWA キャッシュ整合性
-
-**フロントエンドファイルを更新する際、以下を同期させること（必須）**：
-
-```
-index.html:
-  - assets/styles.css?v=...
-  - assets/app.js?v=...
-  - window.YAKYU_CACHE_VERSION（version.json cache_version と一致）
-
-service-worker.js:
-  - CACHE_VERSION（version.json cache_version と一致）
-  - STATIC_ASSETS のクエリが index.html と一致
-
-version.json:
-  - app_version
-  - cache_version
-  - public_version
+### ブランチ命名規則
+```text
+codex/<task-name>
 ```
 
-**不整合の影響**: 古い JS/CSS がキャッシュから配信、古い問題が表示、管理画面と実キャッシュが不一致
+例：
+```text
+codex/fix-quiz-ranking-css
+codex/update-question-bq-123
+codex/fix-pwa-cache-v1062
+```
 
-### 問題データルール
-
-- **ID は不変** — 間違いチェック履歴と監査用
-- **outs / outs_scope**: `attack` と `defense` は `outs: 0|1|2` または `outs_scope: "common"` のいずれか必須（両立不可）
-- **visual フィールドは空欄禁止** — `batter_runner`、`ball_path`、`runners`、`holder`、`target_position`、`play` は必ず入力
-- **visual.batter_runner は明示的** — `true` または `false` を指定（キャッチャーフライ = `false`）
-- **学年制限**: `min_grade` と `max_grade` がある場合はそれを優先
-- **同系問題の横断監査** — 単一問題だけで完了しない、関連問題もすべて確認
-
----
-
-## 開発ワークフロー
-
-### ブランチ・PR 構成
-
+### 標準作業手順
 ```powershell
 git switch -c codex/<task-name>
-# 作業...
 git status --short
 git diff
-# コミット：「何を」ではなく「なぜ」を説明
 ```
 
-### コミット前チェックリスト
+### コミット規則
+- コミットメッセージは日本語またはプロジェクト内で統一された表記で記載する。
+- 「何を変えたか」だけでなく、**なぜ変更したか**を残す。
+- キャッシュ版を更新した場合は、更新対象と新旧バージョンを明記する。
 
-**PR 作成前に以下を確認してください**：
+例：
+```text
+fix: ランキングのスコア表示を読みやすくする
 
-1. ✅ `scores/` と `requests/` に変更なし
-2. ✅ PHP 構文確認: `php -l api/file.php` （修正済み全ファイル）
-3. ✅ JSON 有効性: `Get-Content data/questions.json | ConvertFrom-Json` と `quiz_master_questions.json`
-4. ✅ 問題 ID 重複・ギャップなし（通常版・野球博士版の両方）
-5. ✅ PWA キャッシュ整合性確認 (index.html ↔ service-worker.js ↔ version.json)
-6. ✅ 通常ゲームテスト: 3年生以上・各守備位置でゲーム開始、アウト順序確認（0→1→2）、ゲーム内重複なし
-7. ✅ 野球博士テスト: クイズ開始、ランク表示、デイリーライフシステム、ページネーション動作確認
-8. ✅ スコア保存（両ゲームモード）、ランキング読み込み、マイページ表示、間違いチェック動作
-9. ✅ メニューボタン、チュートリアル表示、中断/継続プロンプト動作確認
-10. ✅ 管理画面ログイン・操作確認
-11. ✅ チュートリアルアニメーション、ボーナスライフアニメーション再生確認
-
-### PR 説明に含めるもの
-
-- 変更の理由（「何が変わったか」ではなく「なぜ変わったか」）
-- 影響範囲
-- 検証方法
-- PWA バージョン整合性確認
-
----
-
-## よくあるトラブルシューティング
-
-| 症状 | 確認項目 |
-|------|---------|
-| 古い画面が表示される | PWA/ブラウザキャッシュ、`service-worker.js`、`version.json` |
-| PWA だけ動作が違う | Service Worker、キャッシュストレージ、`app.js?v=...` と `CACHE_VERSION` の一致 |
-| ゲーム開始できない | `data/questions.json`、問題取得 API、PHP エラーログ |
-| スコア保存できない | `api/save_score.php`、`scores/score_log.csv` の権限とバックアップ |
-| ランキング表示されない | `api/get_ranking.php`、`scores/score_log.csv` |
-| 間違い履歴が出ない | `scores/mistake_review.json`、`assets/app.js`、管理者モード設定 |
-| 問題内容が違う | `data/questions.json` で問題 ID 検索、同系統問題も一括確認 |
-| 招待 ID/管理者 ID ボタンおかしい | `scores/issue_link_settings.json`、`api/issue_link_status.php`、マニフェスト |
-| 通知が届かない | Push 購読、`vendor/`、通知履歴、ブラウザ権限 |
-
----
-
-## 環境
-
-- **本番**: `/baseball/`
-- **テスト**: `/baseball_test/`
-- **ローカル**: `http://localhost:8000/`
-
-本番とテストの `scores/` と `requests/` を混在させないでください。
-
----
-
-## 最近の修正（2026-06-26）
-
-### CSS 修正・スタイル更新
-
-**ランキングページタイトル配置修正**
-- `.quiz-master-ranking-page-card` セレクタ修正（複数セレクタ間のカンマ追加）
-- `.quiz-master-result-card h2` に `text-align:center;` 追加（モバイル・デスクトップ対応）
-- コミット: f80b1ce
-
-**ランキングスコア表示修正**
-- `.quiz-master-ranking li span` セレクタ修正（カンマ追加）
-- ランキングスコアフォントサイズを `calc(1em + 2px)` で 2px 拡大
-- 可視性改善と CSS 構文エラー修正
-- コミット: 0fa41b8
-
-**キャッシュ・バージョン更新**
-- Service Worker CACHE_VERSION を v1060 → v1061 に更新
-- service-worker.js と index.html の CSS 参照を ?v=1061 に更新
-- コミット: 2195c28
-
-### テストモード管理
-- デイリーライフ上限を一時的に無効化（QUIZ_MASTER_DAILY_LIMIT_ENABLED = false）でテスト実施
-- テスト完了後に再有効化（QUIZ_MASTER_DAILY_LIMIT_ENABLED = true）
-- テストサイクル中にキャッシュバージョンを適宜更新
-
----
-
-## CSS 修正時の注意事項（2026-06-26 から学習）
-
-### 🔴 Critical: セレクタの Syntax エラー
-
-**複数セレクタを指定する際、カンマの忘却が頻繁に発生**
-
-**エラー例**:
-```css
-/* ❌ 間違い — これは動作しない */
-.selector-1
-.selector-2 {
-  property: value;
-}
-
-/* ✅ 正しい */
-.selector-1,
-.selector-2 {
-  property: value;
-}
+CSSセレクタの構文エラーによりスタイルが適用されなかったため修正。
+キャッシュ版を v1061 に更新し、index.html と service-worker.js の参照も同期。
 ```
 
-**影響**: セレクタの syntax エラーがあると、スタイルが全く適用されず、意図した見た目にならない。
+### ブランチ統合の条件
+- 品質基準をすべて満たすこと
+- `scores/` と `requests/` に意図しない差分がないこと
+- PR説明に、理由・影響範囲・検証結果・バージョン整合性を記載すること
 
-**確認方法**:
-- ブラウザの Developer Tools で要素を inspect
-- 期待したスタイルが適用されていなければ、セレクタを確認
-- `grep` で複数行にまたがるセレクタをチェック
+---
 
-**修正方法**:
-1. セレクタ間にカンマを追加
-2. CSS を minify する前に可読性で検証
-3. 修正後は cache version を increment
+## 4. タスク管理方針
 
-### フォントサイズの計算式
+### Issue作成テンプレート
+```md
+## 背景・目的
+なぜこの対応が必要か。
 
-**相対値と絶対値を混合する場合は `calc()` を使用**:
-```css
-/* ✅ 相対単位 + 絶対単位 */
-font-size: calc(1em + 2px);  /* 基本サイズ + 2px 増加 */
+## 対象範囲
+- 対象画面／機能：
+- 対象ファイル候補：
+- 影響するゲームモード：
 
-/* ❌ 避けるべき */
-font-size: 1em + 2px;  /* これは無効 */
+## 要件・受入条件
+- [ ] 利用者視点で達成すべき状態
+- [ ] 変更してはいけない既存挙動
+- [ ] 必要なデータ整合性
+
+## リスク・確認事項
+- PWAキャッシュ更新の要否：
+- scores/・requests/への影響：
+- 本番反映時の注意：
 ```
 
-**用途**: モバイルでの読みやすさ改善、スコア表示など視認性が重要な要素
+### PR作成テンプレート
+```md
+## 変更理由
+なぜこの変更が必要だったか。
 
----
+## 変更内容
+- 変更した機能：
+- 変更したファイル：
+- 変更していない領域：
 
-## PWA キャッシュ管理の実践的ルール（実装者の学習）
+## 影響範囲
+- 通常ゲーム：
+- 野球博士チャレンジ：
+- 管理画面：
+- 保存データ／ランキング：
+- PWAキャッシュ：
 
-### 📋 CSS 修正時の必須チェックリスト
+## 検証結果
+- [ ] PHP構文確認
+- [ ] JSON有効性確認
+- [ ] 通常ゲーム確認
+- [ ] 野球博士確認
+- [ ] 保存・ランキング・マイページ確認
+- [ ] 管理画面確認
+- [ ] PWAキャッシュ整合性確認
 
-**CSS を修正したら、以下の 3 ファイルを必ず更新**：
+## バージョン整合性
+| 対象 | 確認内容 |
+|---|---|
+| `index.html` | CSS / JSクエリ、`window.YAKYU_CACHE_VERSION` |
+| `service-worker.js` | `CACHE_VERSION`、`STATIC_ASSETS` |
+| `version.json` | `app_version`、`cache_version`、`public_version` |
 
-1. **`service-worker.js` の CACHE_VERSION**
-   ```javascript
-   const CACHE_VERSION = 'yakyu-yarouze-v1061-production';  // increment version
-   ```
-
-2. **`service-worker.js` の STATIC_ASSETS 内の CSS query**
-   ```javascript
-   './assets/styles.css?v=1061',  // version と一致させる
-   ```
-
-3. **`index.html` の CSS link タグ**
-   ```html
-   <link rel="stylesheet" href="assets/styles.css?v=1061">
-   ```
-
-**理由**: 3 つが不一致だと、ブラウザキャッシュから古い CSS が配信され続ける。
-
-### ⚠️ キャッシュ版の Increment タイミング
-
-- **CSS 修正時**: 毎回 increment
-- **JS 修正時**: app.js の query も increment（service-worker.js と index.html）
-- **問題データ修正時**: 必要に応じて increment（再起動時に新データが読み込まれない場合）
-- **その他修正**: 必ずしも不要（ただし「キャッシュに乗った」と感じたら increment）
-
-### Commit Message の記録ルール
-
-**cache version 更新時は commit message に明記**：
-```
-chore: Update cache version to v1061
-
-- Update Service Worker CACHE_VERSION from v1060 to v1061
-- Update CSS reference in service-worker.js and index.html
+## ロールバック方法
+問題発生時に戻すコミット、または復旧手順を記載する。
 ```
 
-こうすることで、future conversations でバージョン追跡が簡単になる。
+### タスク完了の定義
+- 受入条件を満たす
+- 必要なテスト結果をPRに記録する
+- 本番運用データに変更がない、または事前承認がある
+- 変更理由・影響範囲・復旧手段が第三者にも分かる
+- キャッシュ更新が必要な場合、3ファイルの整合性が取れている
 
 ---
 
-## 野球博士チャレンジ（Baseball Master Challenge）
+## 5. 品質基準
 
-### 概要
+### 必須の静的確認
+| 対象 | 基準・コマンド |
+|---|---|
+| PHP | 修正した全PHPに対して `php -l path/to/file.php` |
+| JSON | `questions.json`、`game_config.json`、`quiz_master_questions.json` をPowerShellでパース |
+| Git差分 | `git status --short` と `git diff` で意図しない変更がない |
+| 問題ID | 通常ゲーム・野球博士ともに重複・欠番・不正変更がない |
+| 運用データ | `scores/`、`requests/` に差分がない |
 
-通常ゲームに加えた知識クイズモード（20 問）。別途ランキング、デイリーライフシステム、20 段階ランク制度を持つが、メインゲームと完全統合。
+### 問題データ品質基準
+- 問題IDは不変。削除・リネームは事前確認が必要。
+- `attack` / `defense` 問題は、`outs: 0|1|2` または `outs_scope: "common"` のいずれかを必須とし、両方を設定しない。
+- `visual` の必須項目を空欄にしない。
+  - `batter_runner`
+  - `ball_path`
+  - `runners`
+  - `holder`
+  - `target_position`
+  - `play`
+- `visual.batter_runner` は `true` / `false` を明示する。
+- `min_grade` / `max_grade` がある場合は優先する。
+- 同系統問題は横断監査し、単一問題だけで修正完了としない。
 
-### 主要機能
+### PWAキャッシュ品質ゲート
+フロントエンド更新時は、次の整合性を必ず確認する。
 
-**デイリーライフシステム**
-- 基本配分: 1 日 5 ライフ
-- ボーナス: 通常ゲーム 1 日 1 回クリア時に +1（最大 6）
-- リセット: 毎日 24:00 JST
-- ボーナス時アニメーション: ハート（600×600px → 300×300px）+ スライドイン テキスト（「野球博士デイリーライフをゲット!」）
-- コード: `assets/app.js` 51 行、2256-2273 行（アニメーション）
+| ファイル | 必須確認項目 |
+|---|---|
+| `index.html` | CSS/JSのクエリ、`window.YAKYU_CACHE_VERSION` |
+| `service-worker.js` | `CACHE_VERSION`、`STATIC_ASSETS`内のクエリ |
+| `version.json` | `app_version`、`cache_version`、`public_version` |
 
-**ランクシステム**
-- 20 段階ランク、対応アイコン（`assets/quiz_icon/1.png` → `20.png`）
-- 累積スコアでランク決定
-- リアルタイムランク一覧更新（ランク別ユーザー数表示）
-- API: `api/get_quiz_master_ranking.php` が `rank_user_counts` を追跡
+CSSまたはJavaScriptを変更した場合、キャッシュ版の更新要否を判断し、更新する場合は3ファイルを同期する。CSSの複数セレクタはカンマ抜けを特に確認する。
 
-**ゲーム操作**
-- 第 15 問以降: 中断/継続プロンプト（現在スコア + 次問ボーナス表示）
-- メニュー離脱警告: ゲーム中の離脱をブロック、タイマー保持
-- 理由: "stopped"（意図的中断）/ "completed"（全 20 問回答）
+### 動作確認基準
+- 通常ゲーム：3年生以上、各守備位置、アウトカウント `0 → 1 → 2`、問題重複なし
+- 野球博士：開始、ランク表示、デイリーライフ、ページネーション、中断／継続
+- 共通機能：スコア保存、ランキング、マイページ、間違いチェック、メニュー、チュートリアル
+- 管理機能：管理画面ログインと主要操作
+- 演出：チュートリアル、ボーナスライフ、スコア表示アニメーション
+- 更新後：Service Workerの更新、古いCSS/JSが残らないこと
 
-**チュートリアル・メニュー**
-- メニューボタン刷新: ネイビーグラデーション + シェブロン、ゴールドホバー/アクティブ状態
-- チュートリアルカード: ゴールドボーダー + 統一デザイン、小ぶりフォント（v1006-v1008）
-- 重要説明: ライフシステム、50:50 ルール、ランク情報（すべてゴールド `#ffe26a`）
-- アクセス: メニューの「遊び方」または初回ゲーム時
-
-**マイページ機能強化**
-- 間違いチェックページネーション: 10 項目/ページ
-- 利用不可問題ページネーション: 5 項目/ページ（問題更新・停止時）
-- アコーディオン切り替え: ▼/▶ アイコン、開閉アニメーション
-- 状態保存: `MISTAKE_REVIEW_LIST_OPEN`、`MISTAKE_REVIEW_UNAVAILABLE_OPEN`
-
-**スコア表示アニメーション（v1013-v1014）**
-- 回転なし、優雅なポップアップ + フェードアウト
-- ゴールドボーダーフレーム（`#ffd700`）、グラデーション背景（濃茶→黒）
-- 4 層ゴールドグロー効果で高級感
-
-### 実装時の重要ポイント
-
-- **問題データ**: `data/quiz_master_questions.json`（323 問）
-- **ランク・称号**: `data/quiz_master_titles.json`（20 段階）
-- **JavaScript**: `assets/app.js` 内すべてのロジック（`quizMaster*`、`clearQuizMasterTimer`、`saveQuizMasterScore` 関数検索）
-- **CSS**: `assets/styles.css` 9687-10105 行（野球博士 UI）
-- **キャッシュ同期**: 野球博士アセットはメインゲームとバージョン一致必須
-- **日次リセット**: localStorage 日付チェックで日次リセット — キャッシュ更新後に検証
-
-### バージョン追跡（v980-v1016）
-
-| v | 主要変更 | | v | 主要変更 |
-|---|--------|---|---|--------|
-| v980 | メニューボタン位置修正 | | v998 | ページネーション上部のみ |
-| v981 | メニューボタン刷新 | | v999 | アコーディオン機能 |
-| v982 | ランク一覧自動更新 | | v1000 | 「遊び方」ボタン追加 |
-| v983 | 最終ランクアイコン | | v1006 | チュートリアル統一デザイン |
-| v985 | 中断/継続プロンプト | | v1013 | スコアアニメーション強化 |
-| v987 | メニュー離脱警告 | | v1014 | ゴールドボーダーフレーム |
-| v988 | 5 ライフ+ボーナス | | v1015 | 問題データ v68（表記修正） |
-| v989 | ボーナスアニメーション | | v1016 | 問題データ v69（定義修正） |
+### デプロイ基準
+1. 作業ブランチで検証する  
+2. テスト環境 `/baseball_test/` で確認する  
+3. PRレビュー・承認後に本番 `/baseball/` へ反映する  
+4. 本番反映後、表示・保存・ランキング・キャッシュを再確認する  
 
 ---
 
-## 野球博士チャレンジ修正時のコンポーネント
+## 6. 禁止事項
 
-| コンポーネント | ファイル | 注記 |
-|-------------|--------|------|
-| デイリーライフ+ボーナス | `assets/app.js:51, 2256-2273` | localStorage 日付リセットロジック |
-| ランク一覧更新 | `api/get_quiz_master_ranking.php:138-150` | `rank_user_counts` 返却 |
-| 中断/継続プロンプト | `assets/app.js:2214-2250` | Q15 以降で発動、スコア確保 |
-| メニュー離脱警告 | `assets/app.js:1491-1501`、`styles.css:8140-8200` | ダイアログ表示中はタイマー停止 |
-| ページネーション/アコーディオン | `assets/app.js:3371-3494` | マイページ間違いチェック UI |
-| スコアアニメーション | `styles.css:7831-7850, 8587-8591` | ゴールドボーダー、ポップアップのみ（回転なし） |
-| ボーナスアニメーション | `styles.css:9970-10050` | ハート 150×150px、`#dd0e2d`、計 2.6 秒 |
-| ランクアイコン | `assets/quiz_icon/1-20.png` | 600×400px 正規化、約 85KB 各 |
+### 絶対に変更・削除・初期化しない対象
+- `scores/` ディレクトリ全体
+- `requests/` ディレクトリ全体
+- `vendor/`（Composer更新が必要な場合を除く）
+- 本番のプレイヤー登録データ
+- スコアログ、監査ログ、アクセスログ
+- 招待ID／管理者ID台帳
+- `scores/release_versions.json`（管理画面以外からの更新）
+- 本番 `/baseball/` の `.htaccess`
 
-### 野球博士キャッシュ版制御
+### 事前承認が必要な操作
+- `scores/` または `requests/` 内の任意ファイルの修正
+- 問題の削除、ID変更、リネーム
+- Git履歴の書き換え、rebase後の強制プッシュ
+- Composer、`vendor/`、依存関係の変更
+- 本番URL、`.htaccess`、本番設定の変更
+- `scores/release_versions.json` の変更
+- 本番環境のデータ削除・置換・再初期化
 
-野球博士アセット更新時:
-1. `assets/styles.css` 更新 → キャッシュバージョン更新
-2. ランクアイコン更新 → キャッシュバージョン更新
-3. `data/quiz_master_questions.json` 更新 → `version.json` の **cache_version** と **app_version** を更新
-4. 常に同期: `index.html` クエリ文字列 + `service-worker.js` CACHE_VERSION + `version.json` cache_version
+### 例外時の必須報告
+禁止対象または承認対象に触れる必要がある場合は、作業前に以下を明記して承認を得る。
 
-同期失敗の影響: 古いアイコン表示、古いアニメーション、ランキング陳腐化
-
----
-
-## 最初に読むべきファイル
-
-- `README.md` — 包括的な運用ガイド（日本語）
-- `data/game_config.json` — ゲームルール、守備位置、学年、レンダリング設定
-- `assets/app.js` — メインゲームロジックエントリーポイント
-- `api/admin_api.php` — 管理画面バックエンド
-
----
-
-## ユーザー確認が必要な場合
-
-以下を行う前に確認を取ってください：
-
-- `scores/` または `requests/` の任意ファイル修正
-- 問題削除・リネーム
-- 履歴書き換え・強制プッシュ
-- `vendor/` や Composer 関連の変更
-- 本番 URL・`.htaccess` 変更
-- `scores/release_versions.json` 修正
+```md
+- 実施理由：
+- 変更対象：
+- 影響範囲：
+- バックアップ有無：
+- 復旧方法：
+- 本番／テスト環境への影響：
+```
 
 ---
 
-## バージョン番号体系
+## 7. 本番反映時の重大リスク と必須対応
 
-- **app_version**: 内部追跡用（例: v1016）
-- **cache_version**: Service Worker キャッシュ無効化キー
-- **public_version**: ユーザー向けリリース版（例: v1.1.67）
+本番反映時に以下のリスクが確認されています。これらは **必ず事前チェック** してください。
 
-すべて 3 つが同期され、PR に記載される必要があります。
+### 🔴 最優先：scores/ の丸ごと上書き禁止
+
+| 項目 | 内容 |
+|------|------|
+| **リスク** | 新機能の `scores/` をコピーして本番を上書きすると、33 ファイルの既存運用データが全消失 |
+| **影響対象** | `player_registry.csv`、`score_log.csv`、`invite_codes.json`、`admin_codes.json`、`player_features.json`、問題バージョン履歴など |
+| **必須対応** | `scores/` は **絶対にコピーしない**。`quiz_master_scores.json` だけが必要な場合は個別ファイルのみ追加。既存本番データの運用を継続 |
+
+### 🔴 最優先：PWA キャッシュバージョン整合性不足
+
+| 項目 | 内容 |
+|------|------|
+| **リスク** | `index.html`（CSS v1061 / app v1043）、`service-worker.js`（cache v1061 / app v1044）が不一致。古い JS/CSS が長期キャッシュされる |
+| **影響対象** | ユーザー端末にて古いゲームロジック、古い問題、古いアニメーション継続表示 |
+| **必須対応** | リリース前に **app_version**、**cache_version**、`index.html` 参照を一つの新バージョンに統一。3 ファイル同期確認は反映の大前提 |
+
+### 🟠 高：削除 API の削除対象が限定されていない
+
+| 項目 | 内容 |
+|------|------|
+| **リスク** | UI が「すべての圧迫データを削除」と表示されるが、実装上は `quiz_master_scores.json` のみ削除。`score_log.csv`、`player_registry.csv`、招待 ID は削除されていない |
+| **影響対象** | ユーザーが削除を希望しても、スコアログが残る。不信感につながる可能性 |
+| **必須対応** | 削除対象一覧を明確化（どのファイル・データを削除するか）。実装と UI 表示を一致させる。全テスト ID で削除フロー検証 |
+
+### 🟠 高：削除申請の本人確認なし
+
+| 項目 | 内容 |
+|------|------|
+| **リスク** | `user_delete_request.php` は `player_id` を POST で受け取り、ログに記録して申請ファイルを作成。ただし **本人確認・パスハッシュ確認がない** |
+| **影響対象** | 他人の ID で削除申請が可能。プライバシー・データ保護違反 |
+| **必須対応** | 申請前に **ログイン済み ID と POST player_id の一致確認** を実装。パスハッシュ・セッション確認を必須化 |
+
+### 🟡 中：削除管理 API が別処理方式
+
+| 項目 | 内容 |
+|------|------|
+| **リスク** | `admin_deletion_requests.php` は `ADMIN_KEY`、`user_delete_execute.php` は `ADMIN_DELETE_KEY` を利用。`admin_api.php` のセッション認証とは別途方式 |
+| **影響対象** | 権限体系が一貫していない。管理者セッションの一部を迂回できる可能性 |
+| **必須対応** | 権限管理を統一（セッション化）。すべての削除処理は `admin_api.php` セッション認証経由に統一 |
+
+### 🟡 中：機能追加 ZIP に運用データ同梱
+
+| 項目 | 内容 |
+|------|------|
+| **リスク** | 新機能追加ファイルに旧バージョンの `scores/` データが含まれている場合、ファイルサイズが大きく、本番反映時に同梱される可能性 |
+| **影響対象** | 古い運用データで本番が上書きされる |
+| **必須対応** | 反映用ファイルは **コード・新機能アセット・新規 API・新問題データ** のみを厳選。運用データは絶対に同梱しない |
+
+### 🟡 中：メタデータが同梱
+
+| 項目 | 内容 |
+|------|------|
+| **リスク** | `.git`（132 件）、`.claude`（2 件）、`.github`、`README`、`CLAUDE`、`unminified_preview.css` など、本番不要なメタデータが含まれる |
+| **影響対象** | Web 公開ディレクトリに Git 履歴、開発ドキュメント、プレビュー CSS が公開される |
+| **必須対応** | Web 公開ディレクトリ下に `.git/`、`.claude/` を展開しない。`.gitignore` と GitHub `pages` 設定で除外管理。本番用デプロイファイルから完全に除外 |
+
+---
+
+## 8. 削除申請機能の運用上注意
+
+アカウント削除申請機能は新機能として統合されています。以下の注意事項を厳守してください。
+
+### ファイル構成
+
+| ファイル | 役割 |
+|---------|------|
+| `delete.html` | ユーザー向けアカウント削除申請フォーム |
+| `api/user_delete_request.php` | 削除申請を受け付け、`requests/delete_requests/` に申請データを保存 |
+| `api/user_delete_execute.php` | 管理者による削除実行（`ADMIN_DELETE_KEY` で認証） |
+| `api/admin_deletion_requests.php` | 管理画面用：削除申請一覧、承認・却下・実行管理 |
+| `api/user_delete_dialog.js` | マイページ内の削除ボタン・確認ダイアログ |
+| `requests/delete_requests/` | 削除申請ファイル（JSON）を格納 |
+| `requests/delete_logs/` | 削除実行ログ（監査証跡） |
+
+### 本人確認の仕様
+
+**現在の実装状態（改善が必要）**:
+- `user_delete_request.php` は POST の `player_id` を直接受け取り、確認なしで申請ファイル作成
+- 本人確認がないため、他人の ID で削除申請可能
+
+**必須改善項目**:
+1. セッション中のプレイヤー ID と POST の `player_id` が一致することを確認
+2. パスハッシュ・トークン照合を追加
+3. メールアドレス確認（実装されている場合）を再確認
+4. 管理画面での承認前に、申請者本人メールに確認リンクを送信する仕様の検討
+
+### 削除対象データの明確化
+
+**現在の実装**（改善必須）:
+- UI: 「すべてのプレイヤーデータを削除します」と表示
+- 実装: `quiz_master_scores.json` から該当プレイヤーデータのみ削除
+- 未削除: `score_log.csv`、`player_registry.csv`、招待 ID など
+
+**必須項目**:
+1. 削除対象を明確に定義（どのデータをどこまで削除するか）
+2. UI と実装を一致させる
+3. 管理画面で削除前に削除対象を表示・確認可能にする
+4. 削除実行ログに削除されたファイル・レコード数を記録
+
+### 権限管理の統一化
+
+**現在の構造**:
+- `admin_deletion_requests.php`: `ADMIN_KEY` で認証
+- `user_delete_execute.php`: `ADMIN_DELETE_KEY` で認証
+- `admin_api.php`: セッションベース認証
+
+**必須改善項目**:
+1. すべての削除処理を `admin_api.php` セッション認証経由で統一
+2. 別キー方式（`ADMIN_KEY`、`ADMIN_DELETE_KEY`）を廃止
+3. 削除機能の権限レベルを明確化（最高位管理者のみなど）
+4. 権限体系を `scores/super_admins.json` と同期
+
+### テスト・検証の必須項目
+
+削除申請機能を修正・テストする際は、以下をすべて確認してください：
+
+- [ ] テスト ID（複数用意）で削除申請フロー全体を検証
+- [ ] セッションなしで他人の ID で削除申請を試みて、ブロックされることを確認
+- [ ] 削除実行後、`requests/delete_logs/` に監査ログが記録されることを確認
+- [ ] 削除されたプレイヤーが再度登録できることを確認
+- [ ] 管理画面で削除申請一覧・承認・却下が正常動作することを確認
+- [ ] 管理画面と API の権限チェックが一貫していることを確認
+
+### 本番反映前の確認
+
+**この機能は以下を完了まで本番公開テストから入手判断が完全です**:
+1. 本人確認強化（セッション・メール確認など）
+2. 削除対象の明確化と実装の一致
+3. 権限管理の統一化
+4. 監査ログの完全記録確認
+
+---
+
+## エージェント実行ルール
+
+1. 最初に `README.md`、`data/game_config.json`、`assets/app.js`、`api/admin_api.php` を読む。  
+2. 変更前に対象ファイルと依存関係を確認する。  
+3. `scores/` と `requests/` は閲覧専用として扱う。  
+4. 問題データ・UI・API・キャッシュの関係を横断して確認する。  
+5. 作業後は差分、構文、JSON、機能、キャッシュを順に検証する。  
+6. PRには「なぜ」「影響範囲」「検証」「ロールバック」を必ず残す。  
