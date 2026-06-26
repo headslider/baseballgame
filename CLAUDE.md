@@ -148,12 +148,70 @@ Select-String -Path index.html -Pattern "styles\.css\?v=|app\.js\?v=|YAKYU_CACHE
 - 管理画面表示と実際のキャッシュが一貫性を失う
 - PWA では古いコードが数日～数週間残る可能性
 
-**コミット前チェックリスト**:
-- [ ] `version.json` の `cache_version` を新バージョンに更新
-- [ ] `service-worker.js` の `CACHE_VERSION` を同じバージョンに更新
-- [ ] `index.html` の CSS/JS クエリを同じバージョンに更新
-- [ ] `index.html` の `window.YAKYU_CACHE_VERSION` を同じバージョンに更新
-- [ ] 上記 4 つのバージョン文字列が **完全に一致** していることを確認
+**コミット前チェックリスト（全バージョン参照の整合性確認）**:
+
+すべてのバージョン参照が新バージョン（例：v1074）に一致していることを確認する。
+
+#### ファイルごとの確認項目
+
+| ファイル | 確認項目 | 例（v1074） | 必須レベル |
+|---------|---------|----------|----------|
+| `version.json` | `app_version` | `v1074-production` | ✅ 必須 |
+| `version.json` | `cache_version` | `yakyu-yarouze-v1074-production` | ✅ 必須 |
+| `service-worker.js` | `const CACHE_VERSION` | `yakyu-yarouze-v1074-production` | ✅ 必須 |
+| `service-worker.js` | `STATIC_ASSETS` 内の CSS | `./assets/styles.css?v=1074` | ✅ 必須 |
+| `service-worker.js` | `STATIC_ASSETS` 内の app.js | `./assets/app.js?v=1074` | ✅ 必須 |
+| `service-worker.js` | `STATIC_ASSETS` 内の quiz_master_questions.js | `./assets/quiz_master_questions.js?v=1074` | ✅ 必須 |
+| `index.html` | `styles.css` リンク | `href="assets/styles.css?v=1074"` | ✅ 必須 |
+| `index.html` | `app.js` スクリプト | `<script src="assets/app.js?v=1074">` | ✅ 必須 |
+| `index.html` | `quiz_master_questions.js` スクリプト | `<script src="assets/quiz_master_questions.js?v=1074">` | ✅ 必須 |
+| `index.html` | `window.YAKYU_APP_VERSION` | `'v1074-production'` | ✅ 必須 |
+| `index.html` | `window.YAKYU_CACHE_VERSION` | `'yakyu-yarouze-v1074-production'` | ✅ 必須 |
+| `index.html` | `meta[name="app-version"]` | `content="v1074-production"` | ⚠️ 推奨 |
+
+#### チェック実行手順
+
+```powershell
+# 1. version.json の確認
+Write-Host "=== version.json ==="
+(Get-Content version.json | ConvertFrom-Json) | Select-Object app_version, cache_version
+
+# 2. service-worker.js の CACHE_VERSION 確認
+Write-Host "`n=== service-worker.js CACHE_VERSION ==="
+Select-String -Path service-worker.js -Pattern "const CACHE_VERSION = " | Select-Object -First 1
+
+# 3. service-worker.js の STATIC_ASSETS 内の ?v= 確認
+Write-Host "`n=== service-worker.js STATIC_ASSETS ==="
+Select-String -Path service-worker.js -Pattern "\?v=" | Where-Object { $_ -match "STATIC_ASSETS|styles\.css|app\.js|quiz_master" }
+
+# 4. index.html の CSS/JS ?v= 確認
+Write-Host "`n=== index.html CSS/JS リンク ==="
+Select-String -Path index.html -Pattern "styles\.css\?v=|app\.js\?v=|quiz_master_questions\.js\?v="
+
+# 5. index.html の window.YAKYU_* 確認
+Write-Host "`n=== index.html window.YAKYU_* ==="
+Select-String -Path index.html -Pattern "window\.YAKYU_APP_VERSION|window\.YAKYU_CACHE_VERSION"
+
+# 6. 一覧表示（テキスト整合確認用）
+Write-Host "`n=== 全バージョン参照一覧 ==="
+Write-Host "構成要素                                              参照内容"
+Write-Host "---"
+Write-Host "version.json app_version:                " ((Get-Content version.json | ConvertFrom-Json).app_version)
+Write-Host "version.json cache_version:              " ((Get-Content version.json | ConvertFrom-Json).cache_version)
+Write-Host "service-worker.js CACHE_VERSION:         " (Select-String -Path service-worker.js -Pattern "const CACHE_VERSION = '(.+)'" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value })
+Write-Host "index.html styles.css?v=:                " (Select-String -Path index.html -Pattern "styles\.css\?v=([0-9]+)" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value } | Select-Object -First 1)
+Write-Host "index.html app.js?v=:                    " (Select-String -Path index.html -Pattern "app\.js\?v=([0-9]+)" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value } | Select-Object -First 1)
+Write-Host "index.html quiz_master_questions.js?v=: " (Select-String -Path index.html -Pattern "quiz_master_questions\.js\?v=([0-9]+)" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value } | Select-Object -First 1)
+Write-Host "index.html YAKYU_APP_VERSION:            " (Select-String -Path index.html -Pattern "window\.YAKYU_APP_VERSION = '(.+?)'" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value })
+Write-Host "index.html YAKYU_CACHE_VERSION:          " (Select-String -Path index.html -Pattern "window\.YAKYU_CACHE_VERSION = '(.+?)'" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value })
+```
+
+#### チェックリスト
+
+- [ ] 上記表の全 **✅ 必須** 項目が新バージョンに統一されていることを確認
+- [ ] `version.json` の `cache_version` 番号（数字部分）と、`?v=` の数字が一致確認
+- [ ] `window.YAKYU_APP_VERSION` と `window.YAKYU_CACHE_VERSION` が共に新バージョンに更新
+- [ ] `git diff` で修正ファイルを確認（意図しない変更がないか）
 - [ ] `git status` で修正対象のファイルのみが変更されていることを確認（scores/ などは含まない）
 
 例：
@@ -501,9 +559,10 @@ CSSまたはJavaScriptを変更した場合、キャッシュ版の更新要否�
 
 | 項目 | 内容 |
 |------|------|
-| **リスク** | `index.html`（CSS v1061 / app v1043）、`service-worker.js`（cache v1061 / app v1044）が不一致。古い JS/CSS が長期キャッシュされる |
-| **影響対象** | ユーザー端末にて古いゲームロジック、古い問題、古いアニメーション継続表示 |
-| **必須対応** | リリース前に **app_version**、**cache_version**、`index.html` 参照を一つの新バージョンに統一。3 ファイル同期確認は反映の大前提 |
+| **リスク** | `version.json`、`service-worker.js`、`index.html` のバージョン参照が不一致。古い JS/CSS が長期キャッシュされ、新しい機能が反映されない |
+| **実例（2026-06-27）** | `index.html` で `app.js?v=1074` と指定しているが、`window.YAKYU_APP_VERSION = 'v1070-production'`、`window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v1070-production'` のままだった。Service Worker が v1070 のキャッシュを使用し続け、v1074 の新しい app.js が読み込まれず、`updateLoginUI()` 関数が古いバージョンで実行されたため、**ログイン前に表示されるべきでない UI 要素（ランキングボタン、学年セレクタ）が表示される** 重大なバグが発生 |
+| **影響対象** | ユーザー端末にて古いゲームロジック、古い問題、古いアニメーション継続表示 / セキュリティ修正が反映されない / UI の条件付き表示が機能しない |
+| **必須対応** | リリース前に以下 **6つの参照を一つの新バージョン（例：v1074）に統一** 必須（CLAUDE.md セクション3のチェックリスト参照）：<br>1. `version.json`: `app_version`, `cache_version`<br>2. `service-worker.js`: `CACHE_VERSION`, `STATIC_ASSETS` 内の `?v=`<br>3. `index.html`: CSS/JS リンク `?v=`, `window.YAKYU_APP_VERSION`, `window.YAKYU_CACHE_VERSION`<br>**すべてが完全に一致していることを確認しない限り、コミット・本番反映を実施しない** |
 
 ### 🟡 中：機能追加 ZIP に運用データ同梱
 
