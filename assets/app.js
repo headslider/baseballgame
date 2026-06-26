@@ -50,6 +50,26 @@ const OPTION_FEATURES={
 const $=id=>document.getElementById(id);
 const QUIZ_MASTER_DAILY_LIMIT=5;
 const QUIZ_MASTER_DAILY_LIMIT_ENABLED=true;
+// production_hold_enabled.flag=true（メンテ中プレビュー）のとき true。
+// このとき野球博士チャレンジのライフは無制限（×∞）になる。flag=false なら通常の5回制限。
+let QUIZ_MASTER_HOLD_PREVIEW=false;
+// 実際にデイリー制限を適用するか。メンテ中プレビュー時は無制限にするため制限を無効化する。
+function quizMasterLimitActive(){return QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!QUIZ_MASTER_HOLD_PREVIEW;}
+// production_hold_enabled.flag を読み、メンテ中プレビューかどうかを反映する。
+async function refreshQuizMasterHoldPreview(){
+  try{
+    const res=await fetch("production_hold_enabled.flag",{cache:"no-store"});
+    if(res&&res.ok){
+      const v=(await res.text()).trim().toLowerCase();
+      QUIZ_MASTER_HOLD_PREVIEW=(v==="true"||v==="1"||v==="on"||v==="yes");
+    }else{
+      QUIZ_MASTER_HOLD_PREVIEW=false;
+    }
+  }catch(e){
+    QUIZ_MASTER_HOLD_PREVIEW=false;
+  }
+  try{if(typeof updateQuizMasterDailyUI==="function")updateQuizMasterDailyUI();}catch(e){}
+}
 const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
 const QUIZ_MASTER_TOTAL_QUESTIONS=20;
 const QUIZ_MASTER_CHECKPOINT_LEVEL=14;
@@ -1421,6 +1441,8 @@ async function init(){
   loadAdminMode();
   detectIssueKeyUrl();
   loadPublicVersionInfo().catch(()=>{});
+  // production_hold_enabled.flag を読み、メンテ中プレビューならライフ無制限にする（完了時にUI更新）。
+  refreshQuizMasterHoldPreview().catch(()=>{});
 
   // ログイン状態の確定とボタン表示は、ネットワーク取得（game_config等）より先に行う。
   // キャッシュ済みフラグで即時描画し、起動ガードを外すことで描画遅延・チラつきを防ぐ。
@@ -1663,12 +1685,12 @@ function quizMasterReadDailyUsed(){
   }
 }
 function quizMasterRemainingToday(){
-  if(!QUIZ_MASTER_DAILY_LIMIT_ENABLED)return quizMasterDailyLimitToday();
+  if(!quizMasterLimitActive())return quizMasterDailyLimitToday();
   return Math.max(0,quizMasterDailyLimitToday()-quizMasterReadDailyUsed());
 }
 function quizMasterConsumeDailyAttempt(){
   const limitToday=quizMasterDailyLimitToday();
-  if(!QUIZ_MASTER_DAILY_LIMIT_ENABLED)return {ok:true,remaining:limitToday};
+  if(!quizMasterLimitActive())return {ok:true,remaining:limitToday};
   if(STATE.adminMode)return {ok:true,remaining:limitToday};
   const used=quizMasterReadDailyUsed();
   if(used>=limitToday)return {ok:false,remaining:0};
@@ -1732,11 +1754,11 @@ function renderQuizMasterStartButton(label){
 function updateQuizMasterDailyUI(){
   const remaining=STATE.adminMode?QUIZ_MASTER_DAILY_LIMIT:quizMasterRemainingToday();
   const life=$("quizMasterLifelineBtn");
-  if(life)life.innerHTML=QUIZ_MASTER_DAILY_LIMIT_ENABLED?`ライフ <span class="qm-life-heart">♥</span>×${remaining}<br><small>毎日24時リセット</small>`:`ライフ <span class="qm-life-heart">♥</span>×∞`;
+  if(life)life.innerHTML=quizMasterLimitActive()?`ライフ <span class="qm-life-heart">♥</span>×${remaining}<br><small>毎日24時リセット</small>`:`ライフ <span class="qm-life-heart">♥</span>×∞`;
   const start=$("quizMasterBtn");
   if(start){
-    start.disabled=QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!STATE.adminMode&&remaining<=0;
-    renderQuizMasterStartButton(QUIZ_MASTER_DAILY_LIMIT_ENABLED?(remaining>0||STATE.adminMode?`野球博士チャレンジ（本日残り${remaining}回）`:"野球博士チャレンジ（本日終了）"):"野球博士チャレンジ");
+    start.disabled=quizMasterLimitActive()&&!STATE.adminMode&&remaining<=0;
+    renderQuizMasterStartButton(quizMasterLimitActive()?(remaining>0||STATE.adminMode?`野球博士チャレンジ（本日残り${remaining}回）`:"野球博士チャレンジ（本日終了）"):"野球博士チャレンジ");
   }
 }
 function showQuizMasterTutorial(fromMenu=false){
@@ -1911,7 +1933,7 @@ async function startQuizMaster(){
     show("screen-title");
     return;
   }
-  if(QUIZ_MASTER_DAILY_LIMIT_ENABLED&&!STATE.adminMode&&quizMasterRemainingToday()<=0){
+  if(quizMasterLimitActive()&&!STATE.adminMode&&quizMasterRemainingToday()<=0){
     updateQuizMasterDailyUI();
     const status=$("loginStatus");
     if(status)status.textContent="野球博士チャレンジは本日のライフを使い切りました。毎日24時にリセットされます。通常の野球やろうぜ！を1回クリアすると、本日だけライフが1つ増えます。";

@@ -43,7 +43,10 @@ const NETWORK_FIRST_PATTERNS = [
   // 段階リリース用プレビュー（秘密URL）は常にサーバーのゲート判定を通すため
   // キャッシュせずネットワーク優先にする。production_hold_enabled.flag による
   // true/false 制御がキャッシュ済み端末でも即時に効くようにする。
-  /\/index-preview-[a-z0-9]+\.php(\?.*)?$/
+  /\/index-preview-[a-z0-9]+\.php(\?.*)?$/,
+  // メンテ切替フラグ自体は常に最新を取得する（アプリ側のライフ無制限判定や
+  // ページ遷移戦略の判定が古い値でキャッシュされないようにする）。
+  /\/production_hold_enabled\.flag$/
 ];
 
 self.addEventListener('install', event => {

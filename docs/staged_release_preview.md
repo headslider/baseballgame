@@ -36,6 +36,10 @@
 ### 0-6. 🟡 秘密URLは noindex
 - 秘密URLファイルには `noindex,nofollow` を付与済み（検索インデックス回避）。トークンは推測困難な値を使用。
 
+### 0-7. 🟡 野球博士チャレンジのライフはフラグ連動
+- **flag=true（メンテ中）→ ライフ無制限（×∞）**、**flag=false／不在（公開後）→ 通常の1日5ライフ**。
+- アプリ（`app.js`）が起動時に `production_hold_enabled.flag` を読み、`quizMasterLimitActive()` で判定する。フラグ自体は SW の `NETWORK_FIRST_PATTERNS` に登録済みで常に最新値を取得する。
+
 ---
 
 ## 1. 構成ファイル
