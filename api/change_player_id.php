@@ -119,21 +119,25 @@ function migrate_quiz_master_scores_change_id($file, $old_id, $new_id) {
 function migrate_push_subscriptions_change_id($file, $old_id, $new_id) {
     if (!is_file($file)) return 0;
     change_id_backup_file($file);
-    $db = read_json_file_change_id($file, []);
+    $db = read_json_file_change_id($file, ['subscriptions'=>[]]);
     if (!is_array($db)) $db = [];
+    if (!isset($db['subscriptions']) || !is_array($db['subscriptions'])) $db['subscriptions'] = [];
 
-    // push_subscriptions は { "PLAYER_ID": {...} } 形式
-    if (isset($db[$old_id])) {
-        if (!isset($db[$new_id])) {
-            $db[$new_id] = $db[$old_id];
-        } elseif (is_array($db[$new_id]) && is_array($db[$old_id])) {
-            $db[$new_id] = array_replace_recursive($db[$old_id], $db[$new_id]);
+    // push_subscriptions は { "subscriptions": [{player_id, endpoint, ...}, ...] } 配列形式
+    $changed = 0;
+    foreach ($db['subscriptions'] as &$rec) {
+        if (is_array($rec) && (($rec['player_id'] ?? '') === $old_id)) {
+            $rec['player_id'] = $new_id;
+            $rec['updated_at'] = date('Y-m-d H:i:s');
+            $changed++;
         }
-        unset($db[$old_id]);
-        if (!write_json_file_locked_change_id($file, $db)) respond_change_id(500, ['ok'=>false,'message'=>'push_subscriptions.json を更新できませんでした。']);
-        return 1;
     }
-    return 0;
+    unset($rec);
+
+    if ($changed > 0) {
+        if (!write_json_file_locked_change_id($file, $db)) respond_change_id(500, ['ok'=>false,'message'=>'push_subscriptions.json を更新できませんでした。']);
+    }
+    return $changed;
 }
 function migrate_csv_player_id_change_id($file, $old_id, $new_id, $columns) {
     if (!is_file($file)) return 0;

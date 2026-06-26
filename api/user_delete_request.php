@@ -337,26 +337,38 @@ if (file_exists($mistake_review_file)) {
     }
 }
 
-// 【削除対象6】push_subscriptions.json（{"PLAYER_ID": {...}} 形式）
+// 【削除対象6】push_subscriptions.json（{"subscriptions": [{player_id, ...}, ...]} 配列形式）
 $push_file = __DIR__ . '/../scores/push_subscriptions.json';
 if (file_exists($push_file)) {
     if (($handle = fopen($push_file, 'r+')) !== false) {
         if (flock($handle, LOCK_EX)) {
             $content = stream_get_contents($handle);
-            $subs = $content ? json_decode($content, true) : [];
-            if (!is_array($subs)) $subs = [];
+            $db = $content ? json_decode($content, true) : [];
+            if (!is_array($db)) $db = [];
+            if (!isset($db['subscriptions'])) $db['subscriptions'] = [];
 
-            if (isset($subs[$player_id])) {
-                unset($subs[$player_id]);
+            $deleted_count = 0;
+            if (is_array($db['subscriptions'])) {
+                // subscriptions 配列から該当プレイヤーのレコードを削除（配列キーは保持）
+                $db['subscriptions'] = array_values(array_filter($db['subscriptions'], function($rec) use ($player_id, &$deleted_count) {
+                    if (is_array($rec) && (($rec['player_id'] ?? '') === $player_id)) {
+                        $deleted_count++;
+                        return false;
+                    }
+                    return true;
+                }));
+            }
+
+            if ($deleted_count > 0) {
                 rewind($handle);
                 ftruncate($handle, 0);
-                fwrite($handle, json_encode($subs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                fwrite($handle, json_encode($db, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
                 fflush($handle);
 
                 $deletion_summary['deleted_files_and_records'][] = [
                     'file' => 'scores/push_subscriptions.json',
                     'action' => 'removed push notification registration',
-                    'count' => 1
+                    'count' => $deleted_count
                 ];
             }
             flock($handle, LOCK_UN);
