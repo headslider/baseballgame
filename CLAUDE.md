@@ -407,32 +407,47 @@ CSSまたはJavaScriptを変更した場合、キャッシュ版の更新要否�
 ### プレイヤーアカウント削除機能（2026-06-26 完了）
 
 #### 実装内容
-- **認証方式**：client_token ベース（セッション不要）
-  - register_player.php と同じ verify_player_client() で認証
-  - セッション切れ時も削除可能（アプリ再起動後にも対応）
 
-- **トークン検証**：2段階認証
-  - フェーズ1：client_token で認証 → 削除トークン生成・サーバー側保存
-  - フェーズ2：削除トークンを hash_equals() で検証 → 削除実行
+**認証方式**：client_token ベース（セッション不要）
+- register_player.php と同じ verify_player_client() で認証
+- セッション切れ時も削除可能（アプリ再起動後にも対応）
+- **重大修正**：verify_player_client() が未登録IDを自動登録していた問題を廃止
 
-- **削除対象（8ファイル）**
-  1. `quiz_master_scores.json` - 野球博士スコア（scores配列 + totals）
-  2. `player_registry.csv` - プレイヤー登録情報
-  3. `score_log.csv` - スコアログ
-  4. `player_features.json` - 機能解放状態
-  5. `mistake_review.json` - 間違いチェック履歴
-  6. `save_push_subscription.json` - Push通知登録
-  7. `access_log.json` - アクセス履歴
-  8. 削除ログ - 監査証跡（requests/delete_logs）
+**トークン検証**：2段階認証
+- フェーズ1：client_token で認証 → 削除トークン生成・サーバー側保存
+- フェーズ2：削除トークンを hash_equals() で検証 → 削除実行
 
-- **並行処理対応**：全ファイル操作を flock(LOCK_EX) で排他制御
-  - CSV ヘッダーを正しく処理（fgetcsv で分離）
-  - 削除と並行して行われるスコア保存による復活を防止
+**削除対象（8ファイル）**
+| ファイル | 形式 | 削除方式 |
+|---------|------|--------|
+| `quiz_master_scores.json` | JSON (scores[] + totals{}) | scores 配列フィルタリング + totals 削除 |
+| `player_registry.csv` | CSV | ヘッダー保持してフィルタリング |
+| `score_log.csv` | CSV | ヘッダー保持してフィルタリング |
+| `player_features.json` | JSON (players{}) | db['players'][ID] 削除 |
+| `mistake_review.json` | JSON (records[]) | records 配列から array_filter |
+| `push_subscriptions.json` | JSON ({ID: {}}) | オブジェクトキー削除 |
+| `access_log.csv` | CSV | player_id カラムでフィルタリング |
+| 削除ログ | JSON | requests/delete_logs に記録（監査証跡） |
+
+**並行処理対応**：全ファイル操作を flock(LOCK_EX) で排他制御
+- CSV ヘッダーを正しく処理（fgetcsv で分離して保持）
+- 削除と並行して行われるスコア保存による復活を防止
+
+#### 重大セキュリティ修正（2026-06-26 最新）
+
+| # | 問題 | 修正内容 | 効果 |
+|----|------|--------|------|
+| 1 | 削除後データ復活 | verify_player_client() が未登録IDを自動登録 → 廃止 | 古い client_token で再登録不可 |
+| 2 | 野球博士スコア未移行 | change_player_id.php に migrate_quiz_master_scores_change_id() 追加 | ID変更後も成績が新IDに継続 |
+| 3 | Push登録未移行 | change_player_id.php に migrate_push_subscriptions_change_id() 追加 | ID変更後も通知が新IDで受信 |
+| 4 | 4ファイル削除失敗 | player_features, mistake_review, push_subscriptions, access_log の形式修正 | 8ファイルすべてから完全削除 |
 
 #### 本番・テストサーバー反映状況
 | ファイル | 本番環境 | テスト環境 | 方法 |
 |---------|--------|---------|-----|
 | `requests/.htaccess` | ✅ 反映済 | ✅ 反映済 | FTP（2026-06-26） |
+| `api/feature_common.php` | デプロイ待機 | デプロイ待機 | GitHub deploy.yml |
+| `api/change_player_id.php` | デプロイ待機 | デプロイ待機 | GitHub deploy.yml |
 | `api/user_delete_request.php` | デプロイ待機 | デプロイ待機 | GitHub deploy.yml |
 | `api/user_delete_dialog.js` | デプロイ待機 | デプロイ待機 | GitHub deploy.yml |
 | `service-worker.js` (キャッシュ) | デプロイ待機 | デプロイ待機 | GitHub deploy.yml |
@@ -440,6 +455,7 @@ CSSまたはJavaScriptを変更した場合、キャッシュ版の更新要否�
 #### ID変更対応
 - 旧ID から新ID へ変更後、新ID で削除可能
 - セッション不要のため、ID変更後のセッション不整合を排除
+- **新規修正**：quiz_master_scores.json と push_subscriptions.json も ID変更時に移行
 
 ---
 
