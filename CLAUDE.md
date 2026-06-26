@@ -402,6 +402,47 @@ CSSまたはJavaScriptを変更した場合、キャッシュ版の更新要否�
 
 ---
 
+## 8. セキュリティ対応状況
+
+### プレイヤーアカウント削除機能（2026-06-26 完了）
+
+#### 実装内容
+- **認証方式**：client_token ベース（セッション不要）
+  - register_player.php と同じ verify_player_client() で認証
+  - セッション切れ時も削除可能（アプリ再起動後にも対応）
+
+- **トークン検証**：2段階認証
+  - フェーズ1：client_token で認証 → 削除トークン生成・サーバー側保存
+  - フェーズ2：削除トークンを hash_equals() で検証 → 削除実行
+
+- **削除対象（8ファイル）**
+  1. `quiz_master_scores.json` - 野球博士スコア（scores配列 + totals）
+  2. `player_registry.csv` - プレイヤー登録情報
+  3. `score_log.csv` - スコアログ
+  4. `player_features.json` - 機能解放状態
+  5. `mistake_review.json` - 間違いチェック履歴
+  6. `save_push_subscription.json` - Push通知登録
+  7. `access_log.json` - アクセス履歴
+  8. 削除ログ - 監査証跡（requests/delete_logs）
+
+- **並行処理対応**：全ファイル操作を flock(LOCK_EX) で排他制御
+  - CSV ヘッダーを正しく処理（fgetcsv で分離）
+  - 削除と並行して行われるスコア保存による復活を防止
+
+#### 本番・テストサーバー反映状況
+| ファイル | 本番環境 | テスト環境 | 方法 |
+|---------|--------|---------|-----|
+| `requests/.htaccess` | ✅ 反映済 | ✅ 反映済 | FTP（2026-06-26） |
+| `api/user_delete_request.php` | デプロイ待機 | デプロイ待機 | GitHub deploy.yml |
+| `api/user_delete_dialog.js` | デプロイ待機 | デプロイ待機 | GitHub deploy.yml |
+| `service-worker.js` (キャッシュ) | デプロイ待機 | デプロイ待機 | GitHub deploy.yml |
+
+#### ID変更対応
+- 旧ID から新ID へ変更後、新ID で削除可能
+- セッション不要のため、ID変更後のセッション不整合を排除
+
+---
+
 ## エージェント実行ルール
 
 1. 最初に `README.md`、`data/game_config.json`、`assets/app.js`、`api/admin_api.php` を読む。  
