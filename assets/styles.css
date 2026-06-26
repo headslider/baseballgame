@@ -1237,33 +1237,34 @@ html, body{
 }
 
 
-/* v157: 問題文テキストを少し大きく、太く表示 */
-.question-card h2
+/* v158: 問題文テキストを大きく表示（カンマ復元＋拡大。081b0ffのカンマ抜けと
+   初期からの小さめ上書きを是正し、全環境で大きく一貫表示する） */
+.question-card h2,
 #qTitle{
-  font-size: clamp(24px, 3.2vw, 34px) !important;
+  font-size: clamp(30px, 6vw, 46px) !important;
   font-weight: 900 !important;
-  line-height: 1.35 !important;
+  line-height: 1.3 !important;
 }
-.question-card p
-#qSituation
+.question-card p,
+#qSituation,
 #qPrompt{
-  font-size: clamp(18px, 2.2vw, 24px) !important;
+  font-size: clamp(22px, 4vw, 30px) !important;
   font-weight: 800 !important;
-  line-height: 1.7 !important;
+  line-height: 1.65 !important;
 }
 #qPrompt{
   color: #0b3a75 !important;
 }
 @media (max-width: 720px){
-  .question-card h2
+  .question-card h2,
   #qTitle{
-    font-size: 24px !important;
+    font-size: 30px !important;
   }
-  .question-card p
-  #qSituation
+  .question-card p,
+  #qSituation,
   #qPrompt{
-    font-size: 18px !important;
-    line-height: 1.65 !important;
+    font-size: 22px !important;
+    line-height: 1.6 !important;
   }
 }
 
