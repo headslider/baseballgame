@@ -104,6 +104,16 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // ページ遷移（HTMLナビゲーション）は常にネットワーク優先。
+  // index.html を cacheFirst にすると、メンテナンス公開後も旧SWが
+  // キャッシュ済みの実アプリを返してしまう（ゲートが漏れる）ため、
+  // オンライン時は必ず最新の index.html（=メンテ/公開版）を配信する。
+  // オフライン時のみキャッシュにフォールバックする。
+  if (request.mode === 'navigate') {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
   if (isNetworkFirst(request)) {
     event.respondWith(networkFirst(request));
     return;
