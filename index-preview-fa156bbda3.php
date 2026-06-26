@@ -52,9 +52,8 @@ if (!$enabled) {
     exit;
 }
 // production_hold_enabled.flag が true のときのみ到達。
-// 実アプリHTMLは app_shell.html（単一の正本）を index.php と共有して出力する。
-// app_shell.html 側の <meta robots> は公開用に除去済みのため、秘密URLでは
-// 検索インデックス回避を HTTP ヘッダ（X-Robots-Tag）で付与する。
+// index.html（メンテナンス画面）を出力する。
+// 秘密URLでは検索インデックス回避を HTTP ヘッダ（X-Robots-Tag）で付与する。
 header('Content-Type: text/html; charset=UTF-8');
 header('X-Robots-Tag: noindex, nofollow');
-readfile(__DIR__ . '/app_shell.html');
+readfile(__DIR__ . '/index.html');
