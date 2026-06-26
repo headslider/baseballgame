@@ -5832,7 +5832,36 @@ function playArrowFromTo(q, POS){
 
 init();
 
+// PWAキャッシュ版数変更の自動検知＆リロード
+// Service Worker 更新時に新しいキャッシュが activate されると version.json の cache_version が変わるため、
+// それを検知してリロードすることで、全ユーザーに即座に新しいアプリが配信される。
+(function(){
+  const localCacheVersion = window.YAKYU_CACHE_VERSION || '';
+  let lastDetectedVersion = localCacheVersion;
 
+  async function checkVersionAndReload() {
+    try {
+      const res = await fetch('version.json?nocache=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      const serverCacheVersion = data.cache_version || '';
+
+      if (serverCacheVersion && serverCacheVersion !== lastDetectedVersion && serverCacheVersion !== localCacheVersion) {
+        // キャッシュ版数が変わった → Service Worker または config が更新された
+        // リロードして新しい version を activate させる
+        lastDetectedVersion = serverCacheVersion;
+        window.location.reload();
+      }
+    } catch (e) {
+      // ネットワークエラーは無視。オフラインでも問題ない。
+    }
+  }
+
+  // 初回チェックは 10 秒後（アプリ起動完了後）
+  setTimeout(checkVersionAndReload, 10000);
+  // その後 30 秒ごとにチェック
+  setInterval(checkVersionAndReload, 30000);
+})();
 
 
 
