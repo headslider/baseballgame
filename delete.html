@@ -334,8 +334,15 @@
       });
     });
 
-    // ページ読み込み時：トークン有効な場合は実行フォームを表示
+    // ページ読み込み時：保存されたプレイヤーIDを自動入力、トークン有効な場合は実行フォームを表示
     window.addEventListener('load', function() {
+      // ローカルストレージから現在ログイン中のプレイヤーIDを取得
+      const storedPlayerId = localStorage.getItem('baseballPlayerId');
+      if (storedPlayerId) {
+        document.getElementById('playerId').value = storedPlayerId;
+      }
+
+      // 有効なトークンがあれば実行フォームを表示
       const playerId = document.getElementById('playerId').value.trim();
       const deleteToken = localStorage.getItem(`delete_token_${playerId}`);
 
