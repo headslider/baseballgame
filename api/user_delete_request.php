@@ -4,7 +4,8 @@
  * ユーザーの削除要求を受け付け、即座に削除を実行
  *
  * セキュリティ対応:
- * - プレイヤーID確認のみ行う
+ * - セッション中のプレイヤーID確認（必須）
+ * - POST player_id とセッション ID の一致確認（必須）
  * - 5つのデータファイルから完全削除
  * - 削除ログを監査証跡として記録
  */
@@ -18,14 +19,34 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// セッション開始（既に開始されている場合はスキップ）
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// ログイン状態確認（必須）
+if (!isset($_SESSION['baseballPlayerId']) || empty($_SESSION['baseballPlayerId'])) {
+    http_response_code(401);
+    echo json_encode(['ok' => false, 'error' => 'Not logged in']);
+    exit;
+}
+
 // パラメータ取得
 $player_id = isset($_POST['player_id']) ? trim($_POST['player_id']) : '';
 $reason = isset($_POST['reason']) ? trim($_POST['reason']) : '';
+$session_player_id = $_SESSION['baseballPlayerId'];
 
 // バリデーション
 if (empty($player_id)) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'player_id required']);
+    exit;
+}
+
+// 本人確認：POST player_id とセッション player_id の一致確認（必須）
+if ($player_id !== $session_player_id) {
+    http_response_code(403);
+    echo json_encode(['ok' => false, 'error' => 'Unauthorized: player_id mismatch']);
     exit;
 }
 

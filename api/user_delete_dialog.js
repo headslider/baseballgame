@@ -75,12 +75,12 @@ function showDeleteConfirmationDialog(playerId) {
     color: #6c757d;
   `;
   const dataItems = [
-    'プレイヤープロフィール',
+    'プレイヤー登録情報',
     'ゲーム成績・スコア',
-    'ランキング記録',
-    ' 間違いプレイチェック履歴',
+    'スコアログ記録',
+    '間違いプレイチェック履歴',
     '野球博士チャレンジの成績',
-    'すべてのアカウント関連データ'
+    '機能解放状態'
   ];
   dataItems.forEach(item => {
     const li = document.createElement('li');
