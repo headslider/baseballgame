@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>少年野球シミュレーター「野球やろうぜ！」</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#0046b8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="野球やろうぜ">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+    color:#fff;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:clamp(20px,4vh,40px);
+    padding:24px;
+    /* 背景：球場画像（読みやすさ確保のため上に軽い暗幕） */
+    background:
+      linear-gradient(rgba(0,0,0,.30),rgba(0,0,0,.45)),
+      #053b88 url("assets/top_background.webp") center center / cover no-repeat fixed;
+  }
+  /* 野球やろうぜ ロゴ（中央） */
+  .maint-logo{
+    width:min(640px,86vw);
+    height:auto;
+    display:block;
+    filter:drop-shadow(0 8px 18px rgba(0,0,0,.45));
+  }
+  /* 「現在メンテナンス中...」の見やすい枠 */
+  .maint-box{
+    width:min(560px,90vw);
+    background:rgba(255,255,255,.95);
+    color:#0b3a75;
+    border:4px solid #0b3a75;
+    border-radius:20px;
+    padding:clamp(22px,4.5vw,34px) clamp(20px,5vw,40px);
+    box-shadow:0 16px 44px rgba(0,0,0,.4);
+    text-align:center;
+  }
+  .maint-box .maint-title{
+    font-size:clamp(24px,6vw,38px);
+    font-weight:900;
+    letter-spacing:.04em;
+    margin:0;
+    line-height:1.4;
+  }
+  .maint-box .maint-sub{
+    margin:14px 0 0;
+    color:#33414f;
+    font-size:clamp(14px,3.6vw,17px);
+    line-height:1.8;
+    font-weight:600;
+  }
+  .maint-copyright{
+    margin:0;
+    font-size:clamp(12px,3vw,13px);
+    color:rgba(255,255,255,.85);
+    text-shadow:0 1px 3px rgba(0,0,0,.5);
+  }
+</style>
+</head>
+<body>
+  <picture class="maint-logo-pic">
+    <source media="(max-width: 720px)" srcset="assets/top_title_mobile.webp">
+    <img class="maint-logo" src="assets/top_title_pc.webp" alt="少年野球シミュレーター 野球やろうぜ！">
+  </picture>
+
+  <div class="maint-box">
+    <p class="maint-title">現在メンテナンス中...</p>
+    <p class="maint-sub">より楽しく遊んでいただくため、アップデートの準備をしています。<br>公開までいましばらくお待ちください。</p>
+  </div>
+
+  <p class="maint-copyright">© REALEMOTIONFACTORY.COM</p>
+</body>
+</html>
