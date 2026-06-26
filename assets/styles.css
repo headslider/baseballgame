@@ -8509,12 +8509,15 @@ img.qtb-badge-icon{
   text-align:center;
   justify-self:center;
 }
-.quiz-master-ranking li span
+.quiz-master-ranking li span,
 .quiz-master-ranking li em{
   color:#ffe26a;
   font-style:normal;
   font-weight:1000;
   white-space:nowrap;
+}
+.quiz-master-ranking li > .rank-score{
+  font-size:calc(1em + 2px);
 }
 .quiz-master-ranking li b{
   min-width:0;
