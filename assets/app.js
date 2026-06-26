@@ -60,8 +60,8 @@ async function refreshQuizMasterHoldPreview(){
   try{
     const res=await fetch("production_hold_enabled.flag",{cache:"no-store"});
     if(res&&res.ok){
-      const v=1071(await res.text()).trim().toLowerCase();
-      QUIZ_MASTER_HOLD_PREVIEW=(v=1071=="true"||v=1071=="1"||v=1071=="on"||v=1071=="yes");
+      const v=(await res.text()).trim().toLowerCase();
+      QUIZ_MASTER_HOLD_PREVIEW=(v==="true"||v==="1"||v==="on"||v==="yes");
     }else{
       QUIZ_MASTER_HOLD_PREVIEW=false;
     }
@@ -100,14 +100,14 @@ const EXTRA_ATTACK_SLOTS=[
 const EXTRA_DEFENSE_OUTFIELD_SLOTS=[];
 function isOutfieldIrrelevantQuestion(q,pos){
   if(!q || q.type!=="defense" || !["LF","CF","RF"].includes(pos))return false;
-  const v=1071q.visual||{};
+  const v=q.visual||{};
   const story=`${q.id||""} ${q.theme||""} ${q.ball_tag||""} ${q.situation||""} ${q.prompt||""} ${v.ball_path||""} ${v.ball_holder||""} ${v.target_position||""}`;
   if(/クリーンナップ|強打者|守備位置指示|外野準備|outfield|cleanup|positioning|shift/.test(story))return false;
   return /ワイルドピッチ|暴投|捕逸|パスボール|ワンバウンド|振り逃げ|三振後|dropped_third|牽制|偽投|ボーク|pickoff|バント|スクイズ|bunt|squeeze|キャッチャーフライ|捕手フライ|本塁付近の上|catcher_fly|キャッチャーゴロ|捕手ゴロ|catcher_grounder|ピッチャー前|投手前|ピッチャーゴロ|投手ゴロ|pitcher_grounder|unknown_to_pitcher|挟殺|ランダウン|run_down|rundown|満塁のピッチャーゴロ|一二塁間フライ|三遊間.*フライ|内野小フライ|中間フライ|盗塁送球|捕手送球|本塁カバー|投球動作|3番打者への入り方|4番打者との勝負|5番打者と三塁走者|下位打線の次が上位/.test(story);
 }
 function isCatcherFlyOnlyQuestion(q){
   if(!q || q.type!=="defense")return false;
-  const v=1071q.visual||{};
+  const v=q.visual||{};
   const story=`${q.id||""} ${q.theme||""} ${q.ball_tag||""} ${q.situation||""} ${q.prompt||""} ${v.ball_path||""}`;
   return /キャッチャーフライ|捕手フライ|本塁付近の上|catcher_fly/.test(story);
 }
@@ -418,7 +418,7 @@ async function handleTimeout(q){
   if(STATE.current>=STATE.sequence.length)finishGame();
   else{
     const next=STATE.sequence[STATE.current];
-    const prev=1071STATE.sequence[STATE.current-1];
+    const prev=STATE.sequence[STATE.current-1];
     const title=sideStartTitle(next, prev);
     if(title)showTransitionTitle(title, renderQuestion);
     else renderQuestion();
@@ -739,7 +739,7 @@ async function submitRequestForm(e){
   if(msg)msg.textContent="送信中...";
   try{
     const formData=new FormData();
-    Object.entries(payload).forEach(([k,v])=>formData.append(k,v=1071=null?"":String(v)));
+    Object.entries(payload).forEach(([k,v])=>formData.append(k,v==null?"":String(v)));
     const query=new URLSearchParams(payload).toString();
     const res=await fetch(`api/submit_request.php?${query}`,{method:"POST",body:formData,cache:"no-store"});
     let data=null;
@@ -892,7 +892,7 @@ function updatePwaHowToStepsByBrowser(){
 
 function canRegisterPlayerOnThisEnvironment(){
   if(!isLikelyMobileOrTablet())return true;
-  return !isLineInAppBrowser();
+  return isPwaStandalone() && !isLineInAppBrowser();
 }
 function currentPageUrlForExternalOpen(){
   return window.location.href.split("#")[0];
@@ -971,13 +971,13 @@ function setActiveIssueType(type){
   }catch(e){}
 }
 function getActiveIssueType(){
-  let v=1071"";
-  try{v=1071localStorage.getItem(ISSUE_KEY_STORAGE.active)||"";}catch(e){}
+  let v="";
+  try{v=localStorage.getItem(ISSUE_KEY_STORAGE.active)||"";}catch(e){}
   if(!v){
-    v=1071readIssueCookie(ISSUE_KEY_STORAGE.cookieActive)||"";
-    if(v=1071=="invite"||v=1071=="admin"){try{localStorage.setItem(ISSUE_KEY_STORAGE.active,v);}catch(e){}}
+    v=readIssueCookie(ISSUE_KEY_STORAGE.cookieActive)||"";
+    if(v==="invite"||v==="admin"){try{localStorage.setItem(ISSUE_KEY_STORAGE.active,v);}catch(e){}}
   }
-  return (v=1071=="invite"||v=1071=="admin")?v:"";
+  return (v==="invite"||v==="admin")?v:"";
 }
 function clearPendingIssueKeys(){
   try{
@@ -1024,13 +1024,13 @@ function detectIssueKeyUrl(){
   return changed;
 }
 function getIssueKey(type){
-  let v=1071"";
-  try{v=1071localStorage.getItem(ISSUE_KEY_STORAGE[type])||"";}catch(e){}
+  let v="";
+  try{v=localStorage.getItem(ISSUE_KEY_STORAGE[type])||"";}catch(e){}
   if(!v){
-    v=1071readIssueCookie(ISSUE_KEY_STORAGE[type==="admin"?"cookieAdmin":"cookieInvite"])||"";
+    v=readIssueCookie(ISSUE_KEY_STORAGE[type==="admin"?"cookieAdmin":"cookieInvite"])||"";
     if(v&&v!=="1"){try{localStorage.setItem(ISSUE_KEY_STORAGE[type],v);}catch(e){}}
   }
-  return v=1071=="1"?"":v;
+  return v==="1"?"":v;
 }
 function hasIssueKey(type){
   const current=currentIssueTypeFromUrl();
@@ -1261,7 +1261,7 @@ function dismissPwaInstallGuide(){
 
 
 let PUBLIC_VERSION_INFO=null;
-function releaseTypeLabelPublic(v){return v=1071=="major"?"メジャー更新":(v=1071=="minor"?"機能追加・修正":"問題追加・軽微な更新")}
+function releaseTypeLabelPublic(v){return v==="major"?"メジャー更新":(v==="minor"?"機能追加・修正":"問題追加・軽微な更新")}
 async function loadPublicVersionInfo(){
   try{
     const res=await fetch("api/version_info.php",{cache:"no-store"});
@@ -1283,7 +1283,7 @@ function renderPublicVersionInfo(){
   const notice=$("noticeVersionInfo");
   if(notice){
     const rows=(data.history||[]).slice(0,5);
-    notice.innerHTML=`<h3>更新情報</h3>${rows.length?rows.map(v=1071>`<div class="version-history-item"><b>${escapeHtml(v.public_version||"")} ${escapeHtml(v.title||"")}</b><br><span class="muted">${escapeHtml(v.released_at||"")} / ${releaseTypeLabelPublic(v.release_type)}</span><p>${escapeHtml(v.public_summary||"").replace(/\n/g,"<br>")}</p></div>`).join(""):`<div><b>${escapeHtml(version)}</b> ${escapeHtml(cur.title||"")}</div>`}`;
+    notice.innerHTML=`<h3>更新情報</h3>${rows.length?rows.map(v=>`<div class="version-history-item"><b>${escapeHtml(v.public_version||"")} ${escapeHtml(v.title||"")}</b><br><span class="muted">${escapeHtml(v.released_at||"")} / ${releaseTypeLabelPublic(v.release_type)}</span><p>${escapeHtml(v.public_summary||"").replace(/\n/g,"<br>")}</p></div>`).join(""):`<div><b>${escapeHtml(version)}</b> ${escapeHtml(cur.title||"")}</div>`}`;
   }
 }
 
@@ -1310,7 +1310,7 @@ async function ensureQuestionsLoaded(forceReload=false){
     // 非公開（下書き）・停止の問題をゲームに出さないため、
     // ゲーム本体では data/questions.json を直接読まず、サーバー側で公開問題だけに絞ったAPIを読む。
     // APIが読めない場合は安全側に倒し、未フィルタのquestions.jsonへフォールバックしない。
-    questionLoadPromise=fetch("api/get_game_questions.php?v=1074",{cache:"no-store"})
+    questionLoadPromise=fetch("api/get_game_questions.php?v=838",{cache:"no-store"})
       .then(r=>{if(!r.ok)throw new Error("published questions fetch failed");return r.json();})
       .then(data=>{
         if(!data||data.ok!==true||!Array.isArray(data.questions))throw new Error("published questions payload invalid");
@@ -1339,13 +1339,13 @@ function normalizeAdminMasterQuestionRow(row){
 }
 async function loadAdminQuestionTestQuestions(){
   try{
-    const data=await fetchJsonNoStore("data/questions_admin_master.json?v=1074");
+    const data=await fetchJsonNoStore("data/questions_admin_master.json?v=838");
     if(Array.isArray(data))return data.map(normalizeAdminMasterQuestionRow);
     if(data&&Array.isArray(data.questions))return data.questions.map(normalizeAdminMasterQuestionRow);
     throw new Error("admin master payload invalid");
   }catch(e){
     console.warn("admin master questions fallback",e);
-    const data=await fetchJsonNoStore("data/questions.json?v=1074");
+    const data=await fetchJsonNoStore("data/questions.json?v=838");
     if(Array.isArray(data))return data;
     if(data&&Array.isArray(data.questions))return data.questions;
     throw new Error("questions payload invalid");
@@ -1459,7 +1459,7 @@ async function init(){
   // 問題データ questions.json はゲーム開始時に遅延読み込みする。
   let cfg={positions:{}};
   try{
-    cfg=await fetch("data/game_config.json?v=1074").then(r=>r.json());
+    cfg=await fetch("data/game_config.json?v=838").then(r=>r.json());
   }catch(e){
     console.warn("game config load failed",e);
   }
@@ -1811,9 +1811,9 @@ async function loadQuizMasterQuestions(){
   if(QUIZ_MASTER_STATE.questions.length)return QUIZ_MASTER_STATE.questions;
   let data=null;
   const candidates=[
-    "data/quiz_master_questions.json?v=1074",
-    "./data/quiz_master_questions.json?v=1074",
-    new URL("data/quiz_master_questions.json?v=1074",document.baseURI).href
+    "data/quiz_master_questions.json?v=1016",
+    "./data/quiz_master_questions.json?v=1016",
+    new URL("data/quiz_master_questions.json?v=1016",document.baseURI).href
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
@@ -1823,8 +1823,8 @@ async function loadQuizMasterQuestions(){
       console.warn("quiz data fetch candidate failed",url,e);
     }
   }
-  if(!data&&(window.QUIZ_MASTER_QUESTIONS_FALLBACK||window.QUIZ_MASTER_QUESTIONS)){
-    data=window.QUIZ_MASTER_QUESTIONS_FALLBACK||window.QUIZ_MASTER_QUESTIONS;
+  if(!data&&window.QUIZ_MASTER_QUESTIONS){
+    data=window.QUIZ_MASTER_QUESTIONS;
   }
   if(!data)throw new Error("quiz data load failed");
   const rows=normalizeQuizMasterQuestions(data);
@@ -1833,7 +1833,7 @@ async function loadQuizMasterQuestions(){
 }
 async function loadQuizMasterQuestionStats(){
   try{
-    const res=await fetch("api/get_quiz_master_question_stats.php?v=1074",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_question_stats.php?v=1016",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
   }catch(e){
@@ -1860,7 +1860,7 @@ function normalizeQuizMasterTitles(rows){
   return out;
 }
 function quizMasterLevelIconUrl(level){
-  const lv=1071Math.max(1,Math.min(20,Number(level)||1));
+  const lv=Math.max(1,Math.min(20,Number(level)||1));
   return `assets/quiz_icon/${lv}.png`;
 }
 function quizMasterLevelIconHtml(level,cssClass){
@@ -1869,7 +1869,7 @@ function quizMasterLevelIconHtml(level,cssClass){
 async function loadQuizMasterTitles(){
   if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
   try{
-    const res=await fetch("api/get_quiz_master_titles.php?v=1074",{cache:"no-store"});
+    const res=await fetch("api/get_quiz_master_titles.php?v=1016",{cache:"no-store"});
     const data=await res.json();
     QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(res.ok&&data&&data.ok?data.titles:null);
   }catch(e){
@@ -2775,7 +2775,7 @@ function isSelectedGradeUnlocked(){
 
 function getCookieValue(name){
   const key=`${encodeURIComponent(name)}=`;
-  return document.cookie.split(";").map(v=1071>v.trim()).find(v=1071>v.startsWith(key))?.slice(key.length)||"";
+  return document.cookie.split(";").map(v=>v.trim()).find(v=>v.startsWith(key))?.slice(key.length)||"";
 }
 function setCookieValue(name,value,maxAgeDays=400){
   const maxAge=Math.max(1,Number(maxAgeDays)||400)*24*60*60;
@@ -3426,9 +3426,9 @@ function renderMistakeReviewSection(){
     return;
   }
   const views=items.map(displayMistakeReviewItem);
-  const activeViews=views.filter(v=1071>!v.unavailable);
-  const unavailableViews=views.filter(v=1071>v.unavailable);
-  const tags=tagSummaryFromMistakes(activeViews.map(v=1071>({...(v.raw||{}),tags:v.tags||[]})));
+  const activeViews=views.filter(v=>!v.unavailable);
+  const unavailableViews=views.filter(v=>v.unavailable);
+  const tags=tagSummaryFromMistakes(activeViews.map(v=>({...(v.raw||{}),tags:v.tags||[]})));
   const tagHtml=tags.length?`<div class="weak-tags">${tags.map(([t,n])=>`<span>${escapeHtml(t)} <b>${escapeHtml(n)}</b></span>`).join("")}</div>`:"";
 
   // ページネーション（10個以上で10個/ページ）
@@ -3520,7 +3520,7 @@ function recordMistakeReview(q,choice,score){
   const key=q.id||`${q.type}_${q.theme}_${q.stage}_${q.outs}`;
   const now=new Date().toISOString();
   const wasMiss=Number(score)<3;
-  const prev=1071data.items[key]||{};
+  const prev=data.items[key]||{};
   const item={
     questionId:q.id||key,
     type:q.type||"",
@@ -4435,7 +4435,7 @@ function middleInfielderSecondBaseCoverChoices(q){
 
 function isSecondBaseRightFieldRelay(q){
   if(!q || q.type!=="defense" || STATE.position!=="2B")return false;
-  const v=1071q.visual||{};
+  const v=q.visual||{};
   const story=normalizeSimilarText(`${q.id||""} ${q.theme||""} ${q.ball_tag||""} ${q.situation||""} ${q.prompt||""} ${v.ball_path||""} ${v.ball_holder||""} ${v.target_position||""}`);
   if(/クリーンナップ|強打者|打者|右バッター|左バッター|守備位置指示|外野の位置|外野準備|positioning|cleanup/.test(story))return false;
   if(/フライ/.test(story))return false;
@@ -4450,7 +4450,7 @@ function secondBaseRightFieldRelayChoices(q){
 }
 function isShortLeftFieldRelay(q){
   if(!q || q.type!=="defense" || STATE.position!=="SS")return false;
-  const v=1071q.visual||{};
+  const v=q.visual||{};
   const story=normalizeSimilarText(`${q.id||""} ${q.theme||""} ${q.ball_tag||""} ${q.situation||""} ${q.prompt||""} ${v.ball_path||""} ${v.ball_holder||""} ${v.target_position||""}`);
   if(/クリーンナップ|強打者|打者|右バッター|左バッター|守備位置指示|外野の位置|外野準備|positioning|cleanup/.test(story))return false;
   if(/フライ/.test(story))return false;
@@ -5381,7 +5381,7 @@ async function answer(q,c){
   if(STATE.current>=STATE.sequence.length)finishGame();
   else{
     const next=STATE.sequence[STATE.current];
-    const prev=1071STATE.sequence[STATE.current-1];
+    const prev=STATE.sequence[STATE.current-1];
     const title=sideStartTitle(next, prev);
     if(title)showTransitionTitle(title, renderQuestion);
     else renderQuestion();
@@ -5714,20 +5714,20 @@ function sideColorFor(kind, code){
 
 function spriteHrefFor(kind, code, label){
   const color = sideColorFor(kind, code);
-  if(kind === "fielder" && code === "C") return `assets/sprite_catcher_${color}.webp?v=1074`;
-  if(kind === "fielder") return `assets/sprite_fielder_${color}.webp?v=1074`;
-  if(code === "BATTER") return `assets/sprite_batter_${color}.webp?v=1074`;
-  if(code === "BR") return `assets/sprite_batterrunner_${color}.webp?v=1074`;
+  if(kind === "fielder" && code === "C") return `assets/sprite_catcher_${color}.webp?v=393`;
+  if(kind === "fielder") return `assets/sprite_fielder_${color}.webp?v=393`;
+  if(code === "BATTER") return `assets/sprite_batter_${color}.webp?v=393`;
+  if(code === "BR") return `assets/sprite_batterrunner_${color}.webp?v=393`;
   if(label === "自分"){
     const q = STATE && STATE.sequence ? STATE.sequence[STATE.current] : null;
-    if(q && q.stage === "1B") return `assets/sprite_runner1_${color}.webp?v=1074`;
-    if(q && q.stage === "2B") return `assets/sprite_runner2_${color}.webp?v=1074`;
-    if(q && q.stage === "3B") return `assets/sprite_runner3_${color}.webp?v=1074`;
+    if(q && q.stage === "1B") return `assets/sprite_runner1_${color}.webp?v=393`;
+    if(q && q.stage === "2B") return `assets/sprite_runner2_${color}.webp?v=393`;
+    if(q && q.stage === "3B") return `assets/sprite_runner3_${color}.webp?v=393`;
   }
-  if(code === "1B") return `assets/sprite_runner1_${color}.webp?v=1074`;
-  if(code === "2B") return `assets/sprite_runner2_${color}.webp?v=1074`;
-  if(code === "3B") return `assets/sprite_runner3_${color}.webp?v=1074`;
-  return `assets/sprite_runner1_${color}.webp?v=1074`;
+  if(code === "1B") return `assets/sprite_runner1_${color}.webp?v=393`;
+  if(code === "2B") return `assets/sprite_runner2_${color}.webp?v=393`;
+  if(code === "3B") return `assets/sprite_runner3_${color}.webp?v=393`;
+  return `assets/sprite_runner1_${color}.webp?v=393`;
 }
 
 function isBattedBallSituation(q){
@@ -5834,6 +5834,8 @@ init();
 
 
 
+
+
 /* v504: 苦手チェックをサーバー保存し、引き継ぎIDで機種変更対応 */
 function mistakeTransferStorageKey(pid){
   return `baseballMistakeTransferId:${pid||STATE.playerId||"guest"}`;
@@ -5842,7 +5844,7 @@ function currentMistakeTransferId(pid){
   return localStorage.getItem(mistakeTransferStorageKey(pid||STATE.playerId))||"";
 }
 function setMistakeTransferId(id,pid){
-  const v=1071String(id||"").trim().toUpperCase();
+  const v=String(id||"").trim().toUpperCase();
   if(v)localStorage.setItem(mistakeTransferStorageKey(pid||STATE.playerId),v);
 }
 function mergeMistakeReviewData(localData,serverData){
