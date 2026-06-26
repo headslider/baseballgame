@@ -1,0 +1,7801 @@
+window.QUIZ_MASTER_QUESTIONS_FALLBACK = {
+  "meta": {
+    "title": "野球博士チャレンジ",
+    "version": "v69_long_throw_definition_correction",
+    "created_by": "ChatGPT",
+    "question_count": 323,
+    "answer_index_base": 0,
+    "rules": [
+      "通常学年別クイズと重複する守備判断・走塁判断・送球判断・カバーリング問題は含めない",
+      "第3問以降は明らかなボケ回答・一瞬で消せる誤答を禁止",
+      "問題作成はChatGPT、CodexはJSON読込・表示のみ",
+      "固有名詞と必要な野球用語を除き、小学5年生までが読みやすい表現にする",
+      "選択肢は原則30文字以内にする",
+      "学年を示す場合、「高学年」「低学年」だけで始めず、必ず「小学生の高学年」「小学生の低学年」のように「小学生」を先に置く。問題文だけでなく選択肢・解説も同じ表記に統一する。",
+      "対象学年を示す場合は、「高学年」「低学年」だけで始めず、必ず「小学生高学年」「小学生低学年」または「小学生の高学年」「小学生の低学年」のように「小学生」を前に置く。問題文・選択肢・解説も同じ基準で統一する。",
+      "ゲームは第1問から第20問までで構成する。",
+      "第1〜14問は少年野球・学童野球・用具・安全・施設・基本用語・基本ルールを中心に出題する。",
+      "第15〜20問は高校・一般・社会人・プロ野球知識、および例外を含む高度な競技規則を中心に出題する。",
+      "各問題は、現在の main_category / middle_category / small_category を維持したまま、必要な前提知識・条件数・例外の多さ・実戦判断難度で第1〜20問へ分類する。",
+      "20問化ではレベルごとのプール数を12〜13問に均し、同じ問題が短期間に繰り返されにくい構成とする。",
+      "記録問題は、対象リーグ・公式戦かどうか・基準日を問題文または解説に明記する。",
+      "世界全体で統一した公式集計がない記録は、「世界最多」と断定せず、MLB公式戦・NPB公式戦など対象範囲を固定する。",
+      "選択肢に人物を使う記録問題は、原則として同一分野の歴代上位者から選ぶ。"
+    ],
+    "audit": "5-pass answer/explanation/logic/difficulty/overlap validation completed on 2026-06-19.",
+    "audit_step1": "2026-06-20 Step1正解・解説整合監査完了（5観点チェック）",
+    "source_file": "ユーザー指定修正（BQ2154 遠投、2026-06-25）",
+    "audit_step2": "2026-06-20 Step2最新学童ルール監査：JSBB、マクドナルド・トーナメント、ミズノドリームカップの重要ルールを追加・反映。",
+    "step2_added_questions": 43,
+    "source_summary": [
+      "JSBB FAQ: 投手サングラス使用可、投手ミラーレンズ不可、野手の庇上サングラス可",
+      "JSBB通知: 2025年から学童部で一般用弾性体バット制限、2029年から学童・少年部で外面弾性体バット制限予定",
+      "高円宮賜杯/マクドナルド大会要項例: 6回制、投球数70球、4年生以下60球、タイブレーク等",
+      "ミズノドリームカップ2026: 6回制・80分・1死満塁タイブレーク・EDH制・リエントリー等",
+      "Step5追加根拠: JSBB 2029年以降の学童・少年部バット制限通知",
+      "Step5追加根拠: JSBB 2026年以降の学童部・少年部大会運営変更通知",
+      "Step5追加根拠: MIZUNO BASEBALL DREAM CUP Jr. Tournament 2026大会規定"
+    ],
+    "audit_step3": "2026-06-20 Step3 小学5年生向け表現・選択肢30文字以内監査。追加クリーンアップ済み。",
+    "audit_step3_5": "2026-06-20 Step3.5 日本語破損修正監査。自動置換で崩れた表現を修正。",
+    "audit_step4": "2026-06-20 Step4 第3問以降の即消し選択肢・土俵違い・ボケ回答監査を実施。",
+    "audit_step5": "2026-06-20 Step5最終コンテンツ監査: 本編重複回避、野球博士らしさ、学童大会ルール、単一正解性を強化。",
+    "step5_added_questions": 64,
+    "step5_modified_questions": 3,
+    "implementation_status": "Codex handoff candidate",
+    "audit_step6": "二重正解監査を実施。意味が重複する選択肢や学童で実用性の低い問題を削除。",
+    "level_question_counts": {
+      "1": 13,
+      "2": 17,
+      "3": 20,
+      "4": 18,
+      "5": 23,
+      "6": 19,
+      "7": 17,
+      "8": 18,
+      "9": 14,
+      "10": 14,
+      "11": 14,
+      "12": 12,
+      "13": 12,
+      "14": 13,
+      "15": 13,
+      "16": 16,
+      "17": 12,
+      "18": 17,
+      "19": 16,
+      "20": 25
+    },
+    "audit_step5_5": "2026-06-20 一般野球のベース位置・寸法問題を第8問以降へ移動。第3問には学童向けグラウンド知識を補充。",
+    "audit_step4_5": "2026-06-20 Step4.5 専門用語・カタカナ監査。オーバーユースけが等を小学生に分かる表現へ修正。",
+    "audit_step4_6": "2026-06-20 Step4.6 日本語自然さ監査。不自然な助詞・使用表現・単調な問題文を修正。",
+    "audit_step4_7": "2026-06-20 サングラス条件明記監査。帽子上サングラス問題で対象条件を明示し、無条件に全選手へ読める表現を修正。",
+    "audit_step_sunglasses_v14": "令和5年サングラス規定に合わせ、投手の使用可・投手ミラーレンズ不可・野手の帽子庇上可を分けて修正。",
+    "audit_step5_6": "2026-06-20 学童以外のルール・道具問題を第8問以降へ移動。M号球・硬式球などを前半から除外。",
+    "audit_step5_7": "2026-06-20 重複指定8問を削除。野球場・設備、グラウンド整備、安全、野球文化の無理な追加を停止。JSBB FAQから学童に適用される登録・用具規定のみを第6〜7問に追加。",
+    "duplicate_prevention_rule": [
+      "新問題追加前に main_category / middle_category / small_category を必ず付与する",
+      "同じ知識・同じ理由・同じ正解になる問題は追加禁止",
+      "野球場・設備、グラウンド整備、安全、野球文化は不足補充目的で無理に追加しない",
+      "学童に適用されるルールはJSBB FAQを確認して、第8問までに配置する",
+      "学童以外のルール・道具は第8問以降に配置する"
+    ],
+    "removed_duplicate_or_excluded_ids": [
+      "BQ601",
+      "BQ606",
+      "BQ628",
+      "BQ663",
+      "BQ665",
+      "BQ726",
+      "BQ735",
+      "BQ908"
+    ],
+    "added_jsbb_gakudo_rule_questions": [
+      "BQ760",
+      "BQ761",
+      "BQ762",
+      "BQ763",
+      "BQ764",
+      "BQ765",
+      "BQ766",
+      "BQ767"
+    ],
+    "audit_step5_8": "2026-06-20 指導者・監督・コーチを主題にした問題を削除。削除分の無理な補充は行わない。",
+    "removed_instructor_related_ids": [
+      "BQ109",
+      "BQ316",
+      "BQ520",
+      "BQ620",
+      "BQ649",
+      "BQ664",
+      "BQ718",
+      "BQ737",
+      "BQ817",
+      "BQ916",
+      "BQ1009",
+      "BQ1010"
+    ],
+    "audit_step5_9": "2026-06-20 学童の塁間・投手板距離などJSBB学童部規定に基づく問題の末尾に（JSBB学童部規定）を追加。",
+    "jsbb_gakudo_label_added_ids": [
+      "BQ301",
+      "BQ303",
+      "BQ304",
+      "BQ305",
+      "BQ306",
+      "BQ307",
+      "BQ308",
+      "BQ309",
+      "BQ318",
+      "BQ605",
+      "BQ637",
+      "BQ638",
+      "BQ701",
+      "BQ702",
+      "BQ703"
+    ],
+    "audit_step5_10": "2026-06-21 大会正式名称を省略しない方針へ修正。MIZUNO BASEBALL DREAM CUP Jr. Tournament関連の表記を正式名称へ統一。ユニフォーム規定や『大会ごとに確認』が答えになるような、明確な知識として役に立ちにくい問題を削除。",
+    "official_name_rule": [
+      "大会名・団体名・規定名は、一般的に定着した略称でない限り正式名称を使う",
+      "メーカー名だけで大会名を表さない",
+      "答えが『大会ごとに確認』『大会規定を確認』になる問題は原則作成しない",
+      "明確なルール・数値・禁止事項・許可事項として答えられる問題のみ採用する"
+    ],
+    "removed_ambiguous_tournament_or_uniform_ids": [
+      "BQ102",
+      "BQ106",
+      "BQ114",
+      "BQ303",
+      "BQ420",
+      "BQ602",
+      "BQ605",
+      "BQ612",
+      "BQ614",
+      "BQ616",
+      "BQ631",
+      "BQ642",
+      "BQ670",
+      "BQ671",
+      "BQ704",
+      "BQ709",
+      "BQ721",
+      "BQ722",
+      "BQ723",
+      "BQ727",
+      "BQ730",
+      "BQ742",
+      "BQ751",
+      "BQ752",
+      "BQ755",
+      "BQ808",
+      "BQ821",
+      "BQ826",
+      "BQ917",
+      "BQ921",
+      "BQ1021",
+      "BQ1024"
+    ],
+    "mizuno_official_name": "MIZUNOドリームカップジュニアトーナメント",
+    "audit_step5_11": "2026-06-21 ミズノ大会名称を 『MIZUNOドリームカップジュニアトーナメント』へ統一。",
+    "audit_step6_1": "2026-06-21 人間感覚での二重正解監査を実施。A/B/Cのうち複数が同じ理由・効果になる問題、抽象的で『より適切』になりやすい問題、学童に役立ちにくい上級一般論を削除。明確化できる問題は修正。",
+    "double_answer_prevention_rule": [
+      "A/B/Cのうち2つ以上が同じ理由・効果になる場合は不採用",
+      "AもBも正しいが『より適切』で選ばせる問題は不採用",
+      "抽象論・一般論だけで答えさせる問題は不採用",
+      "明確な数値・禁止事項・許可事項・対象者がある問題を優先",
+      "学童選手が知って役立つ内容を優先"
+    ],
+    "removed_by_human_double_answer_audit_ids": [
+      "BQ204",
+      "BQ220",
+      "BQ319",
+      "BQ406",
+      "BQ407",
+      "BQ412",
+      "BQ505",
+      "BQ513",
+      "BQ514",
+      "BQ517",
+      "BQ610",
+      "BQ618",
+      "BQ646",
+      "BQ675",
+      "BQ713",
+      "BQ719",
+      "BQ736",
+      "BQ739",
+      "BQ740",
+      "BQ749",
+      "BQ609",
+      "BQ806",
+      "BQ818",
+      "BQ824",
+      "BQ825",
+      "BQ904",
+      "BQ910",
+      "BQ912",
+      "BQ925",
+      "BQ1005",
+      "BQ1008",
+      "BQ1011",
+      "BQ1013",
+      "BQ1014",
+      "BQ1015",
+      "BQ1022",
+      "BQ1023",
+      "BQ1025"
+    ],
+    "modified_by_human_double_answer_audit_ids": [
+      "BQ120",
+      "BQ210"
+    ],
+    "audit_step6_2": "2026-06-21 徹底再監査。ゲーム設計・出題位置・作問都合を答えさせる問題を削除。野球知識ではない問題、主観問題、二重正解化しやすい問題、学童に役立ちにくい上級一般論を削除。",
+    "strict_question_rules": [
+      "ゲーム設計上の理由を答えさせる問題は禁止",
+      "『後半向き』『知る人が限られる』『最終問題にふさわしい』などの問題は禁止",
+      "野球知識・JSBB規定・大会規定・明確な数値/禁止/許可だけを問題化する",
+      "A/B/Cのうち複数が部分的に正しい問題は禁止",
+      "答えが『より適切』になる問題は禁止",
+      "学童に直接役立たない抽象論・制度論は削除",
+      "新規追加は 大分類→中分類→小分類→既存問題検索→新規作成 の順で行う"
+    ],
+    "removed_meta_or_game_design_ids": [
+      "BQ617",
+      "BQ823",
+      "BQ923",
+      "BQ1018",
+      "BQ1020"
+    ],
+    "audit_step7": "2026-06-21 追加・削除・修正を実施。大会理念・大会運営細則・年度依存・確認型問題を削除。補充はJSBB FAQで確認できる、学童にも適用される明確な登録・用具・サングラス規定に限定。",
+    "strict_add_delete_policy_v24": [
+      "大会ごとの特殊ルールでも、合同チーム・出場資格・申込・運営細則は原則問題化しない",
+      "大会理念・大会目的・重視されるものは問題化しない",
+      "追加はJSBB FAQまたは学童部規定で明確に確認できる禁止・許可・対象者・数値に限定する",
+      "一般道具雑学は追加しない",
+      "大分類→中分類→小分類→既存問題検索→新規作成の順で管理する",
+      "答えが『確認が必要』になる問題は禁止"
+    ],
+    "removed_in_step7_ids": [
+      "BQ416",
+      "BQ504",
+      "BQ634",
+      "BQ641",
+      "BQ643",
+      "BQ644",
+      "BQ645",
+      "BQ647",
+      "BQ648",
+      "BQ650",
+      "BQ716",
+      "BQ724",
+      "BQ728",
+      "BQ729",
+      "BQ732",
+      "BQ733",
+      "BQ734",
+      "BQ741",
+      "BQ743",
+      "BQ744",
+      "BQ745",
+      "BQ746",
+      "BQ747",
+      "BQ750",
+      "BQ810"
+    ],
+    "added_in_step7_ids": [
+      "BQ1030",
+      "BQ1031",
+      "BQ1032",
+      "BQ1033",
+      "BQ1034",
+      "BQ1035",
+      "BQ1036",
+      "BQ1037"
+    ],
+    "audit_step8": "2026-06-21 野球用語問題を追加。パスボール、ワイルドピッチ、インプレイ、ボールデッド等を5問目までに配置。追加先レベルは問題数が少ないレベルを優先。ランダウンプレー表記は使用せず、挟殺に統一。",
+    "baseball_terms_add_rule": [
+      "用語問題は試合中に実際に使う言葉に限定する",
+      "低学年でも使う用語は第1〜3問に配置可能",
+      "インプレイ・ボールデッドは5問目までに配置する",
+      "ランダウンプレーではなく挟殺と表記する",
+      "追加レベルは問題数が少ないレベルを優先する",
+      "追加前に大分類→中分類→小分類→既存問題検索を行う"
+    ],
+    "added_baseball_term_ids": [
+      "BQ1040",
+      "BQ1041",
+      "BQ1042",
+      "BQ1043",
+      "BQ1044",
+      "BQ1045"
+    ],
+    "skipped_baseball_terms": [
+      {
+        "term": "オーバーラン",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "ボーク",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "インプレイ",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "ボールデッド",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      }
+    ],
+    "audit_step8_1": "2026-06-21 コールド、ゲッツー、タイムリー等の用語問題を追加。問題数が少ないレベルを中心に補充し、簡単すぎる問題は禁止ルールへ追加。",
+    "too_easy_question_ban_rule": [
+      "野球未経験でも消去法だけで解ける問題は禁止",
+      "選択肢が極端に弱い問題は禁止",
+      "常識だけで答えられる問題は禁止",
+      "他の選択肢がボケ回答になっている問題は禁止",
+      "学習価値がない問題は禁止"
+    ],
+    "added_baseball_term_ids_v26": [
+      "BQ1050",
+      "BQ1051",
+      "BQ1052",
+      "BQ1053",
+      "BQ1054",
+      "BQ1055",
+      "BQ1056",
+      "BQ1057",
+      "BQ1058",
+      "BQ1059",
+      "BQ1060",
+      "BQ1061",
+      "BQ1062",
+      "BQ1063",
+      "BQ1064",
+      "BQ1065",
+      "BQ1066",
+      "BQ1067",
+      "BQ1068",
+      "BQ1069",
+      "BQ1070",
+      "BQ1071"
+    ],
+    "skipped_baseball_terms_v26": [
+      {
+        "term": "満塁",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "ボールデッド",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "インプレイ",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "リタッチ",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "インターフェア",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "オブストラクション",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "故意落球",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "捕球",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "打者走者",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      },
+      {
+        "term": "フェア地域",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      }
+    ],
+    "audit_step8_2": "2026-06-21 バスター、エンドラン、ヒットエンドラン、バスターエンドランの用語問題を追加。",
+    "added_buster_related_term_ids": [
+      "BQ1072",
+      "BQ1073",
+      "BQ1074",
+      "BQ1075"
+    ],
+    "skipped_buster_related_terms": [],
+    "audit_step8_3": "2026-06-21 スコア・バントの意味を問う問題を第2問までに追加。",
+    "added_score_bunt_term_ids": [
+      "BQ1076"
+    ],
+    "skipped_score_bunt_terms": [
+      {
+        "term": "バント",
+        "reason": "既存問題に同じ用語があるため追加しない"
+      }
+    ],
+    "audit_step9": "2026-06-21 Step9: BQ1054を削除、BQ1052を修正。第2問にバント、第10問に高難度規則用語6問を追加。",
+    "step9_removed_ids": [
+      "BQ1054"
+    ],
+    "step9_modified_ids": [
+      "BQ1052"
+    ],
+    "step9_added_ids": [
+      "BQ1077",
+      "BQ1078",
+      "BQ1079",
+      "BQ1080",
+      "BQ1081",
+      "BQ1082",
+      "BQ1083"
+    ],
+    "validation_errors": [],
+    "base_file": "quiz_master_questions_final_candidate_v68_close_stance_correction.json",
+    "audit_step9_1": "2026-06-21 イレギュラーの意味を問う用語問題を第3問に追加。既存BQ314は解説内の言及のみのため重複問題ではない。",
+    "added_throw_destination_term_ids": [
+      "BQ1084",
+      "BQ1085",
+      "BQ1086",
+      "BQ1087"
+    ],
+    "throw_destination_call_rule": [
+      "一つは一塁への送球先指定",
+      "二つは二塁への送球先指定",
+      "三つは三塁への送球先指定",
+      "四つは本塁への送球先指定",
+      "ファースト等の長い呼び方より短く、聞き取りやすくするために使う",
+      "アウト数の意味として扱わない"
+    ],
+    "added_irregular_term_ids": [
+      "BQ1088"
+    ],
+    "audit_step10_1": "2026-06-21 簡単すぎる問題・二重正解監査。BQ320修正、BQ414削除、BQ1090を第3問へ移動。BQ1052/カット/四つは現状維持。",
+    "added_term_relation_ids": [
+      "BQ1089",
+      "BQ1090",
+      "BQ1091",
+      "BQ1092",
+      "BQ1093",
+      "BQ1094"
+    ],
+    "removed_in_step10_1": [
+      "BQ414"
+    ],
+    "modified_in_step10_1": [
+      "BQ320",
+      "BQ1090"
+    ],
+    "audit_step10_2": "2026-06-21 守備番号・6-4-3/4-6-3/5-4-3送球順序、審判・ランナー接触、9〜10問高難度ルール問題を追加。",
+    "added_tournament_league_ids": [
+      "BQ1095",
+      "BQ1096"
+    ],
+    "added_defense_number_ids": [
+      "BQ1097",
+      "BQ1098",
+      "BQ1099",
+      "BQ1100"
+    ],
+    "added_contact_rule_ids": [
+      "BQ1101",
+      "BQ1102",
+      "BQ1103",
+      "BQ1104"
+    ],
+    "added_high_level_rule_ids": [
+      "BQ1105",
+      "BQ1106",
+      "BQ1107",
+      "BQ1110",
+      "BQ1111",
+      "BQ1112"
+    ],
+    "skipped_high_level_duplicates_v36": [
+      {
+        "id": "BQ1108",
+        "term": "フィルダースチョイス",
+        "reason": "既存BQ1045に同じ問題文・用語があるため追加しない"
+      },
+      {
+        "id": "BQ1109",
+        "term": "タイムプレイ",
+        "reason": "既存BQ1065に同じ問題文・用語があるため追加しない"
+      }
+    ],
+    "audit_step13": "2026-06-21 Step13最終補強: バッターサークル、ダートサークル、インフィールドフライ成立条件、ダートサークル実戦判断、タッチアップ忘れアピールを追加。",
+    "added_step13_final_rule_ids": [
+      "BQ1113",
+      "BQ1114",
+      "BQ1115",
+      "BQ1116",
+      "BQ1117"
+    ],
+    "audit_step14": "2026-06-21 Step14正式版監査。低反発バット、タイブレーク投球数、ファウルチップの二重正解候補を修正。",
+    "v40_modified_ids": [
+      "BQ408",
+      "BQ706",
+      "BQ802"
+    ],
+    "audit_step_v41_dedup_cleanup": "2026-06-21 ユーザー確認済みの重複・二重正解・難読漢字・抽象問題を削除整理。BQ1037は「庇」を「帽子のつば」に修正。",
+    "v41_deleted_ids": [
+      "BQ1031",
+      "BQ760",
+      "BQ405",
+      "BQ1061",
+      "BQ624",
+      "BQ901",
+      "BQ914",
+      "BQ633",
+      "BQ666",
+      "BQ1090",
+      "BQ607",
+      "BQ621",
+      "BQ622",
+      "BQ626",
+      "BQ623",
+      "BQ673",
+      "BQ608",
+      "BQ1036",
+      "BQ655",
+      "BQ632",
+      "BQ708",
+      "BQ1094",
+      "BQ672",
+      "BQ902",
+      "BQ630",
+      "BQ1043",
+      "BQ1107",
+      "BQ754",
+      "BQ813",
+      "BQ657",
+      "BQ1069",
+      "BQ301",
+      "BQ703",
+      "BQ804",
+      "BQ903",
+      "BQ926",
+      "BQ411",
+      "BQ924",
+      "BQ1065"
+    ],
+    "v41_delete_ids_not_found_in_source": [
+      "BQ1054",
+      "BQ1109"
+    ],
+    "v41_modified_ids": [
+      "BQ1037"
+    ],
+    "audit_step_v42": "2026-06-21 v41整理版を基準に、ユーザー確認済みの重複・確認型・曖昧表現問題を削除。BQ1092/BQ1053を統合修正。ID不一致候補は削除対象から除外。",
+    "v42_removed_ids": [
+      "BQ115",
+      "BQ1050",
+      "BQ309",
+      "BQ1058",
+      "BQ1073",
+      "BQ619",
+      "BQ627",
+      "BQ662",
+      "BQ674",
+      "BQ705",
+      "BQ706",
+      "BQ707",
+      "BQ714",
+      "BQ715",
+      "BQ1063",
+      "BQ1068"
+    ],
+    "v42_modified_ids": [
+      "BQ1092",
+      "BQ1053"
+    ],
+    "v42_skipped_mismatch_ids": {
+      "BQ1051": "current question is タイムリー, not ダブルプレー",
+      "BQ1041": "current question is ワイルドピッチ; paired 同義語 candidate was actually 四球",
+      "BQ1059": "current question is エンタイトルツーベース, not カット",
+      "BQ1042": "current question is 挟殺, not ゲッツー",
+      "BQ725": "current question is マクドナルド系タイブレーク具体問題, not 確認型",
+      "BQ717": "current question is 勝利と育成のバランス, not 特別規則確認型",
+      "BQ302": "current question is ホーム塁前面幅, not 確認型",
+      "BQ310": "current question is ファウルラインの役割, not 確認型",
+      "BQ638": "current question is 4年生以下1日60球, not 確認型",
+      "BQ639": "correct answer is 到達打者の完了まで;確認型ではない"
+    },
+    "audit_step_v43": "2026-06-21 v42整理版を基準に、ユーザー修正済みCSVから新規候補を追加。除外指定・修正採用・削除指定を反映し、ID重複/問題文重複/正解番号/確認型残存/カテゴリ整合を監査。",
+    "v43_candidate_source": "quiz_master_v43_100_add_candidate_list(1).csv",
+    "v43_added_ids": [
+      "BQ2013",
+      "BQ2014",
+      "BQ2021",
+      "BQ2022",
+      "BQ2024",
+      "BQ2028",
+      "BQ2029",
+      "BQ2030",
+      "BQ2031",
+      "BQ2032",
+      "BQ2033",
+      "BQ2034",
+      "BQ2039",
+      "BQ2040",
+      "BQ2041",
+      "BQ2042",
+      "BQ2044",
+      "BQ2045",
+      "BQ2058",
+      "BQ2059",
+      "BQ2062",
+      "BQ2063",
+      "BQ2066",
+      "BQ2067",
+      "BQ2070",
+      "BQ2071",
+      "BQ2072",
+      "BQ2073",
+      "BQ2074",
+      "BQ2075",
+      "BQ2076",
+      "BQ2077",
+      "BQ2078",
+      "BQ2079",
+      "BQ2080",
+      "BQ2081",
+      "BQ2083",
+      "BQ2088",
+      "BQ2091",
+      "BQ2093",
+      "BQ2094"
+    ],
+    "v43_excluded_candidate_ids": [
+      "BQ2060",
+      "BQ2082",
+      "BQ2087",
+      "BQ2089",
+      "BQ2090",
+      "BQ2092",
+      "BQ2097",
+      "BQ2099"
+    ],
+    "v43_modified_added_ids": [
+      "BQ2042",
+      "BQ2067",
+      "BQ2083",
+      "BQ2093"
+    ],
+    "v43_rules_applied": [
+      "新規追加前にv42整理版全問題とID・問題文・意味重複を確認する",
+      "修正・削除・採用判断はIDと内容を2回確認する",
+      "確認型問題、大会要項確認型、抽象的な大切/注意/確認問題は追加しない",
+      "levelはユーザー修正済みCSVを優先し、level_name/category/main_categoryはレベルに合わせて整合する",
+      "同一知識の重複、二重正解化しやすい問題、誤答が弱すぎる問題は除外または修正する"
+    ],
+    "validation_warnings": [],
+    "non_blocking_keyword_hits": [
+      {
+        "id": "BQ219",
+        "hits": [
+          "確認する"
+        ],
+        "question": "スパイク使用後の手入れとして正しいものは？"
+      },
+      {
+        "id": "BQ310",
+        "hits": [
+          "確認する"
+        ],
+        "question": "ファウルラインの役割は？"
+      },
+      {
+        "id": "BQ315",
+        "hits": [
+          "確認する"
+        ],
+        "question": "外野フェンスの役割は？"
+      },
+      {
+        "id": "BQ317",
+        "hits": [
+          "確認する"
+        ],
+        "question": "ブルペンの役割は？"
+      },
+      {
+        "id": "BQ637",
+        "hits": [
+          "大会要項"
+        ],
+        "question": "2025年の投球数で基本となる上限は（JSBB学童部規定）？"
+      },
+      {
+        "id": "BQ638",
+        "hits": [
+          "大会要項"
+        ],
+        "question": "4年生以下の投球数で近いものは（JSBB学童部規定）？"
+      },
+      {
+        "id": "BQ639",
+        "hits": [
+          "確認する",
+          "大会要項"
+        ],
+        "question": "投球ルールの到達時の考え方は？"
+      },
+      {
+        "id": "BQ667",
+        "hits": [
+          "確認する"
+        ],
+        "question": "頭部死球後に大切なことは？"
+      },
+      {
+        "id": "BQ725",
+        "hits": [
+          "大会要項"
+        ],
+        "question": "マクドナルド系のタイブレークで近い形は？"
+      }
+    ],
+    "removed_ids": [
+      "BQ215",
+      "BQ314"
+    ],
+    "modified_ids": [
+      "BQ101",
+      "BQ117",
+      "BQ219"
+    ],
+    "before_count": 254,
+    "after_count": 262,
+    "deleted_count": 2,
+    "deleted_ids": [
+      "BQ516",
+      "BQ639"
+    ],
+    "note": "BQ516（サングラス安全対策）とBQ639（投球ルール到達時）を不適切問題として削除。",
+    "audit_step_v46_grade_expression_cleanup": "2026-06-22 全252問について、問題文・選択肢・解説に含まれる「高学年」「低学年」の表現を監査。対象を示す場合は必ず「小学生の高学年」「小学生の低学年」と表記するよう修正。",
+    "grade_expression_rule": "対象学年を示す場合は、「高学年」「低学年」だけで始めず、必ず「小学生高学年」「小学生低学年」または「小学生の高学年」「小学生の低学年」のように「小学生」を前に置く。問題文・選択肢・解説も同じ基準で統一する。",
+    "audit_step_v47": "2026-06-22 ユーザー編集CSVをv46基準データと照合。削除・レベル・テキスト変更を反映し、ID、問題文、選択肢、正解、参照データを二重確認。CSVの自動日付変換により壊れた守備番号カテゴリ（6-4-3、4-6-3、5-4-3）は復元。",
+    "v47_removed_ids": [
+      "BQ738"
+    ],
+    "v47_modified_ids": [
+      "BQ113",
+      "BQ117",
+      "BQ1040",
+      "BQ218",
+      "BQ1076",
+      "BQ1077",
+      "BQ304",
+      "BQ305",
+      "BQ306",
+      "BQ307",
+      "BQ308",
+      "BQ401",
+      "BQ415",
+      "BQ418",
+      "BQ1045",
+      "BQ1075",
+      "BQ2042",
+      "BQ625",
+      "BQ1097",
+      "BQ1098",
+      "BQ653",
+      "BQ1099"
+    ],
+    "v47_csv_format_restore_ids": [
+      "BQ1097",
+      "BQ1098",
+      "BQ1099"
+    ],
+    "v47_validation": {
+      "question_count": 251,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "answer_index_errors": 0,
+      "bare_grade_expression_hits": 0,
+      "correct_choice_auxiliary_mismatch_fixed": [
+        "BQ653"
+      ]
+    },
+    "game_question_count": 20,
+    "difficulty_reclassification_v48": {
+      "status": "completed",
+      "base": "v47（251問）",
+      "method": [
+        "問題文・選択肢・正解・既存カテゴリーを全件確認",
+        "用語の基本性、必要な前提知識、規定・例外の多さ、実戦判断難度で再判定",
+        "カテゴリーは変更せず、level / level_name のみを第1〜第20問へ再配置",
+        "各レベルの問題数を12〜13問に均等化"
+      ],
+      "bands": [
+        {
+          "levels": "1-2",
+          "label": "入門",
+          "guide": "日常的な用具・安全・最頻出用語を、単語または基本目的で答える。"
+        },
+        {
+          "levels": "3-4",
+          "label": "基礎",
+          "guide": "基本用語・用具の特徴・単純な守備連係を理解して答える。"
+        },
+        {
+          "levels": "5-6",
+          "label": "初級応用",
+          "guide": "距離・設備・守備番号・基本ルールを複数の知識で結び付ける。"
+        },
+        {
+          "levels": "7-8",
+          "label": "中級",
+          "guide": "例外を含む基本ルール、作戦、記録、走塁・守備判断を扱う。"
+        },
+        {
+          "levels": "9-10",
+          "label": "中級上",
+          "guide": "学童規定・用具規定・安全規定など、年度・対象条件を伴う知識を扱う。"
+        },
+        {
+          "levels": "11-12",
+          "label": "上級入口",
+          "guide": "審判処置、試合規定、公式用具・戦術を組み合わせて判断する。"
+        },
+        {
+          "levels": "13-14",
+          "label": "上級",
+          "guide": "大会固有規定、守備連係、特別用具規定、走塁・記録の条件を扱う。"
+        },
+        {
+          "levels": "15-16",
+          "label": "発展",
+          "guide": "高校・一般野球の制度、規格、例外を含むルールを扱う。"
+        },
+        {
+          "levels": "17-18",
+          "label": "難問",
+          "guide": "アピール・妨害・インフィールドフライ・上位カテゴリー制度などの例外処理を扱う。"
+        },
+        {
+          "levels": "19-20",
+          "label": "最難関",
+          "guide": "複数条件の競技規則、打順誤り、第三アウト、ボーク等の例外を扱う。"
+        }
+      ],
+      "note": "本版では難易度・出題位置のみを再分類し、問題文・選択肢・正解・カテゴリーは変更していない。内容上の要再監査候補は別レポートに明記。"
+    },
+    "audit_step_v49": "2026-06-22: 指定5問の20問構成における難易度再配置、BQ1004削除、BQ2091の打順誤り問題文・選択肢・解説を更新。",
+    "v49_level_reassigned": {
+      "BQ1080": {
+        "from_level": 20,
+        "to_level": 16
+      },
+      "BQ1067": {
+        "from_level": 19,
+        "to_level": 12
+      },
+      "BQ1079": {
+        "from_level": 20,
+        "to_level": 15
+      },
+      "BQ1082": {
+        "from_level": 20,
+        "to_level": 9
+      },
+      "BQ1117": {
+        "from_level": 20,
+        "to_level": 18
+      }
+    },
+    "v49_deleted_ids": [
+      "BQ1004"
+    ],
+    "v49_modified_ids": [
+      "BQ2091"
+    ],
+    "audit_step_v52": "2026-06-22 v49を基準に、ユーザー指定のBQ2108（投手用グラブ本体カラー）とBQ2109（投球回の3分の1記録）を第19問へ正式追加。現行問題、過去の削除・除外台帳、v50/v51候補を二重照合し、ID重複・問題文重複・同義語重複・二重正解・確認型を監査。",
+    "v52_added_ids": [
+      "BQ2108",
+      "BQ2109"
+    ],
+    "v52_source_verification": {
+      "BQ2108": "全日本軟式野球連盟「グラブの取り扱いについて」：投手用グラブ本体カラーは白・グレー・PANTONE色基準14番より薄い色を制限。",
+      "BQ2109": "NPB「公認野球規則 9.00 記録に関する規則」：投手の投球回はアウト一つを3分の1回として記録。"
+    },
+    "audit_step_v53": "2026-06-22 2025年夏の甲子園大会データ2問と、NPBイースタン・リーグの定義問題1問を追加。既存問題・過去の削除／除外論点・単一正解性を二重照合。",
+    "v53_added_ids": [
+      "BQ2111",
+      "BQ2112",
+      "BQ2113"
+    ],
+    "v53_source_verification": [
+      {
+        "id": "BQ2111",
+        "source": "日本高等学校野球連盟「第107回全国高校野球選手権地方大会 参加チーム数の確定」",
+        "verified": "2025年の地方大会は3,680校3,396チーム"
+      },
+      {
+        "id": "BQ2112",
+        "source": "日本高等学校野球連盟「第107回全国高等学校野球選手権大会 開催要項」",
+        "verified": "全国47都道府県の49代表校"
+      },
+      {
+        "id": "BQ2113",
+        "source": "NPB.jp「ファーム公式戦」",
+        "verified": "イースタン・リーグはNPBのファーム公式戦のリーグ"
+      }
+    ],
+    "v53_validation": {
+      "question_count": 255,
+      "id_duplicates": [],
+      "question_duplicates": [],
+      "answer_index_errors": [],
+      "choice_length_over_30": [],
+      "unmodified_grade_expression_hits": []
+    },
+    "audit_step_v54": "2026-06-22 第20問向けにMLB制度・世界野球記録を追加。MLB球団数、両リーグ球団数、公式戦通算本塁打、MLB追跡記録の最速球、MLB公式戦通算安打・盗塁を追加。",
+    "v54_added_ids": [
+      "BQ2114",
+      "BQ2115",
+      "BQ2116",
+      "BQ2117",
+      "BQ2118",
+      "BQ2119",
+      "BQ2120"
+    ],
+    "record_scope_rule": [
+      "記録問題は、対象リーグ・公式戦かどうか・基準日を問題文または解説に明記する。",
+      "世界全体で統一した公式集計がない記録は、「世界最多」と断定せず、MLB公式戦・NPB公式戦など対象範囲を固定する。",
+      "選択肢に人物を使う記録問題は、原則として同一分野の歴代上位者から選ぶ。"
+    ],
+    "v54_source_verification": {
+      "BQ2114-BQ2116": "MLB.com「30 MLB Teams」および2026年公式日程・順位表",
+      "BQ2117": "NPB.jp「歴代最高記録 本塁打【通算記録】」および米国野球殿堂「Sadaharu Oh」",
+      "BQ2118": "MLB.com「Speediest plays in Statcast history」「Aroldis Chapman on rise of high-velocity pitchers」",
+      "BQ2119": "MLB.com「Pete Rose top career moments」「All-Time MLB Player Hitting Stat Leaders」",
+      "BQ2120": "MLB.com「All-Time MLB Player Hitting Stat Leaders」「10 incredible Rickey Henderson stats」"
+    },
+    "v54_validation": {
+      "id_duplicates": 0,
+      "question_duplicates": 0,
+      "answer_index_errors": 0,
+      "choices_over_30_chars": 0,
+      "unqualified_grade_expression_hits": 0,
+      "new_question_count": 7
+    },
+    "audit_step_v55": "2026-06-22 BQ2119を、MLB公式戦通算最多安打（ピート・ローズ）から、NPBとMLBの公式戦を合算した通算最多安打（イチロー）へ差し替え。NPB1,278安打＋MLB3,089安打＝4,367安打を参照データと二重確認。",
+    "v55_modified_ids": [
+      "BQ2119"
+    ],
+    "audit_step_v56": "2026-06-22 大谷翔平の達成済みMLB記録3問と、WBCの開催年・開催地・大会方式5問を追加。次回WBCの開催地は公式発表を確認できないため追加しない。",
+    "v56_added_ids": [
+      "BQ2121",
+      "BQ2122",
+      "BQ2123",
+      "BQ2124",
+      "BQ2125",
+      "BQ2126",
+      "BQ2127",
+      "BQ2128"
+    ],
+    "wbc_question_rule": [
+      "WBCの将来開催地は、公式発表が確認できる場合だけ問題化する",
+      "未発表の開催地を推測で問題化しない",
+      "開催年・開催都市・参加数・大会方式は、対象大会の年を明記して問題化する"
+    ],
+    "ohtani_record_question_rule": [
+      "大谷翔平の記録は、年度途中で変動する成績ではなく、公式発表で達成済みと確認できる記録だけを問題化する",
+      "記録の対象範囲（MLB、ポストシーズン、投手として等）を問題文で明記する"
+    ],
+    "audit_step_v57": "2026-06-24 ユーザー編集CSVをv56基準JSONへ反映。削除・修正を取り込み、ID重複、問題文完全重複、3択、正解番号、正解選択肢、レベル名を検証。Excel自動日付変換で壊れた守備番号小分類を復元し、高校野球問題に誤って付与された（JSBB学童部規定）注記を除去。",
+    "v57_deleted_ids": [
+      "BQ1034",
+      "BQ510"
+    ],
+    "v57_modified_ids": [
+      "BQ1032",
+      "BQ1033",
+      "BQ1035",
+      "BQ1037",
+      "BQ1075",
+      "BQ210",
+      "BQ603",
+      "BQ629",
+      "BQ653",
+      "BQ656",
+      "BQ762",
+      "BQ763",
+      "BQ764",
+      "BQ765",
+      "BQ766",
+      "BQ767",
+      "BQ809",
+      "BQ906"
+    ],
+    "v57_automatic_integrity_repairs": {
+      "date_auto_conversion_restored": {
+        "BQ1097": "6-4-3",
+        "BQ1098": "4-6-3",
+        "BQ1099": "5-4-3"
+      },
+      "invalid_jsbb_suffix_removed_from_high_school_questions": [
+        "BQ802",
+        "BQ803"
+      ],
+      "derived_correct_choice_fields_recalculated": [
+        "BQ1075",
+        "BQ210",
+        "BQ809"
+      ]
+    },
+    "v57_validation": {
+      "question_count": 268,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "csv_stale_derived_correct_choice_cells_normalized": 3,
+      "choice_length_over_30": 0
+    },
+    "audit_step_v58": "2026-06-24 ユーザー指定の用語・NPB・MLB・高校野球・軟式球問題を反映。現行268問との論点重複を確認し、既存のMLB球団数・NPB通算本塁打・反則打球は重複追加せず、対象範囲を明記または統合。BQ2073はBQ1078と同論点のため削除。",
+    "v58_added_ids": [
+      "BQ2129",
+      "BQ2130",
+      "BQ2131",
+      "BQ2132",
+      "BQ2133",
+      "BQ2134"
+    ],
+    "v58_modified_ids": [
+      "BQ807",
+      "BQ1078",
+      "BQ2117"
+    ],
+    "v58_deleted_ids": [
+      "BQ2073"
+    ],
+    "v58_existing_item_retained": {
+      "BQ2114": "MLBの球団数は既存問題で2026年・30球団として出題済みのため、重複追加しない。"
+    },
+    "v58_validation": {
+      "question_count": 273,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "answer_index_errors": 0,
+      "choice_count_errors": 0,
+      "level_name_errors": 0
+    },
+    "audit_step_v59": "2026-06-24 ユーザー指定の永久欠番・沢村賞・ゴールデングラブ賞を追加。現行273問との完全一致・論点重複を確認し、各問題の対象範囲を背番号制度、先発完投型投手の表彰、守備の表彰として明確化。",
+    "v59_added_ids": [
+      "BQ2135",
+      "BQ2136",
+      "BQ2137"
+    ],
+    "v59_validation": {
+      "question_count": 276,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "answer_index_errors": 0,
+      "choice_count_errors": 0,
+      "level_name_errors": 0,
+      "topic_overlap_with_existing_questions": 0
+    },
+    "audit_step_v60": "2026-06-24 公式記録・MLB公式資料・米国野球殿堂資料を根拠に、意外性のある野球史・記録問題5問を追加。既存276問と問題文・論点の重複、二重正解、対象年・対象範囲を確認。",
+    "v60_added_ids": [
+      "BQ2138",
+      "BQ2139",
+      "BQ2140",
+      "BQ2141",
+      "BQ2142"
+    ],
+    "v60_validation": {
+      "question_count": 281,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_length_over_30": 0,
+      "topic_overlap_hits": []
+    },
+    "audit_step_v61": "2026-06-24 ユーザー指定の野球用語34項目を追加。第1〜3問、第4〜5問、第6問以降の指定配置を遵守し、既存281問との問題文重複、3択、正解番号、選択肢重複、レベル名を検証。",
+    "v61_added_ids": [
+      "BQ2143",
+      "BQ2144",
+      "BQ2145",
+      "BQ2146",
+      "BQ2147",
+      "BQ2148",
+      "BQ2149",
+      "BQ2150",
+      "BQ2151",
+      "BQ2152",
+      "BQ2153",
+      "BQ2154",
+      "BQ2155",
+      "BQ2156",
+      "BQ2157",
+      "BQ2158",
+      "BQ2159",
+      "BQ2160",
+      "BQ2161",
+      "BQ2162",
+      "BQ2163",
+      "BQ2164",
+      "BQ2165",
+      "BQ2166",
+      "BQ2167",
+      "BQ2168",
+      "BQ2169",
+      "BQ2170",
+      "BQ2171",
+      "BQ2172",
+      "BQ2173",
+      "BQ2174",
+      "BQ2175",
+      "BQ2176"
+    ],
+    "v61_added_terms": [
+      "サウスポー",
+      "サヨナラ勝ち",
+      "三者凡退",
+      "スリーベースヒット",
+      "お見合い",
+      "アウトロー",
+      "インハイ",
+      "シートノック",
+      "オーバースロー",
+      "トンネル",
+      "コーチャー",
+      "遠投",
+      "ダッグアウト",
+      "クローザー",
+      "ダブルスチール",
+      "三遊間",
+      "自打球",
+      "降板",
+      "サイクルヒット",
+      "クイックモーション",
+      "クロスプレー",
+      "ドラッグバント",
+      "トリプルプレー",
+      "スコアリングポジション",
+      "セーフティースクイズ",
+      "出塁率",
+      "自責点",
+      "キャッチャーボーク",
+      "オープンスタンス",
+      "アベレージヒッター",
+      "シーソーゲーム",
+      "強襲ヒット",
+      "クロースタンス",
+      "広角打法"
+    ],
+    "v61_validation": {
+      "question_count": 315,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0,
+      "first_band_items": 11,
+      "second_band_items": 10,
+      "third_band_items": 13
+    },
+    "audit_step_v62": "2026-06-24 ユーザー指定の4用語を追加。既存315問との論点重複、問題文重複、3択、正解番号、レベル名、選択肢重複を検証。",
+    "v62_added_ids": [
+      "BQ2177",
+      "BQ2178",
+      "BQ2179",
+      "BQ2180"
+    ],
+    "v62_added_terms": [
+      "スイッチヒッター",
+      "テイクバック",
+      "スリークォーター",
+      "釣り球"
+    ],
+    "v62_validation": {
+      "question_count": 319,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0,
+      "existing_topic_hits": {
+        "スイッチヒッター": false,
+        "テイクバック": false,
+        "スリークォーター": false,
+        "釣り球": false
+      }
+    },
+    "audit_step_v63": "2026-06-24 ユーザー指定のドアスイング、アッパースイング、スランプを追加。既存319問との論点重複、問題文重複、3択、正解番号、レベル名、選択肢重複を検証。スランプは今回の明示指示により、状態の定義問題として採用。",
+    "v63_added_ids": [
+      "BQ2181",
+      "BQ2182",
+      "BQ2183"
+    ],
+    "v63_added_terms": [
+      "ドアスイング",
+      "アッパースイング",
+      "スランプ"
+    ],
+    "v63_validation": {
+      "question_count": 322,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0,
+      "existing_topic_hits": {
+        "ドアスイング": false,
+        "アッパースイング": false,
+        "スランプ": false
+      }
+    },
+    "audit_step_v64": "2026-06-24 ユーザー指定の逆シングルを追加。既存322問との論点重複、問題文重複、3択、正解番号、レベル名、選択肢重複を検証。",
+    "v64_added_ids": [
+      "BQ2184"
+    ],
+    "v64_added_terms": [
+      "逆シングル"
+    ],
+    "v64_validation": {
+      "question_count": 323,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0
+    },
+    "audit_step_v65": "2026-06-24 ユーザー指定のケースノックを追加。既存323問との論点重複、問題文重複、3択、正解番号、レベル名、選択肢重複を検証。",
+    "v65_added_ids": [
+      "BQ2185"
+    ],
+    "v65_added_terms": [
+      "ケースノック"
+    ],
+    "v65_validation": {
+      "question_count": 324,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0
+    },
+    "audit_step_v66": "2026-06-24 BQ2150「シートノック」をユーザー指定の問題文・選択肢へ修正。正解番号、解説、ケースノックとの論点差、3択、ID重複、問題文重複を検証。",
+    "v66_modified_ids": [
+      "BQ2150"
+    ],
+    "v66_validation": {
+      "question_count": 324,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0
+    },
+    "audit_step_v67": "2026-06-24 「少年野球から見た上位カテゴリー知識の価値として正しいものは？」を削除。抽象的な価値判断・上位カテゴリの学習価値を問う確認型問題に当たり、現行の採用基準に合わないため除外台帳へ記録。",
+    "v67_deleted_ids": [
+      "BQ920"
+    ],
+    "v67_deleted_topics": [
+      "少年野球から見た上位カテゴリー知識の価値"
+    ],
+    "v67_validation": {
+      "question_count": 323,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0
+    },
+    "audit_step_v68": "2026-06-24 BQ2175の誤表記「クロースタンス」を「クローズスタンス」へ修正。問題文、選択肢、解説、分類名、出典メモを更新し、全体の構造検証を実施。",
+    "v68_modified_ids": [
+      "BQ2175"
+    ],
+    "v68_validation": {
+      "question_count": 323,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0
+    },
+    "audit_step_v69": "2026-06-25 BQ2154「遠投」を練習ではなく、できるだけ遠くへ投げる行為として定義へ修正。問題文、選択肢、解説の整合性と全体構造を検証。",
+    "v69_modified_ids": [
+      "BQ2154"
+    ],
+    "v69_validation": {
+      "question_count": 323,
+      "id_duplicates": 0,
+      "question_text_duplicates": 0,
+      "choice_count_errors": 0,
+      "answer_index_errors": 0,
+      "level_name_errors": 0,
+      "choice_duplicates": 0,
+      "choice_length_over_30": 0
+    }
+  },
+  "questions": [
+    {
+      "id": "BQ101",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "少年野球基礎・安全用具",
+      "question": "スパイクを履くおもな目的は？",
+      "choices": [
+        "スタッドで地面をつかみやすくするため",
+        "クッション性を高め、長時間の立ち姿勢を楽にするため",
+        "足首を固定し、投球時のぶれを抑えるため"
+      ],
+      "answer": 0,
+      "explanation": "スパイクは靴底のスタッドでグリップを高め、急な動きや踏ん張りを支えます。",
+      "source_note": "",
+      "overlap_check": "スパイク名称をスタッドに統一。",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ1040",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "パスボール",
+      "question": "パスボールとは？",
+      "choices": [
+        "捕手が捕れる球をそらすこと",
+        "投手の悪送球",
+        "野手の悪送球"
+      ],
+      "answer": 0,
+      "explanation": "パスボールは、捕手が普通に捕れる投球を後ろにそらした場合に使う記録です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v25: 使用頻度が高い野球用語を、問題数が少ないレベル優先で5問目までに追加。"
+    },
+    {
+      "id": "BQ1051",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "タイムリー",
+      "question": "タイムリーとは？",
+      "choices": [
+        "得点につながる安打",
+        "同点で出た四球",
+        "走者を進める犠打"
+      ],
+      "answer": 0,
+      "explanation": "タイムリーは、ランナーを本塁へ返すなど得点につながる安打のことです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ1052",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "フルカウント",
+      "question": "フルカウントとは？",
+      "choices": [
+        "3ボール2ストライク",
+        "3ボール2ストライク2アウト",
+        "2アウト満塁"
+      ],
+      "answer": 0,
+      "explanation": "フルカウントは、アウト数やランナーの状況ではなく、3ボール2ストライクのカウントです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。 / v29 Step9: 誤答選択肢をユーザー指定に基づき修正。"
+    },
+    {
+      "id": "BQ1076",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "スコア",
+      "question": "野球でスコアとは？",
+      "choices": [
+        "試合の得点や記録",
+        "投球だけの速さ",
+        "守備位置の番号"
+      ],
+      "answer": 0,
+      "explanation": "スコアは、試合の得点やプレーの記録を表す言葉です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v28: スコア・バントの基本用語を第2問までに追加。簡単すぎる選択肢を避けて作成。"
+    },
+    {
+      "id": "BQ1077",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "バント",
+      "question": "バントとは？",
+      "choices": [
+        "バットを振らず球に当てる打ち方",
+        "強く振って長打を狙う打ち方",
+        "打席を外して投球を見送ること"
+      ],
+      "answer": 0,
+      "explanation": "バントは、バットを大きく振らずに球へ当て、転がすことをねらう打ち方です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "犠牲バントとは別に、バントそのものの意味を問う問題として追加。",
+      "quality_note": "v29 Step9: BQ1054削除後の第2問補充。簡単すぎる誤答を避けて作成。"
+    },
+    {
+      "id": "BQ108",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "少年野球基礎・安全用具",
+      "question": "捕手がレガースを着用するおもな理由は？",
+      "choices": [
+        "投球のワンバウンドやファウルチップから脚を守るため",
+        "しゃがんだ時に膝の高さを一定にするため",
+        "走塁時のスピード低下を防ぐため"
+      ],
+      "answer": 0,
+      "explanation": "捕手は投球・打球の衝撃を受けやすいです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ110",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "少年野球基礎・安全用具",
+      "question": "スパイクを履いてプレーする場所として正しいものは？",
+      "choices": [
+        "一般の芝生広場",
+        "学校や公園の運動広場",
+        "野球用として整備されたグラウンド"
+      ],
+      "answer": 2,
+      "explanation": "スパイクは野球やソフトボール用グラウンドでの使用を前提としている。学校施設や公園、一般の芝生では使用が禁止されている場合があり、芝や床面を傷める原因にもなる。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ112",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "少年野球基礎・安全用具",
+      "question": "打者用ヘルメットを着用する最も重要な理由は？",
+      "choices": [
+        "チームカラーを統一し、審判が確認しやすくするため",
+        "投球や送球などから頭部を守るため",
+        "打席で視線を固定し、打率を安定させるため"
+      ],
+      "answer": 1,
+      "explanation": "頭部保護は安全上の最優先事項です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ113",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "少年野球基礎・安全用具",
+      "question": "試合前のウォーミングアップの目的は？",
+      "choices": [
+        "ボールやバットを温めて反発を一定にするため",
+        "相手チームを威圧するため",
+        "身体を動ける状態にし、けがのリスクを下げるため"
+      ],
+      "answer": 2,
+      "explanation": "身体の準備はけが予防につながります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ120",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "少年野球基礎・安全用具",
+      "question": "捕手用マスクの一番大切な役割は？",
+      "choices": [
+        "顔を投球や打球から守る",
+        "サインを見えやすくする",
+        "背番号を隠す"
+      ],
+      "answer": 0,
+      "explanation": "捕手用マスクは、投球やファウルチップから顔を守るための防具です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: Step4対象外だが即消し選択肢を予防修正 / Step5最終監査: 野球博士らしさ・単一正解性を調整 / v22: 二重正解防止のため選択肢を明確化",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ2013",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "投球コース",
+      "small_category": "インコース",
+      "question": "インコースとは？",
+      "choices": [
+        "打者に近い内側のコース",
+        "打者から遠い外側のコース",
+        "本塁の後ろの場所"
+      ],
+      "answer": 0,
+      "explanation": "インコースは打者に近い内側のコースです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2014",
+      "level": 1,
+      "level_name": "第1問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "投球コース",
+      "small_category": "アウトコース",
+      "question": "アウトコースとは？",
+      "choices": [
+        "打者から遠い外側のコース",
+        "打者に近い内側のコース",
+        "投手板の後ろ"
+      ],
+      "answer": 0,
+      "explanation": "アウトコースは打者から遠い外側のコースです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ103",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "少年野球基礎・安全用具",
+      "question": "バットリングのおもな用途は？",
+      "choices": [
+        "素振り時にバットへ負荷をかけ、スイング感覚を整えるため",
+        "グリップエンドを保護し、バットの長さを調整するため",
+        "打席でバットの反発力を高め、打球速度を上げるため"
+      ],
+      "answer": 0,
+      "explanation": "バットリングは素振り用の重りです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ104",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "少年野球基礎・安全用具",
+      "question": "グローブオイルを使う目的は？",
+      "choices": [
+        "グローブの重さを増やし、強い打球を止めやすくするため",
+        "革の乾燥を防ぎ、やわらかさや耐久性を保つため",
+        "捕る時にボールを滑らせ、送球へ移りやすくするため"
+      ],
+      "answer": 1,
+      "explanation": "オイルは革の状態を保つために適量使います。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ105",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "少年野球基礎・安全用具",
+      "question": "ビヨンド系バットの特徴は？",
+      "choices": [
+        "芯を外した時の手のしびれを減らす設計が中心である",
+        "打球部にウレタン素材を使うことが多い",
+        "木製バットに近い打球音を出すことを主目的にしている"
+      ],
+      "answer": 1,
+      "explanation": "ビヨンド系は打球部のやわらかい素材構造が特徴です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ107",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "少年野球基礎・安全用具",
+      "question": "一塁へのヘッドスライディングが推奨されにくい理由は？",
+      "choices": [
+        "判定が分かりにくくなる場面があるため",
+        "速さの差が小さくけがの危険があるため",
+        "スライディング後に走路を外れやすいため"
+      ],
+      "answer": 1,
+      "explanation": "一塁は駆け抜けられるため、頭から滑る必要性は高くありません。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ111",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "少年野球基礎・安全用具",
+      "question": "雨で濡れたグローブの扱いとして正しいものは？",
+      "choices": [
+        "水分を拭き取り、形を整えて風通しのよい日陰で乾かす",
+        "ストーブやドライヤーの高温で一気に乾かす",
+        "濡れたまま袋に入れて柔らかさを保つ"
+      ],
+      "answer": 0,
+      "explanation": "高温乾燥や湿ったままの保管は革を傷めます。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ116",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "少年野球基礎・安全用具",
+      "question": "グローブの革が乾燥しすぎた時に起こりやすいことは？",
+      "choices": [
+        "かたくなることやひび割れ",
+        "自然に型が深くなる",
+        "捕球面の反発力向上"
+      ],
+      "answer": 0,
+      "explanation": "革は乾燥しすぎると硬くなります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ118",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "少年野球基礎・安全用具",
+      "question": "小学生の野球で睡眠が重要とされる理由は？",
+      "choices": [
+        "成長・回復・集中力に関係し、けが予防にもつながるため",
+        "疲労感を感じにくくし、練習時間を長く保つため",
+        "試合前の緊張を抑え、体を重くしないため"
+      ],
+      "answer": 0,
+      "explanation": "睡眠は成長期の回復と集中に不可欠です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ119",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "少年野球基礎・安全用具",
+      "question": "少年野球で安全対策を重視する考え方は？",
+      "choices": [
+        "短期間で勝敗を最優先にするため",
+        "難しい練習を早く増やすため",
+        "長く野球を続けられる環境を守るため"
+      ],
+      "answer": 2,
+      "explanation": "成長期の身体を守ることが継続につながります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ1084",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合中の声かけ",
+      "small_category": "送球先指定",
+      "question": "守備で『一つ！』と言われたら、どこへ送球する意味？",
+      "choices": [
+        "一塁",
+        "二塁",
+        "本塁"
+      ],
+      "answer": 0,
+      "explanation": "『一つ』は一塁への送球を短く伝える呼び方です。『ファースト』より短く、聞き取りやすくするために使います。",
+      "source_note": "学童野球の守備で使われる送球先指定の声かけ",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。送球先の短縮呼称として既存問題なし。",
+      "quality_note": "v30 Step9追加: 一つ・二つ・三つ・四つをアウト数ではなく送球先指定として整理。第3問までに配置。"
+    },
+    {
+      "id": "BQ1085",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合中の声かけ",
+      "small_category": "送球先指定",
+      "question": "守備で『二つ！』と言われたら、どこへ送球する意味？",
+      "choices": [
+        "二塁",
+        "一塁",
+        "三塁"
+      ],
+      "answer": 0,
+      "explanation": "『二つ』は二塁への送球を短く伝える呼び方です。長い呼び方より、プレー中に素早く伝えやすくなります。",
+      "source_note": "学童野球の守備で使われる送球先指定の声かけ",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。送球先の短縮呼称として既存問題なし。",
+      "quality_note": "v30 Step9追加: 一つ・二つ・三つ・四つをアウト数ではなく送球先指定として整理。第3問までに配置。"
+    },
+    {
+      "id": "BQ117",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "用具とメンテナンス",
+      "question": "スパイクの靴底にある突起の名称は？",
+      "choices": [
+        "スタッド",
+        "バットエンド",
+        "ピン"
+      ],
+      "answer": 0,
+      "explanation": "スパイクの靴底にある突起はスタッドと呼びます。学童野球では金属製スパイクは禁止です。",
+      "source_note": "学童野球用具基礎",
+      "overlap_check": "v43全問題内のスパイク・ポイント・金具表現を確認し、用語をスタッドに統一。",
+      "quality_note": "「ポイント」「金具」の曖昧・不適切表現を避け、名称を覚える問題へ修正。",
+      "main_category": "基礎知識",
+      "middle_category": "用具の名称",
+      "small_category": "スパイク"
+    },
+    {
+      "id": "BQ208",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "用具とメンテナンス",
+      "question": "グローブに使われる素材として一般的なのは？",
+      "choices": [
+        "天然皮革や合成皮革",
+        "革に近い人工素材",
+        "用途に合う革素材"
+      ],
+      "answer": 0,
+      "explanation": "野球グローブは耐久性と捕球感から、天然皮革や合成皮革が使われます。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: Step4対象外だが即消し選択肢を予防修正 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ218",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "用具とメンテナンス",
+      "question": "捕手用プロテクターの役割は？",
+      "choices": [
+        "ピッチャーに投げやすくする為",
+        "胸や腹部を投球・打球から守る",
+        "ストライクゾーンを広く見せる"
+      ],
+      "answer": 1,
+      "explanation": "捕手はボールが身体に当たるリスクが高いです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ2143",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "投手",
+      "small_category": "サウスポー",
+      "question": "サウスポーとは？",
+      "choices": [
+        "左投げの投手",
+        "右投げの投手",
+        "両手で投げる投手"
+      ],
+      "answer": 0,
+      "explanation": "サウスポーは、左手で投げる投手の呼び方です。",
+      "source_note": "野球用語。MLB Glossaryおよび一般的な野球用語集。",
+      "overlap_check": "v60全281問にサウスポーの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第3問までの基本用語として配置。"
+    },
+    {
+      "id": "BQ2146",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃・記録",
+      "small_category": "スリーベースヒット",
+      "question": "スリーベースヒットとは？",
+      "choices": [
+        "打者が三塁まで安全に進む安打",
+        "打者が二塁まで安全に進む安打",
+        "打者が本塁まで帰る安打"
+      ],
+      "answer": 0,
+      "explanation": "スリーベースヒットは三塁打のことで、打者が三塁まで安全に進む安打です。",
+      "source_note": "野球用語。公認野球規則9.06。",
+      "overlap_check": "v60全281問にスリーベースヒットの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第3問までの基本用語として配置。"
+    },
+    {
+      "id": "BQ2148",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "投球コース",
+      "small_category": "アウトロー",
+      "question": "アウトローとは？",
+      "choices": [
+        "打者から遠く低いコース",
+        "打者に近く高いコース",
+        "真ん中付近のコース"
+      ],
+      "answer": 0,
+      "explanation": "アウトローは、打者から遠い外角の低いコースです。",
+      "source_note": "野球用語。",
+      "overlap_check": "BQ2014はアウトコース全体の定義であり、低さまで含むアウトローとは論点が異なる。",
+      "quality_note": "v61新規追加。ユーザー指定により第3問までの基本用語として配置。"
+    },
+    {
+      "id": "BQ2149",
+      "level": 2,
+      "level_name": "第2問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "投球コース",
+      "small_category": "インハイ",
+      "question": "インハイとは？",
+      "choices": [
+        "打者に近く高いコース",
+        "打者から遠く低いコース",
+        "真ん中より低いコース"
+      ],
+      "answer": 0,
+      "explanation": "インハイは、打者に近い内角の高いコースです。",
+      "source_note": "野球用語。",
+      "overlap_check": "BQ2013はインコース全体の定義であり、高さまで含むインハイとは論点が異なる。",
+      "quality_note": "v61新規追加。ユーザー指定により第3問までの基本用語として配置。"
+    },
+    {
+      "id": "BQ1041",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "ワイルドピッチ",
+      "question": "ワイルドピッチとは？",
+      "choices": [
+        "投手の悪投で捕れない球",
+        "捕手の捕球ミス",
+        "打者の空振り"
+      ],
+      "answer": 0,
+      "explanation": "ワイルドピッチは、投手の投球が大きくそれて捕手が捕れない場合に使う記録です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v25: 使用頻度が高い野球用語を、問題数が少ないレベル優先で5問目までに追加。"
+    },
+    {
+      "id": "BQ1053",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "コールドゲーム",
+      "question": "点差や天候などの規定条件で途中終了する試合を何という？",
+      "choices": [
+        "コールドゲーム",
+        "延長戦",
+        "タイブレーク"
+      ],
+      "answer": 0,
+      "explanation": "コールドゲームは、点差・天候など規定条件により途中で試合が成立して終わることです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。 / v42: BQ1058削除に合わせ、内容を統合。"
+    },
+    {
+      "id": "BQ1086",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合中の声かけ",
+      "small_category": "送球先指定",
+      "question": "守備で『三つ！』と言われたら、どこへ送球する意味？",
+      "choices": [
+        "三塁",
+        "二塁",
+        "本塁"
+      ],
+      "answer": 0,
+      "explanation": "『三つ』は三塁への送球を短く伝える呼び方です。聞き取りやすく、送球先を迷わないために使います。",
+      "source_note": "学童野球の守備で使われる送球先指定の声かけ",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。送球先の短縮呼称として既存問題なし。",
+      "quality_note": "v30 Step9追加: 一つ・二つ・三つ・四つをアウト数ではなく送球先指定として整理。第3問までに配置。"
+    },
+    {
+      "id": "BQ1095",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "大会形式",
+      "small_category": "トーナメント",
+      "question": "トーナメント戦とは？",
+      "choices": [
+        "負けたら大会から外れる方式",
+        "同じ相手と何度も試合する方式",
+        "練習試合だけを行う方式"
+      ],
+      "answer": 0,
+      "explanation": "トーナメント戦は、基本的に負けると次の試合へ進めない大会形式です。",
+      "source_note": "学童野球の大会で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ大会形式用語の既存問題なし。",
+      "quality_note": "v34: 3問目までに大会形式の基本用語として追加。"
+    },
+    {
+      "id": "BQ201",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "用具とメンテナンス",
+      "question": "金属バットの特徴として正しいものは？",
+      "choices": [
+        "木製より折れにくく運用しやすい",
+        "芯を外す感覚が最も分かりやすい",
+        "上位カテゴリーでも同じルールで使用"
+      ],
+      "answer": 0,
+      "explanation": "金属バットは木製に比べて折れにくく、チームで管理しやすい用具です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ2021",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "守備用語",
+      "small_category": "ベースカバー",
+      "question": "ベースカバーとは？",
+      "choices": [
+        "送球を受けるため塁に入ること",
+        "外野へ下がること",
+        "打席に入ること"
+      ],
+      "answer": 0,
+      "explanation": "ベースカバーは送球を受けるために塁へ入ることです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2022",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "守備技術",
+      "main_category": "守備技術",
+      "middle_category": "守備連係",
+      "small_category": "バックアップ",
+      "question": "バックアップとは？",
+      "choices": [
+        "味方の後ろをカバーする動き",
+        "打者の後ろに立つこと",
+        "ベンチから応援すること"
+      ],
+      "answer": 0,
+      "explanation": "バックアップは送球や捕球のミスに備えて後ろをカバーする動きです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2024",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "守備技術",
+      "main_category": "守備技術",
+      "middle_category": "守備連係",
+      "small_category": "カバーリング",
+      "question": "カバーリングとは？",
+      "choices": [
+        "味方のプレーを助ける位置へ動くこと",
+        "打者がバットを構えること",
+        "走者が盗塁すること"
+      ],
+      "answer": 0,
+      "explanation": "カバーリングは味方のプレーを助けるために動くことです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ203",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "用具とメンテナンス",
+      "question": "竹バットが練習で使われる理由は？",
+      "choices": [
+        "木製に近い感覚を学べる",
+        "試合で一番多く使われる",
+        "反発力を大きく上げられる"
+      ],
+      "answer": 0,
+      "explanation": "竹バットは木製に近い打感を学ぶ練習用として使われることがあります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: Step4対象外だが即消し選択肢を予防修正 / Step5最終監査: 野球博士らしさ・単一正解性を調整",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ205",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "用具とメンテナンス",
+      "question": "バットのグリップテープを交換するおもな理由は？",
+      "choices": [
+        "バットの長さをルール内に戻すため",
+        "握りやすさや滑りにくさを保つため",
+        "バットの反発力を直接上げるため"
+      ],
+      "answer": 1,
+      "explanation": "グリップは握りやすさと安全なスイングに関係します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ206",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "用具とメンテナンス",
+      "question": "打撃用手袋を使う理由として正しいものは？",
+      "choices": [
+        "バットの芯を広げるため",
+        "投球の回転数を下げるため",
+        "グリップ力を保ち、手の擦れを減らすため"
+      ],
+      "answer": 2,
+      "explanation": "手袋は滑り防止や手の保護に役立ちます。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ207",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "用具とメンテナンス",
+      "question": "守備用手袋を使う理由として正しいものは？",
+      "choices": [
+        "グローブのサイズを大きくするため",
+        "捕球時の手の保護や汗による違和感を減らすため",
+        "送球スピードを直接上げるため"
+      ],
+      "answer": 1,
+      "explanation": "守備用手袋は手の保護やフィット感に関係します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ209",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "用具とメンテナンス",
+      "question": "グローブの型付けで注意すべきことは？",
+      "choices": [
+        "使う人の手やポジションに合わせ、極端に潰しすぎない",
+        "早く閉じやすくするため、捕球面だけを平らに近づける",
+        "柔らかさを出すため、湿度を高めた状態で保管する"
+      ],
+      "answer": 0,
+      "explanation": "型は捕球しやすさに関わるため、用途に合わせた調整が必要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ2144",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合結果",
+      "small_category": "サヨナラ勝ち",
+      "question": "サヨナラ勝ちとは？",
+      "choices": [
+        "後攻チームが最後に勝ち越して試合が終わる勝ち方",
+        "先攻チームが9回表に勝つこと",
+        "同点のまま試合を終えること"
+      ],
+      "answer": 0,
+      "explanation": "サヨナラ勝ちは、後攻チームが最後の攻撃で勝ち越し、そこで試合が終わる勝ち方です。",
+      "source_note": "野球用語。MLB Glossary「Walk-off」および一般的な野球用語。",
+      "overlap_check": "BQ2139はサヨナラ場面の塁打記録であり、サヨナラ勝ちの定義とは論点が異なる。",
+      "quality_note": "v61新規追加。ユーザー指定により第3問までの基本用語として配置。"
+    },
+    {
+      "id": "BQ2145",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "守備・投手",
+      "small_category": "三者凡退",
+      "question": "三者凡退とは？",
+      "choices": [
+        "3人の打者を順番に打ち取り、走者を出さないこと",
+        "1人の打者を3球で打ち取ること",
+        "3人の走者を同時にアウトにすること"
+      ],
+      "answer": 0,
+      "explanation": "三者凡退は、その回に3人の打者を順番にアウトにし、走者を一人も出さないことです。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問に三者凡退の定義問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第3問までの基本用語として配置。"
+    },
+    {
+      "id": "BQ2147",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "守備",
+      "small_category": "お見合い",
+      "question": "守備でいう「お見合い」とは？",
+      "choices": [
+        "野手同士が譲り合い、打球を落とすこと",
+        "打球を捕った野手が交代すること",
+        "走者と野手がぶつかること"
+      ],
+      "answer": 0,
+      "explanation": "お見合いは、複数の野手が打球を捕ろうとして声をかけ合えず、譲り合って落とすことです。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問に守備でのお見合いを問う問題はないことを確認。",
+      "quality_note": "v61新規追加。野球特有の守備用語として第3問に配置。"
+    },
+    {
+      "id": "BQ2150",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "練習",
+      "small_category": "シートノック",
+      "question": "シートノックとは？",
+      "choices": [
+        "試合前に守備を確認するノック",
+        "内野手だけが行うノック",
+        "走者練習"
+      ],
+      "answer": 0,
+      "explanation": "シートノックは、試合前に内野・外野の守備や連係を確認するために行うノックです。",
+      "source_note": "野球用語。",
+      "overlap_check": "BQ2185のケースノックは走者やアウト数を想定した守備練習であり、試合前に守備を確認するシートノックとは論点が異なる。",
+      "quality_note": "v66: ユーザー指定の問題文・選択肢へ修正。正解Aと解説の整合を確認。"
+    },
+    {
+      "id": "BQ2151",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "投球フォーム",
+      "small_category": "オーバースロー",
+      "question": "オーバースローとは？",
+      "choices": [
+        "腕を肩より高く上げて投げる投げ方",
+        "腕を横から出して投げる投げ方",
+        "腕を下から出して投げる投げ方"
+      ],
+      "answer": 0,
+      "explanation": "オーバースローは、腕を肩より高く上げて投げる投げ方です。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問にオーバースローの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第3問までの基本用語として配置。"
+    },
+    {
+      "id": "BQ2152",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "守備",
+      "small_category": "トンネル",
+      "question": "守備でいう「トンネル」とは？",
+      "choices": [
+        "ゴロを足の間などから後ろへ通してしまうこと",
+        "外野手がフェンスに当たること",
+        "打球がベースに当たって跳ねること"
+      ],
+      "answer": 0,
+      "explanation": "トンネルは、ゴロを足の間などから後ろへ通してしまうことを指します。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問にトンネルの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。野球特有の守備用語として第3問に配置。"
+    },
+    {
+      "id": "BQ2153",
+      "level": 3,
+      "level_name": "第3問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "走塁",
+      "small_category": "コーチャー",
+      "question": "コーチャーの主な役割は？",
+      "choices": [
+        "走者や打者へ進塁などの指示を出す",
+        "投手の球数だけを数える",
+        "審判の判定を決める"
+      ],
+      "answer": 0,
+      "explanation": "コーチャーは、一塁・三塁のコーチスボックスなどから、走者や打者へ進塁・停止などの指示を出します。",
+      "source_note": "公認野球規則4.05および野球用語。",
+      "overlap_check": "v60全281問にコーチャーの役割を問う問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第3問までの基本用語として配置。"
+    },
+    {
+      "id": "BQ202",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "用具とメンテナンス",
+      "question": "木製バットの特徴として正しいものは？",
+      "choices": [
+        "反発部分が広く、多少芯を外しても結果が安定しやすい",
+        "芯で捉える技術がより求められ、打った時の感覚の差が出やすい",
+        "素材で打球音は変わるが金属とは別物"
+      ],
+      "answer": 1,
+      "explanation": "木製は芯を外すと飛距離や手応えに差が出やすいです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ210",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "用具とメンテナンス",
+      "question": "捕手ミットが内野手用グラブと大きく違う点は？",
+      "choices": [
+        "投球を受ける厚みがあり頑丈",
+        "打球処理を速くする浅さ",
+        "外野飛球を捕りやすい長さ"
+      ],
+      "answer": 0,
+      "explanation": "捕手ミットは投球を受けるため、厚みや形が捕手向けに作られています。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: Step4対象外だが即消し選択肢を予防修正 / v22: 二重正解防止のため選択肢を明確化",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ211",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "用具とメンテナンス",
+      "question": "ファーストミットの特徴として正しいものは？",
+      "choices": [
+        "送球を捕りやすいよう、捕る部分が広く深く作られている",
+        "打球処理を速くするため、内野手用より浅く作られる",
+        "牽制球を受けやすいよう、投手用に近い形で作られる"
+      ],
+      "answer": 0,
+      "explanation": "一塁手は送球を多く受けるため、捕球面が広めのミットを使います。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ214",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "用具とメンテナンス",
+      "question": "ヘルメットサイズが合っていない場合の問題は？",
+      "choices": [
+        "衝撃時にずれやすく、保護力が十分に働かない可能性がある",
+        "見え方の角度が変わり、打席での構えに影響することがある",
+        "耳当ての位置が変わり、チーム内の識別がしにくくなる"
+      ],
+      "answer": 0,
+      "explanation": "頭に合ったサイズを使うことが安全上重要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ216",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "用具とメンテナンス",
+      "question": "グローブを高温環境に長時間置く問題は？",
+      "choices": [
+        "オイルが均一に広がり寿命が延びる",
+        "自然に型が深くなり捕球しやすくなる",
+        "革の乾燥や変形が進みやすい"
+      ],
+      "answer": 2,
+      "explanation": "高温は革や紐に悪影響を与えることがあります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "防具・グラブ"
+    },
+    {
+      "id": "BQ217",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "用具とメンテナンス",
+      "question": "バットの重さ選びで避けたい状態は？",
+      "choices": [
+        "軽すぎてミート率が上がる状態",
+        "振り切れずフォームやタイミングが崩れる状態",
+        "短く持つと操作しやすくなる状態"
+      ],
+      "answer": 1,
+      "explanation": "重すぎるバットは技術習得や安全なスイングの妨げです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ219",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "用具とメンテナンス",
+      "question": "スパイク使用後の手入れとして正しいものは？",
+      "choices": [
+        "使用後に泥を落とし、スタッドの状態を確認する",
+        "試合前だけ水で洗い、濡れた状態で履き始める",
+        "アッパー部分だけ拭き、靴底のスタッドは確認しない"
+      ],
+      "answer": 0,
+      "explanation": "使用後に泥を落としてスタッドの状態を確認することで、グリップ低下や傷みに気づきやすくなります。",
+      "source_note": "",
+      "overlap_check": "「ポイント部」表現を「スタッド」に統一。",
+      "quality_note": "学童向けに金属部品を連想する表現を避けた。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ1055",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "犠牲バント",
+      "question": "犠牲バントとは？",
+      "choices": [
+        "走者を進めるためのバント",
+        "自分の安打をねらうバント",
+        "三塁走者を返すバント"
+      ],
+      "answer": 0,
+      "explanation": "犠牲バントは、自分がアウトになっても走者を進める目的のバントです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ1056",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "犠牲フライ",
+      "question": "犠牲フライとは？",
+      "choices": [
+        "走者を返すための外野フライ",
+        "内野で高く上がるフライ",
+        "打者が一塁へ走らない打球"
+      ],
+      "answer": 0,
+      "explanation": "犠牲フライは、フライ捕球後に三塁ランナーなどが本塁へ進むことをねらう打球です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ1057",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "フェアボール",
+      "question": "フェアボールとは？",
+      "choices": [
+        "フェア地域に入った打球",
+        "捕手が捕れなかった投球",
+        "打者が見送った投球"
+      ],
+      "answer": 0,
+      "explanation": "フェアボールは、ルール上フェア地域に入った打球です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ1087",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合中の声かけ",
+      "small_category": "送球先指定",
+      "question": "守備で『四つ！』と言われたら、どこへ送球する意味？",
+      "choices": [
+        "本塁",
+        "三塁",
+        "一塁"
+      ],
+      "answer": 0,
+      "explanation": "『四つ』は本塁への送球を短く伝える呼び方です。『ホーム』より周りに聞き取りやすくするために使われます。",
+      "source_note": "学童野球の守備で使われる送球先指定の声かけ",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。送球先の短縮呼称として既存問題なし。",
+      "quality_note": "v30 Step9追加: 一つ・二つ・三つ・四つをアウト数ではなく送球先指定として整理。第3問までに配置。"
+    },
+    {
+      "id": "BQ1088",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "イレギュラー",
+      "question": "打球が『イレギュラー』したとは？",
+      "choices": [
+        "打球が予想と違う跳ね方をすること",
+        "打者が打席を変えること",
+        "守備位置を試合前に変えること"
+      ],
+      "answer": 0,
+      "explanation": "イレギュラーは、グラウンドの状態などで打球が予想と違う方向や高さに跳ねることです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "BQ314の解説内に用語はあるが、意味を問う問題は未設置。大分類→中分類→小分類→既存問題検索後に追加。",
+      "quality_note": "v31: 3問目までの用語問題として追加。選択肢は送球先・守備位置と混同しにくいが、ボケ回答になりすぎない表現に調整。"
+    },
+    {
+      "id": "BQ1113",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "main_category": "グラウンド",
+      "middle_category": "設備",
+      "small_category": "バッターサークル",
+      "question": "バッターサークルとはどこ？",
+      "choices": [
+        "次の打者が待つ場所",
+        "ピッチャーが投げる場所",
+        "キャッチャーが座る場所"
+      ],
+      "answer": 0,
+      "explanation": "バッターサークルは、次に打つ打者が準備して待つ場所です。",
+      "source_note": "学童野球の試合・指導で使われるグラウンド用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。バッターサークルの意味問題は既存なし。",
+      "quality_note": "v39: 第3問までの実戦用語として追加。"
+    },
+    {
+      "id": "BQ807",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "question": "継投とは？",
+      "choices": [
+        "投手を交代しながら試合を進めること",
+        "投手が同じ打者に続けて投げること",
+        "打者が投手の球種を読むこと"
+      ],
+      "answer": 0,
+      "explanation": "継投は、先発投手の後に別の投手へ交代し、複数の投手で試合を進めることです。",
+      "source_note": "野球用語。公認野球規則の投手交代に関する規定および一般的な試合用語。",
+      "overlap_check": "旧BQ807は継投の理由を問う抽象問題で、選択肢が複数正しくなり得たため、用語の定義問題へ置換。",
+      "quality_note": "v58: ユーザー指定「継投とは？」を反映。単一正解性を確認。",
+      "main_category": "野球用語",
+      "middle_category": "投手",
+      "small_category": "継投"
+    },
+    {
+      "id": "BQ2154",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "練習",
+      "small_category": "遠投",
+      "question": "遠投とは？",
+      "choices": [
+        "できるだけ遠くへ投げること",
+        "近い相手へ速く投げること",
+        "打球を遠くへ飛ばすこと"
+      ],
+      "answer": 0,
+      "explanation": "遠投は、ボールをできるだけ遠くへ投げることです。",
+      "source_note": "野球用語。",
+      "overlap_check": "v69: 遠投は練習の名称ではなく、遠くへ投げる行為を指す定義へ修正。",
+      "quality_note": "v69: ユーザー指摘により「練習」表現を削除し、行為として定義を統一。"
+    },
+    {
+      "id": "BQ2155",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "球場・施設",
+      "small_category": "ダッグアウト",
+      "question": "ダッグアウトとは？",
+      "choices": [
+        "選手や監督が試合中に待機する場所",
+        "投手が投球練習をする場所",
+        "観客が応援する場所"
+      ],
+      "answer": 0,
+      "explanation": "ダッグアウトは、試合中に選手や監督、コーチが待機するベンチの場所です。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問にダッグアウトの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第5問までの基本用語として配置。"
+    },
+    {
+      "id": "BQ2158",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "守備位置",
+      "small_category": "三遊間",
+      "question": "三遊間とはどこ？",
+      "choices": [
+        "三塁手と遊撃手の間",
+        "二塁手と遊撃手の間",
+        "一塁手と二塁手の間"
+      ],
+      "answer": 0,
+      "explanation": "三遊間は、三塁手と遊撃手の間を指す言葉です。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問に三遊間の位置を問う問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第4〜5問向け用語として配置。"
+    },
+    {
+      "id": "BQ2177",
+      "level": 4,
+      "level_name": "第4問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃タイプ",
+      "small_category": "スイッチヒッター",
+      "question": "スイッチヒッターとは？",
+      "choices": [
+        "左右どちらの打席でも打てる打者",
+        "投手と打者を両方する選手",
+        "左右どちらの手でも投げる投手"
+      ],
+      "answer": 0,
+      "explanation": "スイッチヒッターは、右打席と左打席の両方で打つことができる打者です。",
+      "source_note": "野球用語。MLB.com Glossary「Switch Hitter」および野球史資料。",
+      "overlap_check": "v61の315問にスイッチヒッターの定義問題はないことを確認。",
+      "quality_note": "v62新規追加。打撃の左右と二刀流・両投げを明確に区別した3択。"
+    },
+    {
+      "id": "BQ1089",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "守備の基本",
+      "main_category": "守備技術",
+      "middle_category": "ゴロ捕球",
+      "small_category": "ショートバウンド",
+      "question": "ショーバン（ショートバウンド）を正確に捕る姿勢はどれ？",
+      "choices": [
+        "腰を落とし、グラブを地面に近づけて前で捕る",
+        "立ったままグラブだけ前へ出す",
+        "身体を後ろに引きながら捕る"
+      ],
+      "answer": 0,
+      "explanation": "ショートバウンドは、腰を落としてグラブを地面に近づけ、身体の前で捕球すると安定します。",
+      "source_note": "学童野球の守備基本技術",
+      "overlap_check": "既存問題検索後に追加。用語だけでなく正しい捕球姿勢を問うため重複ではない。",
+      "quality_note": "v32: 低学年〜中学年向けの実戦守備用語・基本姿勢問題として追加。"
+    },
+    {
+      "id": "BQ1091",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "カット",
+      "question": "守備で『カット！』という声はどんな意味？",
+      "choices": [
+        "中継する選手が送球を受けること",
+        "打者がバットを短く持つこと",
+        "審判が試合を止めること"
+      ],
+      "answer": 0,
+      "explanation": "『カット』は、中継プレーで送球を受けることを意味します。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "既存問題検索後に追加。中継プレー全体ではなく送球を受ける合図として出題。",
+      "quality_note": "v32: 第3問までの実戦用語として追加。"
+    },
+    {
+      "id": "BQ1096",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "大会形式",
+      "small_category": "リーグ戦",
+      "question": "リーグ戦とは？",
+      "choices": [
+        "複数の相手と試合し成績を比べる方式",
+        "一度負けたらすぐ終わる方式",
+        "決勝戦だけを行う方式"
+      ],
+      "answer": 0,
+      "explanation": "リーグ戦は、複数のチームと試合を行い、勝敗や勝点などの成績を比べる大会形式です。",
+      "source_note": "学童野球の大会で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ大会形式用語の既存問題なし。",
+      "quality_note": "v34: 3問目までに大会形式の基本用語として追加。"
+    },
+    {
+      "id": "BQ2028",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "守備番号",
+      "main_category": "守備番号",
+      "middle_category": "ポジション番号",
+      "small_category": "1番",
+      "question": "守備番号の「1」はどこの守備位置？",
+      "choices": [
+        "ピッチャー",
+        "キャッチャー",
+        "ファースト"
+      ],
+      "answer": 0,
+      "explanation": "守備番号1はピッチャーです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2029",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "守備番号",
+      "main_category": "守備番号",
+      "middle_category": "ポジション番号",
+      "small_category": "2番",
+      "question": "守備番号の「2」はどこの守備位置？",
+      "choices": [
+        "キャッチャー",
+        "セカンド",
+        "ショート"
+      ],
+      "answer": 0,
+      "explanation": "守備番号2はキャッチャーです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2030",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "守備番号",
+      "main_category": "守備番号",
+      "middle_category": "ポジション番号",
+      "small_category": "4番",
+      "question": "守備番号の「4」はどこの守備位置？",
+      "choices": [
+        "セカンド",
+        "サード",
+        "センター"
+      ],
+      "answer": 0,
+      "explanation": "守備番号4はセカンドです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2031",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "守備番号",
+      "main_category": "守備番号",
+      "middle_category": "ポジション番号",
+      "small_category": "5番",
+      "question": "守備番号の「5」はどこの守備位置？",
+      "choices": [
+        "サード",
+        "ショート",
+        "ライト"
+      ],
+      "answer": 0,
+      "explanation": "守備番号5はサードです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2032",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "守備番号",
+      "main_category": "守備番号",
+      "middle_category": "ポジション番号",
+      "small_category": "7番",
+      "question": "守備番号の「7」はどこの守備位置？",
+      "choices": [
+        "レフト",
+        "センター",
+        "ライト"
+      ],
+      "answer": 0,
+      "explanation": "守備番号7はレフトです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2033",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "守備番号",
+      "main_category": "守備番号",
+      "middle_category": "ポジション番号",
+      "small_category": "8番",
+      "question": "守備番号の「8」はどこの守備位置？",
+      "choices": [
+        "センター",
+        "レフト",
+        "ライト"
+      ],
+      "answer": 0,
+      "explanation": "守備番号8はセンターです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2034",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "守備番号",
+      "main_category": "守備番号",
+      "middle_category": "ポジション番号",
+      "small_category": "9番",
+      "question": "守備番号の「9」はどこの守備位置？",
+      "choices": [
+        "ライト",
+        "センター",
+        "セカンド"
+      ],
+      "answer": 0,
+      "explanation": "守備番号9はライトです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ302",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "グラウンド・ルール",
+      "question": "ホーム塁前面の幅として正しいものは？",
+      "choices": [
+        "15インチ（約38.1cm）",
+        "17インチ（約43.2cm）",
+        "18インチ（約45.7cm）"
+      ],
+      "answer": 1,
+      "explanation": "ホーム塁前面幅は17インチです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ304",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "JSBB学童部規定",
+      "question": "小学生高学年でよく使われる塁間距離として正しいものは（JSBB学童部規定）？",
+      "choices": [
+        "25m",
+        "23m",
+        "21m"
+      ],
+      "answer": 1,
+      "explanation": "小学生の高学年では23mが一般的なルールとして使われます。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ305",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "JSBB学童部規定",
+      "question": "小学生低学年で採用されることがある塁間距離として正しいものは（JSBB学童部規定）？",
+      "choices": [
+        "27.43m",
+        "23m",
+        "21m"
+      ],
+      "answer": 2,
+      "explanation": "小学生の低学年の大会では21mなど短い塁間が採用されることがあります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ2134",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "JSBB学童ルール",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "軟式野球ボール",
+      "question": "現在の軟式野球で基本的に使うボール規格は何種類？",
+      "choices": [
+        "2種類",
+        "3種類",
+        "4種類"
+      ],
+      "answer": 0,
+      "explanation": "一般・中学生用のM号と、小学生用のJ号の2種類が基本です。",
+      "source_note": "全日本軟式野球連盟FAQ・規程細則、および公認球メーカーの現行製品情報。",
+      "overlap_check": "BQ213は軟式M号球の導入理由を問う問題であり、規格数を問う本問とは論点が異なる。",
+      "quality_note": "v58新規追加。対象を現在の一般・中学生用／小学生用の基本規格へ限定。"
+    },
+    {
+      "id": "BQ2156",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "投手",
+      "small_category": "クローザー",
+      "question": "クローザーとは？",
+      "choices": [
+        "試合終盤を任されるリリーフ投手",
+        "試合の最初に投げる先発投手",
+        "守備だけを専門にする選手"
+      ],
+      "answer": 0,
+      "explanation": "クローザーは、接戦の試合終盤で最後のアウトを取ることを主に任されるリリーフ投手です。",
+      "source_note": "MLB Glossary「Closer」および野球用語。",
+      "overlap_check": "v60全281問にクローザーの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第5問までの基本用語として配置。"
+    },
+    {
+      "id": "BQ2157",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "走塁",
+      "small_category": "ダブルスチール",
+      "question": "ダブルスチールとは？",
+      "choices": [
+        "二人以上の走者が同時に盗塁を試みること",
+        "一人の走者が二つの塁を盗むこと",
+        "二人の野手が同時に送球すること"
+      ],
+      "answer": 0,
+      "explanation": "ダブルスチールは、二人以上の走者が同じ投球で同時に盗塁を試みることです。",
+      "source_note": "野球用語。",
+      "overlap_check": "BQ2067のディレードスチールとは走者の動きが異なり、論点は重複しない。",
+      "quality_note": "v61新規追加。ユーザー指定により第4〜5問向け用語として配置。"
+    },
+    {
+      "id": "BQ2159",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃",
+      "small_category": "自打球",
+      "question": "自打球とは？",
+      "choices": [
+        "自分が打った球が自分の体に当たること",
+        "自分の送球が自分に当たること",
+        "打球が審判に当たること"
+      ],
+      "answer": 0,
+      "explanation": "自打球は、打者が打った球が自分の体に当たることです。打者が打席内にいる時は、多くの場合ファウルボールになります。",
+      "source_note": "公認野球規則5.09(a)(7)および野球用語。",
+      "overlap_check": "v60全281問に自打球の定義問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第4〜5問向け用語として配置。"
+    },
+    {
+      "id": "BQ2160",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "投手",
+      "small_category": "降板",
+      "question": "投手が「降板する」とは？",
+      "choices": [
+        "投手が交代してマウンドを離れること",
+        "投手が打席に入ること",
+        "投手が守備位置を変えること"
+      ],
+      "answer": 0,
+      "explanation": "降板は、投手が交代してマウンドを離れることです。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問に降板の定義問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第4〜5問向け用語として配置。"
+    },
+    {
+      "id": "BQ2161",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃・記録",
+      "small_category": "サイクルヒット",
+      "question": "サイクルヒットとは？",
+      "choices": [
+        "1試合で単打・二塁打・三塁打・本塁打を打つこと",
+        "1試合で4本の本塁打を打つこと",
+        "1試合で4回盗塁を決めること"
+      ],
+      "answer": 0,
+      "explanation": "サイクルヒットは、1試合で単打・二塁打・三塁打・本塁打のすべてを打つことです。",
+      "source_note": "NPB.jp 野球用語・記録情報。",
+      "overlap_check": "v60全281問にサイクルヒットの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第4〜5問向け用語として配置。"
+    },
+    {
+      "id": "BQ2162",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "投球フォーム",
+      "small_category": "クイックモーション",
+      "question": "クイックモーションの主な目的は？",
+      "choices": [
+        "走者の盗塁をしにくくすること",
+        "打者へ速い球を投げること",
+        "守備の交代を早くすること"
+      ],
+      "answer": 0,
+      "explanation": "クイックモーションは、走者が盗塁しにくいように、投手が素早く投球動作へ入ることです。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問にクイックモーションの目的を問う問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第4〜5問向け用語として配置。"
+    },
+    {
+      "id": "BQ2163",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "走塁・守備",
+      "small_category": "クロスプレー",
+      "question": "クロスプレーとは？",
+      "choices": [
+        "走者と野手が塁の近くで接近するプレー",
+        "二人の投手が同時に投げること",
+        "打者が左右両方で打つこと"
+      ],
+      "answer": 0,
+      "explanation": "クロスプレーは、走者と野手が塁の近くで接近し、セーフかアウトかが際どくなるプレーです。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問にクロスプレーの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。ユーザー指定により第4〜5問向け用語として配置。"
+    },
+    {
+      "id": "BQ2178",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃フォーム",
+      "small_category": "テイクバック",
+      "question": "打撃でいうテイクバックとは？",
+      "choices": [
+        "打つ前にバットを後ろへ引く動き",
+        "打った後にバットを後ろへ戻す動き",
+        "バットを地面へ置く動き"
+      ],
+      "answer": 0,
+      "explanation": "打撃のテイクバックは、打つ前にグリップやバットを後ろへ引き、打つ準備をする動きです。",
+      "source_note": "野球用語。打撃フォームの一般的な解説。",
+      "overlap_check": "v61の315問に打撃のテイクバックを定義する問題はないことを確認。",
+      "quality_note": "v62新規追加。投球にも使われる語だが、問題文で打撃に対象を固定。"
+    },
+    {
+      "id": "BQ2179",
+      "level": 5,
+      "level_name": "第5問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "投球フォーム",
+      "small_category": "スリークォーター",
+      "question": "スリークォーターとは？",
+      "choices": [
+        "上手投げと横手投げの中間に近い投げ方",
+        "真横からだけ腕を出す投げ方",
+        "下からだけ腕を出す投げ方"
+      ],
+      "answer": 0,
+      "explanation": "スリークォーターは、オーバースローとサイドスローの中間に近い角度から投げる投げ方です。",
+      "source_note": "野球用語。投球フォームの一般的な分類。",
+      "overlap_check": "BQ2151はオーバースローの定義であり、スリークォーターとは区別できる。",
+      "quality_note": "v62新規追加。オーバースロー・サイドスロー・アンダースローと混同しない3択に整理。"
+    },
+    {
+      "id": "BQ306",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "JSBB学童部規定",
+      "question": "小学生高学年の投手板からホームまでの距離として正しいものは（JSBB学童部規定）？",
+      "choices": [
+        "14m",
+        "18.44m",
+        "16m"
+      ],
+      "answer": 2,
+      "explanation": "小学生の高学年では16mが一般的です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ307",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "JSBB学童部規定",
+      "question": "小学生高学年の塁間の場合、ホームから二塁までの直線距離として正しいものは（JSBB学童部規定）？",
+      "choices": [
+        "約30.0m",
+        "約34.0m",
+        "約32.5m"
+      ],
+      "answer": 2,
+      "explanation": "23m×√2で約32.5mです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ308",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "JSBB学童部規定",
+      "question": "小学生低学年の塁間が短い大会がある理由は（JSBB学童部規定）？",
+      "choices": [
+        "走力や送球力に合わせるため",
+        "塁を少なくするため",
+        "打順を早く回すため"
+      ],
+      "answer": 0,
+      "explanation": "小学生の低学年では走る力や投げる力に合わせて、試合しやすい距離にすることがあります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない学童グラウンド知識問題",
+      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え / v18: JSBB学童部規定表記を追加",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ310",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "グラウンド知識",
+      "question": "ファウルラインの役割は？",
+      "choices": [
+        "投手板からホームまでの基準線を示す",
+        "フェア地域とファウル地域の境界を示す",
+        "走者が三フィートラインを確認する目印になる"
+      ],
+      "answer": 1,
+      "explanation": "ファウルラインはフェア・ファウル判定に関わります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ311",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "グラウンド知識",
+      "question": "バックネットの役割は？",
+      "choices": [
+        "捕手の守備範囲を公式に区切る",
+        "打者のスイング位置をルールする",
+        "後方へのファウルや逸れた投球から観客・施設を守る"
+      ],
+      "answer": 2,
+      "explanation": "バックネットは安全確保とボール飛散防止が主目的です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ312",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "グラウンド知識",
+      "question": "マウンドの役割は？",
+      "choices": [
+        "投手が投げる位置をそろえるため",
+        "投手の足場と投球条件をそろえるため",
+        "投手板の位置を分かりやすくするため"
+      ],
+      "answer": 1,
+      "explanation": "マウンドは投手の足場と投球条件をそろえる設備です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 即消し選択肢を除去 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ313",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "グラウンド知識",
+      "question": "塁設置で重要なこととして正しいものは？",
+      "choices": [
+        "走者が滑りやすいように高く浮かせる",
+        "ルール位置と安全を両立し、ずれや段差を防ぐ",
+        "守備側が捕りやすいように内側へ寄せる"
+      ],
+      "answer": 1,
+      "explanation": "正確な位置と安全な設置が重要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ315",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "グラウンド知識",
+      "question": "外野フェンスの役割は？",
+      "choices": [
+        "外野手の守備範囲を確認する目印になる",
+        "グラウンドの範囲を示し、長打判定や安全確保に関係する",
+        "観客席との境界を作り、ボールの回収をしやすくする"
+      ],
+      "answer": 1,
+      "explanation": "フェンスは球場範囲と安全面に関係します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ317",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "グラウンド知識",
+      "question": "ブルペンの役割は？",
+      "choices": [
+        "審判が予備球を管理し、試合前に確認する場所",
+        "打者が次打席に備えて素振りを行う場所",
+        "控え投手などが投球練習を行う場所"
+      ],
+      "answer": 2,
+      "explanation": "ブルペンは投球練習場所です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ318",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "JSBB学童部規定",
+      "question": "ホームから二塁が塁間より長い理由は（JSBB学童部規定）？",
+      "choices": [
+        "正方形の対角線だから",
+        "二塁だけ遠く置くため",
+        "外野を広げるため"
+      ],
+      "answer": 0,
+      "explanation": "本塁、一塁、二塁、三塁は正方形に近い形で置くため、対角線は塁間より長くなります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない学童グラウンド知識問題",
+      "quality_note": "v11: 一般野球問題を第8問へ移動したため、学童向け施設知識に差し替え / v18: JSBB学童部規定表記を追加",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ320",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "グラウンド知識",
+      "question": "グラウンド整備で最初に行う目的はどれ？",
+      "choices": [
+        "選手を速く走らせるため",
+        "見た目のため",
+        "穴やでこぼこを減らすため"
+      ],
+      "answer": 2,
+      "explanation": "グラウンド整備では、まず穴やでこぼこを減らし、安全にプレーしやすい状態にします。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 複数正解に見える選択肢を整理 / v33: 二重正解防止のため選択肢を修正。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ408",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "ルール知識（非状況判断）",
+      "question": "ファウルチップとはどんな打球？",
+      "choices": [
+        "バットにかすり、そのまま捕手が捕球した打球",
+        "ファウル地域へ転がった打球",
+        "高く上がったファウルフライ"
+      ],
+      "answer": 0,
+      "explanation": "ファウルチップは、投球がバットにかすって鋭く捕手へ進み、そのまま正しく捕球されたものです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 正確性と難易度を向上 / Step4.6: 問題文の単調表現を自然化 / v40: 二重正解防止と第3問配置へ修正",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ1042",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "挟殺",
+      "question": "挟殺とは？",
+      "choices": [
+        "走者を塁間ではさむプレー",
+        "盗塁を防ぐだけのプレー",
+        "外野からの返球プレー"
+      ],
+      "answer": 0,
+      "explanation": "挟殺は、走者を塁と塁の間ではさんでアウトをねらうプレーです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v25: 使用頻度が高い野球用語を、問題数が少ないレベル優先で5問目までに追加。"
+    },
+    {
+      "id": "BQ2173",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合展開",
+      "small_category": "シーソーゲーム",
+      "question": "シーソーゲームとは？",
+      "choices": [
+        "両チームが何度もリードを取り合う試合",
+        "片方のチームだけが得点する試合",
+        "延長戦だけで行う試合"
+      ],
+      "answer": 0,
+      "explanation": "シーソーゲームは、両チームが何度もリードを取り合う接戦です。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問にシーソーゲームの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。第6問以降の試合展開用語として配置。"
+    },
+    {
+      "id": "BQ2181",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃フォーム",
+      "small_category": "ドアスイング",
+      "question": "ドアスイングとは？",
+      "choices": [
+        "ひじが早く開き、バットが遠回りする打ち方",
+        "バットを体の近くから最短で出す打ち方",
+        "低い球だけを打つ打ち方"
+      ],
+      "answer": 0,
+      "explanation": "ドアスイングは、ドアを開くように前のひじが早く開き、バットが遠回りしやすい打ち方です。",
+      "source_note": "野球用語。打撃フォームの一般的な解説。",
+      "overlap_check": "v62の319問にドアスイングを定義する問題はないことを確認。",
+      "quality_note": "v63新規追加。打撃フォームの特徴を明確にし、単一正解性を確認。"
+    },
+    {
+      "id": "BQ2182",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃フォーム",
+      "small_category": "アッパースイング",
+      "question": "アッパースイングとは？",
+      "choices": [
+        "バットを下から上へ振り上げる打ち方",
+        "バットを上から下へ振り下ろす打ち方",
+        "バットを動かさず当てる打ち方"
+      ],
+      "answer": 0,
+      "explanation": "アッパースイングは、バットの軌道が下から上へ向かう打ち方です。",
+      "source_note": "野球用語。打撃フォームの一般的な分類。",
+      "overlap_check": "v62の319問にアッパースイングの定義問題はないことを確認。",
+      "quality_note": "v63新規追加。フォームの軌道を問う問題として単一正解化。"
+    },
+    {
+      "id": "BQ2183",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃・投球",
+      "small_category": "スランプ",
+      "question": "野球でいうスランプとは？",
+      "choices": [
+        "成績や調子が長く下がる状態",
+        "試合前に行う短い練習",
+        "打順を入れ替える作戦"
+      ],
+      "answer": 0,
+      "explanation": "スランプは、打撃や投球などの成績・調子がしばらく上がらない状態を指します。",
+      "source_note": "野球用語。",
+      "overlap_check": "v62の319問にスランプの定義問題はないことを確認。",
+      "quality_note": "v63新規追加。以前の候補除外指定はあったが、今回の明示指示により追加。主観的な原因や対策は問わず、状態の定義に限定。"
+    },
+    {
+      "id": "BQ2184",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "守備",
+      "small_category": "逆シングル",
+      "question": "逆シングルとは？",
+      "choices": [
+        "グラブを反対側へ伸ばして片手で捕ること",
+        "両手を重ねて正面で捕ること",
+        "打球を背中側へそらすこと"
+      ],
+      "answer": 0,
+      "explanation": "逆シングルは、グラブを持つ手とは反対側へグラブを伸ばし、片手で打球を捕る動作です。",
+      "source_note": "デジタル大辞泉「逆シングル」およびFull-Count野球用語辞典。",
+      "overlap_check": "v63の322問に逆シングルの定義問題はないことを確認。正面捕球・トンネル・お見合いとも論点が異なる。",
+      "quality_note": "v64新規追加。守備の専門用語として第6問に配置。"
+    },
+    {
+      "id": "BQ2185",
+      "level": 6,
+      "level_name": "第6問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "練習",
+      "small_category": "ケースノック",
+      "question": "ケースノックとは？",
+      "choices": [
+        "走者やアウト数を想定して行う守備練習",
+        "打者が本塁打だけをねらう打撃練習",
+        "投手だけで行う投球練習"
+      ],
+      "answer": 0,
+      "explanation": "ケースノックは、走者やアウト数など試合の場面を想定し、守備の連係や判断を練習するノックです。",
+      "source_note": "野球用語。試合を想定した守備練習としてのケースノックに関する一般的な解説。",
+      "overlap_check": "BQ2150のシートノックは試合前の守備確認が中心であり、走者・アウト数を設定して連係判断を練習するケースノックとは論点が異なる。",
+      "quality_note": "v65新規追加。守備の実戦的な練習用語として第6問に配置。"
+    },
+    {
+      "id": "BQ1072",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "バスター",
+      "question": "バスターとは？",
+      "choices": [
+        "バントの構えから打つこと",
+        "強く振るだけの打法",
+        "バットを短く持つこと"
+      ],
+      "answer": 0,
+      "explanation": "バスターは、バントの構えを見せてから通常のスイングで打つことです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v27: バスター系・エンドラン系の用語を追加。簡単すぎる選択肢を避けて作成。"
+    },
+    {
+      "id": "BQ1092",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "同義語",
+      "small_category": "ゲッツー",
+      "question": "一つのプレーで二つアウトを取るゲッツーと同じ意味の言葉はどれ？",
+      "choices": [
+        "ダブルプレー",
+        "フォアボール",
+        "ファールチップ"
+      ],
+      "answer": 0,
+      "explanation": "ゲッツーとダブルプレーは、一つのプレーで二つのアウトを取ることを表す同じ意味の言葉です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "個別用語問題は既存にあるが、同義語関係を問う問題として追加。",
+      "quality_note": "v32: 用語重複を単純削除せず、同じ意味を理解する問題として追加。 / v42: 重複削除に合わせ、問題文単体で意味が分かる表現へ修正。"
+    },
+    {
+      "id": "BQ1093",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "同義語",
+      "small_category": "四球",
+      "question": "四球と同じ意味の言葉はどれ？",
+      "choices": [
+        "四球とフォアボール",
+        "四球とデッドボール",
+        "四球とファウル"
+      ],
+      "answer": 0,
+      "explanation": "四球とフォアボールは同じ意味です。四つのボールで打者が一塁へ進みます。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "個別用語問題は既存にあるが、同義語関係を問う問題として追加。",
+      "quality_note": "v32: 用語重複を単純削除せず、同じ意味を理解する問題として追加。"
+    },
+    {
+      "id": "BQ2039",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "同義語",
+      "small_category": "スチール",
+      "question": "盗塁と同じ意味で使われる言葉はどれ？",
+      "choices": [
+        "スチール",
+        "リタッチ",
+        "ボーク"
+      ],
+      "answer": 0,
+      "explanation": "スチールは盗塁と同じ意味で使われます。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2040",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "攻撃用語",
+      "small_category": "ミート",
+      "question": "打撃で「ミートする」とは？",
+      "choices": [
+        "バットの芯近くでボールを捉えること",
+        "走者をけん制すること",
+        "守備位置を変えること"
+      ],
+      "answer": 0,
+      "explanation": "ミートはバットでボールをしっかり捉えることです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2041",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "守備用語",
+      "small_category": "グラブトス",
+      "question": "グラブトスとは？",
+      "choices": [
+        "グラブでボールを近くの味方へ送ること",
+        "グラブを交換すること",
+        "外野へ全力で投げること"
+      ],
+      "answer": 0,
+      "explanation": "グラブトスは近距離でグラブを使ってボールを送るプレーです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ402",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "ルール知識（非状況判断）",
+      "question": "振り逃げで重要になる考え方として正しいものは？",
+      "choices": [
+        "第3ストライクを正しく捕ったか",
+        "打者が一塁へ走る意思を示したか",
+        "球を前へ落としたか横へそらしたか"
+      ],
+      "answer": 0,
+      "explanation": "捕ったかどうかや走者状況などが関係します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ403",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "ルール知識（非状況判断）",
+      "question": "フォースアウトの基本的な意味として正しいものは？",
+      "choices": [
+        "走者が戻る義務が生じること",
+        "前の走者が次の塁へ進む義務を負うこと",
+        "守備側が走者にタッチする必要があること"
+      ],
+      "answer": 1,
+      "explanation": "打者走者により前の走者が押し出される状態です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ404",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "ルール知識（非状況判断）",
+      "question": "ボークルールの目的は？",
+      "choices": [
+        "投手が走者を不正にだますのを防ぐ",
+        "投球動作のルールを明確にする",
+        "走者と投手の駆け引きを公平にする"
+      ],
+      "answer": 0,
+      "explanation": "ボークは、投手が走者を不正にだます動作を防ぐためのルールです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 即消し選択肢を除去 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ409",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "ルール知識（非状況判断）",
+      "question": "ボールインプレイの意味として正しいものは？",
+      "choices": [
+        "プレイが続き進塁やアウトが有効になる",
+        "投手が投球動作に入る前だけを指す状態",
+        "ファウルやタイム後の再開を待つ状態"
+      ],
+      "answer": 0,
+      "explanation": "インプレイ中は試合が続いています。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ410",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "ルール知識（非状況判断）",
+      "question": "タイムが成立する条件として正しいものは？",
+      "choices": [
+        "審判が認めて初めて止まる",
+        "選手の要求だけでは止まらない",
+        "ボールの位置だけでは決まらない"
+      ],
+      "answer": 0,
+      "explanation": "タイムは選手の要求だけでは成立せず、審判が認めて宣告して初めて止まります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 選択肢を比較可能に調整 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ413",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "ルール知識（非状況判断）",
+      "question": "リタッチの意味として正しいものは？",
+      "choices": [
+        "守る選手が送球前にグローブを叩くこと",
+        "フライ捕球後などに走者が元の塁へ触れ直すこと",
+        "打者が打席で構え直すこと"
+      ],
+      "answer": 1,
+      "explanation": "リタッチは走者の塁への触れ直しを指します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ2081",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "ルール",
+      "main_category": "ルール",
+      "middle_category": "走塁",
+      "small_category": "走路",
+      "question": "走者がタッチを避けるため大きく走路を外れた時は？",
+      "choices": [
+        "アウトになることがある",
+        "必ずセーフになる",
+        "ボールデッドで戻る"
+      ],
+      "answer": 0,
+      "explanation": "タッチを避けるため走路を大きく外れるとアウトになることがあります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2164",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃・戦術",
+      "small_category": "ドラッグバント",
+      "question": "ドラッグバントとは？",
+      "choices": [
+        "一塁へ走り出しながら行うバント",
+        "三塁へ走り出しながら行うバント",
+        "投手の前へ強く打つバント"
+      ],
+      "answer": 0,
+      "explanation": "ドラッグバントは、打者が一塁へ走り出しながら行うバントです。",
+      "source_note": "野球用語。",
+      "overlap_check": "既存のセーフティバント・犠牲バントとは、走り出しながら行う打ち方を問う点で論点が異なる。",
+      "quality_note": "v61新規追加。第6問以降の戦術用語として配置。"
+    },
+    {
+      "id": "BQ2166",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "走塁",
+      "small_category": "スコアリングポジション",
+      "question": "スコアリングポジションとは？",
+      "choices": [
+        "二塁または三塁に走者がいる場面",
+        "一塁だけに走者がいる場面",
+        "走者がいない場面"
+      ],
+      "answer": 0,
+      "explanation": "スコアリングポジションは、単打でも得点しやすい二塁または三塁に走者がいる場面です。",
+      "source_note": "野球用語。MLB Glossary「Scoring Position」。",
+      "overlap_check": "v60全281問にスコアリングポジションの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。第6問以降の走塁・打撃用語として配置。"
+    },
+    {
+      "id": "BQ2171",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃フォーム",
+      "small_category": "オープンスタンス",
+      "question": "オープンスタンスとは？",
+      "choices": [
+        "前足を少し引き、体を投手側へ開く立ち方",
+        "前足を本塁側へ寄せる立ち方",
+        "両足をそろえて立つ立ち方"
+      ],
+      "answer": 0,
+      "explanation": "オープンスタンスは、前足を少し引いて体を投手側へ開く打席での立ち方です。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問にオープンスタンスの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。第6問以降の打撃フォーム用語として配置。"
+    },
+    {
+      "id": "BQ2174",
+      "level": 7,
+      "level_name": "第7問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃",
+      "small_category": "強襲ヒット",
+      "question": "強襲ヒットとは？",
+      "choices": [
+        "野手の近くを強い打球で抜ける安打",
+        "バントで内野を抜ける安打",
+        "外野手の頭上を大きく越える本塁打"
+      ],
+      "answer": 0,
+      "explanation": "強襲ヒットは、野手の近くを強い打球で抜ける安打を指す言葉です。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問に強襲ヒットの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。第6問以降の打撃用語として配置。"
+    },
+    {
+      "id": "BQ417",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "ルール知識（非状況判断）",
+      "question": "申告敬遠の基本的な考え方として正しいものは？",
+      "choices": [
+        "投球を省略して打者を一塁へ進める仕組み",
+        "投手と捕手のサイン交換を省略する仕組み",
+        "敬遠球を投げる回数をルールする仕組み"
+      ],
+      "answer": 0,
+      "explanation": "実際に4球投げずに四球とする仕組みです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ419",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "ルール知識（非状況判断）",
+      "question": "指名打者（DH）仕組みの基本として正しいものは？",
+      "choices": [
+        "守備につかない打者を置く仕組み",
+        "投手の打席を別の打者が打つ仕組み",
+        "打撃専門の選手を打順に入れる仕組み"
+      ],
+      "answer": 0,
+      "explanation": "DHは、守備につかない打者を打順に入れる仕組みです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 選択肢の土俵を統一 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ1044",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "セーフティバント",
+      "question": "セーフティバントとは？",
+      "choices": [
+        "自分の出塁をねらうバント",
+        "走者を送るだけのバント",
+        "本塁へ走らせるバント"
+      ],
+      "answer": 0,
+      "explanation": "セーフティバントは、打者自身が一塁でセーフになることをねらうバントです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v25: 使用頻度が高い野球用語を、問題数が少ないレベル優先で5問目までに追加。"
+    },
+    {
+      "id": "BQ1059",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "エンタイトルツーベース",
+      "question": "エンタイトルツーベースとは？",
+      "choices": [
+        "打者に二塁が与えられる打球",
+        "二塁走者だけが進む打球",
+        "二塁手が捕ったフライ"
+      ],
+      "answer": 0,
+      "explanation": "エンタイトルツーベースは、打球が規定条件により二塁打扱いになることです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ1060",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "ディレードスチール",
+      "question": "ディレードスチールとは？",
+      "choices": [
+        "少し遅れて盗塁をねらう",
+        "同時に二人が盗塁する",
+        "捕手だけが走者を見る"
+      ],
+      "answer": 0,
+      "explanation": "ディレードスチールは、投球直後ではなく少し遅れて盗塁をねらうプレーです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ1074",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "ヒットエンドラン",
+      "question": "ヒットエンドランとは？",
+      "choices": [
+        "走者を走らせ打者が打つ作戦",
+        "打者が必ずバントする作戦",
+        "走者が戻るための作戦"
+      ],
+      "answer": 0,
+      "explanation": "ヒットエンドランは、走者を走らせて打者が打ち、守備を動かす作戦です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v27: バスター系・エンドラン系の用語を追加。簡単すぎる選択肢を避けて作成。"
+    },
+    {
+      "id": "BQ2042",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "ルール",
+      "main_category": "ルール",
+      "middle_category": "打撃ルール",
+      "small_category": "スイング判定",
+      "question": "ハーフスイングで審判が見るポイントは？",
+      "choices": [
+        "バットを振ったかどうか",
+        "走者が塁を踏んだか",
+        "守備位置が正しいか"
+      ],
+      "answer": 0,
+      "explanation": "ハーフスイングでは、打者がバットを振ったかどうかが判定のポイントになります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。 / v43: 確認型に見える表現を避け、判定ポイントを問う形へ修正。"
+    },
+    {
+      "id": "BQ2044",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "記録",
+      "main_category": "記録",
+      "middle_category": "守備記録",
+      "small_category": "失策",
+      "question": "失策とは？",
+      "choices": [
+        "野手のミスで打者や走者を生かした記録",
+        "投手が三振を取った記録",
+        "打者が長打を打った記録"
+      ],
+      "answer": 0,
+      "explanation": "失策は野手のミスでアウトにできる場面を生かした記録です。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2045",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "記録",
+      "main_category": "記録",
+      "middle_category": "打撃記録",
+      "small_category": "打点",
+      "question": "打点とは？",
+      "choices": [
+        "打者のプレーで得点が入った時につく記録",
+        "投手が投げた球数",
+        "守備位置の番号"
+      ],
+      "answer": 0,
+      "explanation": "打点は打者の打撃などで得点が入った時につく記録です。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ501",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "安全・けが予防",
+      "question": "成長期の投球けがで特に注意すべき部位として正しいものは？",
+      "choices": [
+        "肘や肩など投球体への負担が大きい部位",
+        "腰や股関節など体を支える部位",
+        "手首や指先など捕球で使用部位"
+      ],
+      "answer": 0,
+      "explanation": "成長期の投球では、肩や肘への体への負担に特に注意が必要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ502",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "安全・けが予防",
+      "question": "投手と捕手にけがが多いとされる理由として正しいものは？",
+      "choices": [
+        "投球や送球が多く肩肘に負担が集中する",
+        "バットを最も多く振るポジションだから",
+        "試合中に最も走る距離が長い"
+      ],
+      "answer": 0,
+      "explanation": "投げる量が多いポジションは肩肘への体への負担が増えやすいです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "選手保護",
+      "small_category": "投球・兼任"
+    },
+    {
+      "id": "BQ503",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "安全・けが予防",
+      "question": "練習後のクールダウンの目的は？",
+      "choices": [
+        "心拍や筋温を急に下げ、疲労感を早く消すため",
+        "運動後の身体を落ち着かせ、回復を助けるため",
+        "次の練習へすぐ全力で入るために体を刺激するため"
+      ],
+      "answer": 1,
+      "explanation": "運動後の体を落ち着かせ、回復や体の調子を整えることに役立ちます。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ506",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "安全・けが予防",
+      "question": "ホームへのヘッドスライディングだけ扱いが異なることがある理由として正しいものは？",
+      "choices": [
+        "ホームは走りぬけられないため",
+        "ホームでは接しょくをさける必要があるため",
+        "ホームは塁間の終点で、走路の取り方が他塁と異なるため"
+      ],
+      "answer": 0,
+      "explanation": "ホームは駆け抜けではなく触塁が必要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ2168",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "野球記録",
+      "main_category": "野球記録",
+      "middle_category": "打撃成績",
+      "small_category": "出塁率",
+      "question": "出塁率とは？",
+      "choices": [
+        "安打や四球などで塁に出る割合",
+        "打った球が外野へ飛ぶ割合",
+        "守備でアウトを取る割合"
+      ],
+      "answer": 0,
+      "explanation": "出塁率は、安打・四球・死球などで塁に出る割合を表す打撃成績です。",
+      "source_note": "NPB.jp 野球用語・記録情報。公認野球規則9.22。",
+      "overlap_check": "v60全281問に出塁率の定義問題はないことを確認。",
+      "quality_note": "v61新規追加。第6問以降の記録用語として配置。"
+    },
+    {
+      "id": "BQ2172",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃タイプ",
+      "small_category": "アベレージヒッター",
+      "question": "アベレージヒッターとは？",
+      "choices": [
+        "安打を多く打ち、高い打率を目指す打者",
+        "本塁打だけをねらう打者",
+        "守備だけを専門にする打者"
+      ],
+      "answer": 0,
+      "explanation": "アベレージヒッターは、安打を多く打ち、高い打率を残すことが得意な打者です。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問にアベレージヒッターの定義問題はないことを確認。",
+      "quality_note": "v61新規追加。第6問以降の打撃タイプ用語として配置。"
+    },
+    {
+      "id": "BQ2175",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃フォーム",
+      "small_category": "クローズスタンス",
+      "question": "クローズスタンスとは？",
+      "choices": [
+        "捕手側の足を本塁から遠ざける立ち方",
+        "投手側の足を本塁から遠ざける立ち方",
+        "両足を本塁に近づける立ち方"
+      ],
+      "answer": 0,
+      "explanation": "クローズスタンスは、捕手側の足を投手側の足より本塁から遠ざけ、体を閉じ気味にして構える打席での立ち方です。",
+      "source_note": "Full-Count野球用語辞典「クローズドスタンス」。クローズスタンスとも呼ばれる。",
+      "overlap_check": "BQ2171のオープンスタンスとは、足の位置と体の向きが反対の立ち方であり、論点は区別できる。",
+      "quality_note": "v68: 「クロースタンス」を誤表記として修正。正式な呼び方をクローズスタンスに統一。"
+    },
+    {
+      "id": "BQ2176",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃",
+      "small_category": "広角打法",
+      "question": "広角打法とは？",
+      "choices": [
+        "左右や中央へ打ち分ける打ち方",
+        "一方向だけへ強く打つ打ち方",
+        "バントだけを使う打ち方"
+      ],
+      "answer": 0,
+      "explanation": "広角打法は、引っ張りだけでなく、左右や中央へ打ち分ける打ち方です。",
+      "source_note": "野球用語。",
+      "overlap_check": "v60全281問に広角打法の定義問題はないことを確認。",
+      "quality_note": "v61新規追加。第6問以降の打撃用語として配置。"
+    },
+    {
+      "id": "BQ2180",
+      "level": 8,
+      "level_name": "第8問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "配球",
+      "small_category": "釣り球",
+      "question": "釣り球とは？",
+      "choices": [
+        "打者に振らせようと故意に外す球",
+        "必ずストライクゾーンへ投げる球",
+        "走者をけん制するための送球"
+      ],
+      "answer": 0,
+      "explanation": "釣り球は、打者が思わず振ることをねらい、故意にボールゾーンへ外す球です。",
+      "source_note": "野球用語。Full-Count野球用語辞典「釣り球」。",
+      "overlap_check": "v61の315問に釣り球の定義問題はないことを確認。",
+      "quality_note": "v62新規追加。単なるボール球ではなく、打者を振らせる意図を含む点で明確化。"
+    },
+    {
+      "id": "BQ507",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "安全・けが予防",
+      "question": "頭への強い衝撃が疑われる選手への対応として正しいものは？",
+      "choices": [
+        "本人の自覚症状が軽ければ、ベンチで短時間休ませて判断する",
+        "点差や大会状況に応じて出場継続を優先する場合がある",
+        "無理に続行させず、状態確認と専門的考え方を優先する"
+      ],
+      "answer": 2,
+      "explanation": "頭への強い衝撃は見た目だけでわかりにくいです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ508",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "安全・けが予防",
+      "question": "頭部死球後に臨時代走が使える大会がある理由は？",
+      "choices": [
+        "走力差をなくして試合を公平にするため",
+        "代走を増やして攻撃を強くするため",
+        "安全確認と試合進行を両立するため"
+      ],
+      "answer": 2,
+      "explanation": "頭部死球後は選手の状態確認を優先しつつ、臨時代走で試合進行を補う大会があります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ509",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "安全・けが予防",
+      "question": "成長期の選手に休養日が必要な理由として正しいものは？",
+      "choices": [
+        "疲労回復や成長期の身体保護に関係するため",
+        "休養日を入れると技術練習の質が安定しやすいため",
+        "登板間隔や練習量を管理しやすくするため"
+      ],
+      "answer": 0,
+      "explanation": "練習量の管理と休養が重要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ511",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "安全・けが予防",
+      "question": "投げすぎや練習のしすぎで起こるけがの説明として正しいものは？",
+      "choices": [
+        "同じ動きをくり返して起こるけが",
+        "一度の転倒などで起こるけが",
+        "休めばすぐ完全に治るけが"
+      ],
+      "answer": 0,
+      "explanation": "投げすぎや練習のしすぎによるけがは、同じ動きを続けることで起こりやすくなります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.5-4.6: 専門用語・不自然な日本語を修正 / Step4.5-4.6: 専門用語・不自然な日本語を修正 / Step4.5-4.6: 専門用語・不自然な日本語を修正",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ512",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "安全・けが予防",
+      "question": "捕手防具の点検で最も重要なことは？",
+      "choices": [
+        "破損やゆるみ、体に合うかを見る",
+        "汚れが目立つかだけを見る",
+        "公式戦の日だけ確認すればよい"
+      ],
+      "answer": 0,
+      "explanation": "防具は破損やゆるみがなく、体に合っている時に保護機能を発揮します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ515",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "安全・けが予防",
+      "question": "ストレッチを行う目的は？",
+      "choices": [
+        "関節や筋肉を動きやすくし、運動準備を整える",
+        "関節を固定し、可動域を狭めてフォームを安定させる",
+        "疲労を感じないように筋肉を強く刺激する"
+      ],
+      "answer": 0,
+      "explanation": "身体を動かしやすくする準備や回復に役立ちます。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ518",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "安全・けが予防",
+      "question": "練習中に痛みを訴えた選手への対応として正しいものは？",
+      "choices": [
+        "メニューを変えれば続けられるかを最初に判断",
+        "痛みの原因や程度を確認し、無理をさせない",
+        "短時間の違和感か継続する痛みかを確認して判断する"
+      ],
+      "answer": 1,
+      "explanation": "痛みは身体からのサインです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ519",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "安全・けが予防",
+      "question": "複数ポジションを経験する安全面の利点は？",
+      "choices": [
+        "同じ動作の負担を分散しやすい",
+        "守備位置ごとの動きを学べる",
+        "投げる回数を減らす工夫になる"
+      ],
+      "answer": 0,
+      "explanation": "複数ポジションを経験すると、同じ動作への負担集中を避けやすくなります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: ボケ回答を除去",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ653",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "最新学童ルール",
+      "question": "2025年から学童で先に制限されたものは？（JSBB学童部規定）",
+      "choices": [
+        "一般用の弾性体(ウレタン等)バット",
+        "一般用の木製バット",
+        "一般用の金属バット"
+      ],
+      "answer": 0,
+      "explanation": "2025年から学童部で一般用の弾性体バットの使用が制限されています。",
+      "source_note": "JSBB/全軟連の2025-2029学童ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。 / v47: ユーザー編集CSVに基づき第5問へ移動。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ418",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "ルール知識（非状況判断）",
+      "question": "タイブレーク仕組みのおもな目的は？",
+      "choices": [
+        "延長戦の長時間化を避け、決着をつけやすくするため",
+        "投手交代や代走起用の考え方を単純にするため",
+        "通常回の得点差を縮めて試合を続けやすくするため"
+      ],
+      "answer": 0,
+      "explanation": "試合の長時間化を抑える仕組みです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ603",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "最新学童野球",
+      "question": "令和5年から投手に認められたものは？（JSBB学童部規定）",
+      "choices": [
+        "サングラスの使用",
+        "ミラーレンズの使用",
+        "帽子なしで投げること"
+      ],
+      "answer": 0,
+      "explanation": "令和5年から投手のサングラス使用が認められました。ただし、投手のミラーレンズは使用できません。",
+      "source_note": "JSBB FAQ サングラスの使うについて（令和5年より投手使う可、投手ミラーレンズ不可、野手は庇上可）",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 誤解を生む選択肢を修正 / v13: サングラスの対象条件を明記し、無条件の帽子上装着問題を修正。 / v14: サングラス規定を令和5年FAQの投手使用・投手ミラー不可・野手庇上可に合わせて修正",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "サングラス"
+    },
+    {
+      "id": "BQ615",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "最新学童野球",
+      "question": "保護具の商標表示などが細かく定められる理由は？",
+      "choices": [
+        "安全・公平・大会運営を整えるため",
+        "表示を大きくして目立たせるため",
+        "用具の値段を同じにするため"
+      ],
+      "answer": 0,
+      "explanation": "保護具の表示やルールは、安全、公平、大会運営に関係します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ1082",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "競技規則",
+      "small_category": "フェアの判定",
+      "question": "打球が一塁ベースに当たった時の基本は？",
+      "choices": [
+        "フェアボール",
+        "ファウルボール",
+        "ボールデッド"
+      ],
+      "answer": 0,
+      "explanation": "打球が一塁または三塁ベースに当たった場合は、基本的にフェアボールです。",
+      "source_note": "野球規則の基本用語",
+      "overlap_check": "フェア地域・ベース接触判定の既存問題なし。",
+      "quality_note": "v29 Step9: 第10問不足補充。判定知識として追加。 / v49: 20問構成の難易度再評価により第9問へ再配置。"
+    },
+    {
+      "id": "BQ2167",
+      "level": 9,
+      "level_name": "第9問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "打撃・戦術",
+      "small_category": "セーフティースクイズ",
+      "question": "セーフティースクイズとは？",
+      "choices": [
+        "打者がバントを決めてから三塁走者が本塁を狙う作戦",
+        "三塁走者が投球と同時に本塁へ走る作戦",
+        "打者が本塁打だけを狙う作戦"
+      ],
+      "answer": 0,
+      "explanation": "セーフティースクイズは、打者がバントを決めたことを見てから、三塁走者が本塁を狙うスクイズです。",
+      "source_note": "野球用語。",
+      "overlap_check": "BQ2066は守備側がスクイズを警戒する場面であり、セーフティースクイズの走者のスタート条件とは異なる。",
+      "quality_note": "v61新規追加。第6問以降の戦術用語として配置。"
+    },
+    {
+      "id": "BQ625",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール・バット",
+      "question": "2029年以降も使えるバットは？",
+      "choices": [
+        "木製・金属・カーボン",
+        "外面ウレタン付き",
+        "スポンジ付き打球部"
+      ],
+      "answer": 0,
+      "explanation": "通知では、木製・金属製・カーボン製などはこのやわらかい素材ルールの対象外とされる。",
+      "source_note": "JSBB 2029年以降の少年部(学童・少年)バット使うルールについて / 2025年大人用やわらかい素材バットルール通知",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ629",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール・サングラス",
+      "question": "投手のサングラスで使用できないものは？（JSBB学童部規定）",
+      "choices": [
+        "ミラーレンズ",
+        "UVカットレンズ",
+        "度付きレンズ"
+      ],
+      "answer": 0,
+      "explanation": "投手はサングラスを使えるが、ミラーレンズは除くとされている。",
+      "source_note": "JSBB FAQ サングラスの使うについて（令和5年より投手使う可、投手ミラーレンズ不可、野手は庇上可）",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "サングラス"
+    },
+    {
+      "id": "BQ635",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール・マクドナルド",
+      "question": "マクドナルド大会の呼び方で正しいものは？",
+      "choices": [
+        "小学生の甲子園",
+        "中学生の甲子園",
+        "高校生の夏大会"
+      ],
+      "answer": 0,
+      "explanation": "JSBBは全国約1万チームから勝ち抜く大会を、小学生の甲子園と呼ばれる夢の大会と説明している。",
+      "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ636",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール・マクドナルド",
+      "question": "高円宮賜杯とマクドナルド大会の関係は？",
+      "choices": [
+        "同じ大会名に含まれる",
+        "別の試合大会",
+        "中学の大会名"
+      ],
+      "answer": 0,
+      "explanation": "高円宮賜杯全日本学童軟式野球大会は、マクドナルド・トーナメントとして行われる。",
+      "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "学童大会",
+      "middle_category": "大会規定",
+      "small_category": "マクドナルド・トーナメント"
+    },
+    {
+      "id": "BQ637",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "JSBB学童部規定",
+      "question": "2025年の投球数で基本となる上限は（JSBB学童部規定）？",
+      "choices": [
+        "1日70球",
+        "1試合100球",
+        "週500球"
+      ],
+      "answer": 0,
+      "explanation": "2025年大会要項例では、投球ルールは1日70球、4年生以下は60球とされている。",
+      "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / v18: JSBB学童部規定表記を追加",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ638",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "JSBB学童部規定",
+      "question": "4年生以下の投球数で近いものは（JSBB学童部規定）？",
+      "choices": [
+        "1日60球",
+        "1日70球",
+        "1日90球"
+      ],
+      "answer": 0,
+      "explanation": "2025年大会要項例では、4年生以下は1日60球とされている。",
+      "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / v18: JSBB学童部規定表記を追加",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ640",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール・マクドナルド",
+      "question": "給水タイムのおもな目的は？",
+      "choices": [
+        "健康を守るため",
+        "作戦会議のため",
+        "審判交代のため"
+      ],
+      "answer": 0,
+      "explanation": "酷暑などでは健康維持を考えて給水タイムを設けることがある。",
+      "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "学童大会",
+      "middle_category": "大会規定",
+      "small_category": "マクドナルド・トーナメント"
+    },
+    {
+      "id": "BQ651",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール",
+      "question": "2029年から学童・少年で使えない予定のバットは？",
+      "choices": [
+        "外面にウレタン等があるバット",
+        "木製だけで作られたバット",
+        "一般的な金属バット"
+      ],
+      "answer": 0,
+      "explanation": "2029年から、外面にウレタンやスポンジ等の弾性体があるバットは学童・少年で使用禁止予定です。",
+      "source_note": "JSBB/全軟連の2025-2029学童ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ652",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール",
+      "question": "2026〜2028年のウレタン規制の位置づけは？",
+      "choices": [
+        "移行期間",
+        "完全解禁期間",
+        "高校だけの準備期間"
+      ],
+      "answer": 0,
+      "explanation": "2026〜2028年は、2029年の全面制限に向けた移行期間です。",
+      "source_note": "JSBB/全軟連の2025-2029学童ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ654",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール",
+      "question": "ウレタンバット規制の一番大きな理由は？",
+      "choices": [
+        "打球の速さと安全への配慮",
+        "メーカー数を減らすため",
+        "バットの色をそろえるため"
+      ],
+      "answer": 0,
+      "explanation": "打球速度が上がると、投手や内野手の安全に関わります。",
+      "source_note": "JSBB/全軟連の2025-2029学童ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ656",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール",
+      "question": "投手がサングラスを使える主な理由は？（JSBB学童部規定）",
+      "choices": [
+        "日差しで見えにくいのを防ぐ",
+        "投球フォームを隠すため",
+        "打者の表情を見るため"
+      ],
+      "answer": 0,
+      "explanation": "強い日差しで打球や飛球が見えにくい時の安全に関わります。",
+      "source_note": "JSBB/全軟連の2025-2029学童ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "サングラス"
+    },
+    {
+      "id": "BQ658",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール",
+      "question": "2027年から導入予定の選手保護策は？",
+      "choices": [
+        "同じ試合の投手捕手兼任禁止",
+        "すべての盗塁禁止",
+        "全試合7回制"
+      ],
+      "answer": 0,
+      "explanation": "2027年から、同一試合での投手と捕手の兼任禁止が予定されています。",
+      "source_note": "JSBB/全軟連の2025-2029学童ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "選手保護",
+      "small_category": "投球・兼任"
+    },
+    {
+      "id": "BQ659",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "最新学童ルール",
+      "question": "投手捕手兼任禁止の主なねらいは？",
+      "choices": [
+        "肩や肘への負担を減らす",
+        "打順を分かりやすくする",
+        "試合時間を長くする"
+      ],
+      "answer": 0,
+      "explanation": "投手と捕手はどちらも肩や肘の負担が大きいポジションです。",
+      "source_note": "JSBB/全軟連の2025-2029学童ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "選手保護",
+      "small_category": "投球・兼任"
+    },
+    {
+      "id": "BQ2165",
+      "level": 10,
+      "level_name": "第10問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "守備・記録",
+      "small_category": "トリプルプレー",
+      "question": "トリプルプレーとは？",
+      "choices": [
+        "一つのプレーで3人をアウトにすること",
+        "1試合で3本の本塁打を打つこと",
+        "3回連続で盗塁を決めること"
+      ],
+      "answer": 0,
+      "explanation": "トリプルプレーは、一つのプレーで3人の走者または打者走者をアウトにする守備です。",
+      "source_note": "野球用語。MLB Glossary「Triple Play」。",
+      "overlap_check": "既存のダブルプレー・送球順問題とは、1プレーで3アウトを取る点が異なる。",
+      "quality_note": "v61新規追加。第6問以降の守備・記録用語として配置。"
+    },
+    {
+      "id": "BQ660",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "最新学童ルール",
+      "question": "学童の投球数ルールで大切な考え方は？",
+      "choices": [
+        "成長期の肩肘を守る",
+        "試合を必ず短くする",
+        "打者数をそろえる"
+      ],
+      "answer": 0,
+      "explanation": "球数制限は、勝敗よりも子どもの体を守るために重要です。",
+      "source_note": "JSBB/全軟連の2025-2029学童ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "選手保護",
+      "small_category": "投球・兼任"
+    },
+    {
+      "id": "BQ661",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "マクドナルド大会",
+      "question": "マクドナルド大会で多い試合形式は？",
+      "choices": [
+        "6回制",
+        "9回制",
+        "3回制"
+      ],
+      "answer": 0,
+      "explanation": "高円宮賜杯全日本学童では、学童向けに6回制の大会規定が使われます。",
+      "source_note": "高円宮賜杯大会要項監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "学童大会",
+      "middle_category": "大会規定",
+      "small_category": "マクドナルド・トーナメント"
+    },
+    {
+      "id": "BQ667",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "安全ルール",
+      "question": "頭部死球後に大切なことは？",
+      "choices": [
+        "体の様子をすぐ確認する",
+        "すぐ盗塁の準備をする",
+        "必ず同じ打者が走る"
+      ],
+      "answer": 0,
+      "explanation": "頭部への衝撃後は、見た目だけで判断せず状態を確認することが大切です。",
+      "source_note": "学童安全ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ668",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "安全ルール",
+      "question": "夏の大会でクーリングを入れる理由は？",
+      "choices": [
+        "熱中症を防ぐため",
+        "守備位置を直すため",
+        "応援時間を作るため"
+      ],
+      "answer": 0,
+      "explanation": "暑い時期は体温上昇を防ぐ休憩が重要です。",
+      "source_note": "学童安全ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ669",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "安全ルール",
+      "question": "暑さ指数が高い時の考え方は？",
+      "choices": [
+        "試合の安全を優先する",
+        "攻撃時間を長くする",
+        "投手交代を禁止する"
+      ],
+      "answer": 0,
+      "explanation": "暑さが強い日は、試合の進行より選手の安全を優先します。",
+      "source_note": "学童安全ルール監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ761",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "JSBB学童ルール",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "学童で二重登録にならないものは？",
+      "choices": [
+        "少年団と全軟連の登録",
+        "硬式と軟式の両方の登録",
+        "同年度の複数チーム登録"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQでは、スポーツ少年団と全軟連の登録は二重登録にはならないとされています。",
+      "source_note": "JSBB FAQ 登録・大会について 学童クラスで禁止されている登録",
+      "overlap_check": "分類チェック済み。既存問題と同じ知識・同じ答えになる内容を避けた追加問題。",
+      "quality_note": "v16: JSBB FAQ確認。学童に適用される規定のみ追加。"
+    },
+    {
+      "id": "BQ1030",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "JSBB規定",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "学童で禁止される登録は？",
+      "choices": [
+        "硬式と軟式の両方に登録",
+        "全軟連と少年団の登録",
+        "同じチームで学年別参加"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQでは、学童クラスは硬式チームと軟式チームへの登録はできないとされています。",
+      "source_note": "JSBB FAQ 学童クラスで禁止されている登録",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。JSBB FAQの明確な規定のみ。",
+      "quality_note": "v24: 大会運営細則を避け、学童にも適用されるJSBB FAQ規定として追加。"
+    },
+    {
+      "id": "BQ1101",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "ルール",
+      "main_category": "ボールの行方",
+      "middle_category": "審判",
+      "small_category": "打球と審判",
+      "question": "内野でフェアの打球が審判に当たったらどうなる？",
+      "choices": [
+        "ボールデッドになる",
+        "ファウルになる",
+        "そのままプレーを続ける"
+      ],
+      "answer": 0,
+      "explanation": "内野手を通過する前のフェアの打球が審判に当たると、ボールデッドになる場合があります。",
+      "source_note": "公認野球規則に基づく基本ルール",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。審判に打球が当たる問題は既存なし。",
+      "quality_note": "v36: インプレイ・ボールデッド理解用のルール問題として追加。"
+    },
+    {
+      "id": "BQ1102",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "ルール",
+      "main_category": "走塁",
+      "middle_category": "打球",
+      "small_category": "ランナーに当たる",
+      "question": "内野手を通過する前のフェアの打球がランナーに当たったらどうなる？",
+      "choices": [
+        "ランナーがアウトになる",
+        "ファウルになる",
+        "必ずそのままプレーを続ける"
+      ],
+      "answer": 0,
+      "explanation": "内野手を通過する前のフェアの打球がランナーに当たると、原則としてランナーはアウトです。",
+      "source_note": "公認野球規則に基づく基本ルール",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。ランナーに打球が当たる問題は既存なし。",
+      "quality_note": "v36: 走者接触とボールデッド理解用のルール問題として追加。"
+    },
+    {
+      "id": "BQ2058",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "ルール",
+      "main_category": "ルール",
+      "middle_category": "打撃ルール",
+      "small_category": "バントファウル",
+      "question": "2ストライク後のバントがファウルになった時の基本は？",
+      "choices": [
+        "三振になる",
+        "ボールになる",
+        "打者が一塁へ進む"
+      ],
+      "answer": 0,
+      "explanation": "2ストライク後のバントファウルは三振になります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2059",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "ルール",
+      "main_category": "ルール",
+      "middle_category": "走塁ルール",
+      "small_category": "追い越し",
+      "question": "前の走者を追い越した走者はどうなる？",
+      "choices": [
+        "追い越した走者がアウト",
+        "前の走者が得点",
+        "全員セーフ"
+      ],
+      "answer": 0,
+      "explanation": "走者が前の走者を追い越すと、その走者はアウトになります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2062",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "ルール",
+      "main_category": "ルール",
+      "middle_category": "守備ルール",
+      "small_category": "ライン上の打球",
+      "question": "一塁線や三塁線の上を通った打球の基本判定は？",
+      "choices": [
+        "フェア",
+        "ファウル",
+        "ボールデッド"
+      ],
+      "answer": 0,
+      "explanation": "ファウルライン上はフェア地域に含まれます。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2088",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "ルール",
+      "main_category": "ルール",
+      "middle_category": "守備優先",
+      "small_category": "打球処理中の野手",
+      "question": "打球を処理しようとする野手と走者では何が優先される？",
+      "choices": [
+        "守備側の打球処理",
+        "走者の進路すべて",
+        "ベンチの指示"
+      ],
+      "answer": 0,
+      "explanation": "打球処理中の野手には守備優先が認められます。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2169",
+      "level": 11,
+      "level_name": "第11問",
+      "category": "野球記録",
+      "main_category": "野球記録",
+      "middle_category": "投手成績",
+      "small_category": "自責点",
+      "question": "自責点とは？",
+      "choices": [
+        "失策などがなければ入ったと判断される投手の失点",
+        "打者が自分で記録する得点",
+        "守備の失策だけで入った失点"
+      ],
+      "answer": 0,
+      "explanation": "自責点は、失策やパスボールがなければ入ったと判断される、投手の責任となる失点です。",
+      "source_note": "公認野球規則9.16。",
+      "overlap_check": "既存の防御率問題はあるが、自責点の定義を問う問題はないことを確認。",
+      "quality_note": "v61新規追加。第6問以降の投手記録用語として配置。"
+    },
+    {
+      "id": "BQ1032",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "JSBB規定",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "正式な軟式用マスクに必要なのは？（JSBB学童部規定）",
+      "choices": [
+        "SGマークとJSBBマーク",
+        "チーム名シール",
+        "背番号の表示"
+      ],
+      "answer": 0,
+      "explanation": "2022年シーズンより、SGマークとJSBBマーク付きの製品が正式な軟式用マスクとされています。",
+      "source_note": "JSBB FAQ 捕手用マスクのSG基準義務付け",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。JSBB FAQの明確な規定のみ。",
+      "quality_note": "v24: 大会運営細則を避け、学童にも適用されるJSBB FAQ規定として追加。"
+    },
+    {
+      "id": "BQ1033",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "JSBB規定",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "ヘルメット一体型マスクは？（JSBB学童部規定）",
+      "choices": [
+        "JSBB公認なら使用できる",
+        "学童では全て使えない",
+        "捕手だけ使用できる"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQでは、ヘルメット一体型マスクはJSBB公認マークを受けている製品なら使用できるとされています。",
+      "source_note": "JSBB FAQ ヘルメット一体型マスクは使用できるか",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。JSBB FAQの明確な規定のみ。",
+      "quality_note": "v24: 大会運営細則を避け、学童にも適用されるJSBB FAQ規定として追加。"
+    },
+    {
+      "id": "BQ1035",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "JSBB規定",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "金属・複合バットに必要なのは？（JSBB学童部規定）",
+      "choices": [
+        "JSBBマーク付き公認品",
+        "メーカー名だけの表示",
+        "チーム名の記名"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQでは、金属・ハイコンバットはJSBBマークのついた公認のものに限るとされています。",
+      "source_note": "JSBB FAQ バットの使用について",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。JSBB FAQの明確な規定のみ。",
+      "quality_note": "v24: 大会運営細則を避け、学童にも適用されるJSBB FAQ規定として追加。"
+    },
+    {
+      "id": "BQ1037",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "JSBB規定",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "野手のサングラスで認められている使い方は？（JSBB学童部規定）",
+      "choices": [
+        "帽子のつばの上に乗せる",
+        "ベルトに掛ける",
+        "手首に巻く"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQでは、野手がサングラスを帽子のつばの上に乗せることが認められています。投手のミラーレンズは使用できません。",
+      "source_note": "JSBB FAQ サングラスの使用について",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。JSBB FAQの明確な規定のみ。",
+      "quality_note": "v24: 大会運営細則を避け、学童にも適用されるJSBB FAQ規定として追加。 / v41: 小学生に読みにくい「庇」を「帽子のつば」に修正。"
+    },
+    {
+      "id": "BQ1075",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "バスターエンドラン",
+      "question": "バスターエンドランとは？",
+      "choices": [
+        "打者も打ち走者も走らせる",
+        "二人が同時に盗塁する",
+        "送りバントだけをする"
+      ],
+      "answer": 0,
+      "explanation": "バスターエンドランは、走者を走らせながら、打者がバスターで打つ作戦です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v27: バスター系・エンドラン系の用語を追加。簡単すぎる選択肢を避けて作成。"
+    },
+    {
+      "id": "BQ1097",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "守備の連係",
+      "main_category": "守備番号",
+      "middle_category": "ダブルプレー",
+      "small_category": "6-4-3",
+      "question": "6-4-3のダブルプレーはどの順番で送球する？",
+      "choices": [
+        "ショート→セカンド→ファースト",
+        "セカンド→ショート→ファースト",
+        "サード→セカンド→ファースト"
+      ],
+      "answer": 0,
+      "explanation": "6はショート、4はセカンド、3はファーストです。",
+      "source_note": "守備番号とダブルプレーの基本知識",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。6-4-3の送球順問題は既存なし。",
+      "quality_note": "v36: 第7問以降の守備番号・送球順序問題として追加。"
+    },
+    {
+      "id": "BQ1098",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "守備の連係",
+      "main_category": "守備番号",
+      "middle_category": "ダブルプレー",
+      "small_category": "4-6-3",
+      "question": "4-6-3のダブルプレーはどの順番で送球する？",
+      "choices": [
+        "セカンド→ショート→ファースト",
+        "ショート→セカンド→ファースト",
+        "サード→ショート→ファースト"
+      ],
+      "answer": 0,
+      "explanation": "4はセカンド、6はショート、3はファーストです。",
+      "source_note": "守備番号とダブルプレーの基本知識",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。4-6-3の送球順問題は既存なし。",
+      "quality_note": "v36: 第7問以降の守備番号・送球順序問題として追加。"
+    },
+    {
+      "id": "BQ1100",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "守備番号",
+      "main_category": "守備番号",
+      "middle_category": "ポジション番号",
+      "small_category": "6番",
+      "question": "守備番号の「6」はどこの守備位置？",
+      "choices": [
+        "ショート",
+        "セカンド",
+        "サード"
+      ],
+      "answer": 0,
+      "explanation": "守備番号の6はショートです。",
+      "source_note": "守備番号の基本知識",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。守備番号6の単独問題は既存なし。",
+      "quality_note": "v36: 6-4-3系問題の理解補助として追加。"
+    },
+    {
+      "id": "BQ1103",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "ルール",
+      "main_category": "ボールの行方",
+      "middle_category": "審判",
+      "small_category": "送球と審判",
+      "question": "野手の送球が審判に当たったらどうなる？",
+      "choices": [
+        "そのままプレーを続ける",
+        "ボールデッドになる",
+        "打者がアウトになる"
+      ],
+      "answer": 0,
+      "explanation": "送球が審判に当たっても、基本的にはインプレイでそのままプレーを続けます。",
+      "source_note": "公認野球規則に基づく基本ルール",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。送球が審判に当たる問題は既存なし。",
+      "quality_note": "v36: 審判接触でもインプレイになる場面として追加。"
+    },
+    {
+      "id": "BQ2063",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "戦術",
+      "main_category": "戦術",
+      "middle_category": "守備位置",
+      "small_category": "前進守備",
+      "question": "前進守備を取る主な目的は？",
+      "choices": [
+        "本塁で走者をアウトにしやすくするため",
+        "外野フライを捕りやすくするため",
+        "打者を歩かせるため"
+      ],
+      "answer": 0,
+      "explanation": "前進守備は本塁や近い塁でアウトを狙いやすくする守備位置です。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2066",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "戦術",
+      "main_category": "戦術",
+      "middle_category": "攻撃作戦",
+      "small_category": "スクイズ警戒",
+      "question": "守備がスクイズを警戒する場面は？",
+      "choices": [
+        "三塁走者がいてバントが考えられる場面",
+        "ランナーがいない場面",
+        "2アウト走者なしの場面"
+      ],
+      "answer": 0,
+      "explanation": "三塁走者がいる場面ではスクイズを警戒することがあります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ1067",
+      "level": 12,
+      "level_name": "第12問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "ボーク後の処置",
+      "question": "ボークで走者はどうなる？",
+      "choices": [
+        "原則一つ進塁する",
+        "必ず元の塁へ戻る",
+        "打者だけが一塁へ進む"
+      ],
+      "answer": 0,
+      "explanation": "ボークが宣告されると、原則として各走者に一つの進塁が与えられます。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。 / v49: 20問構成の難易度再評価により第12問へ再配置。"
+    },
+    {
+      "id": "BQ2067",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "戦術",
+      "main_category": "戦術",
+      "middle_category": "走塁作戦",
+      "small_category": "ディレードスチールの狙い",
+      "question": "ディレードスチールでねらうことは？",
+      "choices": [
+        "守備の油断や送球の間をねらうこと",
+        "打者が必ずバントすること",
+        "投手が必ずけん制すること"
+      ],
+      "answer": 0,
+      "explanation": "ディレードスチールは、守備のすきや送球の間をねらう走塁です。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。 / v43: 「重要なのは」を避け、狙いを問う形へ修正。"
+    },
+    {
+      "id": "BQ401",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "ルール知識（非状況判断）",
+      "question": "インフィールドフライルールのおもな趣旨として正しいものは？",
+      "choices": [
+        "故意落球での不公平な併殺を防ぐ",
+        "守備側の有利すぎる処理を防ぐ",
+        "走者が迷う場面を整理する"
+      ],
+      "answer": 0,
+      "explanation": "インフィールドフライは、故意落球による不公平な併殺を防ぐためのルールです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 選択肢を同じ土俵へ調整 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ701",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "JSBB学童部規定",
+      "question": "小学生の高学年の塁間23mと一般野球90フィートの違いを理解する意義として正しいものは（JSBB学童部規定）？",
+      "choices": [
+        "小学生の高学年と大人で距離がちがう",
+        "カテゴリーに応じた距離設定が選手の体格や安全に関係するため",
+        "距離差で投げる・走る難度が変わる"
+      ],
+      "answer": 1,
+      "explanation": "学童野球では体格・年齢に合わせたルールが採用されます。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ702",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "JSBB学童部規定",
+      "question": "小学生の高学年の投手板16mが一般野球18.44mより短い理由として正しいものは（JSBB学童部規定）？",
+      "choices": [
+        "投手有利をさらに強めるため",
+        "捕手の送球距離を短くするため",
+        "小学生の体格・筋力に合わせた試合環境にするため"
+      ],
+      "answer": 2,
+      "explanation": "距離設定は安全と試合の公平さのバランスを取るためです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v18: JSBB学童部規定表記を追加",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用"
+    },
+    {
+      "id": "BQ710",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "少年野球上級知識",
+      "question": "女子選手参加が増えることの意義として正しいものは？",
+      "choices": [
+        "出場機会や安全面の配慮を整える必要がある",
+        "野球を続ける選択肢と競技人口の広がりにつながる",
+        "大会やチーム運営で多様な参加形態を判断きっかけになる"
+      ],
+      "answer": 1,
+      "explanation": "女子野球の広がりは参加機会拡大に関わります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ711",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "少年野球上級知識",
+      "question": "ティーボールや小さい学年向け野球が普及する目的は？",
+      "choices": [
+        "投手を早期に固定するため",
+        "小さい子でも野球の楽しさと基本動作を経験しやすくするため",
+        "試合時間を長くするため"
+      ],
+      "answer": 1,
+      "explanation": "導入段階の楽しさと安全を重視します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ712",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "少年野球上級知識",
+      "question": "学童野球で地域差が生じやすい理由は？",
+      "choices": [
+        "連盟・大会・会場でルールが異なるため",
+        "全地域で同じ会場を使用ため",
+        "全国ルールが毎試合変わるため"
+      ],
+      "answer": 0,
+      "explanation": "全国ルールを基本にしつつ、地域や大会、会場条件に合わせた特別ルールがある場合があります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ717",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "少年野球上級知識",
+      "question": "勝利と育成のバランスが重要な理由として正しいものは？",
+      "choices": [
+        "成長期の身体と将来の継続を守る必要があるため",
+        "技術練習をしてはいけないため",
+        "勝敗を記録してはいけないため"
+      ],
+      "answer": 0,
+      "explanation": "試合の公平さと育成・安全を両立する必要があります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ725",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "大会特別ルール",
+      "question": "マクドナルド系のタイブレークで近い形は？",
+      "choices": [
+        "無死一・二塁",
+        "1死満塁",
+        "二死満塁"
+      ],
+      "answer": 0,
+      "explanation": "2025年大会要項例では、無死一・二塁の状態で行う。",
+      "source_note": "JSBB 高円宮賜杯全日本学童軟式野球大会・マクドナルドトーナメント、および2025県大会要項",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "学童大会",
+      "middle_category": "大会規定",
+      "small_category": "マクドナルド・トーナメント"
+    },
+    {
+      "id": "BQ731",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
+      "question": "MIZUNOドリームカップジュニアトーナメントの試合回は？",
+      "choices": [
+        "6回制",
+        "9回制",
+        "5回だけ"
+      ],
+      "answer": 0,
+      "explanation": "都道府県予選は6回制、時間制限ありで行われます。",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "学童大会",
+      "middle_category": "大会特殊規定",
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
+    },
+    {
+      "id": "BQ748",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "MIZUNOドリームカップジュニアトーナメント",
+      "question": "対戦期限内に試合できない時は？",
+      "choices": [
+        "対戦可能日数で決まる場合がある",
+        "必ず両チーム優勝",
+        "必ず再募集になる"
+      ],
+      "answer": 0,
+      "explanation": "期限内に対戦できない場合、対戦可能日の数で勝敗を決める規定があります。",
+      "source_note": "MIZUNOドリームカップジュニアトーナメント2026大会規定監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "学童大会",
+      "middle_category": "大会特殊規定",
+      "small_category": "MIZUNOドリームカップジュニアトーナメント"
+    },
+    {
+      "id": "BQ753",
+      "level": 13,
+      "level_name": "第13問",
+      "category": "大会特別規則",
+      "question": "学童大会で時間制限がある理由は？",
+      "choices": [
+        "安全と日程を守るため",
+        "打者数を同じにするため",
+        "点差を必ず小さくするため"
+      ],
+      "answer": 0,
+      "explanation": "時間制限は暑さ対策、日没、会場運営などにも関わります。",
+      "source_note": "大会特別規則監査",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ762",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "JSBB学童ルール",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "学童捕手に勧められている用具は？（JSBB学童部規定）",
+      "choices": [
+        "キャッチャーミット",
+        "ファーストミット",
+        "内野手用グラブ"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQでは、特に学童の捕手には安全上キャッチャーミットの使用を勧めています。",
+      "source_note": "JSBB FAQ 規定・ルールについて 使用可能なグラブについて",
+      "overlap_check": "分類チェック済み。既存問題と同じ知識・同じ答えになる内容を避けた追加問題。",
+      "quality_note": "v16: JSBB FAQ確認。学童に適用される規定のみ追加。"
+    },
+    {
+      "id": "BQ763",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "JSBB学童ルール",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "キャッチャーミットを使えるのは？（JSBB学童部規定）",
+      "choices": [
+        "捕手のみ",
+        "捕手と一塁手",
+        "内野手なら誰でも"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQでは、キャッチャーミットは捕手のみとされています。",
+      "source_note": "JSBB FAQ 規定・ルールについて 使用可能なグラブについて",
+      "overlap_check": "分類チェック済み。既存問題と同じ知識・同じ答えになる内容を避けた追加問題。",
+      "quality_note": "v16: JSBB FAQ確認。学童に適用される規定のみ追加。"
+    },
+    {
+      "id": "BQ764",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "JSBB学童ルール",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "ファーストミットを使えるのは？（JSBB学童部規定）",
+      "choices": [
+        "捕手と一塁手のみ",
+        "一塁手と投手のみ",
+        "外野手を除く内野手"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQでは、ファーストミットは捕手・一塁手のみとされています。",
+      "source_note": "JSBB FAQ 規定・ルールについて 使用可能なグラブについて",
+      "overlap_check": "分類チェック済み。既存問題と同じ知識・同じ答えになる内容を避けた追加問題。",
+      "quality_note": "v16: JSBB FAQ確認。学童に適用される規定のみ追加。"
+    },
+    {
+      "id": "BQ765",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "JSBB学童ルール",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "ヘルメット塗装で守ることは？（JSBB学童部規定）",
+      "choices": [
+        "JSBBマークを消さない",
+        "チーム名を必ず消す",
+        "耳当てを外して塗る"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQでは、塗装は可能ですがJSBBマークは消せないとされています。",
+      "source_note": "JSBB FAQ 規定・ルールについて ヘルメットの塗装",
+      "overlap_check": "分類チェック済み。既存問題と同じ知識・同じ答えになる内容を避けた追加問題。",
+      "quality_note": "v16: JSBB FAQ確認。学童に適用される規定のみ追加。"
+    },
+    {
+      "id": "BQ766",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "JSBB学童ルール",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "打者用ヘルメットで禁止されるのは？（JSBB学童部規定）",
+      "choices": [
+        "フェイスガードの改造",
+        "JSBB公認品の使用",
+        "サイズを合わせること"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQでは、アマチュア野球でフェイスガード取り付けなどの改造行為は禁止されています。",
+      "source_note": "JSBB FAQ 規定・ルールについて 打者用ヘルメットのフェイスガード",
+      "overlap_check": "分類チェック済み。既存問題と同じ知識・同じ答えになる内容を避けた追加問題。",
+      "quality_note": "v16: JSBB FAQ確認。学童に適用される規定のみ追加。"
+    },
+    {
+      "id": "BQ767",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "JSBB学童ルール",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "規定",
+      "small_category": "学童適用",
+      "question": "バットのグリップで禁止されるのは？（JSBB学童部規定）",
+      "choices": [
+        "第2のコブを作る巻き方",
+        "テープを巻き替えること",
+        "古いテープを外すこと"
+      ],
+      "answer": 0,
+      "explanation": "JSBB FAQではテープの巻替えは可能ですが、何重にも巻いて第2のコブを作ることは認められていません。",
+      "source_note": "JSBB FAQ 規定・ルールについて バットのテープの巻替え",
+      "overlap_check": "分類チェック済み。既存問題と同じ知識・同じ答えになる内容を避けた追加問題。",
+      "quality_note": "v16: JSBB FAQ確認。学童に適用される規定のみ追加。"
+    },
+    {
+      "id": "BQ1099",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "守備の連係",
+      "main_category": "守備番号",
+      "middle_category": "ダブルプレー",
+      "small_category": "5-4-3",
+      "question": "5-4-3のダブルプレーはどの順番で送球する？",
+      "choices": [
+        "サード→セカンド→ファースト",
+        "ショート→セカンド→ファースト",
+        "セカンド→ショート→ファースト"
+      ],
+      "answer": 0,
+      "explanation": "5はサード、4はセカンド、3はファーストです。",
+      "source_note": "守備番号とダブルプレーの基本知識",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。5-4-3の送球順問題は既存なし。",
+      "quality_note": "v36: 第7問以降の守備番号・送球順序問題として追加。"
+    },
+    {
+      "id": "BQ1104",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "ルール",
+      "main_category": "打球",
+      "middle_category": "走者",
+      "small_category": "内野手通過後",
+      "question": "内野手を通過した打球がランナーに当たったらどうなる？",
+      "choices": [
+        "そのままプレーを続ける",
+        "ランナーがアウトになる",
+        "ファウルになる"
+      ],
+      "answer": 0,
+      "explanation": "内野手を通過した後にランナーへ当たった場合は、通常インプレイです。",
+      "source_note": "公認野球規則に基づく基本ルール",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。内野手通過後の打球接触問題は既存なし。",
+      "quality_note": "v36: ランナー接触の例外理解として追加。"
+    },
+    {
+      "id": "BQ1114",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "野球用語",
+      "main_category": "グラウンド",
+      "middle_category": "設備",
+      "small_category": "ダートサークル",
+      "question": "ダートサークルとはどこを指す？",
+      "choices": [
+        "ホームベース周辺の土の円",
+        "外野フェンスの周り",
+        "ベンチ前のスペース"
+      ],
+      "answer": 0,
+      "explanation": "ダートサークルは、ホームベース周辺にある土の円形部分を指します。",
+      "source_note": "野球のグラウンド用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。ダートサークルの意味問題は既存なし。",
+      "quality_note": "v39: 第8問以降のグラウンド用語として追加。"
+    },
+    {
+      "id": "BQ2070",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "ルール",
+      "main_category": "ルール",
+      "middle_category": "守備ルール",
+      "small_category": "故意四球後の走者",
+      "question": "申告敬遠で押し出しになるのはどんな時？",
+      "choices": [
+        "満塁で打者が一塁へ進む時",
+        "ランナーなしの時",
+        "2アウトで三振した時"
+      ],
+      "answer": 0,
+      "explanation": "満塁で申告敬遠により打者が一塁へ進むと三塁走者が押し出されます。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2071",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "記録",
+      "main_category": "記録",
+      "middle_category": "投手記録",
+      "small_category": "勝利投手",
+      "question": "勝利投手とは？",
+      "choices": [
+        "チームがリードを保って勝った時に条件を満たす投手",
+        "最後に打席へ立った選手",
+        "最初に安打を打った選手"
+      ],
+      "answer": 0,
+      "explanation": "勝利投手は試合の勝利に関わる条件を満たした投手につく記録です。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2072",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "記録",
+      "main_category": "記録",
+      "middle_category": "投手記録",
+      "small_category": "セーブ",
+      "question": "セーブとは？",
+      "choices": [
+        "リードを守って試合を終えた救援投手につく記録",
+        "先発投手が完投した記録",
+        "打者が本塁打を打つ記録"
+      ],
+      "answer": 0,
+      "explanation": "セーブは条件を満たしてリードを守った救援投手につく記録です。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2135",
+      "level": 14,
+      "level_name": "第14問",
+      "category": "プロ野球",
+      "main_category": "プロ野球",
+      "middle_category": "球団・背番号",
+      "small_category": "永久欠番",
+      "question": "永久欠番とは？",
+      "choices": [
+        "功績をたたえ、背番号を以後使わないこと",
+        "引退後に背番号を毎年変えること",
+        "新人だけが使える特別な背番号"
+      ],
+      "answer": 0,
+      "explanation": "永久欠番は、球団に大きな功績を残した選手などをたたえ、その背番号を以後ほかの選手に与えず残すことです。",
+      "source_note": "精選版 日本国語大辞典「永久欠番」。NPB球団の永久欠番に関する公式発表。",
+      "overlap_check": "現行273問に永久欠番を定義する問題はないことを確認。",
+      "quality_note": "v59新規追加。背番号を使わない制度として定義を固定し、単一正解性を確認。"
+    },
+    {
+      "id": "BQ2074",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "ルール",
+      "main_category": "ルール",
+      "middle_category": "走塁ルール",
+      "small_category": "ベースコーチ接触",
+      "question": "ベースコーチが走者を押して助けた場合は？",
+      "choices": [
+        "走塁補助としてアウトになることがある",
+        "必ず得点になる",
+        "ファウルになる"
+      ],
+      "answer": 0,
+      "explanation": "コーチが走者を物理的に助けると走塁補助としてアウトになることがあります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ212",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "用具とメンテナンス",
+      "question": "軟式球と硬式球の違いとして正しいものは？",
+      "choices": [
+        "構造や硬さが異なり、捕球感や打った時の感覚も変わる",
+        "縫い目の色と表面の模様がおもな違いで、硬さはほぼ同じ",
+        "公式戦ではカテゴリーに関係なく同一ルールへ統一される"
+      ],
+      "answer": 0,
+      "explanation": "軟式球と硬式球は素材・構造が異なります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v15: 学童以外のルール・道具問題のため第8問以降へ移動",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ213",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "用具とメンテナンス",
+      "question": "軟式M号球が導入された理由として正しいものは？",
+      "choices": [
+        "硬式球より柔らかくして打球速度を抑えるため",
+        "軟式球の試合の公平さや硬式に近い感覚を高めるため",
+        "小学生の低学年から一般まで同じ投球距離に合わせるため"
+      ],
+      "answer": 1,
+      "explanation": "M号球は試合の公平さ向上を意識した変更です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v15: 学童以外のルール・道具問題のため第8問以降へ移動",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ802",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "高校野球",
+      "question": "高校野球の低反発バット導入の目的は？",
+      "choices": [
+        "打球速度を抑えて安全性を高めるため",
+        "打者のホームランを増やすため",
+        "守備をより魅力的に見せるため"
+      ],
+      "answer": 0,
+      "explanation": "高校野球の低反発バットは、打球速度を抑えて投手や野手の安全性を高める目的があります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化 / v40: 二重正解防止のため選択肢を修正",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ803",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "高校野球",
+      "question": "高校野球で金属バットが使われ続けてきた理由として正しいものは？",
+      "choices": [
+        "耐久性やコスト面で学校部活動の運営に合いやすい",
+        "木製より折損が少なく、チーム単位で管理しやすい",
+        "反発力と用具費のバランスを取りやすい"
+      ],
+      "answer": 0,
+      "explanation": "部活動では耐久性や費用面が大きな要素です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ805",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "高校野球",
+      "question": "甲子園大会で暑熱対策が重要視される理由として正しいものは？",
+      "choices": [
+        "大会期間中の連戦で疲労管理が難しくなるため",
+        "暑熱環境で判断力や集中力が低下しやすいため",
+        "夏季の高温環境で選手・審判・観客の健康リスクが高まるため"
+      ],
+      "answer": 2,
+      "explanation": "夏の大会では熱中症対策が重要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ809",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "高校野球",
+      "question": "高校野球で木製バット完全移行が簡単ではない理由として正しいものは？",
+      "choices": [
+        "費用や耐久性、安全性の影響が大きい",
+        "チームごとの練習環境に差が出やすいため",
+        "打球傾向や戦術の変化が大きいため"
+      ],
+      "answer": 0,
+      "explanation": "全国の学校で運営するにはコスト等の課題があります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ811",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "高校野球",
+      "question": "高校野球でベンチ入り人数や登録ルールが重要な理由として正しいものは？",
+      "choices": [
+        "大会規模や日程に合わせた選手起用へ関わるため",
+        "大会運営と選手起用の公平さに関係するため",
+        "けがや体調不良時の起用選択にも影響するため"
+      ],
+      "answer": 1,
+      "explanation": "登録ルールは大会運営に直結します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ812",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "高校野球",
+      "question": "高校野球の地方大会で日程管理が難しい理由として正しいものは？",
+      "choices": [
+        "天候や球場数、選手の負担を調整するため",
+        "地方ごとに参加校数や移動距離が異なるため",
+        "暑熱や雨天順延を考慮した日程調整が必要なため"
+      ],
+      "answer": 0,
+      "explanation": "日程は安全と運営の両面で調整が必要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ814",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "高校野球",
+      "question": "高校野球で坊主強制が見直される理由として正しいものは？",
+      "choices": [
+        "部活動文化の見直しがあるため",
+        "多様性を重視する考えが広がったため",
+        "選手の意思を尊重する流れがあるため"
+      ],
+      "answer": 1,
+      "explanation": "髪型の強制見直しには、多様性や選手の意思を重視する価値観の広がりがあります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: ボケ回答を除去 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ1079",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "競技規則",
+      "small_category": "インフィールドフライ後の扱い",
+      "question": "インフィールドフライ宣告後の基本は？",
+      "choices": [
+        "打者はアウトでボールは生きる",
+        "すぐボールデッドになる",
+        "走者は必ず次の塁へ進む"
+      ],
+      "answer": 0,
+      "explanation": "インフィールドフライでは打者はアウトになりますが、原則としてボールはインプレイです。",
+      "source_note": "野球規則の基本用語",
+      "overlap_check": "既存BQ401は趣旨問題。本問は宣告後の扱いを問うため重複ではない。",
+      "quality_note": "v29 Step9: 第10問不足補充。高学年向けの処置理解。 / v49: 20問構成の難易度再評価により第15問へ再配置。"
+    },
+    {
+      "id": "BQ2129",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "プロ野球",
+      "main_category": "プロ野球",
+      "middle_category": "NPB制度",
+      "small_category": "NPB球団数",
+      "question": "2026年のNPBにある球団数は？",
+      "choices": [
+        "12球団",
+        "10球団",
+        "16球団"
+      ],
+      "answer": 0,
+      "explanation": "NPBはセントラル・リーグ6球団、パシフィック・リーグ6球団の計12球団です。",
+      "source_note": "NPB.jp「球団別インデックス」および2026年度公式戦情報。",
+      "overlap_check": "現行問題にNPB全体の球団数を問う問題はなし。",
+      "quality_note": "v58新規追加。対象年を明記し、単一正解性を確認。"
+    },
+    {
+      "id": "BQ2137",
+      "level": 15,
+      "level_name": "第15問",
+      "category": "プロ野球",
+      "main_category": "プロ野球",
+      "middle_category": "表彰",
+      "small_category": "ゴールデングラブ賞",
+      "question": "ゴールデングラブ賞とは？",
+      "choices": [
+        "守備に優れた選手に贈られる賞",
+        "打率が最も高い選手に贈られる賞",
+        "最も多く勝ったチームに贈られる賞"
+      ],
+      "answer": 0,
+      "explanation": "ゴールデングラブ賞は、各守備位置で守備に優れた選手を選ぶ表彰です。",
+      "source_note": "NPB.jp「三井ゴールデン・グラブ賞」投票結果・記録員コラム。",
+      "overlap_check": "現行273問にゴールデングラブ賞の定義を問う問題はないことを確認。",
+      "quality_note": "v59新規追加。守備の表彰である点を明確化し、打撃賞・チーム賞と混同しない3択に整理。"
+    },
+    {
+      "id": "BQ815",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "高校野球",
+      "question": "高校野球の応援文化を判断上で重要な視点として正しいものは？",
+      "choices": [
+        "応援団が試合時間を決めること",
+        "応援が大きいほど判定が変わること",
+        "伝統と、選手・観客の安全や近隣環境への配慮の両立"
+      ],
+      "answer": 2,
+      "explanation": "応援文化も安全・運営・環境への配慮が必要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ816",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "高校野球",
+      "question": "硬式球へ移行する選手が注意すべき点として正しいものは？",
+      "choices": [
+        "ボールの硬さや打球速度が変わり、守備・打撃の感覚も変わる",
+        "捕る時の衝撃や打球反応が軟式と異なる",
+        "用具や練習方法を硬式に合わせて段階的に慣らす必要がある"
+      ],
+      "answer": 0,
+      "explanation": "硬式は球の硬さや打った時の感覚が異なります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ819",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "高校野球",
+      "question": "高校野球7イニング制に反対意見が出る理由として正しいものは？",
+      "choices": [
+        "9回制の伝統や試合展開の変化を重視する立場があるため",
+        "投手起用や終盤戦術が変わることへの懸念があるため",
+        "大会記録や過去との比較が変わることを懸念する立場があるため"
+      ],
+      "answer": 0,
+      "explanation": "改革には利点と伝統・試合の公平さの見方が併存します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ820",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "高校野球",
+      "question": "高校野球改革を判断時に重要な姿勢として正しいものは？",
+      "choices": [
+        "高校生の健康と大会日程を両立するため",
+        "選手保護と試合の公平さの両面から議論すること",
+        "伝統・試合の公平さ・選手保護を分けて整理すること"
+      ],
+      "answer": 1,
+      "explanation": "改革議論では複数の価値を整理する必要があります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ822",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "NPBジュニア",
+      "question": "NPBジュニアはどの区分の大会？",
+      "choices": [
+        "小学生の選抜大会",
+        "高校生の全国大会",
+        "社会人の新人大会"
+      ],
+      "answer": 0,
+      "explanation": "NPBジュニアは、小学生年代の選抜チームによる大会です。",
+      "source_note": "後半向け野球大会知識",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ827",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "高校・一般野球の規格",
+      "question": "一般野球のホームベース形状として正しいものは？",
+      "choices": [
+        "前面17インチの五角形",
+        "一辺だけ長い六角形",
+        "投手板と同じ形の板"
+      ],
+      "answer": 0,
+      "explanation": "一般野球のホームベースは五角形で、前面幅は17インチです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: 寸法系の近い選択肢に統一 / v11: 一般野球のベース規格問題のため第8問へ移動",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ828",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "高校・一般野球の規格",
+      "question": "一般野球の塁間90フィートは約何m？",
+      "choices": [
+        "約27.4m",
+        "約25.0m",
+        "約30.0m"
+      ],
+      "answer": 0,
+      "explanation": "90フィートは約27.4mです。一般野球の代表的な規格です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / v11: 一般野球のベース規格問題のため第8問へ移動",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ829",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "高校・一般野球の規格",
+      "question": "一般野球でホームから二塁までは？",
+      "choices": [
+        "約38.8m",
+        "約36.6m",
+        "約40.2m"
+      ],
+      "answer": 0,
+      "explanation": "一般野球では塁間90フィートの対角線なので、約38.8mです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / v11: 一般野球のベース規格問題のため第8問へ移動",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ830",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "高校・一般野球の規格",
+      "question": "一般野球の各塁ベース一辺は？",
+      "choices": [
+        "15インチ",
+        "17インチ",
+        "18インチ"
+      ],
+      "answer": 0,
+      "explanation": "一塁・二塁・三塁ベースの一辺は15インチです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / v11: 一般野球のベース規格問題のため第8問へ移動",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ831",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "高校・一般野球の規格",
+      "question": "ホームベースの置き方で正しいものは？",
+      "choices": [
+        "前面を投手板側に向ける",
+        "先端を投手板側に向ける",
+        "一塁線だけに合わせる"
+      ],
+      "answer": 0,
+      "explanation": "ホームベースは前面を投手板側に向けて設置します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / v11: 一般野球のベース規格問題のため第8問へ移動",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ1062",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "打撃妨害",
+      "question": "打撃妨害とは？",
+      "choices": [
+        "捕手などが打撃を妨げる",
+        "打者が守備を妨げる",
+        "走者が送球を妨げる"
+      ],
+      "answer": 0,
+      "explanation": "打撃妨害は、捕手など守備側が打者の打撃を妨げる反則です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ1064",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "走塁妨害",
+      "question": "走塁妨害とは？",
+      "choices": [
+        "守備側が走塁を妨げる",
+        "走者が守備を妨げる",
+        "打者が打席を出る"
+      ],
+      "answer": 0,
+      "explanation": "走塁妨害は、守備側が走者の走塁を妨げることです。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ1078",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "ルール",
+      "main_category": "高難度ルール",
+      "middle_category": "打者に関する規則",
+      "small_category": "反則打球",
+      "question": "反則打球とは？",
+      "choices": [
+        "打者が足を完全に打席外に置いて打つこと",
+        "打者が投球を空振りすること",
+        "打者がファウルを打つこと"
+      ],
+      "answer": 0,
+      "explanation": "打者が片足または両足を完全にバッタースボックスの外に置いて打球を打つと、反則打球でアウトになります。打席の線は打席に含まれます。",
+      "source_note": "公認野球規則 6.03(a)(1)。日本高等学校野球連盟「打者に関する規則」。",
+      "overlap_check": "BQ2073と同じ論点だったため、BQ1078へ定義・成立条件を集約。",
+      "quality_note": "v58: ユーザー指定「反則打球とは？」を反映。片足または両足が完全に打席外である条件を明記。"
+    },
+    {
+      "id": "BQ1080",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "競技規則",
+      "small_category": "振り逃げの条件",
+      "question": "振り逃げができない基本条件は？",
+      "choices": [
+        "0アウトか1アウトで一塁に走者",
+        "2アウトで一塁に走者",
+        "2アウトでランナーなし"
+      ],
+      "answer": 0,
+      "explanation": "0アウトまたは1アウトで一塁にランナーがいる時は、原則として振り逃げはできません。",
+      "source_note": "野球規則の基本用語",
+      "overlap_check": "既存BQ402は振り逃げの考え方。本問は成立しない条件を問うため重複ではない。",
+      "quality_note": "v29 Step9: 第10問不足補充。状況条件を問う高難度問題。 / v49: 20問構成の難易度再評価により第16問へ再配置。"
+    },
+    {
+      "id": "BQ2138",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "MLB",
+      "main_category": "MLB",
+      "middle_category": "用具・試合準備",
+      "small_category": "公式球の泥",
+      "question": "MLBの新品公式球に試合前、泥を塗る主な理由は？",
+      "choices": [
+        "表面の光沢を消し、握りやすくするため",
+        "打球を遠くへ飛ばしやすくするため",
+        "ボールの縫い目を太くするため"
+      ],
+      "answer": 0,
+      "explanation": "MLBでは新品球の光沢を消して滑りにくくするため、試合前に専用の泥を塗ります。",
+      "source_note": "MLB.com「FAQ: Sticky stuff and new rule enforcement」および米国野球殿堂「Lena Blackburne Rubbing Mud」。",
+      "overlap_check": "v59の全276問に、MLB公式球へ泥を塗る慣行を問う問題はないことを確認。",
+      "quality_note": "v60新規追加。「うそみたいだが本当」枠。目的を握りやすさに固定し、単一正解性を確認。"
+    },
+    {
+      "id": "BQ2170",
+      "level": 16,
+      "level_name": "第16問",
+      "category": "高難度ルール",
+      "main_category": "高難度ルール",
+      "middle_category": "捕手に関する規則",
+      "small_category": "キャッチャーボーク",
+      "question": "故意四球で、投手の投球前に捕手がキャッチャーボックスの外へ出た場合は？",
+      "choices": [
+        "ボークになる",
+        "ストライクになる",
+        "打者がアウトになる"
+      ],
+      "answer": 0,
+      "explanation": "故意四球で投手が投球する前に捕手がキャッチャーボックスの外へ出ると、ボークが宣告されます。",
+      "source_note": "公認野球規則6.01(g)。",
+      "overlap_check": "v60全281問にキャッチャーボークの成立条件を問う問題はないことを確認。",
+      "quality_note": "v61新規追加。条件を故意四球・投球前・ボックス外に限定して単一正解化。"
+    },
+    {
+      "id": "BQ1105",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "判定・ルール用語",
+      "small_category": "アピールプレー",
+      "question": "アピールプレーとはどんなプレー？",
+      "choices": [
+        "守備側が審判に確認してアウトを求めるプレー",
+        "監督が審判に抗議すること",
+        "ベンチから応援すること"
+      ],
+      "answer": 0,
+      "explanation": "アピールプレーは、走塁ミスなどについて守備側が審判にアピールしてアウトを求めるプレーです。",
+      "source_note": "公認野球規則に基づく基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。アピールプレーの意味問題は既存なし。",
+      "quality_note": "v36: 第9問の高学年用語として追加。"
+    },
+    {
+      "id": "BQ1106",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "判定・ルール用語",
+      "small_category": "インターフェア",
+      "question": "インターフェアとは？",
+      "choices": [
+        "プレーを妨害すること",
+        "タイムをかけること",
+        "守備位置を変えること"
+      ],
+      "answer": 0,
+      "explanation": "インターフェアは、攻撃側などが守備やプレーを妨害することを指します。",
+      "source_note": "公認野球規則に基づく基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。インターフェアの意味問題は既存なし。",
+      "quality_note": "v36: 第9問の高学年用語として追加。"
+    },
+    {
+      "id": "BQ1115",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "ルール",
+      "main_category": "守備",
+      "middle_category": "インフィールドフライ",
+      "small_category": "成立条件",
+      "question": "インフィールドフライが宣告される条件は？",
+      "choices": [
+        "無死または一死で一・二塁か満塁",
+        "二死でランナー一塁",
+        "ランナーなしで内野フライ"
+      ],
+      "answer": 0,
+      "explanation": "インフィールドフライは、無死または一死でランナー一・二塁、または満塁のときに、内野手が普通に捕れる飛球で宣告されます。",
+      "source_note": "公認野球規則に基づく高学年向けルール",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。インフィールドフライ成立条件の同一問題は既存なし。",
+      "quality_note": "v39: 第9問の高難度ルールとして追加。"
+    },
+    {
+      "id": "BQ1116",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "ルール",
+      "main_category": "走塁",
+      "middle_category": "振り逃げ",
+      "small_category": "ダートサークル",
+      "question": "振り逃げで打者がダートサークルを出てベンチへ向かったら？",
+      "choices": [
+        "一塁へ走る意思を放棄したと見られることがある",
+        "必ず一塁へ進める",
+        "ファウルになる"
+      ],
+      "answer": 0,
+      "explanation": "振り逃げでは、一塁へ進む意思を見せずにダートサークルを出ると、走塁を放棄したと見られることがあります。",
+      "source_note": "振り逃げと走塁意思に関する高学年向けルール理解",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。ダートサークル実戦判断の同一問題は既存なし。",
+      "quality_note": "v39: 第9問の高難度実戦ルールとして追加。"
+    },
+    {
+      "id": "BQ2075",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "高難度ルール",
+      "main_category": "高難度ルール",
+      "middle_category": "インフィールドフライ",
+      "small_category": "宣告後の落球",
+      "question": "インフィールドフライ宣告後に野手が落球した時の基本は？",
+      "choices": [
+        "打者はアウトのまま",
+        "打者は必ずセーフ",
+        "ファウルになる"
+      ],
+      "answer": 0,
+      "explanation": "インフィールドフライが宣告されると、捕球の有無に関係なく打者はアウトです。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2076",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "高難度ルール",
+      "main_category": "高難度ルール",
+      "middle_category": "インフィールドフライ",
+      "small_category": "ファウル地域",
+      "question": "インフィールドフライがファウルになった時の基本は？",
+      "choices": [
+        "ファウルとして扱う",
+        "必ず打者アウト",
+        "走者全員アウト"
+      ],
+      "answer": 0,
+      "explanation": "インフィールドフライでも打球がファウルになればファウルとして扱います。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2077",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "高難度ルール",
+      "main_category": "高難度ルール",
+      "middle_category": "アピール",
+      "small_category": "塁の踏み忘れ",
+      "question": "走者が塁を踏み忘れた時に必要になることは？",
+      "choices": [
+        "守備側のアピール",
+        "攻撃側の申告",
+        "記録員の判断"
+      ],
+      "answer": 0,
+      "explanation": "塁の踏み忘れは守備側のアピールでアウトになることがあります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2078",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "高難度ルール",
+      "main_category": "高難度ルール",
+      "middle_category": "アピール",
+      "small_category": "リタッチ忘れ",
+      "question": "飛球後に走者がリタッチを忘れた時の扱いは？",
+      "choices": [
+        "アピール対象になる",
+        "自動的に得点になる",
+        "必ずファウルになる"
+      ],
+      "answer": 0,
+      "explanation": "リタッチ忘れは守備側のアピール対象です。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2079",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "高難度ルール",
+      "main_category": "高難度ルール",
+      "middle_category": "妨害",
+      "small_category": "守備妨害後のボール",
+      "question": "守備妨害が宣告された時の基本は？",
+      "choices": [
+        "ボールデッドになる",
+        "必ずホームランになる",
+        "投球をやり直すだけ"
+      ],
+      "answer": 0,
+      "explanation": "守備妨害が宣告されると基本的にボールデッドになります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2080",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "高難度ルール",
+      "main_category": "高難度ルール",
+      "middle_category": "妨害",
+      "small_category": "打者走者の妨害",
+      "question": "打者走者が一塁送球を妨げた時に起こり得ることは？",
+      "choices": [
+        "打者走者がアウトになる",
+        "守備側が全員アウトになる",
+        "必ずボークになる"
+      ],
+      "answer": 0,
+      "explanation": "打者走者が守備を妨げるとアウトになることがあります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2083",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "高難度ルール",
+      "main_category": "高難度ルール",
+      "middle_category": "投球",
+      "small_category": "ボーク後の投球",
+      "question": "ボーク後の投球を打者が打ち、攻撃側に有利な結果になった場合はどうなる？",
+      "choices": [
+        "プレー結果が生かされることがある",
+        "必ずボークだけが適用される",
+        "打者は必ずアウトになる"
+      ],
+      "answer": 0,
+      "explanation": "ボーク後の投球を打者が打ち、攻撃側に有利な結果になった場合は、プレー結果が生かされることがあります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。 / v43: 確認型を避け、ボーク後の投球結果を問う実戦問題へ修正。"
+    },
+    {
+      "id": "BQ905",
+      "level": 17,
+      "level_name": "第17問",
+      "category": "大学・社会人・プロ",
+      "question": "育成契約の特徴として正しいものは？",
+      "choices": [
+        "支配下登録を目指しながら球団で育成を受ける契約",
+        "支配下登録とは別枠で、将来の支配下登録を目指す契約",
+        "一軍出場よりも育成環境と将来性を重視する契約"
+      ],
+      "answer": 1,
+      "explanation": "育成選手は支配下登録を目指します。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ906",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "大学・社会人・プロ",
+      "question": "FAの仕組みの基本的な考え方として正しいものは？",
+      "choices": [
+        "一定条件を満たした選手が他球団との契約交渉を可能にする仕組み",
+        "所属球団との契約状況に応じて移籍交渉の幅が広がる仕組み",
+        "選手のキャリア選択と球団間の戦力移動に関わる仕組み"
+      ],
+      "answer": 0,
+      "explanation": "FAは選手の移籍に関わる仕組みです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ907",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "大学・社会人・プロ",
+      "question": "セ・リーグとパ・リーグで長く仕組み差として話題になってきたものとして正しいものは？",
+      "choices": [
+        "指名打者仕組みの扱い",
+        "交流戦やポストシーズンの試合運営",
+        "一軍登録人数やベンチ入り人数の考え方"
+      ],
+      "answer": 0,
+      "explanation": "DH仕組みの扱いは、セ・リーグとパ・リーグの違いとして話題になりやすい仕組みです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ909",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "大学・社会人・プロ",
+      "question": "独立リーグの役割は？",
+      "choices": [
+        "NPB以外で選手が試合を続け、プロ入りを目指す場にもなる",
+        "地域密着で選手育成や興行を行うプロ野球組織の一つ",
+        "若手や再挑戦する選手に実戦機会を与える場になる"
+      ],
+      "answer": 0,
+      "explanation": "独立リーグは試合継続やNPB挑戦の場です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ911",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "大学・社会人・プロ",
+      "question": "プロ野球で映像判定が導入される意義は？",
+      "choices": [
+        "対象プレーを確認し判定精度を高める",
+        "すべての判定を映像だけで決める",
+        "審判の考え方を完全になくす"
+      ],
+      "answer": 0,
+      "explanation": "映像判定は、対象となるプレーを確認し、判定の正確さを高めるために使われます。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ913",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "大学・社会人・プロ",
+      "question": "プロ用の木製バットで素材選びが重要な理由として正しいものは？",
+      "choices": [
+        "しなりや硬さ、打感が素材で変わるため",
+        "選手の好みや打撃スタイルに合わせて素材を選ぶため",
+        "折れ方や打球音、振り抜き感にも素材差が出るため"
+      ],
+      "answer": 0,
+      "explanation": "素材により特徴があります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ915",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "大学・社会人・プロ",
+      "question": "社会人野球の存在意義として正しいものは？",
+      "choices": [
+        "企業やクラブで高いレベルを保つ",
+        "アマチュア最高峰の一つとして試合継続の場になる",
+        "地域・企業スポーツとして野球文化を支える役割がある"
+      ],
+      "answer": 0,
+      "explanation": "社会人野球はアマチュア上位カテゴリーです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ918",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "大学・社会人・プロ",
+      "question": "プロ野球の戦力外通告の説明として正しいものは？",
+      "choices": [
+        "球団が翌季の契約を結ばない方針を選手へ伝えること",
+        "再契約・移籍・引退に関わる知らせ",
+        "支配下枠やチーム編成の見直しに伴って行われる球団判断"
+      ],
+      "answer": 0,
+      "explanation": "戦力外通告は、球団が翌季の契約を結ばない方針を選手に伝えるものです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ919",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "大学・社会人・プロ",
+      "question": "プロを目指す選手が高校以降に木製対応を進める理由として正しいものは？",
+      "choices": [
+        "上位カテゴリーで木製を使用機会が増えるため",
+        "大学・社会人・プロで木製使用が中心になるため",
+        "金属とは違う芯の狭さや打った時の感覚へ慣れる必要があるため"
+      ],
+      "answer": 1,
+      "explanation": "上位カテゴリーでは木製での打撃技術が必要になります。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ922",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "WBSC U-12",
+      "question": "WBSC U-12はどんな大会？",
+      "choices": [
+        "12歳以下の国際大会",
+        "高校生の世界大会",
+        "プロ二軍の大会"
+      ],
+      "answer": 0,
+      "explanation": "WBSC U-12は、12歳以下の国際大会です。",
+      "source_note": "後半向け国際大会知識",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step5追加: 学童大会・用具・安全・野球文化を強化。選択肢30字以内、単一正解を確認。",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ415",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "ルール知識（非状況判断）",
+      "question": "インターフェアとオブストラクションの区別として正しいものは？",
+      "choices": [
+        "前者は主に攻撃側の妨害、後者は主に守備側の妨害を指す",
+        "ボールデッドになるか継続するかは個別のルールで処置が異なる",
+        "だれの行為かでルールが分かれる"
+      ],
+      "answer": 0,
+      "explanation": "攻撃側・守備側どちらの妨害かが重要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "基礎知識",
+      "middle_category": "学童・少年野球",
+      "small_category": "その他"
+    },
+    {
+      "id": "BQ1045",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "フィルダースチョイス",
+      "question": "フィルダースチョイスとは？",
+      "choices": [
+        "別の走者をアウトにねらう",
+        "野手が守備位置を選ぶ",
+        "打者が塁を選ぶ"
+      ],
+      "answer": 0,
+      "explanation": "フィルダースチョイスは、守備側が打者走者ではなく別の走者をアウトにしようとする判断です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v25: 使用頻度が高い野球用語を、問題数が少ないレベル優先で5問目までに追加。"
+    },
+    {
+      "id": "BQ1117",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "ルール",
+      "main_category": "走塁",
+      "middle_category": "タッチアップ",
+      "small_category": "アピールプレー",
+      "question": "走者がタッチアップを忘れてホームに帰った時、守備側はどうする？",
+      "choices": [
+        "元の塁へアピールする",
+        "タイムをかけるだけでよい",
+        "監督に知らせればアウトになる"
+      ],
+      "answer": 0,
+      "explanation": "タッチアップ忘れは、守備側が元の塁へ正しくアピールすることでアウトを求めます。",
+      "source_note": "公認野球規則に基づくアピールプレー",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。タッチアップ忘れの実戦アピール問題は既存なし。",
+      "quality_note": "v39: 第10問の高難度ルールとして追加。 / v49: 20問構成の難易度再評価により第18問へ再配置。"
+    },
+    {
+      "id": "BQ2111",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "高校野球・大会データ",
+      "question": "2025年夏の甲子園の地方大会に参加した学校数は？",
+      "choices": [
+        "3,680校",
+        "3,396校",
+        "49校"
+      ],
+      "answer": 0,
+      "explanation": "2025年夏の甲子園の地方大会には、3,680校3,396チームが参加しました。",
+      "source_note": "日本高等学校野球連盟「第107回全国高校野球選手権地方大会 参加チーム数の確定」（2025年6月28日）",
+      "overlap_check": "v52全問題・過去の削除／除外台帳を照合。甲子園の2025年地方大会参加校数を直接問う問題はなし。",
+      "quality_note": "年度・大会を明記。学校数／チーム数／代表校数を区別し、単一正解性を確認済み。",
+      "main_category": "高校野球",
+      "middle_category": "大会データ",
+      "small_category": "地方大会参加校数"
+    },
+    {
+      "id": "BQ2124",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "国際大会・WBC",
+      "main_category": "国際大会",
+      "middle_category": "WBC大会概要",
+      "small_category": "開催周期",
+      "question": "2026年大会の次に予定されるWBCは何年？",
+      "choices": [
+        "2029年",
+        "2030年",
+        "2028年"
+      ],
+      "answer": 0,
+      "explanation": "WBCは2026年大会の次に2029年の開催が予定されています。",
+      "source_note": "MLB.com「Jose Quintana, Julio Teheran lead Colombia in World Baseball Classic」（2026年3月3日）",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。次回WBCの開催年を問う問題はなし。",
+      "quality_note": "開催地は公式発表を確認できないため、未発表の開催地を問う問題は作成しない。"
+    },
+    {
+      "id": "BQ2125",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "国際大会・WBC",
+      "main_category": "国際大会",
+      "middle_category": "WBC開催地",
+      "small_category": "2026年東京プール",
+      "question": "2026年WBCの東京プールが行われた球場は？",
+      "choices": [
+        "東京ドーム",
+        "明治神宮野球場",
+        "横浜スタジアム"
+      ],
+      "answer": 0,
+      "explanation": "2026年WBCの東京プールは東京ドームで行われました。",
+      "source_note": "MLB.com「World Baseball Classic 2026 host sites announced」およびWBC公式チケット情報",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。2026年WBC東京プールの球場を問う問題はなし。",
+      "quality_note": "年度・大会・対象プールを明記。二重正解なし。"
+    },
+    {
+      "id": "BQ2132",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "高校野球",
+      "main_category": "高校野球",
+      "middle_category": "甲子園",
+      "small_category": "夏の甲子園優勝回数",
+      "question": "夏の甲子園で優勝回数が最も多い都道府県は？",
+      "choices": [
+        "大阪府",
+        "愛知県",
+        "神奈川県"
+      ],
+      "answer": 0,
+      "explanation": "夏の甲子園では、大阪府代表の優勝が14回で都道府県別最多です。",
+      "source_note": "朝日新聞デジタル 高校野球ランキング「全国都道府県別優勝回数ランキング（夏）」。",
+      "overlap_check": "現行問題は2025年夏の甲子園参加校数・代表校数のみで、都道府県別優勝回数はなし。",
+      "quality_note": "v58新規追加。春を含めず、夏の甲子園に対象を限定。"
+    },
+    {
+      "id": "BQ2136",
+      "level": 18,
+      "level_name": "第18問",
+      "category": "プロ野球",
+      "main_category": "プロ野球",
+      "middle_category": "表彰",
+      "small_category": "沢村賞",
+      "question": "沢村賞とは？",
+      "choices": [
+        "最も優れた先発完投型投手に贈られる賞",
+        "最も本塁打を打った打者に贈られる賞",
+        "最も盗塁を決めた走者に贈られる賞"
+      ],
+      "answer": 0,
+      "explanation": "沢村賞は、沢村栄治を記念し、その年に最も優れた先発完投型の本格派投手に贈られる賞です。",
+      "source_note": "NPB.jp「正力賞・沢村賞」および沢村賞選考委員会の公表情報。",
+      "overlap_check": "現行273問に沢村賞の定義を問う問題はないことを確認。",
+      "quality_note": "v59新規追加。単に『優れた投手』とせず、先発完投型投手の賞である点を明確化。"
+    },
+    {
+      "id": "BQ1001",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球博士・仕組み史",
+      "question": "野球の塁間が90フィートで定着した理由として正しいものは？",
+      "choices": [
+        "現代の100m走記録から逆算されたため",
+        "金属バットの反発力から決められたため",
+        "試合の歴史的広がりの中で定着したルールであるため"
+      ],
+      "answer": 2,
+      "explanation": "90フィートは野球の歴史的ルールです。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ1002",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球博士・仕組み史",
+      "question": "野球が9人制で行われるようになった理由として正しいものは？",
+      "choices": [
+        "守備位置の分化と試合形式が整う中で人数が定着したため",
+        "投手・捕手だけを特別扱いするに人数を固定した",
+        "打順を3人ずつ3組に分ける進行上の都合から決まったため"
+      ],
+      "answer": 0,
+      "explanation": "9人制は近代野球の広がりの中で、守備位置と試合形式が整いながら定着しました。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ1003",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球博士・仕組み史",
+      "question": "ホームベースの形が重要な理由は？",
+      "choices": [
+        "本塁周辺の基準になる",
+        "打球をはね返すため",
+        "水を流しやすくするため"
+      ],
+      "answer": 0,
+      "explanation": "ホームベースは、フェアラインや判定の基準になる大切な場所です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4: ボケ回答を除去 / Step5最終監査: 野球博士らしさ・単一正解性を調整",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ1012",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球博士・仕組み史",
+      "question": "野球の安全改革で難しい点として正しいものは？",
+      "choices": [
+        "選手保護と試合の公平さのどちらを優先するか議論が必要になる",
+        "伝統・試合の公平さ・選手保護のバランスを取る必要がある",
+        "安全を高める変更が試合内容や戦術へ影響する場合がある"
+      ],
+      "answer": 1,
+      "explanation": "安全改革では複数の価値の調整が必要です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ1016",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球博士・仕組み史",
+      "question": "木製バットが折れることも試合の公平さの一部とされる理由として正しいものは？",
+      "choices": [
+        "芯を外した打撃や素材特性が結果に反映されるため",
+        "木目や素材の性質が打球結果や耐久性に関わるため",
+        "打者の技術と用具管理が結果に表れやすいため"
+      ],
+      "answer": 0,
+      "explanation": "木製は芯を外すと打撃技術が問われます。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "バット"
+    },
+    {
+      "id": "BQ1017",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球博士・仕組み史",
+      "question": "将来の少年野球で重要になる視点として正しいものは？",
+      "choices": [
+        "勝利・育成・安全・参加しやすさのバランス",
+        "選手の長期的な成長とけが予防を両立すること",
+        "試合力向上と継続しやすい環境づくりを同時に判断こと"
+      ],
+      "answer": 0,
+      "explanation": "少年野球の持続には安全と楽しさ、育成のバランスが不可欠です。",
+      "source_note": "",
+      "overlap_check": "本編の守備判断・走塁判断・送球判断・カバーリング問題とは重複しない知識問題",
+      "quality_note": "Step3.5日本語破損修正済み。正解番号・JSON構文・ID重複を確認済み。 / Step4.6: 問題文の単調表現を自然化",
+      "main_category": "上級野球知識",
+      "middle_category": "後半専用",
+      "small_category": "明確知識"
+    },
+    {
+      "id": "BQ1066",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "第3アウトの置き換え",
+      "question": "第3アウトの置き換えとは？",
+      "choices": [
+        "有利なアウトに変える訴え",
+        "打者を次打者へ変えること",
+        "守備位置を変えること"
+      ],
+      "answer": 0,
+      "explanation": "第3アウトの置き換えは、守備側がより有利なアウトを審判に訴える考え方です。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ1070",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "ラインアウト",
+      "question": "走路を外れるアウトとは？",
+      "choices": [
+        "タッチを避けて大きく外れる",
+        "一塁を駆け抜ける",
+        "ベース上で止まる"
+      ],
+      "answer": 0,
+      "explanation": "走者がタッチを避けるために走路を大きく外れるとアウトになることがあります。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ1071",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "試合で使う用語",
+      "small_category": "守備優先",
+      "question": "打球処理で優先されるのは？",
+      "choices": [
+        "打球を処理する野手",
+        "次の塁へ向かう走者",
+        "ベースコーチの位置"
+      ],
+      "answer": 0,
+      "explanation": "打球を処理しようとする野手には、守備機会が優先されます。",
+      "source_note": "学童野球の試合・指導で使われる基本用語",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。同じ用語の既存問題なし。",
+      "quality_note": "v26: 問題数が少ないレベルを優先し、簡単すぎる選択肢を避けて追加。"
+    },
+    {
+      "id": "BQ2108",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "JSBB学童ルール",
+      "main_category": "JSBB学童ルール",
+      "middle_category": "用具規定",
+      "small_category": "投手用グラブ",
+      "question": "JSBB規定で、投手用グラブの本体カラーに使えないものは？",
+      "choices": [
+        "白・グレー・基準色14番より薄い色",
+        "黒・茶・紺などの濃い色",
+        "赤・オレンジなどの濃い色"
+      ],
+      "answer": 0,
+      "explanation": "投手用グラブの本体カラーは、白・グレー・PANTONEの色基準14番より薄い色が使えません。",
+      "source_note": "全日本軟式野球連盟「グラブの取り扱いについて」",
+      "overlap_check": "v49全250問、過去の削除・除外台帳、v50/v51候補を2回照合。投手用グラブ本体カラーを直接問う問題はなし。",
+      "quality_note": "v52追加。公式資料で禁止対象を確認。数値・禁止対象が明確で、二重正解なし。"
+    },
+    {
+      "id": "BQ2109",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "野球記録",
+      "main_category": "野球記録",
+      "middle_category": "投手記録",
+      "small_category": "投球回",
+      "question": "投手が1アウトだけ取って交代した時、投球回数の記録は？",
+      "choices": [
+        "0回1/3",
+        "0回2/3",
+        "1回"
+      ],
+      "answer": 0,
+      "explanation": "投球回は、アウト一つを3分の1回として記録します。1アウトなら0回1/3です。",
+      "source_note": "NPB「公認野球規則 9.00 記録に関する規則」",
+      "overlap_check": "v49全250問、過去の削除・除外台帳、v50/v51候補を2回照合。投球回の3分の1表記を直接問う問題はなし。",
+      "quality_note": "v52追加。公式記録規則で確認。数値が明確で、二重正解なし。"
+    },
+    {
+      "id": "BQ2112",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "高校野球・大会データ",
+      "question": "2025年夏の甲子園の本大会に出場した代表校数は？",
+      "choices": [
+        "47校",
+        "49校",
+        "3,396校"
+      ],
+      "answer": 1,
+      "explanation": "2025年夏の甲子園本大会には49代表校が出場しました。北海道と東京都は各2代表です。",
+      "source_note": "日本高等学校野球連盟「第107回全国高等学校野球選手権大会 開催要項」",
+      "overlap_check": "v52全問題・過去の削除／除外台帳を照合。甲子園本大会の代表校数を直接問う問題はなし。",
+      "quality_note": "年度・大会を明記。47都道府県、49代表校、地方大会参加チーム数を混同しない選択肢に調整。",
+      "main_category": "高校野球",
+      "middle_category": "大会データ",
+      "small_category": "本大会代表校数"
+    },
+    {
+      "id": "BQ2113",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "プロ野球・ファームリーグ",
+      "question": "NPBイースタン・リーグとは？",
+      "choices": [
+        "プロ野球のファーム公式戦のリーグ",
+        "プロ野球一軍だけのリーグ",
+        "独立リーグだけの公式戦"
+      ],
+      "answer": 0,
+      "explanation": "NPBイースタン・リーグは、プロ野球のファーム公式戦が行われるリーグの一つです。",
+      "source_note": "NPB.jp「ファーム公式戦」",
+      "overlap_check": "v52全問題・過去の削除／除外台帳を照合。「オイシックスの参加先」を問う旧案は採用せず、リーグ制度を問う新規論点として作成。",
+      "quality_note": "固有球団への依存を避け、NPBの公式リーグ制度を問う形へ変更。二重正解なしを確認済み。",
+      "main_category": "プロ野球",
+      "middle_category": "ファームリーグ",
+      "small_category": "イースタン・リーグ"
+    },
+    {
+      "id": "BQ2126",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "国際大会・WBC",
+      "main_category": "国際大会",
+      "middle_category": "WBC開催地",
+      "small_category": "2026年決勝開催地",
+      "question": "2026年WBCの決勝が行われた都市は？",
+      "choices": [
+        "マイアミ",
+        "東京",
+        "ヒューストン"
+      ],
+      "answer": 0,
+      "explanation": "2026年WBCの決勝は、アメリカ・フロリダ州マイアミのloanDepot parkで行われました。",
+      "source_note": "WBC公式スケジュールおよびMLB.com「All you need to know about World Baseball Classic 2026」",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。2026年WBC決勝の開催都市を問う問題はなし。",
+      "quality_note": "球場名ではなく都市を問う形に限定し、選択肢を開催都市で統一。"
+    },
+    {
+      "id": "BQ2127",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "国際大会・WBC",
+      "main_category": "国際大会",
+      "middle_category": "WBC大会概要",
+      "small_category": "参加国数",
+      "question": "2026年WBCの本大会に参加した国と地域の数は？",
+      "choices": [
+        "20",
+        "16",
+        "24"
+      ],
+      "answer": 0,
+      "explanation": "2026年WBCの本大会には20の国と地域が参加しました。",
+      "source_note": "MLB.com「2026 World Baseball Classic rules and rule modifications」",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。2026年WBCの参加数を問う問題はなし。",
+      "quality_note": "年度と本大会を明記。選択肢を参加数に統一。"
+    },
+    {
+      "id": "BQ2139",
+      "level": 19,
+      "level_name": "第19問",
+      "category": "記録",
+      "main_category": "野球記録",
+      "middle_category": "安打・塁打",
+      "small_category": "サヨナラ安打の記録",
+      "question": "同点の最終回、走者二塁で打球がワンバウンドでスタンドに入った。打者が二塁を踏まず戻った場合、安打の記録は？",
+      "choices": [
+        "単打",
+        "二塁打",
+        "本塁打"
+      ],
+      "answer": 0,
+      "explanation": "通常はエンタイトル二塁打でも、サヨナラの勝ち越し点が入り打者が二塁まで正規に進まなければ、記録は単打になります。",
+      "source_note": "NPB.jp 記録員コラム「エンタイトル二塁打なのに」および公認野球規則9.06(f)。",
+      "overlap_check": "現行のエンタイトルツーベース問題は用語・進塁権を扱うもので、サヨナラ安打の塁打記録条件とは論点が異なる。",
+      "quality_note": "v60新規追加。走者二塁・最終回同点・打者が二塁を踏まない条件を明記し、単一正解化。"
+    },
+    {
+      "id": "BQ1081",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "競技規則",
+      "small_category": "アピールの時期",
+      "question": "アピールプレーで重要な時期は？",
+      "choices": [
+        "次の投球やプレーの前",
+        "試合終了後ならいつでも",
+        "記録が確定した後"
+      ],
+      "answer": 0,
+      "explanation": "アピールは、次の投球やプレーの前など、決められた時期に行う必要があります。",
+      "source_note": "野球規則の基本用語",
+      "overlap_check": "既存BQ1061/BQ1069は意味。本問は時期を問うため重複ではない。",
+      "quality_note": "v29 Step9: 第10問不足補充。アピールの実務理解。"
+    },
+    {
+      "id": "BQ1083",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "野球用語",
+      "main_category": "野球用語",
+      "middle_category": "競技規則",
+      "small_category": "走塁放棄",
+      "question": "走塁放棄と見られやすい行動は？",
+      "choices": [
+        "走者が進塁をやめベンチへ向かう",
+        "走者がベース上で止まる",
+        "走者がリードを小さくする"
+      ],
+      "answer": 0,
+      "explanation": "走者がアウトになったと思い込むなどしてベンチへ向かると、走塁を放棄したと見られる場合があります。",
+      "source_note": "野球規則の基本用語",
+      "overlap_check": "走塁放棄の既存問題なし。",
+      "quality_note": "v29 Step9: 第10問不足補充。状況判断の高難度問題。"
+    },
+    {
+      "id": "BQ1110",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "ルール",
+      "main_category": "守備",
+      "middle_category": "故意落球",
+      "small_category": "ダブルプレー防止",
+      "question": "故意落球が宣告されるのはどんな時？",
+      "choices": [
+        "内野手がわざと落球してダブルプレーを狙った時",
+        "外野手がエラーした時",
+        "送球を落とした時"
+      ],
+      "answer": 0,
+      "explanation": "故意落球は、内野手が簡単に捕れる飛球やライナーをわざと落としてダブルプレーを狙うことを防ぐルールです。",
+      "source_note": "公認野球規則に基づく守備ルール",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。故意落球の意味問題は既存なし。",
+      "quality_note": "v36: 第10問の高難度ルールとして追加。"
+    },
+    {
+      "id": "BQ1111",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "ルール",
+      "main_category": "打順",
+      "middle_category": "打順誤り",
+      "small_category": "アピール",
+      "question": "打順を間違えた時に必要なプレーは？",
+      "choices": [
+        "守備側のアピール",
+        "監督の抗議",
+        "審判の判断だけ"
+      ],
+      "answer": 0,
+      "explanation": "打順誤りは、守備側が正しくアピールすることで判定されます。",
+      "source_note": "公認野球規則に基づく打順ルール",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。打順誤りのアピール問題は既存なし。",
+      "quality_note": "v36: 第10問の高難度ルールとして追加。"
+    },
+    {
+      "id": "BQ1112",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "ルール",
+      "main_category": "得点",
+      "middle_category": "第3アウト",
+      "small_category": "フォースアウト",
+      "question": "フォースアウトで第3アウトになった時の得点はどうなる？",
+      "choices": [
+        "得点にならない",
+        "必ず得点になる",
+        "監督が決める"
+      ],
+      "answer": 0,
+      "explanation": "フォースアウトで第3アウトになった場合、そのプレー中に本塁を踏んだランナーの得点は認められません。",
+      "source_note": "公認野球規則に基づく得点ルール",
+      "overlap_check": "大分類→中分類→小分類→既存問題検索後に追加。フォースアウト第3アウトの得点問題は既存なし。",
+      "quality_note": "v36: 第10問の高難度ルールとして追加。"
+    },
+    {
+      "id": "BQ2091",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "最難関ルール",
+      "main_category": "最難関ルール",
+      "middle_category": "打順誤り",
+      "small_category": "正しい打者",
+      "question": "打順誤りで正しい打者が打席に入ったらどうなる？",
+      "choices": [
+        "打席を引き継げる",
+        "打者はアウト",
+        "チェンジ"
+      ],
+      "answer": 0,
+      "explanation": "誤った打者の打席中に気づいた場合、正しい打者が打席を引き継げます。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。 / v49: ユーザー指定により問題文・選択肢・解説を簡潔化。"
+    },
+    {
+      "id": "BQ2093",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "最難関ルール",
+      "main_category": "最難関ルール",
+      "middle_category": "妨害",
+      "small_category": "故意の守備妨害",
+      "question": "走者がわざと送球を妨げてダブルプレーを防ごうとした場合は？",
+      "choices": [
+        "打者走者もアウトになることがある",
+        "走者だけが元の塁へ戻る",
+        "ボールデッドにならず必ず続行する"
+      ],
+      "answer": 0,
+      "explanation": "走者が故意に送球を妨げてダブルプレーを防ごうとした場合、打者走者もアウトになることがあります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。 / v43: 2回確認後、故意の送球妨害による追加アウトの実戦問題へ修正採用。"
+    },
+    {
+      "id": "BQ2094",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "最難関ルール",
+      "main_category": "最難関ルール",
+      "middle_category": "ボーク",
+      "small_category": "走者なしの反則投球",
+      "question": "走者なしで投手が反則投球をした時の基本は？",
+      "choices": [
+        "ボールが宣告されることがある",
+        "必ずボークで一塁進塁",
+        "打者がアウト"
+      ],
+      "answer": 0,
+      "explanation": "走者がいない場合はボークではなく反則投球としてボールになることがあります。",
+      "source_note": "v43候補。v42整理版を基準に新規追加候補として別リスト化。",
+      "overlap_check": "v42整理版の問題文と完全一致なし。全カテゴリー監査前提の候補。",
+      "quality_note": "確認型問題・大会運営問題・二重正解化しやすい表現を避けて作成。"
+    },
+    {
+      "id": "BQ2114",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB制度",
+      "small_category": "球団数",
+      "question": "2026年のMLBにある球団数は？",
+      "choices": [
+        "30球団",
+        "32球団",
+        "28球団"
+      ],
+      "answer": 0,
+      "explanation": "MLBはナショナル・リーグ15球団、アメリカン・リーグ15球団の計30球団です。",
+      "source_note": "MLB.com「30 MLB Teams」および2026年公式日程",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。MLB全体の球団数を問う問題はなし。",
+      "quality_note": "v54追加。対象年を明記し、リーグ別球団数と合わせて学べる数値問題。二重正解なし。"
+    },
+    {
+      "id": "BQ2115",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB制度",
+      "small_category": "ナショナル・リーグ球団数",
+      "question": "2026年のMLBナショナル・リーグの球団数は？",
+      "choices": [
+        "15球団",
+        "16球団",
+        "14球団"
+      ],
+      "answer": 0,
+      "explanation": "ナショナル・リーグは15球団です。アメリカン・リーグも15球団で、MLB全体では30球団です。",
+      "source_note": "MLB.com「30 MLB Teams」および2026年公式順位表",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。ナショナル・リーグの球団数を問う問題はなし。",
+      "quality_note": "v54追加。MLB全体球団数と混同しない選択肢に調整。二重正解なし。"
+    },
+    {
+      "id": "BQ2116",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB制度",
+      "small_category": "アメリカン・リーグ球団数",
+      "question": "2026年のMLBアメリカン・リーグの球団数は？",
+      "choices": [
+        "15球団",
+        "16球団",
+        "14球団"
+      ],
+      "answer": 0,
+      "explanation": "アメリカン・リーグは15球団です。ナショナル・リーグも15球団で、MLB全体では30球団です。",
+      "source_note": "MLB.com「30 MLB Teams」および2026年公式順位表",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。アメリカン・リーグの球団数を問う問題はなし。",
+      "quality_note": "v54追加。MLB全体球団数と混同しない選択肢に調整。二重正解なし。"
+    },
+    {
+      "id": "BQ2117",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "世界記録",
+      "small_category": "公式戦通算本塁打",
+      "question": "NPB公式戦通算で最も多く本塁打を打った選手は？",
+      "choices": [
+        "王貞治",
+        "野村克也",
+        "門田博光"
+      ],
+      "answer": 0,
+      "explanation": "王貞治はNPB公式戦で通算868本塁打を記録し、歴代最多です。",
+      "source_note": "NPB.jp「歴代最高記録 本塁打【通算記録】」。",
+      "overlap_check": "v57の世界最多表現を、ユーザー指定に合わせてNPB公式戦通算最多へ対象範囲を明確化。",
+      "quality_note": "v58: NPB公式戦・通算本塁打に限定。選択肢はNPB通算本塁打上位者で構成。"
+    },
+    {
+      "id": "BQ2118",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB記録",
+      "small_category": "最速球",
+      "question": "2026年6月時点、MLBの追跡記録で最速105.8マイルを記録した投手は誰？",
+      "choices": [
+        "アロルディス・チャップマン",
+        "ベン・ジョイス",
+        "ジョーダン・ヒックス"
+      ],
+      "answer": 0,
+      "explanation": "チャップマンは2010年に105.8マイル（約170.3km/h）を記録しました。追跡記録がある2008年以降で最速です。",
+      "source_note": "MLB.com「Speediest plays in Statcast history」「Aroldis Chapman on rise of high-velocity pitchers」",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。MLB追跡記録上の最速球を問う問題はなし。",
+      "quality_note": "v54追加。「世界最速」では測定方法が統一されないため、MLB追跡記録・基準日・速度を明記。選択肢は追跡記録上位投手で統一し、二重正解なし。"
+    },
+    {
+      "id": "BQ2119",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB記録",
+      "small_category": "通算安打",
+      "question": "NPBとMLBの公式戦を合算した通算安打数が最も多い選手は？",
+      "choices": [
+        "イチロー",
+        "ピート・ローズ",
+        "ハンク・アーロン"
+      ],
+      "answer": 0,
+      "explanation": "イチローはNPBで1,278安打、MLBで3,089安打を記録し、日米公式戦通算で4,367安打です。",
+      "source_note": "野球殿堂博物館「イチロー」／MLB.com「51 Ichiro Suzuki stats」",
+      "overlap_check": "v54全262問、過去の削除・除外台帳を2回照合。MLB限定の最多安打問題を日米公式戦合算の記録問題へ差し替え。対象範囲が異なるため既存問題との重複なし。",
+      "quality_note": "v55修正。リーグ横断の統一公式ランキングではなく、NPBとMLBの公式戦を合算した記録であることを問題文に明記。選択肢は各記録分野の上位者で統一し、二重正解なし。"
+    },
+    {
+      "id": "BQ2120",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・世界野球記録",
+      "main_category": "MLB・世界野球記録",
+      "middle_category": "MLB記録",
+      "small_category": "通算盗塁",
+      "question": "MLB公式戦通算盗塁の最多記録を持つのは誰？",
+      "choices": [
+        "リッキー・ヘンダーソン",
+        "ルー・ブロック",
+        "ビリー・ハミルトン"
+      ],
+      "answer": 0,
+      "explanation": "リッキー・ヘンダーソンはMLB公式戦で通算1,406盗塁を記録し、最多記録を持ちます。",
+      "source_note": "MLB.com「All-Time MLB Player Hitting Stat Leaders」「10 incredible Rickey Henderson stats」",
+      "overlap_check": "v53全255問と過去の削除・除外台帳を2回照合。MLB公式戦通算盗塁最多を問う問題はなし。",
+      "quality_note": "v54追加。世界全体では集計範囲が統一されないため、MLB公式戦通算と明記。選択肢は歴代上位の盗塁記録保持者で統一し、二重正解なし。"
+    },
+    {
+      "id": "BQ2121",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・大谷翔平の記録",
+      "main_category": "MLB",
+      "middle_category": "大谷翔平の記録",
+      "small_category": "50本塁打・50盗塁",
+      "question": "大谷翔平が2024年にMLB史上初めて達成した記録は？",
+      "choices": [
+        "1シーズン50本塁打・50盗塁",
+        "1シーズン60本塁打・60盗塁",
+        "1シーズン40本塁打・70盗塁"
+      ],
+      "answer": 0,
+      "explanation": "大谷翔平は2024年に54本塁打、59盗塁を記録し、MLB史上初の50本塁打・50盗塁を達成しました。",
+      "source_note": "MLB公式プレスリリース「Shohei Ohtani becomes first 50-50 player in MLB history」（2024年9月19日）",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。50本塁打・50盗塁の達成を問う問題はなし。",
+      "quality_note": "年度・記録条件を明記。数値の組み合わせを比較する単一正解問題。"
+    },
+    {
+      "id": "BQ2122",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・大谷翔平の記録",
+      "main_category": "MLB",
+      "middle_category": "大谷翔平の記録",
+      "small_category": "ポストシーズン二刀流記録",
+      "question": "大谷翔平が2025年NLCS第4戦で同じ試合に達成した組み合わせは？",
+      "choices": [
+        "3本塁打と10奪三振",
+        "4本塁打と5盗塁",
+        "完全試合と満塁本塁打"
+      ],
+      "answer": 0,
+      "explanation": "大谷翔平は2025年NLCS第4戦で3本塁打を放ち、先発投手として10奪三振を記録しました。",
+      "source_note": "MLB.com「Shohei Ohtani wins NLCS MVP after 3 homers, 10 strikeouts」（2025年10月17日）",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。同一試合の3本塁打・10奪三振を問う問題はなし。",
+      "quality_note": "試合・大会・達成内容を明記。二重正解なし。"
+    },
+    {
+      "id": "BQ2123",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB・大谷翔平の記録",
+      "main_category": "MLB",
+      "middle_category": "大谷翔平の記録",
+      "small_category": "ポストシーズン二刀流記録",
+      "question": "2025年NLCS第4戦で、大谷翔平が投手としてMLB史上初めて達成したものは？",
+      "choices": [
+        "ポストシーズン1試合で2本塁打",
+        "完全試合",
+        "1試合4本塁打"
+      ],
+      "answer": 0,
+      "explanation": "大谷翔平は投手として出場した2025年NLCS第4戦で3本塁打を放ち、投手として初めてポストシーズン1試合で2本塁打以上を記録しました。",
+      "source_note": "MLB.com「Brewers lose 2025 NLCS to Dodgers, Shohei Ohtani」（2025年10月17日）",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。投手としてのポストシーズン複数本塁打記録を問う問題はなし。",
+      "quality_note": "「投手として」「ポストシーズン1試合」を明記して記録範囲を固定。二重正解なし。"
+    },
+    {
+      "id": "BQ2128",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "国際大会・WBC",
+      "main_category": "国際大会",
+      "middle_category": "WBC大会方式",
+      "small_category": "決勝ラウンド進出条件",
+      "question": "2026年WBCで、各プールから準々決勝へ進めるのは何位まで？",
+      "choices": [
+        "上位2チーム",
+        "上位1チーム",
+        "上位3チーム"
+      ],
+      "answer": 0,
+      "explanation": "2026年WBCは各プール5チームの総当たりで、上位2チームが準々決勝へ進みます。",
+      "source_note": "MLB.com「All you need to know about World Baseball Classic 2026」",
+      "overlap_check": "v55全問題と過去の削除・除外台帳を2回照合。WBCのプール突破条件を問う問題はなし。",
+      "quality_note": "年度・段階・順位条件を固定。大会要項を確認させる確認型ではなく、明確な大会方式の知識問題。"
+    },
+    {
+      "id": "BQ2130",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB",
+      "main_category": "MLB",
+      "middle_category": "歴史・記録",
+      "small_category": "ワールドシリーズ優勝",
+      "question": "MLBでワールドシリーズ優勝回数が最も多い球団は？",
+      "choices": [
+        "ニューヨーク・ヤンキース",
+        "セントルイス・カージナルス",
+        "ロサンゼルス・ドジャース"
+      ],
+      "answer": 0,
+      "explanation": "ニューヨーク・ヤンキースはワールドシリーズを27回制し、MLB最多です。",
+      "source_note": "MLB.com「World Series: Historical winners and highlights」。",
+      "overlap_check": "現行問題にMLB球団の優勝回数最多を問う問題はなし。",
+      "quality_note": "v58新規追加。優勝の対象をワールドシリーズに固定。"
+    },
+    {
+      "id": "BQ2131",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "プロ野球",
+      "main_category": "プロ野球",
+      "middle_category": "NPB歴史・記録",
+      "small_category": "日本シリーズ優勝",
+      "question": "NPBで日本シリーズ優勝回数が最も多い球団は？",
+      "choices": [
+        "読売ジャイアンツ",
+        "福岡ソフトバンクホークス",
+        "埼玉西武ライオンズ"
+      ],
+      "answer": 0,
+      "explanation": "読売ジャイアンツは日本シリーズを22回制し、NPB球団で最多です。",
+      "source_note": "読売ジャイアンツ公式「球団創設90周年記念 優勝の歴史を掲出」および日本シリーズ歴代結果。",
+      "overlap_check": "現行問題にNPB球団の日本シリーズ優勝回数最多を問う問題はなし。",
+      "quality_note": "v58新規追加。「優勝」を日本シリーズ優勝に固定し、曖昧さを排除。"
+    },
+    {
+      "id": "BQ2133",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "プロ野球",
+      "main_category": "プロ野球",
+      "middle_category": "NPB歴史・記録",
+      "small_category": "通算安打",
+      "question": "NPB公式戦通算で最も多く安打を打った選手は？",
+      "choices": [
+        "張本勲",
+        "野村克也",
+        "王貞治"
+      ],
+      "answer": 0,
+      "explanation": "張本勲はNPB公式戦で通算3,085安打を記録し、歴代最多です。",
+      "source_note": "NPB.jp「歴代最高記録 安打【通算記録】」。",
+      "overlap_check": "BQ2119はNPBとMLBの合算通算安打であり、NPB公式戦通算安打とは対象範囲が異なる。",
+      "quality_note": "v58新規追加。対象をNPB公式戦通算に明記。"
+    },
+    {
+      "id": "BQ2140",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB",
+      "main_category": "MLB",
+      "middle_category": "野球史",
+      "small_category": "昔のストライクゾーン",
+      "question": "1887年までの野球で、打者が投手に求められたものは？",
+      "choices": [
+        "高い球か低い球かの指定",
+        "投げる球種の指定",
+        "投球の速さの指定"
+      ],
+      "answer": 0,
+      "explanation": "昔の野球では、打者が打席に入る時に「高い球」か「低い球」かを指定できた時期がありました。",
+      "source_note": "MLB.com「Information about MLB's strike zone」。1876年規則および1887年の変更。",
+      "overlap_check": "v59の全276問に、昔の高低球指定ルールを問う問題はないことを確認。",
+      "quality_note": "v60新規追加。歴史上の制度であることを1887年までと限定し、現在のルールと混同しない表現に調整。"
+    },
+    {
+      "id": "BQ2141",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB",
+      "main_category": "MLB",
+      "middle_category": "野球史",
+      "small_category": "打率の歴史",
+      "question": "1887年のMLBでは、四球は何として記録された？",
+      "choices": [
+        "安打",
+        "失策",
+        "盗塁"
+      ],
+      "answer": 0,
+      "explanation": "1887年だけ、四球は安打としても記録されました。その後は安打に数えない現在の考え方へ戻りました。",
+      "source_note": "MLB.com Glossary「Batting Average」。",
+      "overlap_check": "v59の全276問に、1887年の四球と安打の記録扱いを問う問題はないことを確認。",
+      "quality_note": "v60新規追加。対象年を明記し、歴史上の例外として単一正解に整理。"
+    },
+    {
+      "id": "BQ2142",
+      "level": 20,
+      "level_name": "第20問",
+      "category": "MLB",
+      "main_category": "MLB",
+      "middle_category": "野球史",
+      "small_category": "珍しいトレード",
+      "question": "MLBで、選手とのトレード対象になったことがある職業は？",
+      "choices": [
+        "実況アナウンサー",
+        "審判員",
+        "球場の警備員"
+      ],
+      "answer": 0,
+      "explanation": "1948年、実況アナウンサーのアーニー・ハーウェルが、選手クリフ・ダッパーとの交換でトレードされた例があります。",
+      "source_note": "MLB.com「The 10 strangest trades in MLB history」。",
+      "overlap_check": "v59の全276問に、実況アナウンサーがトレード対象になった野球史問題はないことを確認。",
+      "quality_note": "v60新規追加。「うそみたいだが本当」枠。実例と年を解説に明記し、職業を問う3択として単一正解化。"
+    }
+  ]
+}
+;

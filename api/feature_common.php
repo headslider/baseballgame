@@ -82,12 +82,13 @@ function read_json_file_safe($file, $default) {
     return is_array($json) ? $json : $default;
 }
 function write_json_file_locked($file, $data) {
+    $JSON_INVALID_UTF8_SUBSTITUTE_FLAG = defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0;
     $fp = fopen($file, 'c+');
     if (!$fp) return false;
     if (!flock($fp, LOCK_EX)) { fclose($fp); return false; }
     rewind($fp);
     ftruncate($fp, 0);
-    fwrite($fp, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    fwrite($fp, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | $JSON_INVALID_UTF8_SUBSTITUTE_FLAG));
     fflush($fp);
     flock($fp, LOCK_UN);
     fclose($fp);
@@ -136,15 +137,8 @@ function verify_player_client($player_id, $client_token) {
     $hash = hash('sha256', $client_token);
     $now = date('Y-m-d H:i:s');
 
-    if (!is_file($file)) {
-        $fp_new = fopen($file, 'w');
-        if (!$fp_new) return false;
-        fputcsv($fp_new, ['player_id','client_hash','created_at','last_login_at']);
-        fputcsv($fp_new, [safe_csv_cell_feature($player_id), $hash, $now, $now]);
-        fclose($fp_new);
-        return true;
-    }
-
+    // c+ はファイルが存在しない場合に新規作成するため、is_file() 分岐を排除して
+    // 常にロック取得後に読み書きする（TOCTOU 競合を防止）
     $fp = fopen($file, 'c+');
     if (!$fp) return false;
     if (!flock($fp, LOCK_EX)) { fclose($fp); return false; }
@@ -152,15 +146,18 @@ function verify_player_client($player_id, $client_token) {
     $rows = [];
     rewind($fp);
     $header = fgetcsv($fp);
-    while (($row = fgetcsv($fp)) !== false) {
-        if (count($row) < 4) continue;
-        $rows[] = [
-            'player_id' => $row[0] ?? '',
-            'client_hash' => $row[1] ?? '',
-            'created_at' => $row[2] ?? '',
-            'last_login_at' => $row[3] ?? '',
-        ];
+    if (is_array($header)) {
+        while (($row = fgetcsv($fp)) !== false) {
+            if (count($row) < 4) continue;
+            $rows[] = [
+                'player_id'    => $row[0] ?? '',
+                'client_hash'  => $row[1] ?? '',
+                'created_at'   => $row[2] ?? '',
+                'last_login_at'=> $row[3] ?? '',
+            ];
+        }
     }
+    // else: 新規ファイルまたは空ファイル → rows = [] のまま続行
 
     $found = false;
     $ok = false;
@@ -178,14 +175,12 @@ function verify_player_client($player_id, $client_token) {
     }
     unset($row);
 
+    // 未登録IDは自動登録しない（削除後の復活防止）
+    // 新規登録は register_player.php でのみ行う
     if (!$found) {
-        $rows[] = [
-            'player_id' => $player_id,
-            'client_hash' => $hash,
-            'created_at' => $now,
-            'last_login_at' => $now,
-        ];
-        $ok = true;
+        flock($fp, LOCK_UN);
+        fclose($fp);
+        return false;
     }
 
     if ($ok) {
@@ -243,9 +238,20 @@ function feature_flags_for_player($player_id) {
     $flags = $row['flags'] ?? [];
     return is_array($flags) ? $flags : [];
 }
+function feature_sources_for_player($player_id) {
+    $db = load_player_feature_db();
+    $row = $db['players'][$player_id] ?? [];
+    $sources = $row['sources'] ?? [];
+    return is_array($sources) ? $sources : [];
+}
 function player_has_feature($player_id, $feature) {
     $flags = feature_flags_for_player($player_id);
     return !empty($flags[$feature]);
+}
+
+function player_has_quiz_master_access($player_id) {
+    if (player_has_feature($player_id, 'admin_mode')) return true;
+    return player_has_feature($player_id, 'quiz_master');
 }
 
 function normalize_admin_id($value) {
@@ -276,6 +282,7 @@ function all_restricted_features() {
     return [
         'mistake_review'=>['label'=>'間違いプレイチェック機能','restricted'=>true],
         'device_transfer'=>['label'=>'端末引継ぎ機能','restricted'=>true],
+        'quiz_master'=>['label'=>'野球博士チャレンジ','restricted'=>true],
         'admin_mode'=>['label'=>'管理者用モード','restricted'=>true]
     ];
 }
@@ -527,7 +534,7 @@ function code_db_file_by_type($type) {
     return feature_scores_dir() . ($type === 'admin' ? '/admin_codes.json' : '/invite_codes.json');
 }
 function default_features_for_code_type($type) {
-    return $type === 'admin' ? ['mistake_review','device_transfer','admin_mode'] : ['mistake_review','device_transfer'];
+    return $type === 'admin' ? ['mistake_review','device_transfer','quiz_master','admin_mode'] : ['mistake_review','device_transfer','quiz_master'];
 }
 function summarize_code_db($type, $db) {
     $out = [];

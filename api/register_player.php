@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once __DIR__ . '/feature_common.php';
 header('Content-Type: application/json; charset=utf-8');
 $JSON_INVALID_UTF8_SUBSTITUTE_FLAG = defined('JSON_INVALID_UTF8_SUBSTITUTE') ? JSON_INVALID_UTF8_SUBSTITUTE : 0;
@@ -147,6 +148,9 @@ foreach ($rows as $row) {
 fflush($fp);
 flock($fp, LOCK_UN);
 fclose($fp);
+
+// セッションにbaseballPlayerId を保存（削除機能などの認証に必要）
+$_SESSION['baseballPlayerId'] = $player_id;
 
 echo json_encode([
     'ok' => true,

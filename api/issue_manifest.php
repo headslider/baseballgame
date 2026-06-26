@@ -13,13 +13,23 @@ $issue = strtolower((string)($_GET['issue'] ?? $_GET['id_issue'] ?? ''));
 $invite_key = clean_issue_key($_GET['invite_key'] ?? $_GET['inviteIssueKey'] ?? $_GET['issue_invite'] ?? '');
 $admin_key = clean_issue_key($_GET['admin_key'] ?? $_GET['adminIssueKey'] ?? $_GET['issue_admin'] ?? '');
 
-$start_url = '/baseball/';
-$id = '/baseball/';
+function issue_manifest_base_path() {
+    $script = (string)($_SERVER['SCRIPT_NAME'] ?? '');
+    $dir = str_replace('\\', '/', dirname($script));
+    if ($dir === '/' || $dir === '.' || $dir === '') return '/';
+    $base = preg_replace('#/api$#', '', $dir);
+    $base = '/' . trim((string)$base, '/') . '/';
+    return preg_replace('#/+#', '/', $base);
+}
+
+$base_path = issue_manifest_base_path();
+$start_url = $base_path;
+$id = $base_path;
 if ($issue === 'admin' && $admin_key !== '') {
-    $start_url = '/baseball/?openExternalBrowser=1&issue=admin&admin_key=' . rawurlencode($admin_key);
+    $start_url = $base_path . '?openExternalBrowser=1&issue=admin&admin_key=' . rawurlencode($admin_key);
     $id = $start_url;
 } elseif ($issue === 'invite' && $invite_key !== '') {
-    $start_url = '/baseball/?openExternalBrowser=1&issue=invite&invite_key=' . rawurlencode($invite_key);
+    $start_url = $base_path . '?openExternalBrowser=1&issue=invite&invite_key=' . rawurlencode($invite_key);
     $id = $start_url;
 }
 
@@ -29,7 +39,7 @@ $manifest = [
     'description' => '少年野球の攻撃・守備判断を楽しく学べるシミュレーター',
     'lang' => 'ja',
     'start_url' => $start_url,
-    'scope' => '/baseball/',
+    'scope' => $base_path,
     'display' => 'standalone',
     'orientation' => 'portrait-primary',
     'background_color' => '#0057d8',

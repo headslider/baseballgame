@@ -64,7 +64,15 @@ function runner_state_file() {
 function runner_read_state() {
     $file = runner_state_file();
     if (!is_file($file)) return [];
-    $data = json_decode(file_get_contents($file), true);
+    $fp = fopen($file, 'r');
+    if (!$fp) return [];
+    $data = null;
+    if (flock($fp, LOCK_SH)) {
+        $raw  = stream_get_contents($fp);
+        $data = $raw ? json_decode($raw, true) : null;
+        flock($fp, LOCK_UN);
+    }
+    fclose($fp);
     return is_array($data) ? $data : [];
 }
 

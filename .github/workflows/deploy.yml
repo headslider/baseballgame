@@ -45,11 +45,12 @@ jobs:
             README.md
             DEPLOY.md
             HANDOVER.md
+            CLAUDE.md
+            docs/**
             **/*.zip
             **/*.bak
             **/*.tmp
             desktop.ini
-            production_hold_enabled.flag
             requests/**
             scores/**
             vendor/**
@@ -74,11 +75,12 @@ jobs:
             README.md
             DEPLOY.md
             HANDOVER.md
+            CLAUDE.md
+            docs/**
             **/*.zip
             **/*.bak
             **/*.tmp
             desktop.ini
-            production_hold_enabled.flag
             requests/**
             scores/**
             vendor/**
