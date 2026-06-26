@@ -138,8 +138,9 @@
       <!-- 削除申請フォーム -->
       <form class="delete-form" id="deleteRequestForm">
         <div class="form-group">
-          <label for="playerId">プレイヤーID <span style="color: #dc3545;">*</span></label>
-          <input type="text" id="playerId" name="player_id" required placeholder="削除するプレイヤーIDを入力してください">
+          <label for="playerId">削除対象プレイヤーID</label>
+          <input type="text" id="playerId" name="player_id" readonly style="background-color: #e9ecef; cursor: not-allowed;">
+          <input type="hidden" id="playerIdHidden" name="player_id_hidden">
         </div>
 
         <div class="form-group">
@@ -180,12 +181,12 @@
     document.getElementById('deleteRequestForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const playerId = document.getElementById('playerId').value.trim();
+      const playerId = document.getElementById('playerIdHidden').value.trim();
       const reason = document.getElementById('reason').value.trim();
       const confirm = document.getElementById('confirm').checked;
 
       if (!playerId) {
-        alert('プレイヤーIDを入力してください');
+        alert('プレイヤーIDが取得できません。ページを再読み込みしてください。');
         return;
       }
 
@@ -198,7 +199,7 @@
       if (!window.confirm(
         '本当に削除申請してもよろしいですか？\n\n' +
         'プレイヤーID: ' + playerId + '\n\n' +
-        '削除トークンがこの端末に保存されます。'
+        'この操作は取り消せません。'
       )) {
         return;
       }
@@ -243,7 +244,7 @@
 
     // 削除実行ボタン処理
     document.getElementById('executeDeleteBtn').addEventListener('click', function() {
-      const playerId = document.getElementById('playerId').value.trim();
+      const playerId = document.getElementById('playerIdHidden').value.trim();
       const deleteToken = localStorage.getItem(`delete_token_${playerId}`);
       const tokenExpires = localStorage.getItem(`delete_token_expires_${playerId}`);
 
@@ -316,17 +317,21 @@
       });
     });
 
-    // ページ読み込み時：保存されたプレイヤーIDを自動入力、トークン有効な場合は実行フォームを表示
+    // ページ読み込み時：ログイン中のプレイヤーIDを自動取得・表示、トークン有効な場合は実行フォームを表示
     window.addEventListener('load', function() {
       // ローカルストレージから現在ログイン中のプレイヤーIDを取得
       const storedPlayerId = localStorage.getItem('baseballPlayerId');
       if (storedPlayerId) {
         document.getElementById('playerId').value = storedPlayerId;
+        document.getElementById('playerIdHidden').value = storedPlayerId;
+      } else {
+        alert('ログインしてください。');
+        window.location.href = 'index.html';
+        return;
       }
 
       // 有効なトークンがあれば実行フォームを表示
-      const playerId = document.getElementById('playerId').value.trim();
-      const deleteToken = localStorage.getItem(`delete_token_${playerId}`);
+      const deleteToken = localStorage.getItem(`delete_token_${storedPlayerId}`);
 
       if (deleteToken) {
         document.getElementById('deleteRequestForm').style.display = 'none';
