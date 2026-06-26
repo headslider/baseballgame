@@ -176,7 +176,6 @@ function submitUserDeleteRequest(playerId) {
   const formData = new FormData();
   formData.append('player_id', playerId);
   formData.append('reason', '');
-  formData.append('confirm', '1');
 
   const xhr = new XMLHttpRequest();
   xhr.onload = function() {
@@ -184,21 +183,21 @@ function submitUserDeleteRequest(playerId) {
       const response = JSON.parse(xhr.responseText);
       if (response.ok) {
         alert(
-          '削除要求を受け付けました。\n\n' +
-          'リクエストID: ' + response.request_id + '\n\n' +
-          '管理チームが3営業日以内に確認し、アカウントを削除いたします。'
+          'アカウントが削除されました。\n\n' +
+          '削除日時: ' + response.deleted_at + '\n\n' +
+          'システムからログアウトします。'
         );
         // ログアウト
-        logout();
+        logoutPlayer();
       } else {
-        alert('削除要求の送信に失敗しました: ' + response.error);
+        alert('削除に失敗しました: ' + response.error);
       }
     } else {
-      alert('削除要求の送信に失敗しました（ステータス: ' + xhr.status + '）');
+      alert('削除に失敗しました（ステータス: ' + xhr.status + '）');
     }
   };
   xhr.onerror = function() {
-    alert('削除要求の送信に失敗しました');
+    alert('削除に失敗しました');
   };
   xhr.open('POST', 'api/user_delete_request.php');
   xhr.send(formData);
