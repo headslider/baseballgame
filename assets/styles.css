@@ -2571,12 +2571,12 @@ rt{
 }
 .question-card h2{
   margin:10px 0 8px;
-  font-size:clamp(30px,6vw,54px);
+  font-size:clamp(26px,5vw,42px);
   line-height:1.25;
   font-weight:1000;
 }
 .question-card p{
-  font-size:clamp(20px,4vw,34px);
+  font-size:clamp(18px,3.5vw,26px);
   line-height:1.55;
   font-weight:850;
 }
