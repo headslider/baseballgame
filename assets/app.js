@@ -5831,40 +5831,7 @@ function playArrowFromTo(q, POS){
 }
 
 init();
-
-// PWAキャッシュ版数変更の自動検知＆リロード
-// Service Worker 更新時に新しいキャッシュが activate されると version.json の cache_version が変わるため、
-// それを検知してリロードすることで、全ユーザーに即座に新しいアプリが配信される。
-(function(){
-  const localCacheVersion = window.YAKYU_CACHE_VERSION;
-  if (!localCacheVersion) return;  // YAKYU_CACHE_VERSION が設定されていなければチェック不要
-
-  let hasReloaded = false;  // 無限リロードループ防止
-
-  async function checkVersionAndReload() {
-    if (hasReloaded) return;  // 既にリロードした場合はチェック停止
-    try {
-      const res = await fetch('version.json?nocache=' + Date.now(), { cache: 'no-store' });
-      if (!res.ok) return;
-      const data = await res.json();
-      const serverCacheVersion = data.cache_version;
-      if (!serverCacheVersion) return;
-
-      // ローカル版数とサーバー版数が異なったら、Service Worker が更新された
-      if (serverCacheVersion !== localCacheVersion) {
-        hasReloaded = true;
-        window.location.reload();
-      }
-    } catch (e) {
-      // ネットワークエラーは無視。オフラインでも問題ない。
-    }
-  }
-
-  // 初回チェックは 10 秒後（アプリ起動完了後）
-  setTimeout(checkVersionAndReload, 10000);
-  // その後 30 秒ごとにチェック
-  setInterval(checkVersionAndReload, 30000);
-})();
+// checkVersionAndReload 機能は一時的に無効化（PWAリロード機能の問題調査のため）
 
 
 
