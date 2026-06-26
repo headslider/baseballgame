@@ -5836,7 +5836,9 @@ init();
 // Service Worker 更新時に新しいキャッシュが activate されると version.json の cache_version が変わるため、
 // それを検知してリロードすることで、全ユーザーに即座に新しいアプリが配信される。
 (function(){
-  const localCacheVersion = window.YAKYU_CACHE_VERSION || '';
+  const localCacheVersion = window.YAKYU_CACHE_VERSION;
+  if (!localCacheVersion) return;  // YAKYU_CACHE_VERSION が設定されていなければチェック不要
+
   let hasReloaded = false;  // 無限リロードループ防止
 
   async function checkVersionAndReload() {
@@ -5845,10 +5847,11 @@ init();
       const res = await fetch('version.json?nocache=' + Date.now(), { cache: 'no-store' });
       if (!res.ok) return;
       const data = await res.json();
-      const serverCacheVersion = data.cache_version || '';
+      const serverCacheVersion = data.cache_version;
+      if (!serverCacheVersion) return;
 
       // ローカル版数とサーバー版数が異なったら、Service Worker が更新された
-      if (serverCacheVersion && localCacheVersion && serverCacheVersion !== localCacheVersion) {
+      if (serverCacheVersion !== localCacheVersion) {
         hasReloaded = true;
         window.location.reload();
       }
