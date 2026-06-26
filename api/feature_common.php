@@ -175,14 +175,12 @@ function verify_player_client($player_id, $client_token) {
     }
     unset($row);
 
+    // 未登録IDは自動登録しない（削除後の復活防止）
+    // 新規登録は register_player.php でのみ行う
     if (!$found) {
-        $rows[] = [
-            'player_id' => $player_id,
-            'client_hash' => $hash,
-            'created_at' => $now,
-            'last_login_at' => $now,
-        ];
-        $ok = true;
+        flock($fp, LOCK_UN);
+        fclose($fp);
+        return false;
     }
 
     if ($ok) {

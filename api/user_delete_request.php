@@ -267,20 +267,21 @@ if (file_exists($score_log_file)) {
     }
 }
 
-// 【削除対象4】player_features.json
+// 【削除対象4】player_features.json（{"players": {"ID": {...}}} 形式）
 $features_file = __DIR__ . '/../scores/player_features.json';
 if (file_exists($features_file)) {
     if (($handle = fopen($features_file, 'r+')) !== false) {
         if (flock($handle, LOCK_EX)) {
             $content = stream_get_contents($handle);
-            $features = $content ? json_decode($content, true) : [];
-            if (!is_array($features)) $features = [];
+            $db = $content ? json_decode($content, true) : [];
+            if (!is_array($db)) $db = [];
+            if (!isset($db['players'])) $db['players'] = [];
 
-            if (isset($features[$player_id])) {
-                unset($features[$player_id]);
+            if (isset($db['players'][$player_id])) {
+                unset($db['players'][$player_id]);
                 rewind($handle);
                 ftruncate($handle, 0);
-                fwrite($handle, json_encode($features, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                fwrite($handle, json_encode($db, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
                 fflush($handle);
 
                 $deletion_summary['deleted_files_and_records'][] = [
@@ -295,26 +296,37 @@ if (file_exists($features_file)) {
     }
 }
 
-// 【削除対象5】mistake_review.json
+// 【削除対象5】mistake_review.json（{"records": [{player_id, ...}, ...]} 形式）
 $mistake_review_file = __DIR__ . '/../scores/mistake_review.json';
 if (file_exists($mistake_review_file)) {
     if (($handle = fopen($mistake_review_file, 'r+')) !== false) {
         if (flock($handle, LOCK_EX)) {
             $content = stream_get_contents($handle);
-            $mistakes = $content ? json_decode($content, true) : [];
-            if (!is_array($mistakes)) $mistakes = [];
+            $db = $content ? json_decode($content, true) : [];
+            if (!is_array($db)) $db = [];
+            if (!isset($db['records'])) $db['records'] = [];
 
-            if (isset($mistakes[$player_id])) {
-                unset($mistakes[$player_id]);
+            $deleted_count = 0;
+            if (is_array($db['records'])) {
+                $db['records'] = array_values(array_filter($db['records'], function($record) use ($player_id, &$deleted_count) {
+                    if (is_array($record) && (($record['player_id'] ?? '') === $player_id)) {
+                        $deleted_count++;
+                        return false;
+                    }
+                    return true;
+                }));
+            }
+
+            if ($deleted_count > 0) {
                 rewind($handle);
                 ftruncate($handle, 0);
-                fwrite($handle, json_encode($mistakes, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                fwrite($handle, json_encode($db, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
                 fflush($handle);
 
                 $deletion_summary['deleted_files_and_records'][] = [
                     'file' => 'scores/mistake_review.json',
                     'action' => 'removed mistake review history',
-                    'count' => 1
+                    'count' => $deleted_count
                 ];
             }
             flock($handle, LOCK_UN);
@@ -323,8 +335,8 @@ if (file_exists($mistake_review_file)) {
     }
 }
 
-// 【削除対象6】save_push_subscription.json（Push登録）
-$push_file = __DIR__ . '/../scores/save_push_subscription.json';
+// 【削除対象6】push_subscriptions.json（{"PLAYER_ID": {...}} 形式）
+$push_file = __DIR__ . '/../scores/push_subscriptions.json';
 if (file_exists($push_file)) {
     if (($handle = fopen($push_file, 'r+')) !== false) {
         if (flock($handle, LOCK_EX)) {
@@ -340,7 +352,7 @@ if (file_exists($push_file)) {
                 fflush($handle);
 
                 $deletion_summary['deleted_files_and_records'][] = [
-                    'file' => 'scores/save_push_subscription.json',
+                    'file' => 'scores/push_subscriptions.json',
                     'action' => 'removed push notification registration',
                     'count' => 1
                 ];
@@ -351,34 +363,49 @@ if (file_exists($push_file)) {
     }
 }
 
-// 【削除対象7】access_log.json（アクセス履歴）
-$access_log_file = __DIR__ . '/../scores/access_log.json';
+// 【削除対象7】access_log.csv（アクセス履歴、CSV形式）
+$access_log_file = __DIR__ . '/../scores/access_log.csv';
 if (file_exists($access_log_file)) {
     if (($handle = fopen($access_log_file, 'r+')) !== false) {
         if (flock($handle, LOCK_EX)) {
-            $content = stream_get_contents($handle);
-            $logs = $content ? json_decode($content, true) : [];
-            if (!is_array($logs)) $logs = [];
+            $rows = [];
+            $header = null;
+            $deleted_count = 0;
+            $player_id_index = -1;
 
-            $deleted_logs = 0;
-            if (isset($logs['access_records']) && is_array($logs['access_records'])) {
-                $original_count = count($logs['access_records']);
-                $logs['access_records'] = array_values(array_filter($logs['access_records'], function($record) use ($player_id) {
-                    return !isset($record['player_id']) || $record['player_id'] !== $player_id;
-                }));
-                $deleted_logs = $original_count - count($logs['access_records']);
+            rewind($handle);
+            // ヘッダーを読み、player_id カラムのインデックスを取得
+            if (($header = fgetcsv($handle)) !== false && is_array($header)) {
+                foreach ($header as $idx => $col) {
+                    if ($col === 'player_id') {
+                        $player_id_index = $idx;
+                        break;
+                    }
+                }
             }
 
-            if ($deleted_logs > 0) {
+            // レコードをフィルタリング
+            while (($row = fgetcsv($handle)) !== false) {
+                if ($player_id_index >= 0 && isset($row[$player_id_index]) && $row[$player_id_index] === $player_id) {
+                    $deleted_count++;
+                } else {
+                    $rows[] = $row;
+                }
+            }
+
+            if ($deleted_count > 0) {
                 rewind($handle);
                 ftruncate($handle, 0);
-                fwrite($handle, json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                if ($header) fputcsv($handle, $header);
+                foreach ($rows as $row) {
+                    fputcsv($handle, $row);
+                }
                 fflush($handle);
 
                 $deletion_summary['deleted_files_and_records'][] = [
-                    'file' => 'scores/access_log.json',
+                    'file' => 'scores/access_log.csv',
                     'action' => 'removed access log records',
-                    'count' => $deleted_logs
+                    'count' => $deleted_count
                 ];
             }
             flock($handle, LOCK_UN);
