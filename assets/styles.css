@@ -919,7 +919,7 @@ button:disabled{
   color:#fff;
 }
 .rank-award-accordion .mypage-list-scroll{
-  /* v1091: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
+  /* v1092: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
   max-height:334px;
 }
 .mypage-empty,.mypage-loading{
@@ -10250,21 +10250,23 @@ body.app-booting #quizMasterRankingBtn{
   border-radius:0;
   background:transparent !important;
   box-shadow:none !important;
-  color:#0b3a75 !important;
+  color:#fff7cc !important;
   font-size:14px;
   font-weight:1000;
   cursor:pointer;
   text-decoration:none;
+  text-shadow:0 2px 4px rgba(0,0,0,.65);
   transition:color .18s ease,text-decoration-color .18s ease;
 }
 .mistake-review-pagination button:disabled{
-  opacity:.5;
+  opacity:.38;
   cursor:not-allowed;
 }
 .mistake-review-pagination button:not(:disabled):hover{
   transform:none;
   filter:none;
   text-decoration:underline;
+  color:#ffffff !important;
 }
 .page-info{
   font-size:14px;
