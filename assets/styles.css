@@ -814,6 +814,74 @@ button:disabled{
 .records-table td b{
   color:#d92323;
 }
+.mypage-list-accordion{
+  display:block;
+  margin:18px 0 0;
+  border:3px solid #d8e9ff;
+  border-radius:16px;
+  background:#fff;
+  overflow:hidden;
+}
+.mypage-list-accordion summary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 16px;
+  background:#0b3a75;
+  color:#fff;
+  font-weight:1000;
+  cursor:pointer;
+  list-style:none;
+}
+.mypage-list-accordion summary::-webkit-details-marker{
+  display:none;
+}
+.mypage-list-accordion summary::before{
+  content:"▶";
+  flex:0 0 auto;
+  font-size:.85em;
+}
+.mypage-list-accordion[open] summary::before{
+  content:"▼";
+}
+.mypage-list-accordion summary span{
+  flex:1 1 auto;
+}
+.mypage-list-accordion summary em{
+  flex:0 0 auto;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#ffffff;
+  color:#0b3a75;
+  font-style:normal;
+  font-size:.9em;
+}
+.mypage-list-scroll{
+  max-height:clamp(300px,48vh,520px);
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding:12px;
+}
+.mypage-list-scroll .records-table{
+  border-width:0;
+  border-radius:10px;
+}
+.mistake-list-scroll{
+  padding:10px 4px 12px;
+}
+.rank-award-accordion{
+  border-color:#f2c94c;
+}
+.rank-award-accordion summary{
+  background:#fff7df;
+  color:#0b3a75;
+}
+.rank-award-accordion summary em{
+  background:#0b3a75;
+  color:#fff;
+}
 .mypage-empty,.mypage-loading{
   background:#fff7df;
   border:3px solid #f2c94c;

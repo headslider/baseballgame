@@ -3150,6 +3150,10 @@ function fmtScore(v){const n=Number(v);return Number.isFinite(n)?String(n):"0"}
 function fmtDate(s){return s||"-"}
 function fmtTimeSeconds(v){const n=Number(v);return Number.isFinite(n)?`${n.toFixed(2)}秒`:"-"}
 function rankStars(rank){const r=Number(rank);return r===1?"<span class=\"rank-stars\" aria-label=\"星3つ\">★★★</span>":r===2?"<span class=\"rank-stars\" aria-label=\"星2つ\">★★</span>":r===3?"<span class=\"rank-stars\" aria-label=\"星1つ\">★</span>":""}
+function myPageAccordionHtml(title,count,body,className=""){
+  if(Number(count)<5)return body;
+  return `<details class="mypage-list-accordion ${escapeHtml(className)}" open><summary><span>${escapeHtml(title)}</span><em>${escapeHtml(count)}件</em></summary><div class="mypage-list-scroll">${body}</div></details>`;
+}
 
 function collectMyTopRanks(rankingData,playerId){
   if(!rankingData||!playerId)return [];
@@ -3181,8 +3185,10 @@ function myTopRanksHtml(rankingData,playerId){
   const overall=items.find(item=>item.label==="総合ランキング");
   const others=overall?items.filter(item=>item!==overall):items;
   const overallHtml=overall?`<div class="overall-award-hero overall-award-${escapeHtml(overall.rank)}"><div class="overall-award-crown">${Number(overall.rank)===1?"👑":"🏅"}</div><div><p>総合ランキング入賞</p><h3>${rankStars(overall.rank)} ${escapeHtml(overall.rank)}位</h3><span>全体の中で上位に入りました！</span></div></div>`:"";
-  const otherHtml=others.length?`<div class="rank-award-list">${others.map(item=>`<div class="rank-award rank-award-${escapeHtml(item.rank)}"><span class="rank-award-stars">${rankStars(item.rank)}</span><b>${escapeHtml(item.label)}</b><span>${escapeHtml(item.rank)}位</span></div>`).join("")}</div>`:"";
-  return `<div class="mypage-rank-awards">${overallHtml}<h3>${overall?"その他の上位ランキング":"あなたの上位ランキング"}</h3>${otherHtml}</div>`;
+  const otherTitle=overall?"その他の上位ランキング":"あなたの上位ランキング";
+  const otherList=others.length?`<div class="rank-award-list">${others.map(item=>`<div class="rank-award rank-award-${escapeHtml(item.rank)}"><span class="rank-award-stars">${rankStars(item.rank)}</span><b>${escapeHtml(item.label)}</b><span>${escapeHtml(item.rank)}位</span></div>`).join("")}</div>`:"";
+  const otherHtml=others.length>=5?myPageAccordionHtml(otherTitle,others.length,otherList,"rank-award-accordion"):(others.length?`<h3>${otherTitle}</h3>${otherList}`:"");
+  return `<div class="mypage-rank-awards">${overallHtml}${otherHtml}</div>`;
 }
 
 
@@ -3464,8 +3470,10 @@ function renderMistakeReviewSection(){
     <button class="secondary" data-unavailable-page-action="next" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE>=unavailableTotalPages?'disabled':''}>次へ &gt;</button>
   </div>`:"";
 
-  const unavailableHtml=unavailableViews.length?`<h4 class="mistake-accordion-title" data-accordion="unavailable"><span class="accordion-icon">${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'▼':'▶'}</span> 更新または停止された問題</h4><div class="mistake-accordion-content" data-accordion-content="unavailable" style="display:${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'block':'none'}">${unavailablePaginationHtml}<p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailablePageViews.map(mistakeReviewItemHtml).join("")}</div>`:"";
-  box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4 class="mistake-accordion-title" data-accordion="list"><span class="accordion-icon">${MISTAKE_REVIEW_LIST_OPEN?'▼':'▶'}</span> 間違えた問題一覧</h4><div class="mistake-accordion-content" data-accordion-content="list" style="display:${MISTAKE_REVIEW_LIST_OPEN?'block':'none'}">${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}</div>${unavailableHtml}</div>`;
+  const activeMistakeContent=activeViews.length>=5?`<div class="mypage-list-scroll mistake-list-scroll">${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}</div>`:`${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}`;
+  const unavailableContent=`${unavailablePaginationHtml}<p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailablePageViews.map(mistakeReviewItemHtml).join("")}`;
+  const unavailableHtml=unavailableViews.length?`<h4 class="mistake-accordion-title" data-accordion="unavailable"><span class="accordion-icon">${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'▼':'▶'}</span> 更新または停止された問題</h4><div class="mistake-accordion-content" data-accordion-content="unavailable" style="display:${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'block':'none'}">${unavailableViews.length>=5?`<div class="mypage-list-scroll mistake-list-scroll">${unavailableContent}</div>`:unavailableContent}</div>`:"";
+  box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4 class="mistake-accordion-title" data-accordion="list"><span class="accordion-icon">${MISTAKE_REVIEW_LIST_OPEN?'▼':'▶'}</span> 間違えた問題一覧</h4><div class="mistake-accordion-content" data-accordion-content="list" style="display:${MISTAKE_REVIEW_LIST_OPEN?'block':'none'}">${activeMistakeContent}</div>${unavailableHtml}</div>`;
 
   // 「間違えた問題一覧」ページネーションボタンのイベントリスナー
   if(showPagination){
@@ -3593,7 +3601,8 @@ function renderQuizMasterMyPage(data){
   const latest=recent[0]||null;
   const totalScore=Number(total&&total.total_score!==undefined?total.total_score:recent.reduce((sum,r)=>sum+Number(r.score||0),0));
   const titleInfo=(total&&total.title_info)||quizMasterTitleForScore(totalScore,data.titles);
-  const recentRows=recent.length?`<div class="records-table quiz-master-mypage-table"><table><thead><tr><th>日時</th><th>得点</th><th>到達</th><th>結果</th></tr></thead><tbody>${recent.slice(0,5).map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td><b>${escapeHtml(r.score||0)} pt</b></td><td>第${escapeHtml(r.reached_level||0)}問</td><td>${escapeHtml(quizMasterResultReasonText(r.result_reason))}</td></tr>`).join("")}</tbody></table></div>`:"";
+  const recentTable=recent.length?`<div class="records-table quiz-master-mypage-table"><table><thead><tr><th>日時</th><th>得点</th><th>到達</th><th>結果</th></tr></thead><tbody>${recent.map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td><b>${escapeHtml(r.score||0)} pt</b></td><td>第${escapeHtml(r.reached_level||0)}問</td><td>${escapeHtml(quizMasterResultReasonText(r.result_reason))}</td></tr>`).join("")}</tbody></table></div>`:"";
+  const recentRows=recent.length?myPageAccordionHtml("野球博士チャレンジ履歴",recent.length,recentTable,"quiz-master-history-accordion"):recentTable;
   box.innerHTML=`<div class="quiz-master-mypage-card"><h3>野球博士チャレンジ</h3><div class="quiz-master-current-title">${quizMasterLevelIconHtml(titleInfo.level,'qm-icon-mypage')}<em>${escapeHtml(totalScore)} pt</em></div><div class="summary-grid quiz-master-mypage-summary"><div><b>${escapeHtml(best?best.score:0)} pt</b><span>最高点</span></div><div><b>${escapeHtml(total&&total.rank?total.rank:"-")}位</b><span>総合順位</span></div><div><b>${escapeHtml(latest?latest.score:0)} pt</b><span>最新得点</span></div><div><b>${escapeHtml(totalScore)} pt</b><span>総合点</span></div></div>${recentRows}</div>`;
 }
 function renderMyPage(data,rankingData,quizMasterData){
@@ -3611,7 +3620,8 @@ function renderMyPage(data,rankingData,quizMasterData){
     if(!records.length){
       recordsEl.innerHTML='<div class="mypage-empty">まだ保存された成績がありません。ゲームをプレイするとここに結果が表示されます。</div>';
     }else{
-      recordsEl.innerHTML=`<h3>過去の結果</h3><div class="records-table"><table><thead><tr><th>日時</th><th>学年</th><th>守備</th><th>合計</th><th>クリア問題数</th><th>攻撃</th><th>守備</th></tr></thead><tbody>${records.map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td>${escapeHtml(r.grade||"")}年</td><td>${escapeHtml((STATE.config.positions&&STATE.config.positions[r.position])||r.position||"")}</td><td><b>${escapeHtml(r.total_score||0)}/${escapeHtml(r.max_score||54)}</b></td><td>${escapeHtml(r.correct_count||0)}問</td><td>${escapeHtml(r.attack_score||0)}</td><td>${escapeHtml(r.defense_score||0)}</td></tr>`).join("")}</tbody></table></div>`;
+      const recordsTable=`<div class="records-table"><table><thead><tr><th>日時</th><th>学年</th><th>守備</th><th>合計</th><th>クリア問題数</th><th>攻撃</th><th>守備</th></tr></thead><tbody>${records.map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td>${escapeHtml(r.grade||"")}年</td><td>${escapeHtml((STATE.config.positions&&STATE.config.positions[r.position])||r.position||"")}</td><td><b>${escapeHtml(r.total_score||0)}/${escapeHtml(r.max_score||54)}</b></td><td>${escapeHtml(r.correct_count||0)}問</td><td>${escapeHtml(r.attack_score||0)}</td><td>${escapeHtml(r.defense_score||0)}</td></tr>`).join("")}</tbody></table></div>`;
+      recordsEl.innerHTML=records.length>=5?myPageAccordionHtml("過去の結果",records.length,recordsTable,"records-history-accordion"):`<h3>過去の結果</h3>${recordsTable}`;
     }
   }
   renderQuizMasterMyPage(quizMasterData);
