@@ -1,13 +1,13 @@
 {
-  "app_version": "v1088-production",
-  "cache_version": "yakyu-yarouze-v1088-production",
-  "public_version": "v1.1.87",
+  "app_version": "v1089-production",
+  "cache_version": "yakyu-yarouze-v1089-production",
+  "public_version": "v1.1.88",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "マイページの5件以上の一覧をスクロール可能な折りたたみ表示に調整。",
+  "change_summary": "マイページ上位ランキングの折りたたみ一覧を5カード分の高さでスクロールするよう調整。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

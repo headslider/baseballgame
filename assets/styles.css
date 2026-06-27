@@ -882,6 +882,10 @@ button:disabled{
   background:#0b3a75;
   color:#fff;
 }
+.rank-award-accordion .mypage-list-scroll{
+  /* v1089: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
+  max-height:334px;
+}
 .mypage-empty,.mypage-loading{
   background:#fff7df;
   border:3px solid #f2c94c;
@@ -1918,6 +1922,9 @@ body.admin-mode-on #loginStatus{
   .rank-award{
     grid-template-columns:1fr;
     gap:6px;
+  }
+  .rank-award-accordion .mypage-list-scroll{
+    max-height:524px;
   }
 }
 
