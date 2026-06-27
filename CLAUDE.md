@@ -50,6 +50,7 @@
 
 - 2026-06-27 の本番復旧で判明した公開入口、PWAキャッシュ、招待ID互換、触ってはいけない運用データの詳細は `docs/production_incident_guardrails_20260627.md` を必ず読む。
 - 特に `index.html` 公開入口、`service-worker.js` の navigation `networkFirst`、`api/feature_common.php` の既存招待IDユーザー互換、`scores/` 非変更は再発防止の最重要事項である。
+- マイページの大量表示対策も同文書に記載済み。5件以上の一覧はUI側でアコーディオン＋内部スクロールにし、API返却や保存データを削らない。特に「その他の上位ランキング」はカード高さが低いため、専用CSS `.rank-award-accordion .mypage-list-scroll` の上限を維持する。
 
 ---
 

@@ -12,6 +12,7 @@
 | キャッシュ戦略 | どれを cacheFirst / networkFirst にするか不明確 | HTML、API、静的アセットを同じ扱いにすると不整合が出る | HTMLナビゲーション/API/秘密URL/flagは networkFirst。CSS/JS/画像は cacheFirst |
 | 野球博士解放 | 既存の招待ID解放ユーザーが野球博士チャレンジを開始できない | 過去の `player_features.json` には `flags.quiz_master` が保存されていないユーザーがいる | `sources` に招待ID由来の有効機能が残っていれば、サーバー側で `quiz_master=true` として扱う |
 | 遊び方ページ | 野球博士チャレンジ説明文が白文字で見えない | CSSのカンマ抜けにより `.option-feature-card` の濃色文字指定が効かず、親の `color:#fff !important` を継承 | セレクタのカンマを復旧し、カード内 `p` / `li` は濃色を明示する |
+| マイページ大量表示 | 「その他の上位ランキング」や履歴一覧が大量に縦表示される | マイページ内の一覧が件数に応じた高さ制限・折りたたみを持たず、特に上位ランキングカードは1件の高さが低いため10件前後見えてしまう | 5件以上のマイページ一覧はアコーディオン化し、一覧種別ごとの1件の高さに合わせてスクロール上限を設定する |
 | 招待解除済みユーザー | 互換救済で再解放されるリスク | 古い `flags` だけを見て補完すると解除済みまで復活する | 補完条件は「有効な invite source が残っていること」。解除処理は source を削除するため再解放しない |
 | 本番運用データ | 復旧時に `scores/` を直接編集・上書きするリスク | 本番固有のプレイヤー・ID・スコア・監査データが入っている | コードで互換対応する。`scores/`、`requests/`、`vendor/` は原則変更しない |
 | デプロイ | push しただけで本番反映されたと誤認 | 本番 `deploy.yml` は手動 `workflow_dispatch` のみ | `deploy.yml` を `apply=true` で実行して初めて本番反映 |
@@ -47,6 +48,23 @@
 - 管理者IDは `admin_mode` があれば引き続き野球博士チャレンジを利用できる。
 - 最高位管理者が招待ID由来機能を解除したユーザーは、解除処理で invite source が削除されるため、互換補完の対象外になる。
 
+### マイページの一覧表示
+
+- マイページは `screen-mypage` 内に、プロフィール、機能解放、サマリー、上位ランキング、過去の結果、間違いプレイチェック、野球博士チャレンジ履歴を表示する。
+- 5件以上になる一覧は、ページ全体へ大量展開せず、アコーディオンで閉じられる状態にする。
+- 5件以上の一覧は、開いた状態でも内部スクロールにし、マイページ全体が過度に長くならないようにする。
+- 対象は以下。
+  - `myTopRanksHtml()` が出す「その他の上位ランキング」または「あなたの上位ランキング」
+  - `renderMyPage()` が出す「過去の結果」
+  - `renderQuizMasterMyPage()` が出す「野球博士チャレンジ履歴」
+  - `renderMistakeReviewSection()` が出す「間違えた問題一覧」「更新または停止された問題」
+- 共通アコーディオンHTMLは `assets/app.js` の `myPageAccordionHtml(title,count,body,className)` を使う。
+- 共通の見た目とスクロールは `assets/styles.css` の `.mypage-list-accordion` と `.mypage-list-scroll` で制御する。
+- 「その他の上位ランキング」はカード1件の高さが履歴テーブルより低いため、`.rank-award-accordion .mypage-list-scroll` で専用の高さ制限を持つ。PCは約5カード分、スマホは縦積みカード約5件分でスクロール開始する。
+- 5件以上でも中身を削除・省略してはいけない。表示は全件を保持し、スクロールで確認できるようにする。
+- アコーディオンは初期状態 `open` でよい。ユーザーが閉じられること、内部だけスクロールできることが重要。
+- ランキング専用ページ `screen-ranking` は別画面であり、今回のマイページ大量表示対策とは分けて扱う。ランキングページのTOP50表示をマイページ仕様に巻き込まない。
+
 ## 3. 触ってはいけない箇所
 
 以下は本番運用データまたは環境依存データであり、通常の復旧・機能修正で直接編集しない。
@@ -62,6 +80,7 @@
 - 本番サーバー上の `scores/quiz_master_scores.json`
 - 本番サーバー上の `requests/` 配下の申請・監査ログ
 - 管理画面以外からの `scores/release_versions.json` 更新
+- マイページUI調整時のランキング・スコア保存API、実スコアデータ、招待IDデータ
 
 特に、ZIPや検査データから `scores/` を丸ごと戻すことは禁止。既存プレイヤー、招待ID、ランキング、監査履歴が失われる。
 
@@ -76,6 +95,11 @@
 - 招待ID互換のために本番 `player_features.json` を直接一括書換しない。
 - 招待解除済みユーザーまで復活する条件で `quiz_master` を補完しない。
 - CSSの複数セレクタからカンマを落とさない。特に `.option-feature-card, .option-feature-section .option-feature-card` と、未解放UIを隠す `body:not(...)` 系はカンマ抜けで意図した指定が無効になる。
+- マイページの大量表示対策で、APIの返却件数や保存データ自体を減らさない。UI側で折りたたみ・スクロールする。
+- 「その他の上位ランキング」を `slice(0,5)` などで切り捨てない。5件超は全件保持したまま内部スクロールにする。
+- 上位ランキングカードの高さ制限を共通 `.mypage-list-scroll` だけに頼らない。カード高さが低いため、専用 `.rank-award-accordion .mypage-list-scroll` の上限を維持する。
+- マイページ修正をランキングページ `screen-ranking` のTOP50表示へ不用意に波及させない。
+- マイページUI修正だけで `api/get_ranking.php`、`api/save_score.php`、`api/save_quiz_master_score.php` を変更しない。必要性がある場合は別件として原因を切り分ける。
 - `scores/`、`requests/`、`vendor/` をデプロイ対象に含めない。
 - `git push` だけで本番反映済みと判断しない。
 
@@ -126,6 +150,22 @@
 5. `.option-feature-section .option-feature-card p` と `.option-feature-section .option-feature-card li` に濃色文字が明示されているか確認する。
 6. CSSを直したら `index.html`、`app_shell.html`、`service-worker.js`、`version.json` を同じ新バージョンへ同期する。
 
+### マイページの一覧が大量表示される
+
+1. まず問題がマイページ `screen-mypage` なのか、ランキングページ `screen-ranking` なのかを切り分ける。
+2. マイページの場合、`assets/app.js` の以下を確認する。
+   - `myTopRanksHtml()` の「その他の上位ランキング」
+   - `renderMyPage()` の「過去の結果」
+   - `renderQuizMasterMyPage()` の「野球博士チャレンジ履歴」
+   - `renderMistakeReviewSection()` の間違い一覧
+3. 5件以上の一覧が `myPageAccordionHtml()` を通っているか確認する。
+4. `assets/styles.css` に `.mypage-list-accordion` と `.mypage-list-scroll` があり、`max-height` と `overflow:auto` が効いているか確認する。
+5. 「その他の上位ランキング」だけ多く見える場合は、`.rank-award-accordion .mypage-list-scroll` の高さを調整する。共通 `.mypage-list-scroll` をむやみに低くすると、過去の結果テーブルや間違い一覧が窮屈になる。
+6. PCとスマホでカード高さが違うため、`@media(max-width:720px)` 内の `.rank-award-accordion .mypage-list-scroll` も同時に確認する。
+7. `slice(0,5)` による件数削減では直さない。ユーザーは全履歴・全入賞をスクロールして確認できる必要がある。
+8. 修正後は `index.html`、`app_shell.html`、`service-worker.js`、`version.json` を同じ新バージョンへ同期する。
+9. 実機確認では、5件以上の「その他の上位ランキング」が約5カード分でスクロールし、summaryを押すと閉じられることを確認する。
+
 ### デプロイ後に反映されない
 
 1. `main` に対象コミットが push 済みか確認する。
@@ -163,11 +203,21 @@ git diff --name-only
 
 差分に `scores/`、`requests/`、`vendor/` が含まれている場合は、原則コミットしてはいけない。
 
+マイページ一覧修正後の確認:
+
+```powershell
+Select-String -Path assets/app.js -Pattern "myPageAccordionHtml|rank-award-accordion|records-history-accordion|quiz-master-history-accordion"
+Select-String -Path assets/styles.css -Pattern "mypage-list-accordion|mypage-list-scroll|rank-award-accordion"
+Select-String -Path version.json,service-worker.js,index.html,app_shell.html -Pattern "v<新番号>|yakyu-yarouze-v<新番号>-production|\\?v=<新番号>"
+```
+
 ## 7. 今回の復旧で入った重要実装
 
 - `service-worker.js`: HTMLナビゲーションを `networkFirst` にして、古いPWAでも最新 `index.html` を優先取得する。
 - `api/feature_common.php`: 既存招待IDユーザー互換として active invite source から `quiz_master` を補完する。
 - `docs/quiz_master_production_checklist.md`: 既存招待IDユーザー互換の仕様を明記する。
 - `assets/styles.css`: 遊び方ページのオプション機能カードは、親の白文字を継承しないようカード本文を濃色で明示する。
+- `assets/app.js`: マイページの5件以上の一覧を `myPageAccordionHtml()` で折りたたみ可能にする。
+- `assets/styles.css`: `.mypage-list-scroll` と `.rank-award-accordion .mypage-list-scroll` で、一覧種別ごとにスクロール上限を制御する。
 
-この3点は、同じ症状が再発したときの最初の確認ポイントである。
+この実装は、同じ症状が再発したときの最初の確認ポイントである。
