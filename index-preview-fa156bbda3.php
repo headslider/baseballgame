@@ -52,11 +52,11 @@ if (!$enabled) {
     exit;
 }
 // production_hold_enabled.flag が true のときのみ到達。
-// index.html（メンテナンス画面）を出力する。
+// app_shell.html（ゲーム画面）を出力する。
 // 秘密URLでは検索インデックス回避を HTTP ヘッダ（X-Robots-Tag）で付与する。
 header('Content-Type: text/html; charset=UTF-8');
 header('X-Robots-Tag: noindex, nofollow');
-$filePath = __DIR__ . '/index.html';
+$filePath = __DIR__ . '/app_shell.html';
 if (file_exists($filePath) && is_readable($filePath)) {
     readfile($filePath);
 } else {
