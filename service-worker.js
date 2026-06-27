@@ -1,5 +1,5 @@
 /* PWA Service Worker for 野球やろうぜ！ */
-const CACHE_VERSION = 'yakyu-yarouze-v1079-production';
+const CACHE_VERSION = 'yakyu-yarouze-v1080-production';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -11,8 +11,8 @@ const STATIC_ASSETS = [
   './manifest.webmanifest',
   './api/issue_manifest.php',
   './version.json',
-  './assets/styles.css?v=1079',
-  './assets/app.js?v=1079',
+  './assets/styles.css?v=1080',
+  './assets/app.js?v=1080',
   './assets/top_background.webp',
   './assets/top_title_mobile.webp',
   './assets/top_title_pc.webp',
@@ -20,7 +20,7 @@ const STATIC_ASSETS = [
   './assets/quiz_master_logo.webp',
   './assets/quiz_master_icon.webp',
   './assets/quiz_master_chair.webp',
-  './assets/quiz_master_questions.js?v=1079',
+  './assets/quiz_master_questions.js?v=1080',
   './data/quiz_master_questions.json',
   './data/quiz_master_titles.json',
   './assets/icons/icon-192.png',
@@ -40,12 +40,10 @@ const NETWORK_FIRST_PATTERNS = [
   /\/data\/quiz_master_questions\.json(\?.*)?$/,
   /\/api\//,
   /\/admin\.html(\?.*)?$/,
-  // 段階リリース用プレビュー（秘密URL）は常にサーバーのゲート判定を通すため
-  // キャッシュせずネットワーク優先にする。production_hold_enabled.flag による
-  // true/false 制御がキャッシュ済み端末でも即時に効くようにする。
+  // 秘密URLは常にサーバーのゲート判定を通すためネットワーク優先にする。
+  // production_hold_enabled.flag の true/false 制御がキャッシュ済み端末でも即時に効くようにする。
   /\/index-preview-[a-z0-9]+\.php(\?.*)?$/,
-  // メンテ切替フラグ自体は常に最新を取得する（アプリ側のライフ無制限判定や
-  // ページ遷移戦略の判定が古い値でキャッシュされないようにする）。
+  // 公開・メンテ切替フラグ自体は常に最新を取得する。
   /\/production_hold_enabled\.flag$/
 ];
 
@@ -107,20 +105,13 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // ページ遷移は常にサーバーを確認する。
-  // 公開トップの index.html メンテ画面と秘密URLのゲート判定を、古いHTMLキャッシュより優先するため。
-  if (request.mode === 'navigate') {
-    event.respondWith(networkFirst(request));
-    return;
-  }
-
-  // 秘密URL・API・設定JSON等は常にネットワーク優先（ゲートを必ず評価する）。
+  // 秘密URL・API・設定JSON等は常にネットワーク優先（ゲートや最新データを必ず評価する）。
   if (isNetworkFirst(request)) {
     event.respondWith(networkFirst(request));
     return;
   }
 
-  // その他の静的資産は cacheFirst
+  // 通常公開の index.html を含む静的資産は cacheFirst。
   event.respondWith(cacheFirst(request));
 });
 

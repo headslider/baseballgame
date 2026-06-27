@@ -3,8 +3,8 @@
   "short_name": "野球やろうぜ",
   "description": "少年野球の攻撃・守備判断を楽しく学べるシミュレーター",
   "lang": "ja",
-  "start_url": "/baseball/",
-  "scope": "/baseball/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#0057d8",
@@ -34,5 +34,5 @@
       "purpose": "maskable"
     }
   ],
-  "id": "/baseball/"
+  "id": "./"
 }

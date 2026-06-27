@@ -1,12 +1,12 @@
 {
-  "app_version": "v1079-production",
-  "cache_version": "yakyu-yarouze-v1079-production",
-  "public_version": "v1.1.78",
+  "app_version": "v1080-production",
+  "cache_version": "yakyu-yarouze-v1080-production",
+  "public_version": "v1.1.79",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
-  "start_url": "/baseball/",
-  "scope": "/baseball/",
+  "start_url": "./",
+  "scope": "./",
   "change_summary": "通常ゲーム画面と野球博士チャレンジ画面のCSSカンマ抜けを修正。問題文・選択肢・HUD・ランキング等のフォントサイズとデザイン表示を復旧。",
   "question_pool": {
     "csv_master_total": 603,
