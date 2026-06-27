@@ -183,6 +183,7 @@
 }
 .quiz-master-howto-body p{
   margin:0 0 12px;
+  color:#102030 !important;
 }
 .option-feature-section .quiz-master-howto-section{
   grid-column:1/-1;

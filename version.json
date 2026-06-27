@@ -1,13 +1,13 @@
 {
-  "app_version": "v1086-production",
-  "cache_version": "yakyu-yarouze-v1086-production",
-  "public_version": "v1.1.85",
+  "app_version": "v1087-production",
+  "cache_version": "yakyu-yarouze-v1087-production",
+  "public_version": "v1.1.86",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "遊び方ページの野球博士チャレンジ説明文が白文字で見えなくなるCSSセレクタ崩れを修正し、PWAキャッシュを更新。",
+  "change_summary": "遊び方ページの野球博士チャレンジ説明文本文に濃色を直接指定し、PWAキャッシュを更新。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
