@@ -600,6 +600,58 @@ CSSまたはJavaScriptを変更した場合、キャッシュ版の更新要否�
 
 ---
 
+## 9. 段階リリース運用ガイド（`production_hold_enabled.flag`）
+
+### 🔴 `production_hold_enabled.flag` 仕様（必須理解）
+
+このフラグ1つで段階リリース時の公開トップを制御する。**ファイル内容**は `true` または `false`（テキスト）。
+
+### 制御する動作
+
+| URL | flag=**true**（プレビュー中） | flag=**false**（公開後） |
+|-----|-----------|----------|
+| **`/baseball/`** | メンテナンス画面（`index.html`）表示 | メンテナンス画面（`index.html`）表示 |
+| **`/baseball/index-preview-fa156bbda3.php`**（秘密URL） | ゲーム画面（`app_shell.html`）表示・**200** | 「このページは現在利用できません」・**403** |
+
+### 実装箇所
+
+| ファイル | 機能 | 実装内容 |
+|--------|------|--------|
+| `index-preview-fa156bbda3.php` | 秘密URLゲート | flag読込 → true=app_shell.html出力 / false=403エラー |
+| `app.js` | 野球博士ライフ制限 | flag読込 → true=無制限（×∞）/ false=5/日 |
+| `service-worker.js` | キャッシュ戦略 | flag を `NETWORK_FIRST_PATTERNS` に登録（常時最新取得） |
+
+### 保管場所
+
+- **ローカル**：`production_hold_enabled.flag`（リポジトリルート）
+- **本番環境**：`/baseball/production_hold_enabled.flag`
+- **テスト環境**：`/baseball_test/production_hold_enabled.flag`
+- **Git管理**：✅ 追跡対象（コミット・自動デプロイ）
+- **既定値**：`true`（段階リリース中）
+
+### 段階リリース手順
+
+1. **プレビュー中**（flag=true）
+   - 秘密URL で ゲーム画面確認可
+   - 公開ページ（/baseball/） は メンテナンス画面
+   - 野球博士ライフ無制限でテスト
+
+2. **公開切替時**
+   - flag を `false` に変更 → コミット＆デプロイ
+   - スーパーリロード（Ctrl+Shift+R）で即時反映
+
+3. **公開後**（flag=false）
+   - 秘密URL は 403エラー（利用不可）
+   - 公開ページはメンテナンス画面（通常状態）
+
+### 注意
+
+- **常に最新値が使われる**：SW の `NETWORK_FIRST_PATTERNS` に登録済みのため、キャッシュ版数bump不要で即時反映
+- **サーバー直接編集時**：次回デプロイでリポジトリの値に上書きされる（恒久的変更はコミット推奨）
+- **判定値**：`true` / `1` / `on` / `yes` が「有効」、その他（`false`・空・不在）が「無効」（安全側デフォルト）
+
+---
+
 ## エージェント実行ルール
 
 1. 最初に `README.md`、`data/game_config.json`、`assets/app.js`、`api/admin_api.php` を読む。  
