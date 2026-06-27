@@ -1,13 +1,13 @@
 {
-  "app_version": "v1082-production",
-  "cache_version": "yakyu-yarouze-v1082-production",
-  "public_version": "v1.1.81",
+  "app_version": "v1083-production",
+  "cache_version": "yakyu-yarouze-v1083-production",
+  "public_version": "v1.1.82",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "遊び方ページの野球博士チャレンジ説明と、設定ページのアカウント削除ボタンをZIP版から復旧。野球博士ランキングページ下部の不要な挑戦ボタンを削除。",
+  "change_summary": "野球博士チャレンジのボーナスライフ付与後に残りライフ表示と開始ボタン状態を即時更新するよう修正。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

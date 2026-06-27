@@ -5419,7 +5419,10 @@ function finishGame(){
   // 新仕様: 通常ゲームを1日1回完了すると、その日だけ野球博士チャレンジのライフを+1（当日初回のみ）。
   const earnedQuizLife=(STATE.loggedIn&&STATE.playerId&&!STATE.adminMode&&!isAdminQuestionTestMode()&&typeof hasQuizMasterFeatureAccess==="function"&&hasQuizMasterFeatureAccess())?quizMasterGrantBonusLifeToday():false;
   const quizLifeMsg=earnedQuizLife?`<p class="unlock-note">野球博士チャレンジのライフが1つ増えました！（本日のみ・毎日24時にリセット）</p>`:"";
-  if(earnedQuizLife)setTimeout(showQuizMasterBonusLifeAnimation,450);
+  if(earnedQuizLife){
+    updateQuizMasterDailyUI();
+    setTimeout(showQuizMasterBonusLifeAnimation,450);
+  }
   const adminMsg=isAdminQuestionTestMode()
     ?`<p class="unlock-note locked">管理者テストプレイのため、この結果はスコア・ランキング・間違い記録・学年解放に反映されません。</p>`
     :(STATE.adminMode?`<p class="unlock-note locked">管理者用モードのため、この結果は保存・ランキング反映・学年解放されません。</p>`:"");
