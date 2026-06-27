@@ -6,18 +6,18 @@
 
 ---
 
-## ★ 2026-06-27 仕様変更（重要）：公開トップを `index.php` 化、フラグ1つで切替
+## ★ 2026-06-27 仕様変更（重要）：公開トップは静的メンテ、秘密URLだけをフラグ制御
 
-**従来の「手動で `index.html` を実アプリ版へ差し替える」手順は廃止された。** 現在は次の構成で、`production_hold_enabled.flag` 1つで公開トップを自動的に出し分ける。
+`index.php` による公開トップ自動切替は、リロード時の挙動問題があるため採用しない。現在は次の構成で、公開トップと秘密URLを分離する。
 
-- **`index.php`（新・入口）**：`/baseball/`（DirectoryIndex）の実体。フラグを読み、`true`→`index.html`(メンテ) / `false`・不在→`app_shell.html`(実アプリ) を `readfile` で出力。
-- **`app_shell.html`（新・正本）**：実アプリHTMLの単一の正本。バージョン参照もここに集約。`index.php` と秘密URLが共有（重複・不整合の根絶）。`.htaccess` で直アクセス禁止。
-- **`index.html`**：メンテナンス画面（静的）。
+- **`index.html`**：公開トップのメンテナンス画面（静的）。`/baseball/` はこれを表示する。
+- **`app_shell.html`**：実アプリHTMLの単一の正本。バージョン参照もここに集約。秘密URLPHPが `readfile` で出力する。`.htaccess` で直アクセス禁止。
 - **`index-preview-<token>.php`**：秘密URL。フラグ有効時のみ `app_shell.html` を出力（メンテ中の本番プレビュー）。noindex は `X-Robots-Tag` ヘッダで付与。
-- **Service Worker**：ナビゲーション（`/`=index.php）は**常時 networkFirst**。フラグ切替がキャッシュ版数 bump 無しで即時反映される。旧 `isHoldEnabled()` は廃止。
-- **公開手順**：`flag=false` にしてデプロイするだけで `/` が実アプリに切替わる（下記「リリース手順」参照）。
+- **`production_hold_enabled.flag`**：秘密URLの利用可否と、野球博士チャレンジのプレビュー用ライフ無制限を制御する。
+- **Service Worker**：ナビゲーションは**常時 networkFirst**。古いHTMLキャッシュより、サーバー上の最新 `index.html` と秘密URLゲートを優先する。
+- **公開手順**：公開時は、別途 `index.html` を実アプリ版へ差し替えるか、採用済みの公開方式に合わせて切替手順を実施する。`index.php` 方式は使わない。
 
-以下の本文中、旧記述（手動 index.html 差し替え等）は本仕様変更で置き換わっている点に注意（順次改訂）。
+以下の本文中に古い `index.php` 方式の記述が残っている場合は、本セクションを優先する。
 
 ---
 
@@ -28,7 +28,7 @@
 ### 0-1. 🔴 切替直後の「キャッシュ漏れ（1回だけ）」は原理的に避けられない
 - **指摘**：メンテナンス公開後も、キャッシュが残っていて実アプリに「一回普通にアクセスできてしまう」事象を確認。
 - **原因**：Service Worker が `index.html` を `cacheFirst` で返していたため、**旧SWがキャッシュ済みの実アプリを返す**。
-- **対策（実施済み）**：HTMLナビゲーション（`request.mode === 'navigate'`）の配信戦略を `production_hold_enabled.flag` で切替。**メンテ中（flag=true）は networkFirst**（常に最新＝メンテを配信しキャッシュ漏れを防ぐ）、**公開後（flag=false/不在）は cacheFirst**（通常のPWA高速表示に戻す）。
+- **対策（実施済み）**：HTMLナビゲーション（`request.mode === 'navigate'`）は常時 networkFirst。公開トップの `index.html` メンテ画面と秘密URLのゲート判定を、古いHTMLキャッシュより優先する。
 - **残る制約**：networkFirst を含む**新SWが有効化される前の旧SW端末では、切替直後の1回だけ旧キャッシュが表示され得る**（旧SWの挙動は遡って変更不可）。新SW有効化後は毎回最新が配信される。
   - 確実に切り替えるには **再読み込みを1〜2回**、それでも残る場合は DevTools → Application → Service Workers → **Unregister** 後に再読み込み。
 
@@ -67,7 +67,7 @@
 | 対象 | `true`（メンテ中／プレビュー） | `false`・不在（公開後） | 実装 |
 |---|---|---|---|
 | **① 秘密URL `index-preview-<token>.php`** | 利用可（本番アプリを表示・200） | 利用不可（案内ページ・403） | php先頭ゲート |
-| **② ページ遷移（`index.html`）の配信** | **networkFirst**（常に最新＝メンテを配信。実アプリのキャッシュ漏れ防止） | **cacheFirst**（通常のPWA高速表示） | `service-worker.js` `isHoldEnabled()` |
+| **② ページ遷移（HTMLナビゲーション）** | **networkFirst**（常に最新＝メンテを配信。実アプリのキャッシュ漏れ防止） | **networkFirst**（公開切替後も古いHTMLを避ける） | `service-worker.js` fetch handler |
 | **③ 野球博士チャレンジのライフ** | **無制限（×∞）** | **通常 1日5ライフ** | `app.js` `quizMasterLimitActive()` |
 
 ### 配置・管理
@@ -79,7 +79,7 @@
 2. **サーバーで切替**：FTPで該当環境の `production_hold_enabled.flag` を直接編集／削除（即時。ただし**次回デプロイでリポジトリの値に上書き**される）。
 
 ### 注意
-- ②の networkFirst↔cacheFirst 切替は、**新しい `service-worker.js` が有効化済みの端末**でのみ即時反映（旧SW端末は切替直後の1回だけ旧キャッシュが出得る → 再読み込み1〜2回 or SW Unregister）。
+- ②の networkFirst は、**新しい `service-worker.js` が有効化済みの端末**で有効（旧SW端末は切替直後の1回だけ旧キャッシュが出得る → 再読み込み1〜2回 or SW Unregister）。
 - ③のライフ判定はアプリ**起動時**に確定する。プレイ中にフラグを変えても、反映は次回起動（再読み込み）後。
 - 公開（リリース）完了後にこの仕組みごと撤去する場合は、[4. リリース手順](#4-リリース手順) のクリーンアップ（秘密php削除・SWパターン削除・フラグfalse）を行う。
 
@@ -116,15 +116,14 @@
 ### Service Worker との整合
 秘密URLは `service-worker.js` の `NETWORK_FIRST_PATTERNS` に登録済み（`/index-preview-[a-z0-9]+\.php`）。常にネットワーク経由でゲートを評価するため、**一度アクセスしてキャッシュ済みの端末でも、フラグを `false` にすれば即座に利用不可**になる（オフライン時のみ最後のキャッシュにフォールバック）。
 
-### ページ遷移（index.html）のキャッシュ対策（フラグ連動）
-`service-worker.js` は **HTMLナビゲーション（`request.mode === 'navigate'`）の配信戦略を `production_hold_enabled.flag` で出し分ける**（`isHoldEnabled()` がフラグを読む）。
+### ページ遷移（index.html）のキャッシュ対策
+`service-worker.js` は **HTMLナビゲーション（`request.mode === 'navigate'`）を常時 networkFirst** で配信する。`production_hold_enabled.flag` は、秘密URLの利用可否と野球博士ライフ制限に使う。
 
-| フラグ | ページ遷移の戦略 | 目的 |
+| 対象 | ページ遷移の戦略 | 目的 |
 |---|---|---|
-| `true`（メンテ中） | **networkFirst** | 常に最新（メンテ画面）を配信。キャッシュ済みの実アプリが表示される漏れを防ぐ |
-| `false`／不在（公開後） | **cacheFirst** | 通常の PWA 高速表示に戻す（オフラインも安定） |
+| 公開トップ `/baseball/` | **networkFirst** | 常に最新の `index.html` を配信。キャッシュ済みの実アプリが表示される漏れを防ぐ |
+| 秘密URL `index-preview-*.php` | **networkFirst** | 常にPHPゲートを通し、フラグ変更を反映する |
 
-- フラグ判定は SW がナビゲーション毎に `production_hold_enabled.flag` を `no-store` で取得して行う（取得失敗時は公開＝cacheFirst にフォールバック）。
 - 注意：この挙動を含む新しい `service-worker.js` が**まだ有効化されていない旧SW端末では、切替直後の1回だけ旧キャッシュが表示され得る**（旧SWの挙動は遡って変えられないため）。新SW有効化後は上表の通り動作する。確実に切り替えたい場合はブラウザの再読み込みを1〜2回行う。
 - 秘密URL（`index-preview-*.php`）はフラグに関係なく**常に networkFirst**（ゲートを必ず評価するため）。
 

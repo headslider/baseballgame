@@ -1,13 +1,13 @@
 {
-  "app_version": "v1075-production",
-  "cache_version": "yakyu-yarouze-v1075-production",
-  "public_version": "v1.1.74",
+  "app_version": "v1076-production",
+  "cache_version": "yakyu-yarouze-v1076-production",
+  "public_version": "v1.1.75",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
   "start_url": "/baseball/",
   "scope": "/baseball/",
-  "change_summary": "公開トップを index.php 化し、production_hold_enabled.flag でメンテ画面/実アプリを出し分け。実アプリHTMLを app_shell.html に単一化し index.php と秘密URLで共有。ナビゲーションは常時 networkFirst でフラグ切替を即時反映。",
+  "change_summary": "公開トップは静的な index.html メンテ画面を維持し、production_hold_enabled.flag=true のとき秘密URLだけが app_shell.html を表示する構成に修正。ナビゲーションは常時 networkFirst で古いHTMLキャッシュを避ける。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
