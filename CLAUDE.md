@@ -41,7 +41,9 @@
 
 ### 現在の管理対象
 - 本番版、キャッシュ版、公開版は `version.json` を正とする。
-- フロントエンド更新時は、`index.html`、`service-worker.js`、`version.json` のバージョン・参照整合性を必ず確認する。
+- 本番公開入口 `/baseball/` は常に `index.html`。段階リリース中の `index.html` は公開トップ用の静的メンテナンス画面であり、秘密URLだけが `app_shell.html` を出力する。
+- フロントエンド更新時は、現在配信されるゲームHTMLを確認する。段階リリース中は秘密URL用の `app_shell.html`、本公開後は `index.html` と、`service-worker.js`、`version.json` のバージョン・参照整合性を必ず確認する。
+- `index.php` による自動切替方式はリロード問題があるため使わない。
 - ビルド工程は不要。PHP内蔵サーバーで直接動作確認する。
 
 ---
@@ -50,7 +52,9 @@
 
 ```text
 /
-├─ index.html                    # メインPWA、ゲーム、ランキング、マイページ
+├─ index.html                    # 本番公開入口。段階リリース中は静的メンテナンス画面
+├─ app_shell.html                # 段階リリース中の秘密URL用ゲームHTML（PHPがreadfileで出力）
+├─ index-preview-fa156bbda3.php  # 段階リリース用の秘密URLゲート
 ├─ admin.html                    # 最高位管理者用の管理画面
 ├─ manifest.webmanifest          # PWA設定
 ├─ service-worker.js             # キャッシュ、オフライン、Push通知
@@ -78,9 +82,9 @@
 
 ### ファイル探索の優先順
 1. **仕様・問題内容を確認する**：`data/`
-2. **画面・操作を確認する**：`index.html` → `assets/app.js` → `assets/styles.css`
+2. **画面・操作を確認する**：公開入口は `index.html`、段階リリース中のゲーム画面は `app_shell.html` → `assets/app.js` → `assets/styles.css`
 3. **API・保存処理を確認する**：該当する `api/*.php`
-4. **キャッシュ・更新不具合を確認する**：`service-worker.js` → `version.json` → `index.html`
+4. **キャッシュ・更新不具合を確認する**：`service-worker.js` → `version.json` → 配信中のゲームHTML（段階リリース中は `app_shell.html`、本公開後は `index.html`）
 5. **管理機能を確認する**：`admin.html` → `api/admin_api.php`
 6. **運用データは閲覧のみ**：`scores/`、`requests/`
 
@@ -125,7 +129,8 @@ git diff
 |---------|---------|-----|
 | `version.json` | `app_version` と `cache_version` を確認 | v1017、yakyu-yarouze-v1062-production |
 | `service-worker.js` | `CACHE_VERSION` が `version.json` の `cache_version` と一致 | const CACHE_VERSION = 'yakyu-yarouze-v1062-production' |
-| `index.html` | `styles.css?v=...` と `app.js?v=...` のクエリ + `window.YAKYU_CACHE_VERSION` が `version.json` と一致 | styles.css?v=1062、app.js?v=1062、window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v1062-production' |
+| 配信中のゲームHTML | 段階リリース中は `app_shell.html`、本公開後は `index.html`。`styles.css?v=...` と `app.js?v=...` のクエリ + `window.YAKYU_CACHE_VERSION` が `version.json` と一致 | styles.css?v=1062、app.js?v=1062、window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v1062-production' |
+| `index.html` | 段階リリース中はゲーム本体を含まず、メンテナンス画面のみであること | `assets/app.js` や `screen-home` を含まない |
 | `manifest.webmanifest` | PWA メタデータ確認（通常変更なし） | display: "standalone" など |
 
 **チェック手順**:
@@ -136,8 +141,8 @@ Get-Content version.json | ConvertFrom-Json | Select-Object app_version, cache_v
 # 2. service-worker.js の CACHE_VERSION 確認
 Select-String -Path service-worker.js -Pattern "const CACHE_VERSION = " | Select-Object -First 1
 
-# 3. index.html の styles.css、app.js、YAKYU_CACHE_VERSION 確認
-Select-String -Path index.html -Pattern "styles\.css\?v=|app\.js\?v=|YAKYU_CACHE_VERSION"
+# 3. app_shell.html の styles.css、app.js、YAKYU_CACHE_VERSION 確認
+Select-String -Path app_shell.html -Pattern "styles\.css\?v=|app\.js\?v=|YAKYU_CACHE_VERSION"
 
 # 4. 上記 3 つが一致していることを確認
 ```
@@ -162,12 +167,13 @@ Select-String -Path index.html -Pattern "styles\.css\?v=|app\.js\?v=|YAKYU_CACHE
 | `service-worker.js` | `STATIC_ASSETS` 内の CSS | `./assets/styles.css?v=1074` | ✅ 必須 |
 | `service-worker.js` | `STATIC_ASSETS` 内の app.js | `./assets/app.js?v=1074` | ✅ 必須 |
 | `service-worker.js` | `STATIC_ASSETS` 内の quiz_master_questions.js | `./assets/quiz_master_questions.js?v=1074` | ✅ 必須 |
-| `index.html` | `styles.css` リンク | `href="assets/styles.css?v=1074"` | ✅ 必須 |
-| `index.html` | `app.js` スクリプト | `<script src="assets/app.js?v=1074">` | ✅ 必須 |
-| `index.html` | `quiz_master_questions.js` スクリプト | `<script src="assets/quiz_master_questions.js?v=1074">` | ✅ 必須 |
-| `index.html` | `window.YAKYU_APP_VERSION` | `'v1074-production'` | ✅ 必須 |
-| `index.html` | `window.YAKYU_CACHE_VERSION` | `'yakyu-yarouze-v1074-production'` | ✅ 必須 |
-| `index.html` | `meta[name="app-version"]` | `content="v1074-production"` | ⚠️ 推奨 |
+| 配信中のゲームHTML | 段階リリース中は `app_shell.html`、本公開後は `index.html`。`styles.css` リンク | `href="assets/styles.css?v=1074"` | ✅ 必須 |
+| 配信中のゲームHTML | `app.js` スクリプト | `<script src="assets/app.js?v=1074">` | ✅ 必須 |
+| 配信中のゲームHTML | `quiz_master_questions.js` スクリプト | `<script src="assets/quiz_master_questions.js?v=1074">` | ✅ 必須 |
+| 配信中のゲームHTML | `window.YAKYU_APP_VERSION` | `'v1074-production'` | ✅ 必須 |
+| 配信中のゲームHTML | `window.YAKYU_CACHE_VERSION` | `'yakyu-yarouze-v1074-production'` | ✅ 必須 |
+| 配信中のゲームHTML | `meta[name="app-version"]` | `content="v1074-production"` | ⚠️ 推奨 |
+| `index.html` | メンテ画面確認 | `screen-home` / `assets/app.js` を含まない | ✅ 段階リリース中必須 |
 
 #### チェック実行手順
 
@@ -184,13 +190,13 @@ Select-String -Path service-worker.js -Pattern "const CACHE_VERSION = " | Select
 Write-Host "`n=== service-worker.js STATIC_ASSETS ==="
 Select-String -Path service-worker.js -Pattern "\?v=" | Where-Object { $_ -match "STATIC_ASSETS|styles\.css|app\.js|quiz_master" }
 
-# 4. index.html の CSS/JS ?v= 確認
-Write-Host "`n=== index.html CSS/JS リンク ==="
-Select-String -Path index.html -Pattern "styles\.css\?v=|app\.js\?v=|quiz_master_questions\.js\?v="
+# 4. app_shell.html の CSS/JS ?v= 確認
+Write-Host "`n=== app_shell.html CSS/JS リンク ==="
+Select-String -Path app_shell.html -Pattern "styles\.css\?v=|app\.js\?v=|quiz_master_questions\.js\?v="
 
-# 5. index.html の window.YAKYU_* 確認
-Write-Host "`n=== index.html window.YAKYU_* ==="
-Select-String -Path index.html -Pattern "window\.YAKYU_APP_VERSION|window\.YAKYU_CACHE_VERSION"
+# 5. app_shell.html の window.YAKYU_* 確認
+Write-Host "`n=== app_shell.html window.YAKYU_* ==="
+Select-String -Path app_shell.html -Pattern "window\.YAKYU_APP_VERSION|window\.YAKYU_CACHE_VERSION"
 
 # 6. 一覧表示（テキスト整合確認用）
 Write-Host "`n=== 全バージョン参照一覧 ==="
@@ -199,18 +205,18 @@ Write-Host "---"
 Write-Host "version.json app_version:                " ((Get-Content version.json | ConvertFrom-Json).app_version)
 Write-Host "version.json cache_version:              " ((Get-Content version.json | ConvertFrom-Json).cache_version)
 Write-Host "service-worker.js CACHE_VERSION:         " (Select-String -Path service-worker.js -Pattern "const CACHE_VERSION = '(.+)'" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value })
-Write-Host "index.html styles.css?v=:                " (Select-String -Path index.html -Pattern "styles\.css\?v=([0-9]+)" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value } | Select-Object -First 1)
-Write-Host "index.html app.js?v=:                    " (Select-String -Path index.html -Pattern "app\.js\?v=([0-9]+)" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value } | Select-Object -First 1)
-Write-Host "index.html quiz_master_questions.js?v=: " (Select-String -Path index.html -Pattern "quiz_master_questions\.js\?v=([0-9]+)" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value } | Select-Object -First 1)
-Write-Host "index.html YAKYU_APP_VERSION:            " (Select-String -Path index.html -Pattern "window\.YAKYU_APP_VERSION = '(.+?)'" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value })
-Write-Host "index.html YAKYU_CACHE_VERSION:          " (Select-String -Path index.html -Pattern "window\.YAKYU_CACHE_VERSION = '(.+?)'" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value })
+Write-Host "app_shell.html styles.css?v=:            " (Select-String -Path app_shell.html -Pattern "styles\.css\?v=([0-9]+)" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value } | Select-Object -First 1)
+Write-Host "app_shell.html app.js?v=:                " (Select-String -Path app_shell.html -Pattern "app\.js\?v=([0-9]+)" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value } | Select-Object -First 1)
+Write-Host "app_shell.html quiz_master_questions.js?v=: " (Select-String -Path app_shell.html -Pattern "quiz_master_questions\.js\?v=([0-9]+)" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value } | Select-Object -First 1)
+Write-Host "app_shell.html YAKYU_APP_VERSION:        " (Select-String -Path app_shell.html -Pattern "window\.YAKYU_APP_VERSION = '(.+?)'" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value })
+Write-Host "app_shell.html YAKYU_CACHE_VERSION:      " (Select-String -Path app_shell.html -Pattern "window\.YAKYU_CACHE_VERSION = '(.+?)'" -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value })
 ```
 
 #### チェックリスト
 
 - [ ] 上記表の全 **✅ 必須** 項目が新バージョンに統一されていることを確認
 - [ ] `version.json` の `cache_version` 番号（数字部分）と、`?v=` の数字が一致確認
-- [ ] `window.YAKYU_APP_VERSION` と `window.YAKYU_CACHE_VERSION` が共に新バージョンに更新
+- [ ] `app_shell.html` の `window.YAKYU_APP_VERSION` と `window.YAKYU_CACHE_VERSION` が共に新バージョンに更新
 - [ ] `git diff` で修正ファイルを確認（意図しない変更がないか）
 - [ ] `git status` で修正対象のファイルのみが変更されていることを確認（scores/ などは含まない）
 
@@ -363,7 +369,7 @@ curl -s -H "Authorization: Bearer $TOKEN" \
 ## バージョン整合性
 | 対象 | 確認内容 |
 |---|---|
-| `index.html` | CSS / JSクエリ、`window.YAKYU_CACHE_VERSION` |
+| 配信中のゲームHTML | 段階リリース中は `app_shell.html`、本公開後は `index.html`。CSS / JSクエリ、`window.YAKYU_CACHE_VERSION` |
 | `service-worker.js` | `CACHE_VERSION`、`STATIC_ASSETS` |
 | `version.json` | `app_version`、`cache_version`、`public_version` |
 
@@ -410,7 +416,7 @@ curl -s -H "Authorization: Bearer $TOKEN" \
 
 | ファイル | 必須確認項目 |
 |---|---|
-| `index.html` | CSS/JSのクエリ、`window.YAKYU_CACHE_VERSION` |
+| 配信中のゲームHTML | 段階リリース中は `app_shell.html`、本公開後は `index.html`。CSS/JSのクエリ、`window.YAKYU_CACHE_VERSION` |
 | `service-worker.js` | `CACHE_VERSION`、`STATIC_ASSETS`内のクエリ |
 | `version.json` | `app_version`、`cache_version`、`public_version` |
 
@@ -483,10 +489,10 @@ CSSまたはJavaScriptを変更した場合、キャッシュ版の更新要否�
 
 | 項目 | 内容 |
 |------|------|
-| **リスク** | `version.json`、`service-worker.js`、`index.html` のバージョン参照が不一致。古い JS/CSS が長期キャッシュされ、新しい機能が反映されない |
-| **実例（2026-06-27）** | `index.html` で `app.js?v=1074` と指定しているが、`window.YAKYU_APP_VERSION = 'v1070-production'`、`window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v1070-production'` のままだった。Service Worker が v1070 のキャッシュを使用し続け、v1074 の新しい app.js が読み込まれず、`updateLoginUI()` 関数が古いバージョンで実行されたため、**ログイン前に表示されるべきでない UI 要素（ランキングボタン、学年セレクタ）が表示される** 重大なバグが発生 |
+| **リスク** | `version.json`、`service-worker.js`、配信中のゲームHTML（段階リリース中は `app_shell.html`、本公開後は `index.html`）のバージョン参照が不一致。古い JS/CSS が長期キャッシュされ、新しい機能が反映されない |
+| **実例（2026-06-27）** | 実アプリHTMLで `app.js?v=1074` と指定しているが、`window.YAKYU_APP_VERSION = 'v1070-production'`、`window.YAKYU_CACHE_VERSION = 'yakyu-yarouze-v1070-production'` のままだった。Service Worker が v1070 のキャッシュを使用し続け、v1074 の新しい app.js が読み込まれず、`updateLoginUI()` 関数が古いバージョンで実行されたため、**ログイン前に表示されるべきでない UI 要素（ランキングボタン、学年セレクタ）が表示される** 重大なバグが発生 |
 | **影響対象** | ユーザー端末にて古いゲームロジック、古い問題、古いアニメーション継続表示 / セキュリティ修正が反映されない / UI の条件付き表示が機能しない |
-| **必須対応** | リリース前に以下 **6つの参照を一つの新バージョン（例：v1074）に統一** 必須（CLAUDE.md セクション3のチェックリスト参照）：<br>1. `version.json`: `app_version`, `cache_version`<br>2. `service-worker.js`: `CACHE_VERSION`, `STATIC_ASSETS` 内の `?v=`<br>3. `index.html`: CSS/JS リンク `?v=`, `window.YAKYU_APP_VERSION`, `window.YAKYU_CACHE_VERSION`<br>**すべてが完全に一致していることを確認しない限り、コミット・本番反映を実施しない** |
+| **必須対応** | リリース前に以下 **6つの参照を一つの新バージョン（例：v1074）に統一** 必須（CLAUDE.md セクション3のチェックリスト参照）：<br>1. `version.json`: `app_version`, `cache_version`<br>2. `service-worker.js`: `CACHE_VERSION`, `STATIC_ASSETS` 内の `?v=`<br>3. 配信中のゲームHTML（段階リリース中は `app_shell.html`、本公開後は `index.html`）: CSS/JS リンク `?v=`, `window.YAKYU_APP_VERSION`, `window.YAKYU_CACHE_VERSION`<br>**すべてが完全に一致していることを確認しない限り、コミット・本番反映を実施しない** |
 
 ### 🟡 中：機能追加 ZIP に運用データ同梱
 

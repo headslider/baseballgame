@@ -9,8 +9,8 @@
  * 安全側デフォルト：フラグが無い・読めない場合は「利用不可」。
  *
  * 運用メモ：
- *   - production_hold_enabled.flag は本番デプロイ(deploy.yml)では除外され、
- *     サーバー上で手動管理する（FTPで作成・編集）。
+ *   - production_hold_enabled.flag はGit追跡・自動デプロイ対象。
+ *     サーバー上で直接編集した場合も、次回デプロイでリポジトリ値に戻る。
  *   - 公開（リリース）後はフラグを false にする／削除すると秘密URLは無効化される。
  *   - 詳細は docs/staged_release_preview.md を参照。
  */

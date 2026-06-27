@@ -1238,14 +1238,14 @@ html, body{
 
 
 /* v157: 問題文テキストを少し大きく、太く表示 */
-.question-card h2
+.question-card h2,
 #qTitle{
   font-size: clamp(24px, 3.2vw, 34px) !important;
   font-weight: 900 !important;
   line-height: 1.35 !important;
 }
-.question-card p
-#qSituation
+.question-card p,
+#qSituation,
 #qPrompt{
   font-size: clamp(18px, 2.2vw, 24px) !important;
   font-weight: 800 !important;
@@ -1255,12 +1255,12 @@ html, body{
   color: #0b3a75 !important;
 }
 @media (max-width: 720px){
-  .question-card h2
+  .question-card h2,
   #qTitle{
     font-size: 24px !important;
   }
-  .question-card p
-  #qSituation
+  .question-card p,
+  #qSituation,
   #qPrompt{
     font-size: 18px !important;
     line-height: 1.65 !important;
@@ -2380,21 +2380,21 @@ body.admin-mode-on #loginStatus{
 #qTheme{
   display:none !important;
 }
-.question-meta
-.badges
-.q-badges
-.question-tags
+.question-meta,
+.badges,
+.q-badges,
+.question-tags,
 .question-head{
   max-width:100%;
   overflow:hidden;
 }
-.question-meta .badge
-.badges .badge
-.q-badges .badge
-.question-tags .badge
-#qId
-#qType
-#qStage
+.question-meta .badge,
+.badges .badge,
+.q-badges .badge,
+.question-tags .badge,
+#qId,
+#qType,
+#qStage,
 #qHolder{
   max-width:100%;
   white-space:normal;
@@ -2435,9 +2435,9 @@ rt{
   font-weight: 700;
   letter-spacing: 0;
 }
-.choice-text ruby rt
-#qTitle ruby rt
-#qSituation ruby rt
+.choice-text ruby rt,
+#qTitle ruby rt,
+#qSituation ruby rt,
 #qPrompt ruby rt{
   font-size: 0.56em;
 }
@@ -2849,8 +2849,8 @@ rt{
   border:none !important;
   box-shadow:none !important;
 }
-.mode-attack .question-card
-.mode-defense .question-card
+.mode-attack .question-card,
+.mode-defense .question-card,
 .mode-basic .question-card{
   border:none !important;
   box-shadow:none !important;
@@ -2932,8 +2932,8 @@ rt{
   margin-top:14px;
   margin-bottom:0 !important;
 }
-.question-card h2
-.question-card p
+.question-card h2,
+.question-card p,
 .question-card .choices{
   order:0;
 }
@@ -2949,12 +2949,12 @@ rt{
    - プレイヤーID入力欄、ランキングボタン、学年セレクトの長い制限時間表示が
      画面幅を押し出さないようにトップ画面だけで幅を固定。
    - 管理者モード固有UIではなく、通常のスマホ表示を優先して調整。 */
-html
+html,
 body{
   max-width:100%;
   overflow-x:hidden;
 }
-#screen-title
+#screen-title,
 #screen-title .stadium-bg{
   max-width:100vw !important;
   overflow-x:hidden !important;
@@ -2973,10 +2973,10 @@ body{
     overflow:hidden !important;
     justify-self:center !important;
   }
-  #screen-title .start-card *
-  #screen-title .login-actions
-  #screen-title .login-status
-  #screen-title .guest-guide
+  #screen-title .start-card *,
+  #screen-title .login-actions,
+  #screen-title .login-status,
+  #screen-title .guest-guide,
   #screen-title .grade-lock-status{
     min-width:0 !important;
     max-width:100% !important;
@@ -2984,8 +2984,8 @@ body{
   #screen-title .start-card label{
     width:100% !important;
   }
-  #screen-title .start-card input
-  #screen-title .start-card select
+  #screen-title .start-card input,
+  #screen-title .start-card select,
   #screen-title .start-card button{
     width:100% !important;
     max-width:100% !important;
@@ -3130,8 +3130,8 @@ body{
   color:#90a697;
   letter-spacing:.06em;
 }
-.status-card strong
-.status-card .inning
+.status-card strong,
+.status-card .inning,
 .status-role-value{
   font-size:clamp(26px,3vw,40px);
   font-weight:1000;
@@ -3258,8 +3258,8 @@ body{
     margin-bottom:5px;
     font-size:11px;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:17px;
   }
@@ -3311,8 +3311,8 @@ body{
     letter-spacing:.02em !important;
     text-align:center;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:13px !important;
     line-height:1.1 !important;
@@ -3431,8 +3431,8 @@ body{
     margin-bottom:4px !important;
     letter-spacing:0 !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:12px !important;
     line-height:1.08 !important;
@@ -3458,8 +3458,8 @@ body{
   .status-label{
     font-size:8px !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:11px !important;
   }
@@ -3527,8 +3527,8 @@ body{
     letter-spacing:0 !important;
     white-space:nowrap !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:11px !important;
     line-height:1.05 !important;
@@ -3563,8 +3563,8 @@ body{
     padding-left:2px !important;
     padding-right:2px !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:10px !important;
   }
@@ -3599,8 +3599,8 @@ body{
     letter-spacing:0 !important;
     white-space:nowrap !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:14px !important;
     line-height:1.12 !important;
@@ -3644,8 +3644,8 @@ body{
   .status-label{
     font-size:9px !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:12px !important;
   }
@@ -3748,8 +3748,8 @@ body{
     margin-bottom:4px !important;
     line-height:1.1 !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:13px !important;
     line-height:1.1 !important;
@@ -3797,8 +3797,8 @@ body{
     min-height:66px !important;
   }
   .status-label{font-size:8px !important;}
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{font-size:12px !important;}
 }
 
@@ -5433,8 +5433,8 @@ body{
     font-size:15px !important;
     margin-bottom:7px !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:24px !important;
   }
@@ -5549,8 +5549,8 @@ body{
     font-size:12px !important;
     margin-bottom:6px !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:20px !important;
   }
@@ -5568,8 +5568,8 @@ body{
     grid-template-columns:1fr !important;
     grid-template-areas:none !important;
   }
-  .topbar.topbar-v420
-  .field-panel
+  .topbar.topbar-v420,
+  .field-panel,
   .question-card{
     grid-area:auto !important;
   }
@@ -5636,8 +5636,8 @@ body{
     font-size:13px !important;
     margin-bottom:5px !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:21px !important;
   }
@@ -5710,8 +5710,8 @@ body{
     font-size:11px !important;
     margin-bottom:4px !important;
   }
-  .status-card strong
-  .status-card .inning
+  .status-card strong,
+  .status-card .inning,
   .status-role-value{
     font-size:18px !important;
   }
@@ -5740,7 +5740,7 @@ body{
     grid-template-rows:auto minmax(0,1fr) !important;
     align-items:stretch !important;
   }
-  .field-panel
+  .field-panel,
   .question-card{
     align-self:stretch !important;
     min-height:0 !important;
@@ -5809,7 +5809,7 @@ body{
     grid-template-rows:auto minmax(0,1fr) !important;
     align-items:stretch !important;
   }
-  .field-panel
+  .field-panel,
   .question-card{
     align-self:stretch !important;
     min-height:0 !important;
@@ -7557,7 +7557,7 @@ html:has(body.screen-quiz-master-active){
   object-fit:contain;
   filter:drop-shadow(0 6px 2px #000) drop-shadow(0 0 12px rgba(255,214,81,.35));
 }
-.quiz-master-round
+.quiz-master-round,
 .quiz-master-count{
   min-height:74px;
   display:flex;
@@ -7583,7 +7583,7 @@ html:has(body.screen-quiz-master-active){
   border-color:#d8e7ff;
   font-size:clamp(22px,3.5vw,42px);
 }
-.quiz-master-round-no
+.quiz-master-round-no,
 .quiz-master-count-no{
   color:#ffd41f;
   font-size:1.24em;
@@ -7612,7 +7612,7 @@ html:has(body.screen-quiz-master-active){
   color:#fff;
   font-weight:1000;
 }
-.quiz-master-score
+.quiz-master-score,
 .quiz-master-timer{
   justify-self:start;
   padding:8px 14px;
@@ -7728,7 +7728,7 @@ html:has(body.screen-quiz-master-active){
   cursor:pointer;
   transition:transform .16s ease,filter .16s ease,box-shadow .16s ease,border-color .16s ease;
 }
-.quiz-master-choice:hover
+.quiz-master-choice:hover,
 .quiz-master-choice.is-selected{
   transform:translateY(-2px);
   filter:brightness(1.15);
@@ -7799,7 +7799,7 @@ html:has(body.screen-quiz-master-active){
   max-width:1380px;
   margin:0 auto;
 }
-.quiz-master-lifeline
+.quiz-master-lifeline,
 .quiz-master-confirm{
   min-height:74px;
   border-radius:14px;
@@ -7881,16 +7881,16 @@ html:has(body.screen-quiz-master-active){
 .qtb-rays{
   position:absolute;
   inset:-50%;
-  background:conic-gradient(from 0deg at 50% 50%
-    transparent 0deg,rgba(255,200,50,.05) 18deg,transparent 36deg
-    rgba(255,200,50,.07) 54deg,transparent 72deg
-    rgba(255,200,50,.05) 90deg,transparent 108deg
-    rgba(255,200,50,.07) 126deg,transparent 144deg
-    rgba(255,200,50,.05) 162deg,transparent 180deg
-    rgba(255,200,50,.07) 198deg,transparent 216deg
-    rgba(255,200,50,.05) 234deg,transparent 252deg
-    rgba(255,200,50,.07) 270deg,transparent 288deg
-    rgba(255,200,50,.05) 306deg,transparent 324deg
+  background:conic-gradient(from 0deg at 50% 50%,
+    transparent 0deg,rgba(255,200,50,.05) 18deg,transparent 36deg,
+    rgba(255,200,50,.07) 54deg,transparent 72deg,
+    rgba(255,200,50,.05) 90deg,transparent 108deg,
+    rgba(255,200,50,.07) 126deg,transparent 144deg,
+    rgba(255,200,50,.05) 162deg,transparent 180deg,
+    rgba(255,200,50,.07) 198deg,transparent 216deg,
+    rgba(255,200,50,.05) 234deg,transparent 252deg,
+    rgba(255,200,50,.07) 270deg,transparent 288deg,
+    rgba(255,200,50,.05) 306deg,transparent 324deg,
     rgba(255,200,50,.07) 342deg,transparent 360deg);
   animation:qtbRaysRotate 12s linear infinite,qtbRaysFade 3.5s ease both;
   animation-delay:0s,1s;
@@ -7935,7 +7935,7 @@ html:has(body.screen-quiz-master-active){
 /* ランキング行アイコン — 名前の左に単独表示 */
 .qm-icon-rank{width:100px;height:auto;justify-self:center;}
 /* 結果画面ランキングは大きめに */
-#screen-quiz-master-result .qm-icon-rank
+#screen-quiz-master-result .qm-icon-rank,
 #screen-quiz-master-ranking .qm-icon-rank{width:120px !important;height:auto !important;}
 /* マイページ現在称号アイコン */
 .qm-icon-mypage{width:clamp(140px,26vw,220px);height:auto;margin:4px auto 2px;}
@@ -7995,10 +7995,10 @@ img.qtb-badge-icon{
   line-height:1;
   -webkit-text-stroke:clamp(2px,.42vw,7px) rgba(255,255,255,.92);
   text-shadow:
-    0 0 14px rgba(255,240,120,.95)
-    0 0 36px rgba(255,66,214,.82)
-    0 0 78px rgba(65,180,255,.75)
-    0 12px 0 rgba(24,0,45,.82)
+    0 0 14px rgba(255,240,120,.95),
+    0 0 36px rgba(255,66,214,.82),
+    0 0 78px rgba(65,180,255,.75),
+    0 12px 0 rgba(24,0,45,.82),
     0 24px 34px rgba(0,0,0,.82);
   transform:scale(.7);
   visibility:hidden;
@@ -8316,7 +8316,7 @@ img.qtb-badge-icon{
   color:#fff;
   text-shadow:0 0 22px rgba(255,226,106,.6),0 4px 2px #000;
 }
-.quiz-master-result-detail
+.quiz-master-result-detail,
 .quiz-master-ranking{
   margin-top:10px;
   line-height:1.5;
@@ -8393,7 +8393,7 @@ img.qtb-badge-icon{
   border:0;
   background:transparent;
 }
-.quiz-master-current-title b
+.quiz-master-current-title b,
 .quiz-master-title-badge{
   display:inline-flex;
   align-items:center;
@@ -8449,7 +8449,7 @@ img.qtb-badge-icon{
   gap:10px;
   margin:12px 0;
 }
-.quiz-master-ranking-summary span
+.quiz-master-ranking-summary span,
 .quiz-master-my-best{
   display:grid;
   gap:2px;
@@ -8459,7 +8459,7 @@ img.qtb-badge-icon{
   background:rgba(0,19,47,.72);
   box-shadow:inset 0 0 18px rgba(0,126,255,.22);
 }
-.quiz-master-ranking-summary b
+.quiz-master-ranking-summary b,
 .quiz-master-my-best b{
   color:#fff;
   font-size:1.35em;
@@ -8470,8 +8470,8 @@ img.qtb-badge-icon{
   border-color:#ffe26a;
   box-shadow:0 0 18px rgba(255,226,106,.18),inset 0 0 18px rgba(255,226,106,.12);
 }
-.quiz-master-my-best span
-.quiz-master-my-best em
+.quiz-master-my-best span,
+.quiz-master-my-best em,
 .quiz-master-recent-list small{
   color:#cfe6ff;
   font-style:normal;
@@ -8573,7 +8573,7 @@ img.qtb-badge-icon{
 #screen-quiz-master-result .quiz-master-ranking ol{
   margin-top:8px;
 }
-#screen-quiz-master-result .quiz-master-ranking li
+#screen-quiz-master-result .quiz-master-ranking li,
 #screen-quiz-master-ranking .quiz-master-ranking li{
   padding:10px 12px;
   grid-template-columns:50px 70px 1fr 250px 80px;
@@ -8581,7 +8581,7 @@ img.qtb-badge-icon{
 #screen-quiz-master-result .quiz-master-ranking-summary{
   margin:8px 0;
 }
-#screen-quiz-master-result .quiz-master-ranking-summary span
+#screen-quiz-master-result .quiz-master-ranking-summary span,
 #screen-quiz-master-result .quiz-master-my-best{
   padding:8px 10px;
 }
@@ -8658,7 +8658,7 @@ body.quiz-master-failed .quiz-master-shell{
     gap:8px;
     margin-bottom:6px;
   }
-  .quiz-master-score
+  .quiz-master-score,
   .quiz-master-timer{
     padding:6px 10px;
   }
@@ -8713,7 +8713,7 @@ body.quiz-master-failed .quiz-master-shell{
     grid-template-columns:1fr;
     gap:8px;
   }
-  .quiz-master-lifeline
+  .quiz-master-lifeline,
   .quiz-master-confirm{
     min-height:56px;
     font-size:16px;
@@ -8910,7 +8910,7 @@ body.quiz-master-failed .quiz-master-shell{
     margin:0 auto;
     font-size:clamp(14px,1.25vw,20px);
   }
-  .quiz-master-score
+  .quiz-master-score,
   .quiz-master-timer{
     padding:7px 14px;
   }
@@ -8969,7 +8969,7 @@ body.quiz-master-failed .quiz-master-shell{
     gap:clamp(10px,1.2vw,18px);
     margin:0 auto;
   }
-  .quiz-master-lifeline
+  .quiz-master-lifeline,
   .quiz-master-confirm{
     min-height:clamp(56px,7vh,78px);
     font-size:clamp(20px,2vw,34px);
@@ -8998,7 +8998,7 @@ body.quiz-master-failed .quiz-master-shell{
     width:clamp(220px,15.2vw,315px);
     max-height:clamp(78px,10vh,108px);
   }
-  .quiz-master-round
+  .quiz-master-round,
   .quiz-master-count{
     min-height:clamp(52px,6.7vh,76px);
     padding:5px clamp(18px,1.7vw,30px);
@@ -9024,7 +9024,7 @@ body.quiz-master-failed .quiz-master-shell{
   .quiz-master-hud{
     margin:-2px auto -2px;
   }
-  .quiz-master-score
+  .quiz-master-score,
   .quiz-master-timer{
     padding:6px 13px;
   }
@@ -9079,7 +9079,7 @@ body.quiz-master-failed .quiz-master-shell{
   .quiz-master-controls{
     gap:clamp(8px,.9vw,14px);
   }
-  .quiz-master-lifeline
+  .quiz-master-lifeline,
   .quiz-master-confirm{
     min-height:clamp(48px,5.6vh,64px);
     font-size:clamp(17px,1.65vw,28px);
@@ -9231,7 +9231,7 @@ body.quiz-master-failed .quiz-master-shell{
     padding:0 10px;
     transform:none;
   }
-  .quiz-master-lifeline
+  .quiz-master-lifeline,
   .quiz-master-confirm{
     min-height:52px;
     font-size:25px;
@@ -9308,7 +9308,7 @@ body.quiz-master-failed .quiz-master-shell{
     font-size:23px;
     line-height:1.16;
   }
-  .quiz-master-lifeline
+  .quiz-master-lifeline,
   .quiz-master-confirm{
     min-height:46px;
     font-size:22px;
@@ -9397,7 +9397,7 @@ body.quiz-master-failed .quiz-master-shell{
     margin:0 auto !important;
     align-items:center !important;
   }
-  .quiz-master-lifeline
+  .quiz-master-lifeline,
   .quiz-master-confirm{
     height:52px !important;
     min-height:52px !important;
@@ -9429,7 +9429,7 @@ body.quiz-master-failed .quiz-master-shell{
     min-height:52px !important;
     max-height:52px !important;
   }
-  .quiz-master-lifeline
+  .quiz-master-lifeline,
   .quiz-master-confirm{
     height:48px !important;
     min-height:48px !important;
@@ -9465,8 +9465,8 @@ body.quiz-master-failed .quiz-master-shell{
   }
 }
 /* v841: quiz round entrance/exit sequence */
-.quiz-master-question-panel
-.quiz-master-choice
+.quiz-master-question-panel,
+.quiz-master-choice,
 .quiz-master-message{
   will-change:transform,filter;
 }
@@ -9551,13 +9551,13 @@ body.quiz-master-failed .quiz-master-shell{
 .quiz-master-shell{
   isolation:isolate;
 }
-.quiz-master-brand
-.quiz-master-topbar
-.quiz-master-hud
-.quiz-master-message
-.quiz-master-question-panel
-.quiz-master-choices
-.quiz-master-controls
+.quiz-master-brand,
+.quiz-master-topbar,
+.quiz-master-hud,
+.quiz-master-message,
+.quiz-master-question-panel,
+.quiz-master-choices,
+.quiz-master-controls,
 .quiz-master-point-burst{
   position:relative;
   z-index:3;
@@ -9790,7 +9790,7 @@ body.quiz-master-failed .quiz-master-shell{
     grid-template-columns:1fr;
     text-align:center;
   }
-  .quiz-master-my-best b
+  .quiz-master-my-best b,
   .quiz-master-my-best em{
     justify-self:center;
   }
@@ -10000,9 +10000,9 @@ body.quiz-master-failed .quiz-master-shell{
 /* v971+: 起動中（app-booting）はログイン状態に依存する条件付きコントロールを
    隠し、JSが状態を確定してから正しいボタンだけを表示する。
    これにより「不要ボタンが一瞬出て消える」チラつきを防ぐ。 */
-body.app-booting #screen-title .registration-control
-body.app-booting #screen-title .game-start-control
-body.app-booting #quizMasterBtn
+body.app-booting #screen-title .registration-control,
+body.app-booting #screen-title .game-start-control,
+body.app-booting #quizMasterBtn,
 body.app-booting #quizMasterRankingBtn{
   display:none !important;
 }

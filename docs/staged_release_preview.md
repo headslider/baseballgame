@@ -10,8 +10,8 @@
 
 `index.php` による公開トップ自動切替は、リロード時の挙動問題があるため採用しない。現在は次の構成で、公開トップと秘密URLを分離する。
 
-- **`index.html`**：公開トップのメンテナンス画面（静的）。`/baseball/` はこれを表示する。
-- **`app_shell.html`**：実アプリHTMLの単一の正本。バージョン参照もここに集約。秘密URLPHPが `readfile` で出力する。`.htaccess` で直アクセス禁止。
+- **`index.html`**：本番公開入口。段階リリース中は公開トップのメンテナンス画面（静的）として `/baseball/` に表示する。公開時はこのファイルを実アプリ版へ差し替える。
+- **`app_shell.html`**：段階リリース中の秘密URL用ゲームHTML。バージョン参照もここで確認する。秘密URLPHPが `readfile` で出力する。`.htaccess` で直アクセス禁止。
 - **`index-preview-<token>.php`**：秘密URL。フラグ有効時のみ `app_shell.html` を出力（メンテ中の本番プレビュー）。noindex は `X-Robots-Tag` ヘッダで付与。
 - **`production_hold_enabled.flag`**：秘密URLの利用可否と、野球博士チャレンジのプレビュー用ライフ無制限を制御する。
 - **Service Worker**：ナビゲーションは**常時 networkFirst**。古いHTMLキャッシュより、サーバー上の最新 `index.html` と秘密URLゲートを優先する。
@@ -42,7 +42,7 @@
 - manifest の `start_url` は `/baseball/`（＝メンテ中はメンテ画面）。秘密URLからインストールするとアイコンがメンテ画面に飛ぶ。検証はブラウザで秘密URLを直接開く。
 
 ### 0-4. 🔴 公開切替時はキャッシュバージョンを必ず bump
-- 公開（メンテ→実アプリ）切替時は `version.json` / `service-worker.js` / `index.html` を**新バージョンへ同期**（現行 staging=v1065 → 公開=v1066）。SW再インストールで既存ユーザーへ確実に配信する。
+- 公開（メンテ→実アプリ）切替時は `version.json` / `service-worker.js` / 公開入口の `index.html` を**新バージョンへ同期**する。段階リリース中の検証では、秘密URL用の `app_shell.html` も同じ基準で確認する。SW再インストールで既存ユーザーへ確実に配信する。
 - 補足：staging 中に app.js / service-worker.js を変更した場合は、その都度キャッシュバージョンを上げないと SW が旧アセットを配信し続ける（同一 `?v=` だとキャッシュが更新されない）。
 
 ### 0-5. 🟡 運用データは触らない
@@ -133,7 +133,7 @@
 
 ### フェーズ1：トップ停止＋全データアップ（ステージング）
 1. リポジトリを「`index.html`＝メンテ／`index-preview-<token>.php`＝実アプリ」の状態にする（本ドキュメント時点で構成済み）。
-2. PWA キャッシュ整合性（v1065）を確認：`version.json` / `service-worker.js` / `index.html`。
+2. PWA キャッシュ整合性を確認：`version.json` / `service-worker.js` / `app_shell.html`。
    - 注：この段階の `index.html` はメンテ版。SW は `index.html`（メンテ）を precache する。
 3. 本番へ反映（`main` にマージ → `deploy.yml` を `apply=true`）。`production_hold_enabled.flag`（既定 `true`）も一緒に配備され、秘密URLは有効状態になる。
 4. （任意）一時的に秘密URLを止めたい場合のみ、サーバーの `production_hold_enabled.flag` を `false`／削除。
@@ -149,7 +149,7 @@
 ### フェーズ4：公開切替（リリース）
 1. `index.html` を実アプリ版に差し替える（メンテ版を置換）。
 2. `index-preview-<token>.php` を削除する。
-3. **PWA キャッシュを v1066 へ bump**（`version.json` / `service-worker.js` の `CACHE_VERSION`・アセットクエリ / `index.html` の `YAKYU_CACHE_VERSION`・CSS/JSクエリ・`app-version`）。
+3. **PWA キャッシュを新バージョンへ bump**（`version.json` / `service-worker.js` の `CACHE_VERSION`・アセットクエリ / 公開入口 `index.html` の `YAKYU_CACHE_VERSION`・CSS/JSクエリ・`app-version`）。
    - これにより既存ユーザーの SW が再インストールされ、メンテ版 `index.html` を新アプリへ更新する。
 4. `service-worker.js` の `NETWORK_FIRST_PATTERNS` から秘密URL用パターンを削除（任意。ファイル削除済みなら実害なし）。
 5. `production_hold_enabled.flag` を `false` にしてコミット（または秘密URLファイル削除済みのため任意）。
