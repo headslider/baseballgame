@@ -878,14 +878,27 @@ button:disabled{
 }
 .mypage-list-pagination button{
   min-width:104px;
+  min-height:40px;
   padding:8px 14px;
-  border-radius:12px;
+  border:0 !important;
+  border-radius:0;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:#0b3a75 !important;
   font-size:.95rem;
+  font-weight:1000;
+  text-decoration:none;
+  cursor:pointer;
 }
 .mypage-list-pagination button:disabled{
   opacity:.45;
   cursor:not-allowed;
   transform:none;
+}
+.mypage-list-pagination button:not(:disabled):hover{
+  text-decoration:underline;
+  transform:none;
+  filter:none;
 }
 .mypage-list-scroll .records-table{
   border-width:0;
@@ -906,7 +919,7 @@ button:disabled{
   color:#fff;
 }
 .rank-award-accordion .mypage-list-scroll{
-  /* v1090: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
+  /* v1091: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
   max-height:334px;
 }
 .mypage-empty,.mypage-loading{
@@ -10232,19 +10245,26 @@ body.app-booting #quizMasterRankingBtn{
 .mistake-review-pagination button{
   min-width:110px;
   min-height:36px;
-  border-radius:8px;
+  padding:8px 12px;
+  border:0 !important;
+  border-radius:0;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:#0b3a75 !important;
   font-size:14px;
-  font-weight:700;
+  font-weight:1000;
   cursor:pointer;
-  transition:all .18s ease;
+  text-decoration:none;
+  transition:color .18s ease,text-decoration-color .18s ease;
 }
 .mistake-review-pagination button:disabled{
   opacity:.5;
   cursor:not-allowed;
 }
 .mistake-review-pagination button:not(:disabled):hover{
-  transform:translateY(-1px);
-  filter:brightness(1.06);
+  transform:none;
+  filter:none;
+  text-decoration:underline;
 }
 .page-info{
   font-size:14px;

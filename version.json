@@ -1,13 +1,13 @@
 {
-  "app_version": "v1090-production",
-  "cache_version": "yakyu-yarouze-v1090-production",
-  "public_version": "v1.1.89",
+  "app_version": "v1091-production",
+  "cache_version": "yakyu-yarouze-v1091-production",
+  "public_version": "v1.1.90",
   "updated_at": "2026-06-28T00:00:00+09:00",
   "release_date": "2026-06-28",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "お知らせとマイページの大量一覧にスクロールとページネーションを追加し、PWA起動中の日次ライフ更新を改善。",
+  "change_summary": "ページネーション操作をテキスト表示に調整し、ヒット領域は維持。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

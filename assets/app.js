@@ -3203,7 +3203,7 @@ function listPageState(items,page,pageSize=MY_PAGE_LIST_PAGE_SIZE){
 }
 function listPaginationHtml(action,count,page,totalPages){
   if(Number(count)<MY_PAGE_LIST_PAGE_SIZE)return "";
-  return `<div class="mypage-list-pagination"><button class="secondary" type="button" data-list-page-action="${escapeHtml(action)}" data-list-page-dir="prev" ${page<=1?"disabled":""}>&lt; 前へ</button><span class="page-info">ページ ${escapeHtml(page)} / ${escapeHtml(totalPages)}</span><button class="secondary" type="button" data-list-page-action="${escapeHtml(action)}" data-list-page-dir="next" ${page>=totalPages?"disabled":""}>次へ &gt;</button></div>`;
+  return `<div class="mypage-list-pagination"><button class="secondary" type="button" data-list-page-action="${escapeHtml(action)}" data-list-page-dir="prev" ${page<=1?"disabled":""}>&lt;前へ</button><span class="page-info">ページ ${escapeHtml(page)} / ${escapeHtml(totalPages)}</span><button class="secondary" type="button" data-list-page-action="${escapeHtml(action)}" data-list-page-dir="next" ${page>=totalPages?"disabled":""}>次へ&gt;</button></div>`;
 }
 function myPageAccordionHtml(title,count,body,className="",paginationHtml=""){
   if(Number(count)<5)return body;
@@ -3507,9 +3507,9 @@ function renderMistakeReviewSection(){
 
   // ページネーションコントロール
   const paginationHtml=showPagination?`<div class="mistake-review-pagination">
-    <button class="secondary" data-page-action="prev" ${MISTAKE_REVIEW_PAGE<=1?'disabled':''}>&lt; 前へ</button>
+    <button class="secondary" data-page-action="prev" ${MISTAKE_REVIEW_PAGE<=1?'disabled':''}>&lt;前へ</button>
     <span class="page-info">ページ ${MISTAKE_REVIEW_PAGE} / ${totalPages}</span>
-    <button class="secondary" data-page-action="next" ${MISTAKE_REVIEW_PAGE>=totalPages?'disabled':''}>次へ &gt;</button>
+    <button class="secondary" data-page-action="next" ${MISTAKE_REVIEW_PAGE>=totalPages?'disabled':''}>次へ&gt;</button>
   </div>`:"";
 
   // 「更新または停止された問題」ページネーション（10個/ページ）
@@ -3523,9 +3523,9 @@ function renderMistakeReviewSection(){
   const unavailablePageViews=showUnavailablePagination?unavailableViews.slice(unavailableStartIdx,unavailableEndIdx):unavailableViews.slice(0,20);
 
   const unavailablePaginationHtml=showUnavailablePagination?`<div class="mistake-review-pagination">
-    <button class="secondary" data-unavailable-page-action="prev" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE<=1?'disabled':''}>&lt; 前へ</button>
+    <button class="secondary" data-unavailable-page-action="prev" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE<=1?'disabled':''}>&lt;前へ</button>
     <span class="page-info">ページ ${MISTAKE_REVIEW_UNAVAILABLE_PAGE} / ${unavailableTotalPages}</span>
-    <button class="secondary" data-unavailable-page-action="next" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE>=unavailableTotalPages?'disabled':''}>次へ &gt;</button>
+    <button class="secondary" data-unavailable-page-action="next" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE>=unavailableTotalPages?'disabled':''}>次へ&gt;</button>
   </div>`:"";
 
   const activeMistakeContent=activeViews.length>=5?`${paginationHtml}<div class="mypage-list-scroll mistake-list-scroll">${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}</div>`:`${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}`;
