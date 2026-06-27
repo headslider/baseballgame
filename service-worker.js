@@ -1,5 +1,5 @@
 /* PWA Service Worker for 野球やろうぜ！ */
-const CACHE_VERSION = 'yakyu-yarouze-v1084-production';
+const CACHE_VERSION = 'yakyu-yarouze-v1085-production';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -11,8 +11,8 @@ const STATIC_ASSETS = [
   './manifest.webmanifest',
   './api/issue_manifest.php',
   './version.json',
-  './assets/styles.css?v=1084',
-  './assets/app.js?v=1084',
+  './assets/styles.css?v=1085',
+  './assets/app.js?v=1085',
   './assets/top_background.webp',
   './assets/top_title_mobile.webp',
   './assets/top_title_pc.webp',
@@ -20,7 +20,7 @@ const STATIC_ASSETS = [
   './assets/quiz_master_logo.webp',
   './assets/quiz_master_icon.webp',
   './assets/quiz_master_chair.webp',
-  './assets/quiz_master_questions.js?v=1084',
+  './assets/quiz_master_questions.js?v=1085',
   './data/quiz_master_questions.json',
   './data/quiz_master_titles.json',
   './assets/icons/icon-192.png',
@@ -105,13 +105,20 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // PWA起動・リロードなどのHTMLナビゲーションは、必ずサーバーの最新index.htmlを確認する。
+  // これにより旧index.html（メンテ版や古いアプリHTML）がキャッシュから出続ける事故を防ぐ。
+  if (request.mode === 'navigate') {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
   // 秘密URL・API・設定JSON等は常にネットワーク優先（ゲートや最新データを必ず評価する）。
   if (isNetworkFirst(request)) {
     event.respondWith(networkFirst(request));
     return;
   }
 
-  // 通常公開の index.html を含む静的資産は cacheFirst。
+  // CSS/JS/画像などの静的資産は cacheFirst。
   event.respondWith(cacheFirst(request));
 });
 

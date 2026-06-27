@@ -1,13 +1,13 @@
 {
-  "app_version": "v1084-production",
-  "cache_version": "yakyu-yarouze-v1084-production",
-  "public_version": "v1.1.83",
+  "app_version": "v1085-production",
+  "cache_version": "yakyu-yarouze-v1085-production",
+  "public_version": "v1.1.84",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "通常ゲーム中のモバイル画面でトップ背景が下端に見える問題を修正。ゲーム中はhtml/body/app/gameShell全体を緑背景で固定。",
+  "change_summary": "PWA起動時のHTMLナビゲーションをnetworkFirstに戻し、古いindex.htmlキャッシュが表示され続ける問題を防止。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,
