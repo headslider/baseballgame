@@ -1567,6 +1567,7 @@ async function init(){
   updateAdminModeUI();
   updateRequestMenuVisibility();
   updatePushSectionAvailability();
+  setupQuizMasterDailyRefresh();
   document.body.classList.add("screen-title-active");
   const adminTestReq=readAdminQuestionTestRequest();
   if(adminTestReq)await startAdminQuestionTest(adminTestReq);
@@ -1631,6 +1632,44 @@ function quizMasterTodayKey(){
   const now=new Date();
   const jst=new Date(now.getTime()+9*60*60*1000);
   return jst.toISOString().slice(0,10);
+}
+let QUIZ_MASTER_LAST_TODAY_KEY="";
+let QUIZ_MASTER_DAILY_REFRESH_TIMER=null;
+let QUIZ_MASTER_DAILY_POLL_TIMER=null;
+function quizMasterNextJstMidnightDelay(){
+  const now=new Date();
+  const jst=new Date(now.getTime()+9*60*60*1000);
+  const nextJstMidnightUtc=Date.UTC(jst.getUTCFullYear(),jst.getUTCMonth(),jst.getUTCDate()+1,0,0,5)-9*60*60*1000;
+  return Math.max(1000,Math.min(nextJstMidnightUtc-now.getTime(),24*60*60*1000+10000));
+}
+function refreshQuizMasterDailyState(force=false){
+  const today=quizMasterTodayKey();
+  const changed=!!QUIZ_MASTER_LAST_TODAY_KEY&&QUIZ_MASTER_LAST_TODAY_KEY!==today;
+  QUIZ_MASTER_LAST_TODAY_KEY=today;
+  if(force||changed){
+    try{updateQuizMasterDailyUI();}catch(e){}
+  }
+  return changed;
+}
+function scheduleQuizMasterDailyRefresh(){
+  if(QUIZ_MASTER_DAILY_REFRESH_TIMER)clearTimeout(QUIZ_MASTER_DAILY_REFRESH_TIMER);
+  QUIZ_MASTER_DAILY_REFRESH_TIMER=setTimeout(()=>{
+    refreshQuizMasterDailyState(true);
+    scheduleQuizMasterDailyRefresh();
+  },quizMasterNextJstMidnightDelay());
+}
+function setupQuizMasterDailyRefresh(){
+  refreshQuizMasterDailyState(true);
+  scheduleQuizMasterDailyRefresh();
+  if(QUIZ_MASTER_DAILY_POLL_TIMER)clearInterval(QUIZ_MASTER_DAILY_POLL_TIMER);
+  QUIZ_MASTER_DAILY_POLL_TIMER=setInterval(()=>refreshQuizMasterDailyState(false),60*1000);
+  const resume=()=>{
+    refreshQuizMasterDailyState(false);
+    refreshQuizMasterHoldPreview();
+  };
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)resume();});
+  window.addEventListener("pageshow",resume);
+  window.addEventListener("focus",resume);
 }
 function quizMasterLimitPlayerKey(){
   const pid=STATE.loggedIn&&STATE.playerId?STATE.playerId:(currentInputPlayerId&&currentInputPlayerId()?currentInputPlayerId():"guest");
@@ -3150,9 +3189,25 @@ function fmtScore(v){const n=Number(v);return Number.isFinite(n)?String(n):"0"}
 function fmtDate(s){return s||"-"}
 function fmtTimeSeconds(v){const n=Number(v);return Number.isFinite(n)?`${n.toFixed(2)}秒`:"-"}
 function rankStars(rank){const r=Number(rank);return r===1?"<span class=\"rank-stars\" aria-label=\"星3つ\">★★★</span>":r===2?"<span class=\"rank-stars\" aria-label=\"星2つ\">★★</span>":r===3?"<span class=\"rank-stars\" aria-label=\"星1つ\">★</span>":""}
-function myPageAccordionHtml(title,count,body,className=""){
+const MY_PAGE_LIST_PAGE_SIZE=10;
+let MY_PAGE_RANK_AWARDS_PAGE=1;
+let MY_PAGE_RECORDS_PAGE=1;
+let MY_PAGE_QUIZ_MASTER_HISTORY_PAGE=1;
+let NOTICE_LIST_PAGE=1;
+function listPageState(items,page,pageSize=MY_PAGE_LIST_PAGE_SIZE){
+  const totalItems=Array.isArray(items)?items.length:0;
+  const totalPages=Math.max(1,Math.ceil(totalItems/pageSize));
+  const currentPage=Math.max(1,Math.min(Number(page)||1,totalPages));
+  const start=(currentPage-1)*pageSize;
+  return {totalItems,totalPages,currentPage,pageItems:totalItems>=pageSize?items.slice(start,start+pageSize):items};
+}
+function listPaginationHtml(action,count,page,totalPages){
+  if(Number(count)<MY_PAGE_LIST_PAGE_SIZE)return "";
+  return `<div class="mypage-list-pagination"><button class="secondary" type="button" data-list-page-action="${escapeHtml(action)}" data-list-page-dir="prev" ${page<=1?"disabled":""}>&lt; 前へ</button><span class="page-info">ページ ${escapeHtml(page)} / ${escapeHtml(totalPages)}</span><button class="secondary" type="button" data-list-page-action="${escapeHtml(action)}" data-list-page-dir="next" ${page>=totalPages?"disabled":""}>次へ &gt;</button></div>`;
+}
+function myPageAccordionHtml(title,count,body,className="",paginationHtml=""){
   if(Number(count)<5)return body;
-  return `<details class="mypage-list-accordion ${escapeHtml(className)}" open><summary><span>${escapeHtml(title)}</span><em>${escapeHtml(count)}件</em></summary><div class="mypage-list-scroll">${body}</div></details>`;
+  return `<details class="mypage-list-accordion ${escapeHtml(className)}" open><summary><span>${escapeHtml(title)}</span><em>${escapeHtml(count)}件</em></summary>${paginationHtml}<div class="mypage-list-scroll">${body}</div></details>`;
 }
 
 function collectMyTopRanks(rankingData,playerId){
@@ -3186,8 +3241,11 @@ function myTopRanksHtml(rankingData,playerId){
   const others=overall?items.filter(item=>item!==overall):items;
   const overallHtml=overall?`<div class="overall-award-hero overall-award-${escapeHtml(overall.rank)}"><div class="overall-award-crown">${Number(overall.rank)===1?"👑":"🏅"}</div><div><p>総合ランキング入賞</p><h3>${rankStars(overall.rank)} ${escapeHtml(overall.rank)}位</h3><span>全体の中で上位に入りました！</span></div></div>`:"";
   const otherTitle=overall?"その他の上位ランキング":"あなたの上位ランキング";
-  const otherList=others.length?`<div class="rank-award-list">${others.map(item=>`<div class="rank-award rank-award-${escapeHtml(item.rank)}"><span class="rank-award-stars">${rankStars(item.rank)}</span><b>${escapeHtml(item.label)}</b><span>${escapeHtml(item.rank)}位</span></div>`).join("")}</div>`:"";
-  const otherHtml=others.length>=5?myPageAccordionHtml(otherTitle,others.length,otherList,"rank-award-accordion"):(others.length?`<h3>${otherTitle}</h3>${otherList}`:"");
+  const otherPage=listPageState(others,MY_PAGE_RANK_AWARDS_PAGE);
+  MY_PAGE_RANK_AWARDS_PAGE=otherPage.currentPage;
+  const otherList=others.length?`<div class="rank-award-list">${otherPage.pageItems.map(item=>`<div class="rank-award rank-award-${escapeHtml(item.rank)}"><span class="rank-award-stars">${rankStars(item.rank)}</span><b>${escapeHtml(item.label)}</b><span>${escapeHtml(item.rank)}位</span></div>`).join("")}</div>`:"";
+  const otherPager=listPaginationHtml("rank-awards",others.length,otherPage.currentPage,otherPage.totalPages);
+  const otherHtml=others.length>=5?myPageAccordionHtml(otherTitle,others.length,otherList,"rank-award-accordion",otherPager):(others.length?`<h3>${otherTitle}</h3>${otherList}`:"");
   return `<div class="mypage-rank-awards">${overallHtml}${otherHtml}</div>`;
 }
 
@@ -3454,10 +3512,10 @@ function renderMistakeReviewSection(){
     <button class="secondary" data-page-action="next" ${MISTAKE_REVIEW_PAGE>=totalPages?'disabled':''}>次へ &gt;</button>
   </div>`:"";
 
-  // 「更新または停止された問題」ページネーション（5個/ページ）
-  const unavailableItemsPerPage=5;
+  // 「更新または停止された問題」ページネーション（10個/ページ）
+  const unavailableItemsPerPage=10;
   const unavailableTotalPages=Math.ceil(unavailableViews.length/unavailableItemsPerPage);
-  const showUnavailablePagination=unavailableViews.length>=5;
+  const showUnavailablePagination=unavailableViews.length>=10;
   if(showUnavailablePagination)MISTAKE_REVIEW_UNAVAILABLE_PAGE=Math.max(1,Math.min(MISTAKE_REVIEW_UNAVAILABLE_PAGE,unavailableTotalPages));
 
   const unavailableStartIdx=(MISTAKE_REVIEW_UNAVAILABLE_PAGE-1)*unavailableItemsPerPage;
@@ -3470,9 +3528,10 @@ function renderMistakeReviewSection(){
     <button class="secondary" data-unavailable-page-action="next" ${MISTAKE_REVIEW_UNAVAILABLE_PAGE>=unavailableTotalPages?'disabled':''}>次へ &gt;</button>
   </div>`:"";
 
-  const activeMistakeContent=activeViews.length>=5?`<div class="mypage-list-scroll mistake-list-scroll">${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}</div>`:`${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}`;
+  const activeMistakeContent=activeViews.length>=5?`${paginationHtml}<div class="mypage-list-scroll mistake-list-scroll">${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}</div>`:`${paginationHtml}${listHtml||'<div class="mypage-empty">現在表示できる間違い記録はありません。</div>'}`;
   const unavailableContent=`${unavailablePaginationHtml}<p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailablePageViews.map(mistakeReviewItemHtml).join("")}`;
-  const unavailableHtml=unavailableViews.length?`<h4 class="mistake-accordion-title" data-accordion="unavailable"><span class="accordion-icon">${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'▼':'▶'}</span> 更新または停止された問題</h4><div class="mistake-accordion-content" data-accordion-content="unavailable" style="display:${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'block':'none'}">${unavailableViews.length>=5?`<div class="mypage-list-scroll mistake-list-scroll">${unavailableContent}</div>`:unavailableContent}</div>`:"";
+  const unavailableScrollContent=`<p class="mistake-note">現在の問題一覧にない記録です。保存時点の内容を参考表示しています。</p>${unavailablePageViews.map(mistakeReviewItemHtml).join("")}`;
+  const unavailableHtml=unavailableViews.length?`<h4 class="mistake-accordion-title" data-accordion="unavailable"><span class="accordion-icon">${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'▼':'▶'}</span> 更新または停止された問題</h4><div class="mistake-accordion-content" data-accordion-content="unavailable" style="display:${MISTAKE_REVIEW_UNAVAILABLE_OPEN?'block':'none'}">${unavailableViews.length>=5?`${unavailablePaginationHtml}<div class="mypage-list-scroll mistake-list-scroll">${unavailableScrollContent}</div>`:unavailableContent}</div>`:"";
   box.innerHTML=`<div class="mistake-review"><h3>間違いプレイチェック</h3><p class="mistake-note">0点・1点だった問題をこの端末に記録しています。問題が更新された場合は、最新の問題文・正解・アドバイスで表示します。</p><h4>苦手傾向</h4>${tagHtml}<h4 class="mistake-accordion-title" data-accordion="list"><span class="accordion-icon">${MISTAKE_REVIEW_LIST_OPEN?'▼':'▶'}</span> 間違えた問題一覧</h4><div class="mistake-accordion-content" data-accordion-content="list" style="display:${MISTAKE_REVIEW_LIST_OPEN?'block':'none'}">${activeMistakeContent}</div>${unavailableHtml}</div>`;
 
   // 「間違えた問題一覧」ページネーションボタンのイベントリスナー
@@ -3601,8 +3660,11 @@ function renderQuizMasterMyPage(data){
   const latest=recent[0]||null;
   const totalScore=Number(total&&total.total_score!==undefined?total.total_score:recent.reduce((sum,r)=>sum+Number(r.score||0),0));
   const titleInfo=(total&&total.title_info)||quizMasterTitleForScore(totalScore,data.titles);
-  const recentTable=recent.length?`<div class="records-table quiz-master-mypage-table"><table><thead><tr><th>日時</th><th>得点</th><th>到達</th><th>結果</th></tr></thead><tbody>${recent.map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td><b>${escapeHtml(r.score||0)} pt</b></td><td>第${escapeHtml(r.reached_level||0)}問</td><td>${escapeHtml(quizMasterResultReasonText(r.result_reason))}</td></tr>`).join("")}</tbody></table></div>`:"";
-  const recentRows=recent.length?myPageAccordionHtml("野球博士チャレンジ履歴",recent.length,recentTable,"quiz-master-history-accordion"):recentTable;
+  const recentPage=listPageState(recent,MY_PAGE_QUIZ_MASTER_HISTORY_PAGE);
+  MY_PAGE_QUIZ_MASTER_HISTORY_PAGE=recentPage.currentPage;
+  const recentTable=recent.length?`<div class="records-table quiz-master-mypage-table"><table><thead><tr><th>日時</th><th>得点</th><th>到達</th><th>結果</th></tr></thead><tbody>${recentPage.pageItems.map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td><b>${escapeHtml(r.score||0)} pt</b></td><td>第${escapeHtml(r.reached_level||0)}問</td><td>${escapeHtml(quizMasterResultReasonText(r.result_reason))}</td></tr>`).join("")}</tbody></table></div>`:"";
+  const recentPager=listPaginationHtml("quiz-master-history",recent.length,recentPage.currentPage,recentPage.totalPages);
+  const recentRows=recent.length?myPageAccordionHtml("野球博士チャレンジ履歴",recent.length,recentTable,"quiz-master-history-accordion",recentPager):recentTable;
   box.innerHTML=`<div class="quiz-master-mypage-card"><h3>野球博士チャレンジ</h3><div class="quiz-master-current-title">${quizMasterLevelIconHtml(titleInfo.level,'qm-icon-mypage')}<em>${escapeHtml(totalScore)} pt</em></div><div class="summary-grid quiz-master-mypage-summary"><div><b>${escapeHtml(best?best.score:0)} pt</b><span>最高点</span></div><div><b>${escapeHtml(total&&total.rank?total.rank:"-")}位</b><span>総合順位</span></div><div><b>${escapeHtml(latest?latest.score:0)} pt</b><span>最新得点</span></div><div><b>${escapeHtml(totalScore)} pt</b><span>総合点</span></div></div>${recentRows}</div>`;
 }
 function renderMyPage(data,rankingData,quizMasterData){
@@ -3620,14 +3682,30 @@ function renderMyPage(data,rankingData,quizMasterData){
     if(!records.length){
       recordsEl.innerHTML='<div class="mypage-empty">まだ保存された成績がありません。ゲームをプレイするとここに結果が表示されます。</div>';
     }else{
-      const recordsTable=`<div class="records-table"><table><thead><tr><th>日時</th><th>学年</th><th>守備</th><th>合計</th><th>クリア問題数</th><th>攻撃</th><th>守備</th></tr></thead><tbody>${records.map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td>${escapeHtml(r.grade||"")}年</td><td>${escapeHtml((STATE.config.positions&&STATE.config.positions[r.position])||r.position||"")}</td><td><b>${escapeHtml(r.total_score||0)}/${escapeHtml(r.max_score||54)}</b></td><td>${escapeHtml(r.correct_count||0)}問</td><td>${escapeHtml(r.attack_score||0)}</td><td>${escapeHtml(r.defense_score||0)}</td></tr>`).join("")}</tbody></table></div>`;
-      recordsEl.innerHTML=records.length>=5?myPageAccordionHtml("過去の結果",records.length,recordsTable,"records-history-accordion"):`<h3>過去の結果</h3>${recordsTable}`;
+      const recordsPage=listPageState(records,MY_PAGE_RECORDS_PAGE);
+      MY_PAGE_RECORDS_PAGE=recordsPage.currentPage;
+      const recordsTable=`<div class="records-table"><table><thead><tr><th>日時</th><th>学年</th><th>守備</th><th>合計</th><th>クリア問題数</th><th>攻撃</th><th>守備</th></tr></thead><tbody>${recordsPage.pageItems.map(r=>`<tr><td>${escapeHtml(r.played_at||"")}</td><td>${escapeHtml(r.grade||"")}年</td><td>${escapeHtml((STATE.config.positions&&STATE.config.positions[r.position])||r.position||"")}</td><td><b>${escapeHtml(r.total_score||0)}/${escapeHtml(r.max_score||54)}</b></td><td>${escapeHtml(r.correct_count||0)}問</td><td>${escapeHtml(r.attack_score||0)}</td><td>${escapeHtml(r.defense_score||0)}</td></tr>`).join("")}</tbody></table></div>`;
+      const recordsPager=listPaginationHtml("records-history",records.length,recordsPage.currentPage,recordsPage.totalPages);
+      recordsEl.innerHTML=records.length>=5?myPageAccordionHtml("過去の結果",records.length,recordsTable,"records-history-accordion",recordsPager):`<h3>過去の結果</h3>${recordsTable}`;
     }
   }
   renderQuizMasterMyPage(quizMasterData);
 
   try{renderFeatureUnlockSection();}catch(e){console.warn("renderFeatureUnlockSection failed",e);}
   try{renderMistakeReviewSection();}catch(e){console.warn("renderMistakeReviewSection failed",e);}
+  const pageRoot=$("screen-mypage");
+  if(pageRoot){
+    pageRoot.querySelectorAll("[data-list-page-action]").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const action=btn.getAttribute("data-list-page-action");
+        const dir=btn.getAttribute("data-list-page-dir")==="prev"?-1:1;
+        if(action==="rank-awards")MY_PAGE_RANK_AWARDS_PAGE+=dir;
+        else if(action==="records-history")MY_PAGE_RECORDS_PAGE+=dir;
+        else if(action==="quiz-master-history")MY_PAGE_QUIZ_MASTER_HISTORY_PAGE+=dir;
+        renderMyPage(data,rankingData,quizMasterData);
+      });
+    });
+  }
 }
 
 
@@ -3752,11 +3830,14 @@ function renderNotices(notices){
     return;
   }
   summary.innerHTML=`<div>表示件数：${escapeHtml(notices.length)}件</div>`;
-  records.innerHTML=`<div class="notice-list">${notices.map((n,i)=>{
+  const noticePage=listPageState(notices,NOTICE_LIST_PAGE);
+  NOTICE_LIST_PAGE=noticePage.currentPage;
+  const noticePager=listPaginationHtml("notices",notices.length,noticePage.currentPage,noticePage.totalPages);
+  const noticeList=`<div class="notice-list">${noticePage.pageItems.map((n,i)=>{
     const title=escapeHtml(n.title||"お知らせ");
     const date=escapeHtml(formatNoticeDate(n.sent_at));
     const body=escapeHtml(n.body||"").replace(/\n/g,"<br>");
-    return `<details class="notice-item"${i===0?" open":""}>
+    return `<details class="notice-item"${noticePage.currentPage===1&&i===0?" open":""}>
       <summary>
         <span class="notice-item-title">${title}</span>
         <span class="notice-item-date">${date}</span>
@@ -3764,6 +3845,14 @@ function renderNotices(notices){
       <div class="notice-item-body">${body||"本文はありません。"}</div>
     </details>`;
   }).join("")}</div>`;
+  records.innerHTML=notices.length>=5?`${noticePager}<div class="notice-list-scroll">${noticeList}</div>`:noticeList;
+  records.querySelectorAll('[data-list-page-action="notices"]').forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const dir=btn.getAttribute("data-list-page-dir")==="prev"?-1:1;
+      NOTICE_LIST_PAGE+=dir;
+      renderNotices(notices);
+    });
+  });
 }
 
 

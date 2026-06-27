@@ -864,6 +864,29 @@ button:disabled{
   overscroll-behavior:contain;
   padding:12px;
 }
+.mypage-list-pagination{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  padding:12px 12px 0;
+}
+.mypage-list-pagination .page-info{
+  font-weight:1000;
+  color:#0b3a75;
+}
+.mypage-list-pagination button{
+  min-width:104px;
+  padding:8px 14px;
+  border-radius:12px;
+  font-size:.95rem;
+}
+.mypage-list-pagination button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none;
+}
 .mypage-list-scroll .records-table{
   border-width:0;
   border-radius:10px;
@@ -883,7 +906,7 @@ button:disabled{
   color:#fff;
 }
 .rank-award-accordion .mypage-list-scroll{
-  /* v1089: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
+  /* v1090: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
   max-height:334px;
 }
 .mypage-empty,.mypage-loading{
@@ -7369,6 +7392,13 @@ body.screen-game-active #screen-title .stadium-bg{
 .notice-list{
   display:grid;
   gap:12px;
+}
+.notice-list-scroll{
+  max-height:clamp(360px,58vh,640px);
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding:12px 4px 4px;
 }
 .notice-item{
   background:#fff;

@@ -12,7 +12,9 @@
 | キャッシュ戦略 | どれを cacheFirst / networkFirst にするか不明確 | HTML、API、静的アセットを同じ扱いにすると不整合が出る | HTMLナビゲーション/API/秘密URL/flagは networkFirst。CSS/JS/画像は cacheFirst |
 | 野球博士解放 | 既存の招待ID解放ユーザーが野球博士チャレンジを開始できない | 過去の `player_features.json` には `flags.quiz_master` が保存されていないユーザーがいる | `sources` に招待ID由来の有効機能が残っていれば、サーバー側で `quiz_master=true` として扱う |
 | 遊び方ページ | 野球博士チャレンジ説明文が白文字で見えない | CSSのカンマ抜けにより `.option-feature-card` の濃色文字指定が効かず、親の `color:#fff !important` を継承 | セレクタのカンマを復旧し、カード内 `p` / `li` は濃色を明示する |
-| マイページ大量表示 | 「その他の上位ランキング」や履歴一覧が大量に縦表示される | マイページ内の一覧が件数に応じた高さ制限・折りたたみを持たず、特に上位ランキングカードは1件の高さが低いため10件前後見えてしまう | 5件以上のマイページ一覧はアコーディオン化し、一覧種別ごとの1件の高さに合わせてスクロール上限を設定する |
+| マイページ大量表示 | 「その他の上位ランキング」や履歴一覧が大量に縦表示される | マイページ内の一覧が件数に応じた高さ制限・折りたたみを持たず、特に上位ランキングカードは1件の高さが低いため10件前後見えてしまう | 5件以上はアコーディオン化して内部スクロール、10件以上はスクロール上部にページネーションを置く |
+| お知らせ大量表示 | お知らせページに通知履歴が大量に縦表示される | `renderNotices()` が取得した全件を一括描画していた | 5件以上はお知らせ一覧を内部スクロール、10件以上はページネーションで10件ずつ表示する |
+| PWA日次ライフ更新 | PWAを開きっぱなしにすると翌日になっても野球博士チャレンジのライフ表示が更新されない | 日付キーは変わるが、リロードや画面操作がない限りUI再描画が発火しない | JST日付変更タイマー、1分ポーリング、PWA復帰時の再判定で `updateQuizMasterDailyUI()` を実行する |
 | 招待解除済みユーザー | 互換救済で再解放されるリスク | 古い `flags` だけを見て補完すると解除済みまで復活する | 補完条件は「有効な invite source が残っていること」。解除処理は source を削除するため再解放しない |
 | 本番運用データ | 復旧時に `scores/` を直接編集・上書きするリスク | 本番固有のプレイヤー・ID・スコア・監査データが入っている | コードで互換対応する。`scores/`、`requests/`、`vendor/` は原則変更しない |
 | デプロイ | push しただけで本番反映されたと誤認 | 本番 `deploy.yml` は手動 `workflow_dispatch` のみ | `deploy.yml` を `apply=true` で実行して初めて本番反映 |
@@ -48,22 +50,43 @@
 - 管理者IDは `admin_mode` があれば引き続き野球博士チャレンジを利用できる。
 - 最高位管理者が招待ID由来機能を解除したユーザーは、解除処理で invite source が削除されるため、互換補完の対象外になる。
 
+### 野球博士チャレンジの日次ライフ更新
+
+- デイリーライフの利用回数・通常ゲーム完了ボーナスは、`quizMasterTodayKey()` のJST日付を含む localStorage キーで日別管理する。
+- PWAを開いたまま日付が変わる場合でも、リロードなしで表示が更新される必要がある。
+- `setupQuizMasterDailyRefresh()` は以下を行う。
+  - JST 24:00:05 付近に `updateQuizMasterDailyUI()` を実行するタイマーを予約する。
+  - PWA/ブラウザのタイマー停止に備え、1分ごとに日付変更を確認する。
+  - `visibilitychange`、`pageshow`、`focus` でアプリ復帰時に日付変更と `production_hold_enabled.flag` を再確認する。
+- ライフ上限や使用回数を手動で移行・削除しない。日付キーが変われば新しい日のキーを読み、自然に残り回数が戻る。
+- 通常ゲーム完了ボーナスも日付キー付きなので、翌日は再度1回だけ獲得できる。
+
 ### マイページの一覧表示
 
 - マイページは `screen-mypage` 内に、プロフィール、機能解放、サマリー、上位ランキング、過去の結果、間違いプレイチェック、野球博士チャレンジ履歴を表示する。
 - 5件以上になる一覧は、ページ全体へ大量展開せず、アコーディオンで閉じられる状態にする。
 - 5件以上の一覧は、開いた状態でも内部スクロールにし、マイページ全体が過度に長くならないようにする。
+- 10件以上の一覧は、内部スクロールの上部にページネーションを置き、10件ずつ描画する。
 - 対象は以下。
   - `myTopRanksHtml()` が出す「その他の上位ランキング」または「あなたの上位ランキング」
   - `renderMyPage()` が出す「過去の結果」
   - `renderQuizMasterMyPage()` が出す「野球博士チャレンジ履歴」
   - `renderMistakeReviewSection()` が出す「間違えた問題一覧」「更新または停止された問題」
 - 共通アコーディオンHTMLは `assets/app.js` の `myPageAccordionHtml(title,count,body,className)` を使う。
+- 共通ページングは `listPageState()` と `listPaginationHtml()` を使う。ページサイズは `MY_PAGE_LIST_PAGE_SIZE=10`。
 - 共通の見た目とスクロールは `assets/styles.css` の `.mypage-list-accordion` と `.mypage-list-scroll` で制御する。
 - 「その他の上位ランキング」はカード1件の高さが履歴テーブルより低いため、`.rank-award-accordion .mypage-list-scroll` で専用の高さ制限を持つ。PCは約5カード分、スマホは縦積みカード約5件分でスクロール開始する。
 - 5件以上でも中身を削除・省略してはいけない。表示は全件を保持し、スクロールで確認できるようにする。
 - アコーディオンは初期状態 `open` でよい。ユーザーが閉じられること、内部だけスクロールできることが重要。
 - ランキング専用ページ `screen-ranking` は別画面であり、今回のマイページ大量表示対策とは分けて扱う。ランキングページのTOP50表示をマイページ仕様に巻き込まない。
+
+### お知らせページの一覧表示
+
+- お知らせページは `screen-notices` の `renderNotices()` で表示する。
+- 5件以上のお知らせは `.notice-list-scroll` で内部スクロールにする。
+- 10件以上のお知らせは `listPaginationHtml("notices",...)` を使い、スクロール領域の上にページネーションを出す。
+- お知らせ本文は `details.notice-item` の中身として保持する。本文や通知履歴を削除・省略してはいけない。
+- お知らせ取得API `api/get_public_notices.php` の返却件数をUI都合で削らない。大量表示対策はフロント表示層で行う。
 
 ## 3. 触ってはいけない箇所
 
@@ -95,11 +118,14 @@
 - 招待ID互換のために本番 `player_features.json` を直接一括書換しない。
 - 招待解除済みユーザーまで復活する条件で `quiz_master` を補完しない。
 - CSSの複数セレクタからカンマを落とさない。特に `.option-feature-card, .option-feature-section .option-feature-card` と、未解放UIを隠す `body:not(...)` 系はカンマ抜けで意図した指定が無効になる。
-- マイページの大量表示対策で、APIの返却件数や保存データ自体を減らさない。UI側で折りたたみ・スクロールする。
+- マイページやお知らせの大量表示対策で、APIの返却件数や保存データ自体を減らさない。UI側で折りたたみ・スクロール・ページネーションする。
 - 「その他の上位ランキング」を `slice(0,5)` などで切り捨てない。5件超は全件保持したまま内部スクロールにする。
 - 上位ランキングカードの高さ制限を共通 `.mypage-list-scroll` だけに頼らない。カード高さが低いため、専用 `.rank-award-accordion .mypage-list-scroll` の上限を維持する。
 - マイページ修正をランキングページ `screen-ranking` のTOP50表示へ不用意に波及させない。
 - マイページUI修正だけで `api/get_ranking.php`、`api/save_score.php`、`api/save_quiz_master_score.php` を変更しない。必要性がある場合は別件として原因を切り分ける。
+- お知らせUI修正だけで `api/get_public_notices.php` の返却件数や保存データを変更しない。
+- 野球博士の日次ライフ更新のために localStorage の過去キーを一括削除しない。更新発火の問題は `setupQuizMasterDailyRefresh()` 側で直す。
+- 日次ライフ更新目的で強制リロードを標準仕様にしない。PWAでは利用中のゲームや入力状態を失うため、UI再判定で解決する。
 - `scores/`、`requests/`、`vendor/` をデプロイ対象に含めない。
 - `git push` だけで本番反映済みと判断しない。
 
@@ -163,8 +189,27 @@
 5. 「その他の上位ランキング」だけ多く見える場合は、`.rank-award-accordion .mypage-list-scroll` の高さを調整する。共通 `.mypage-list-scroll` をむやみに低くすると、過去の結果テーブルや間違い一覧が窮屈になる。
 6. PCとスマホでカード高さが違うため、`@media(max-width:720px)` 内の `.rank-award-accordion .mypage-list-scroll` も同時に確認する。
 7. `slice(0,5)` による件数削減では直さない。ユーザーは全履歴・全入賞をスクロールして確認できる必要がある。
-8. 修正後は `index.html`、`app_shell.html`、`service-worker.js`、`version.json` を同じ新バージョンへ同期する。
-9. 実機確認では、5件以上の「その他の上位ランキング」が約5カード分でスクロールし、summaryを押すと閉じられることを確認する。
+8. 10件以上の場合、ページネーションがスクロール領域の上部に表示され、ページ切替で10件ずつ描画されることを確認する。
+9. 修正後は `index.html`、`app_shell.html`、`service-worker.js`、`version.json` を同じ新バージョンへ同期する。
+10. 実機確認では、5件以上の「その他の上位ランキング」が約5カード分でスクロールし、summaryを押すと閉じられることを確認する。
+
+### お知らせページの一覧が大量表示される
+
+1. `assets/app.js` の `renderNotices()` を確認する。
+2. 5件以上のお知らせが `.notice-list-scroll` の内部スクロールに入っているか確認する。
+3. 10件以上の場合、`NOTICE_LIST_PAGE` と `listPaginationHtml("notices",...)` で10件ずつ表示しているか確認する。
+4. ページネーションはスクロール領域の上に置く。スクロール領域の中に入れると操作が見つけづらくなる。
+5. `api/get_public_notices.php` 側で返却件数を削らない。
+6. 修正後は `index.html`、`app_shell.html`、`service-worker.js`、`version.json` を同じ新バージョンへ同期する。
+
+### PWAで翌日になっても野球博士ライフが戻らない
+
+1. `assets/app.js` の `quizMasterTodayKey()` がJST基準で日付を返していることを確認する。
+2. `quizMasterDailyStorageKey()` と `quizMasterBonusLifeStorageKey()` が `quizMasterTodayKey()` を含んでいることを確認する。
+3. `setupQuizMasterDailyRefresh()` が初期化時に呼ばれているか確認する。
+4. `scheduleQuizMasterDailyRefresh()` がJST 24:00:05 付近に `refreshQuizMasterDailyState(true)` を実行することを確認する。
+5. `visibilitychange`、`pageshow`、`focus` で `refreshQuizMasterDailyState(false)` と `refreshQuizMasterHoldPreview()` が走ることを確認する。
+6. 強制リロードや localStorage 削除ではなく、`updateQuizMasterDailyUI()` の再実行で直す。
 
 ### デプロイ後に反映されない
 
@@ -207,7 +252,9 @@ git diff --name-only
 
 ```powershell
 Select-String -Path assets/app.js -Pattern "myPageAccordionHtml|rank-award-accordion|records-history-accordion|quiz-master-history-accordion"
-Select-String -Path assets/styles.css -Pattern "mypage-list-accordion|mypage-list-scroll|rank-award-accordion"
+Select-String -Path assets/app.js -Pattern "listPageState|listPaginationHtml|NOTICE_LIST_PAGE"
+Select-String -Path assets/app.js -Pattern "setupQuizMasterDailyRefresh|scheduleQuizMasterDailyRefresh|refreshQuizMasterDailyState|quizMasterNextJstMidnightDelay"
+Select-String -Path assets/styles.css -Pattern "mypage-list-accordion|mypage-list-scroll|rank-award-accordion|notice-list-scroll|mypage-list-pagination"
 Select-String -Path version.json,service-worker.js,index.html,app_shell.html -Pattern "v<新番号>|yakyu-yarouze-v<新番号>-production|\\?v=<新番号>"
 ```
 
@@ -218,6 +265,8 @@ Select-String -Path version.json,service-worker.js,index.html,app_shell.html -Pa
 - `docs/quiz_master_production_checklist.md`: 既存招待IDユーザー互換の仕様を明記する。
 - `assets/styles.css`: 遊び方ページのオプション機能カードは、親の白文字を継承しないようカード本文を濃色で明示する。
 - `assets/app.js`: マイページの5件以上の一覧を `myPageAccordionHtml()` で折りたたみ可能にする。
-- `assets/styles.css`: `.mypage-list-scroll` と `.rank-award-accordion .mypage-list-scroll` で、一覧種別ごとにスクロール上限を制御する。
+- `assets/app.js`: マイページとお知らせの10件以上の一覧を `listPageState()` / `listPaginationHtml()` で10件ずつ表示する。
+- `assets/app.js`: `setupQuizMasterDailyRefresh()` でPWA起動中・復帰時の日付変更を検知し、野球博士チャレンジのライフUIをリロードなしで更新する。
+- `assets/styles.css`: `.mypage-list-scroll`、`.notice-list-scroll`、`.rank-award-accordion .mypage-list-scroll` で、一覧種別ごとにスクロール上限を制御する。
 
 この実装は、同じ症状が再発したときの最初の確認ポイントである。
