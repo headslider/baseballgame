@@ -232,11 +232,28 @@ function load_player_feature_db() {
 function save_player_feature_db($db) {
     return write_json_file_locked(feature_scores_dir() . '/player_features.json', $db);
 }
+function player_row_has_active_invite_features($row) {
+    if (!is_array($row)) return false;
+    $flags = isset($row['flags']) && is_array($row['flags']) ? $row['flags'] : [];
+    $sources = isset($row['sources']) && is_array($row['sources']) ? $row['sources'] : [];
+    foreach ($sources as $feature=>$src) {
+        if (!is_array($src)) continue;
+        if (($src['type'] ?? '') !== 'invite') continue;
+        $feature = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$feature);
+        if ($feature === '' || $feature === 'admin_mode') continue;
+        if (!empty($flags[$feature])) return true;
+    }
+    return false;
+}
 function feature_flags_for_player($player_id) {
     $db = load_player_feature_db();
     $row = $db['players'][$player_id] ?? [];
     $flags = $row['flags'] ?? [];
-    return is_array($flags) ? $flags : [];
+    $flags = is_array($flags) ? $flags : [];
+    if (empty($flags['quiz_master']) && player_row_has_active_invite_features($row)) {
+        $flags['quiz_master'] = true;
+    }
+    return $flags;
 }
 function feature_sources_for_player($player_id) {
     $db = load_player_feature_db();

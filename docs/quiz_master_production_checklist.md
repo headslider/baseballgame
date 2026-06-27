@@ -23,6 +23,8 @@ const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
 
 `QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true` にすると、開始時に `get_features.php` で `player_features.json` の `sources` を確認し、招待ID由来の解放があるプレイヤーIDのみ許可する。
 
+既存本番ユーザー互換として、過去に招待IDで解放済みのユーザーに `flags.quiz_master` が保存されていない場合でも、`sources` に招待ID由来の有効な機能が残っていればサーバー側で `quiz_master=true` として扱う。最高位管理者が招待ID由来の機能を解除した場合は `sources` が削除されるため、この互換補完では再解放されない。
+
 ## 段階リリース中の扱い
 
 現在の段階リリース構成では、以下の扱いにする。
