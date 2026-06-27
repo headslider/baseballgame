@@ -1823,8 +1823,8 @@ async function loadQuizMasterQuestions(){
       console.warn("quiz data fetch candidate failed",url,e);
     }
   }
-  if(!data&&window.QUIZ_MASTER_QUESTIONS){
-    data=window.QUIZ_MASTER_QUESTIONS;
+  if(!data&&(window.QUIZ_MASTER_QUESTIONS||window.QUIZ_MASTER_QUESTIONS_FALLBACK)){
+    data=window.QUIZ_MASTER_QUESTIONS||window.QUIZ_MASTER_QUESTIONS_FALLBACK;
   }
   if(!data)throw new Error("quiz data load failed");
   const rows=normalizeQuizMasterQuestions(data);
