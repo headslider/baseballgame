@@ -1,13 +1,13 @@
 {
-  "app_version": "v1083-production",
-  "cache_version": "yakyu-yarouze-v1083-production",
-  "public_version": "v1.1.82",
+  "app_version": "v1084-production",
+  "cache_version": "yakyu-yarouze-v1084-production",
+  "public_version": "v1.1.83",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "野球博士チャレンジのボーナスライフ付与後に残りライフ表示と開始ボタン状態を即時更新するよう修正。",
+  "change_summary": "通常ゲーム中のモバイル画面でトップ背景が下端に見える問題を修正。ゲーム中はhtml/body/app/gameShell全体を緑背景で固定。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

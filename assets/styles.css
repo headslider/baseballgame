@@ -7220,24 +7220,25 @@ body > .lp-section.id-change-note{
 
 
 /* v679: prevent top background image from appearing during gameplay */
-body.screen-game-active
+body.screen-game-active,
 body.screen-result-active{
   background:#113a1d !important;
   background-image:none !important;
 }
-html:has(body.screen-game-active)
+html:has(body.screen-game-active),
 html:has(body.screen-result-active){
   background:#113a1d !important;
   background-image:none !important;
 }
-body.screen-game-active #screen-game
-body.screen-game-active #gameShell
-#screen-game.active
+body.screen-game-active #app,
+body.screen-game-active #screen-game,
+body.screen-game-active #gameShell,
+#screen-game.active,
 #screen-game.active .game-shell{
   background:#113a1d !important;
   background-image:none !important;
 }
-body.screen-game-active #screen-title
+body.screen-game-active #screen-title,
 body.screen-game-active #screen-title .stadium-bg{
   display:none !important;
 }
@@ -7250,6 +7251,21 @@ body.screen-game-active #screen-title .stadium-bg{
 }
 @supports not selector(:has(*)){
   body.screen-game-active{
+    background:#113a1d !important;
+    background-image:none !important;
+  }
+}
+@media (max-width:720px){
+  body.screen-game-active,
+  html:has(body.screen-game-active){
+    background:#113a1d !important;
+    background-image:none !important;
+  }
+  body.screen-game-active #app,
+  body.screen-game-active #screen-game,
+  body.screen-game-active #gameShell,
+  body.screen-game-active .game-shell{
+    min-height:100dvh !important;
     background:#113a1d !important;
     background-image:none !important;
   }
