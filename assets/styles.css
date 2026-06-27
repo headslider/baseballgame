@@ -5978,16 +5978,16 @@ body{
 
 
 /* v535: オプション機能未解放時のUI完全非表示保険 */
-body:not(.feature-mistake-review-unlocked) #myPageMistakes .mistake-review
+body:not(.feature-mistake-review-unlocked) #myPageMistakes .mistake-review,
 body:not(.feature-device-transfer-unlocked) .mistake-transfer-box{
   display:none !important;
 }
 
 
 /* v536: 未解放UIの完全非表示をさらに強化 */
-body:not(.feature-mistake-review-unlocked) #myPageMistakes
-body:not(.feature-mistake-review-unlocked) #myPageMistakes *
-body:not(.feature-device-transfer-unlocked) .mistake-transfer-box
+body:not(.feature-mistake-review-unlocked) #myPageMistakes,
+body:not(.feature-mistake-review-unlocked) #myPageMistakes *,
+body:not(.feature-device-transfer-unlocked) .mistake-transfer-box,
 body:not(.feature-device-transfer-unlocked) .mistake-transfer-box *{
   display:none !important;
 }
@@ -6001,7 +6001,7 @@ body:not(.feature-device-transfer-unlocked) .mistake-transfer-box *{
   color:#fff !important;
   box-shadow:0 16px 34px rgba(0,0,0,.18), inset 0 0 0 1px rgba(255,255,255,.08);
 }
-.option-feature-section h3
+.option-feature-section h3,
 .option-feature-section h4{
   color:#fff !important;
 }
@@ -6041,7 +6041,7 @@ body:not(.feature-device-transfer-unlocked) .mistake-transfer-box *{
 .option-feature-section .grade-grid{
   gap:18px !important;
 }
-.option-feature-card
+.option-feature-card,
 .option-feature-section .option-feature-card{
   overflow:hidden;
   border:3px solid #ffd84f !important;
@@ -6077,6 +6077,10 @@ body:not(.feature-device-transfer-unlocked) .mistake-transfer-box *{
   color:#102030 !important;
   font-weight:800;
   line-height:1.65;
+}
+.option-feature-section .option-feature-card p,
+.option-feature-section .quiz-master-howto-body p{
+  color:#102030 !important;
 }
 .option-feature-section .option-feature-card li::marker{
   color:#caa100;

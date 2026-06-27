@@ -46,6 +46,11 @@
 - `index.php` による自動切替方式はリロード問題があるため使わない。
 - ビルド工程は不要。PHP内蔵サーバーで直接動作確認する。
 
+### 最重要インシデントメモ
+
+- 2026-06-27 の本番復旧で判明した公開入口、PWAキャッシュ、招待ID互換、触ってはいけない運用データの詳細は `docs/production_incident_guardrails_20260627.md` を必ず読む。
+- 特に `index.html` 公開入口、`service-worker.js` の navigation `networkFirst`、`api/feature_common.php` の既存招待IDユーザー互換、`scores/` 非変更は再発防止の最重要事項である。
+
 ---
 
 ## 2. ディレクトリマップ

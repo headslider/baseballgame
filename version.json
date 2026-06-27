@@ -1,13 +1,13 @@
 {
-  "app_version": "v1085-production",
-  "cache_version": "yakyu-yarouze-v1085-production",
-  "public_version": "v1.1.84",
+  "app_version": "v1086-production",
+  "cache_version": "yakyu-yarouze-v1086-production",
+  "public_version": "v1.1.85",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "PWA起動時のHTMLナビゲーションをnetworkFirstに戻し、古いindex.htmlキャッシュが表示され続ける問題を防止。",
+  "change_summary": "遊び方ページの野球博士チャレンジ説明文が白文字で見えなくなるCSSセレクタ崩れを修正し、PWAキャッシュを更新。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

@@ -2,6 +2,8 @@
 
 更新日: 2026-06-27
 
+関連重要メモ: `docs/production_incident_guardrails_20260627.md`
+
 ## 現在の本番設定
 
 `assets/app.js` の以下フラグは本番用に有効化済み。
@@ -24,6 +26,8 @@ const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
 `QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true` にすると、開始時に `get_features.php` で `player_features.json` の `sources` を確認し、招待ID由来の解放があるプレイヤーIDのみ許可する。
 
 既存本番ユーザー互換として、過去に招待IDで解放済みのユーザーに `flags.quiz_master` が保存されていない場合でも、`sources` に招待ID由来の有効な機能が残っていればサーバー側で `quiz_master=true` として扱う。最高位管理者が招待ID由来の機能を解除した場合は `sources` が削除されるため、この互換補完では再解放されない。
+
+この互換処理は `api/feature_common.php` の共通判定で行う。`api/get_features.php` だけ、またはフロントの `assets/app.js` だけで個別対応しない。開始時とスコア保存時の両方が同じ判定に乗る必要があるため、問題があった場合は `feature_flags_for_player()` と `player_has_quiz_master_access()` を最初に確認する。
 
 ## 段階リリース中の扱い
 
