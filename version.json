@@ -1,13 +1,13 @@
 {
-  "app_version": "v1080-production",
-  "cache_version": "yakyu-yarouze-v1080-production",
-  "public_version": "v1.1.79",
+  "app_version": "v1081-production",
+  "cache_version": "yakyu-yarouze-v1081-production",
+  "public_version": "v1.1.80",
   "updated_at": "2026-06-27T00:00:00+09:00",
   "release_date": "2026-06-27",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "通常ゲーム画面と野球博士チャレンジ画面のCSSカンマ抜けを修正。問題文・選択肢・HUD・ランキング等のフォントサイズとデザイン表示を復旧。",
+  "change_summary": "テスト環境を通常公開モードに戻し、野球博士ランキングページ下部の不要な挑戦ボタンを削除。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

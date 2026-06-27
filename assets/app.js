@@ -1523,7 +1523,6 @@ async function init(){
   const quizMasterResultBackBtn=$("quizMasterResultBackBtn");if(quizMasterResultBackBtn)quizMasterResultBackBtn.addEventListener("click",openQuizMasterMenu);
   const quizMasterRetryBtn=$("quizMasterRetryBtn");if(quizMasterRetryBtn)quizMasterRetryBtn.addEventListener("click",startQuizMaster);
   const quizMasterRankingBackBtn=$("quizMasterRankingBackBtn");if(quizMasterRankingBackBtn)quizMasterRankingBackBtn.addEventListener("click",()=>show("screen-quiz-master-menu"));
-  const quizMasterRankingPlayBtn=$("quizMasterRankingPlayBtn");if(quizMasterRankingPlayBtn)quizMasterRankingPlayBtn.addEventListener("click",startQuizMaster);
   const quizMasterMenuStartBtn=$("quizMasterMenuStartBtn");if(quizMasterMenuStartBtn)quizMasterMenuStartBtn.addEventListener("click",startQuizMaster);
   const quizMasterMenuRankingBtn=$("quizMasterMenuRankingBtn");if(quizMasterMenuRankingBtn)quizMasterMenuRankingBtn.addEventListener("click",openQuizMasterRanking);
   const quizMasterMenuRanksBtn=$("quizMasterMenuRanksBtn");if(quizMasterMenuRanksBtn)quizMasterMenuRanksBtn.addEventListener("click",showQuizMasterRanks);
