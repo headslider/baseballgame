@@ -1,6 +1,9 @@
 name: Deploy TEST
 
 on:
+  push:
+    branches:
+      - 'codex/**'
   pull_request:
     branches:
       - main
@@ -16,7 +19,7 @@ concurrency:
 
 jobs:
   deploy-test:
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'codex/')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'codex/') || startsWith(github.ref_name, 'codex/')
     runs-on: ubuntu-latest
     environment: baseball_test
 
