@@ -80,6 +80,16 @@
 - アコーディオンは初期状態 `open` でよい。ユーザーが閉じられること、内部だけスクロールできることが重要。
 - ランキング専用ページ `screen-ranking` は別画面であり、今回のマイページ大量表示対策とは分けて扱う。ランキングページのTOP50表示をマイページ仕様に巻き込まない。
 
+### 端末内UI設定の保存
+
+- 学年・守備位置の前回選択は localStorage に保存し、同じプレイヤーIDで再アクセスしたときに自動復元する。
+- 保存キーは `baseballGameSelection:<PLAYER_ID>`。未ログイン時は `guest` として扱う。
+- 保存するのはUI選択だけであり、学年解放状態やスコア、ランキングは変更しない。
+- 復元後も `updateGradeOptions()` で解放済み学年に合わせてクランプする。未解放学年をlocalStorageで強制選択できる仕様にしてはいけない。
+- アコーディオン開閉状態は `baseballAccordionOpen:<PLAYER_ID>:<accordion-key>` に保存する。
+- `details` 要素は `bindPersistentAccordions()` で保存・復元する。動的生成後は必ず再バインドする。
+- `details` ではない独自アコーディオンは `savedAccordionOpen()` / `saveAccordionOpen()` で保存する。
+
 ### お知らせページの一覧表示
 
 - お知らせページは `screen-notices` の `renderNotices()` で表示する。
@@ -126,6 +136,8 @@
 - お知らせUI修正だけで `api/get_public_notices.php` の返却件数や保存データを変更しない。
 - 野球博士の日次ライフ更新のために localStorage の過去キーを一括削除しない。更新発火の問題は `setupQuizMasterDailyRefresh()` 側で直す。
 - 日次ライフ更新目的で強制リロードを標準仕様にしない。PWAでは利用中のゲームや入力状態を失うため、UI再判定で解決する。
+- 学年・ポジション復元のために、学年解放判定 `isSelectedGradeUnlocked()` や `maxUnlockedGrade()` を迂回しない。
+- アコーディオン保存のために、ユーザーのスコア・ランキング・通知本文などの業務データをlocalStorageへ複製しない。
 - `scores/`、`requests/`、`vendor/` をデプロイ対象に含めない。
 - `git push` だけで本番反映済みと判断しない。
 
@@ -211,6 +223,15 @@
 5. `visibilitychange`、`pageshow`、`focus` で `refreshQuizMasterDailyState(false)` と `refreshQuizMasterHoldPreview()` が走ることを確認する。
 6. 強制リロードや localStorage 削除ではなく、`updateQuizMasterDailyUI()` の再実行で直す。
 
+### 学年・ポジションやアコーディオン開閉が復元されない
+
+1. `assets/app.js` の `saveGameSelection()` と `restoreGameSelection()` を確認する。
+2. ログイン後の `setLoggedInPlayer()` と初期化時に `restoreGameSelection()` が呼ばれているか確認する。
+3. 学年・ポジション変更時に `updateGradeOptionsAndSave()` が呼ばれているか確認する。
+4. 動的に描画される画面では、描画後に `bindPersistentAccordions()` が呼ばれているか確認する。
+5. 独自アコーディオンの場合は `savedAccordionOpen()` と `saveAccordionOpen()` を使っているか確認する。
+6. 未解放学年を復元しようとしていないか、`updateGradeOptions()` によるクランプを確認する。
+
 ### デプロイ後に反映されない
 
 1. `main` に対象コミットが push 済みか確認する。
@@ -254,6 +275,7 @@ git diff --name-only
 Select-String -Path assets/app.js -Pattern "myPageAccordionHtml|rank-award-accordion|records-history-accordion|quiz-master-history-accordion"
 Select-String -Path assets/app.js -Pattern "listPageState|listPaginationHtml|NOTICE_LIST_PAGE"
 Select-String -Path assets/app.js -Pattern "setupQuizMasterDailyRefresh|scheduleQuizMasterDailyRefresh|refreshQuizMasterDailyState|quizMasterNextJstMidnightDelay"
+Select-String -Path assets/app.js -Pattern "saveGameSelection|restoreGameSelection|bindPersistentAccordions|savedAccordionOpen"
 Select-String -Path assets/styles.css -Pattern "mypage-list-accordion|mypage-list-scroll|rank-award-accordion|notice-list-scroll|mypage-list-pagination"
 Select-String -Path version.json,service-worker.js,index.html,app_shell.html -Pattern "v<新番号>|yakyu-yarouze-v<新番号>-production|\\?v=<新番号>"
 ```
@@ -267,6 +289,7 @@ Select-String -Path version.json,service-worker.js,index.html,app_shell.html -Pa
 - `assets/app.js`: マイページの5件以上の一覧を `myPageAccordionHtml()` で折りたたみ可能にする。
 - `assets/app.js`: マイページとお知らせの10件以上の一覧を `listPageState()` / `listPaginationHtml()` で10件ずつ表示する。
 - `assets/app.js`: `setupQuizMasterDailyRefresh()` でPWA起動中・復帰時の日付変更を検知し、野球博士チャレンジのライフUIをリロードなしで更新する。
+- `assets/app.js`: `saveGameSelection()` / `restoreGameSelection()` で学年・ポジションをプレイヤーID別に保存し、`bindPersistentAccordions()` でアコーディオン開閉状態を保存する。
 - `assets/styles.css`: `.mypage-list-scroll`、`.notice-list-scroll`、`.rank-award-accordion .mypage-list-scroll` で、一覧種別ごとにスクロール上限を制御する。
 
 この実装は、同じ症状が再発したときの最初の確認ポイントである。

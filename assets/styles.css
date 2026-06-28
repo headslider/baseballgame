@@ -919,7 +919,7 @@ button:disabled{
   color:#fff;
 }
 .rank-award-accordion .mypage-list-scroll{
-  /* v1093: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
+  /* v1094: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
   max-height:334px;
 }
 .mypage-empty,.mypage-loading{

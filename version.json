@@ -1,13 +1,13 @@
 {
-  "app_version": "v1093-production",
-  "cache_version": "yakyu-yarouze-v1093-production",
-  "public_version": "v1.1.92",
+  "app_version": "v1094-production",
+  "cache_version": "yakyu-yarouze-v1094-production",
+  "public_version": "v1.1.93",
   "updated_at": "2026-06-28T00:00:00+09:00",
   "release_date": "2026-06-28",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "ページネーション文字色をコンテンツ背景ごとに調整。",
+  "change_summary": "アコーディオン開閉と前回選択した学年・ポジションを端末に保存。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

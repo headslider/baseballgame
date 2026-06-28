@@ -71,6 +71,17 @@ async function refreshQuizMasterHoldPreview(){
   try{if(typeof updateQuizMasterDailyUI==="function")updateQuizMasterDailyUI();}catch(e){}
 }
 const QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true;
+function safeLocalGet(key){
+  try{return localStorage.getItem(key);}catch(e){return null;}
+}
+function safeLocalSet(key,value){
+  try{localStorage.setItem(key,value);}catch(e){}
+}
+function stablePlayerKey(){
+  let pid="";
+  try{pid=(STATE.loggedIn&&STATE.playerId)?STATE.playerId:(typeof currentInputPlayerId==="function"?currentInputPlayerId():"");}catch(e){pid="";}
+  return String(pid||"guest").toUpperCase();
+}
 const QUIZ_MASTER_TOTAL_QUESTIONS=20;
 const QUIZ_MASTER_CHECKPOINT_LEVEL=14;
 const QUIZ_MASTER_CHALLENGE_START_LEVEL=15;
@@ -1476,11 +1487,12 @@ async function init(){
     sel.dataset.loaded="1";
   }
 
+  restoreGameSelection();
   updateGradeOptions();
 
   // サーバー確認系はトップ表示をブロックしない。
   if(savedId){
-    loadPlayerProgress(savedId);
+    loadPlayerProgress(savedId).then(()=>restoreGameSelection()).then(()=>updateGradeOptions()).catch(()=>{});
     refreshFeatureFlags(savedId).then(()=>{
       loadMistakeReviewSetting(savedId);
       loadOwnServerMistakes(savedId);
@@ -1496,9 +1508,9 @@ async function init(){
 
   handleInitialOpenAction();
 
-  $("position").addEventListener("change",updateGradeOptions);
-  $("grade").addEventListener("change",updateGradeOptions);
-  $("playerId").addEventListener("input",()=>{STATE.loggedIn=false;STATE.playerId="";STATE.progress={};STATE.featureFlags={};STATE.featureStatus=null;updateLoginUI();updateGradeOptions();updateAdminModeUI()});
+  $("position").addEventListener("change",updateGradeOptionsAndSave);
+  $("grade").addEventListener("change",updateGradeOptionsAndSave);
+  $("playerId").addEventListener("input",()=>{STATE.loggedIn=false;STATE.playerId="";STATE.progress={};STATE.featureFlags={};STATE.featureStatus=null;restoreGameSelection();updateLoginUI();updateGradeOptions();updateAdminModeUI()});
   $("loginBtn").addEventListener("click",loginWithCurrentId);
   const inviteIssueExternalBtn=$("inviteIssueExternalBtn");if(inviteIssueExternalBtn)inviteIssueExternalBtn.addEventListener("click",handleIssueExternalButtonClick);
   const adminIssueExternalBtn=$("adminIssueExternalBtn");if(adminIssueExternalBtn)adminIssueExternalBtn.addEventListener("click",handleIssueExternalButtonClick);
@@ -1568,6 +1580,7 @@ async function init(){
   updateRequestMenuVisibility();
   updatePushSectionAvailability();
   setupQuizMasterDailyRefresh();
+  bindPersistentAccordions(document);
   document.body.classList.add("screen-title-active");
   const adminTestReq=readAdminQuestionTestRequest();
   if(adminTestReq)await startAdminQuestionTest(adminTestReq);
@@ -2676,6 +2689,40 @@ function maxUnlockedGrade(pos){
   const n=Number(p.max_unlocked_grade||3);
   return Math.max(3,Math.min(6,n));
 }
+function gameSelectionStorageKey(){
+  return `baseballGameSelection:${stablePlayerKey()}`;
+}
+function saveGameSelection(){
+  const gradeSel=$("grade");
+  const posSel=$("position");
+  if(!gradeSel||!posSel)return;
+  safeLocalSet(gameSelectionStorageKey(),JSON.stringify({
+    grade:String(gradeSel.value||""),
+    position:String(posSel.value||""),
+    savedAt:new Date().toISOString()
+  }));
+}
+function restoreGameSelection(){
+  const gradeSel=$("grade");
+  const posSel=$("position");
+  if(!gradeSel||!posSel)return false;
+  try{
+    const raw=safeLocalGet(gameSelectionStorageKey());
+    if(!raw)return false;
+    const data=JSON.parse(raw);
+    const savedPos=String(data&&data.position||"");
+    const savedGrade=String(data&&data.grade||"");
+    if(savedPos&&[...posSel.options].some(opt=>opt.value===savedPos))posSel.value=savedPos;
+    if(savedGrade&&[...gradeSel.options].some(opt=>opt.value===savedGrade))gradeSel.value=savedGrade;
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+function updateGradeOptionsAndSave(){
+  updateGradeOptions();
+  saveGameSelection();
+}
 function updateGradeOptions(){
   const gradeSel=$("grade");
   const posSel=$("position");
@@ -2884,7 +2931,7 @@ async function ensureCurrentPlayerVerifiedForFeature(){
   return {ok:false,error:(result&&result.error)||"verify_failed",message:(result&&result.message)||"プレイヤーIDの確認に失敗しました。トップ画面で一度ログアウトして、同じプレイヤーIDで再ログインしてからお試しください。"};
 }
 
-async function setLoggedInPlayer(pid){STATE.playerId=pid;STATE.loggedIn=true;localStorage.setItem("baseballPlayerId",pid);$("playerId").value=pid;updateLoginUI();loadPlayerProgress(pid);await refreshFeatureFlags(pid);loadOwnServerMistakes(pid)}
+async function setLoggedInPlayer(pid){STATE.playerId=pid;STATE.loggedIn=true;localStorage.setItem("baseballPlayerId",pid);$("playerId").value=pid;updateLoginUI();await loadPlayerProgress(pid);restoreGameSelection();updateGradeOptions();await refreshFeatureFlags(pid);loadOwnServerMistakes(pid)}
 
 function validatePlayerIdFormat(pid){
   const id=String(pid||"").trim();
@@ -3205,9 +3252,52 @@ function listPaginationHtml(action,count,page,totalPages){
   if(Number(count)<MY_PAGE_LIST_PAGE_SIZE)return "";
   return `<div class="mypage-list-pagination"><button class="secondary" type="button" data-list-page-action="${escapeHtml(action)}" data-list-page-dir="prev" ${page<=1?"disabled":""}>&lt;前へ</button><span class="page-info">ページ ${escapeHtml(page)} / ${escapeHtml(totalPages)}</span><button class="secondary" type="button" data-list-page-action="${escapeHtml(action)}" data-list-page-dir="next" ${page>=totalPages?"disabled":""}>次へ&gt;</button></div>`;
 }
+function accordionStorageKey(key){
+  return `baseballAccordionOpen:${stablePlayerKey()}:${key}`;
+}
+function accordionStateKey(details){
+  if(!details)return "";
+  if(details.dataset&&details.dataset.accordionKey)return details.dataset.accordionKey;
+  const screen=details.closest(".screen");
+  const screenId=screen&&screen.id?screen.id:"global";
+  if(details.id)return `${screenId}:${details.id}`;
+  const summary=details.querySelector("summary");
+  const label=(summary&&summary.textContent?summary.textContent:"accordion").replace(/\s+/g," ").trim().slice(0,80);
+  const cls=String(details.className||"").replace(/\s+/g,".").slice(0,80);
+  return `${screenId}:${cls}:${label}`;
+}
+function applyPersistentAccordion(details){
+  const key=accordionStateKey(details);
+  if(!key)return;
+  const saved=safeLocalGet(accordionStorageKey(key));
+  if(saved==="1")details.open=true;
+  else if(saved==="0")details.open=false;
+  if(details.dataset)details.dataset.accordionKey=key;
+}
+function bindPersistentAccordions(root=document){
+  if(!root||!root.querySelectorAll)return;
+  root.querySelectorAll("details").forEach(details=>{
+    applyPersistentAccordion(details);
+    if(details.dataset&&details.dataset.accordionPersistBound==="1")return;
+    if(details.dataset)details.dataset.accordionPersistBound="1";
+    details.addEventListener("toggle",()=>{
+      const key=accordionStateKey(details);
+      if(key)safeLocalSet(accordionStorageKey(key),details.open?"1":"0");
+    });
+  });
+}
+function savedAccordionOpen(key,defaultOpen=true){
+  const saved=safeLocalGet(accordionStorageKey(key));
+  if(saved==="1")return true;
+  if(saved==="0")return false;
+  return !!defaultOpen;
+}
+function saveAccordionOpen(key,open){
+  safeLocalSet(accordionStorageKey(key),open?"1":"0");
+}
 function myPageAccordionHtml(title,count,body,className="",paginationHtml=""){
   if(Number(count)<5)return body;
-  return `<details class="mypage-list-accordion ${escapeHtml(className)}" open><summary><span>${escapeHtml(title)}</span><em>${escapeHtml(count)}件</em></summary>${paginationHtml}<div class="mypage-list-scroll">${body}</div></details>`;
+  return `<details class="mypage-list-accordion ${escapeHtml(className)}" data-accordion-key="${escapeHtml(className||title)}" open><summary><span>${escapeHtml(title)}</span><em>${escapeHtml(count)}件</em></summary>${paginationHtml}<div class="mypage-list-scroll">${body}</div></details>`;
 }
 
 function collectMyTopRanks(rankingData,playerId){
@@ -3461,8 +3551,8 @@ function mistakeReviewItemHtml(view){
 
 let MISTAKE_REVIEW_PAGE=1;
 let MISTAKE_REVIEW_UNAVAILABLE_PAGE=1;
-let MISTAKE_REVIEW_LIST_OPEN=true;
-let MISTAKE_REVIEW_UNAVAILABLE_OPEN=true;
+let MISTAKE_REVIEW_LIST_OPEN=savedAccordionOpen("mistake-review-list",true);
+let MISTAKE_REVIEW_UNAVAILABLE_OPEN=savedAccordionOpen("mistake-review-unavailable",true);
 function renderMistakeReviewSection(){
   const box=$("myPageMistakes");
   if(!box)return;
@@ -3569,12 +3659,15 @@ function renderMistakeReviewSection(){
       const accordion=title.getAttribute('data-accordion');
       if(accordion==='list'){
         MISTAKE_REVIEW_LIST_OPEN=!MISTAKE_REVIEW_LIST_OPEN;
+        saveAccordionOpen("mistake-review-list",MISTAKE_REVIEW_LIST_OPEN);
       }else if(accordion==='unavailable'){
         MISTAKE_REVIEW_UNAVAILABLE_OPEN=!MISTAKE_REVIEW_UNAVAILABLE_OPEN;
+        saveAccordionOpen("mistake-review-unavailable",MISTAKE_REVIEW_UNAVAILABLE_OPEN);
       }
       renderMistakeReviewSection();
     });
   });
+  bindPersistentAccordions(box);
 }
 function recordMistakeReview(q,choice,score){
   if(isAdminQuestionTestMode())return;
@@ -3705,6 +3798,7 @@ function renderMyPage(data,rankingData,quizMasterData){
         renderMyPage(data,rankingData,quizMasterData);
       });
     });
+    bindPersistentAccordions(pageRoot);
   }
 }
 
@@ -3853,6 +3947,7 @@ function renderNotices(notices){
       renderNotices(notices);
     });
   });
+  bindPersistentAccordions(records);
 }
 
 
@@ -3977,6 +4072,7 @@ function renderRanking(data){
   }).join("");
 
   $("rankingRecords").innerHTML=`${overallHtml}<h3 class="position-ranking-title">守備位置別ランキング</h3><details class="ranking-note ranking-note-details"><summary>ランキング解説</summary><p>守備位置別ランキングも、クリア問題数を基準に表示します。同じ問題を複数回正解しても1問として数えます。クリア問題数が同じ場合は、平均得点、平均回答時間、最高点、最新プレイの順で判定します。プレイ回数は順位判定に使いません。</p></details>${positionHtml}`;
+  bindPersistentAccordions($("screen-ranking"));
 }
 
 async function startGame(){
@@ -3985,7 +4081,7 @@ async function startGame(){
     alert(isLineInAppBrowser()?"LINE内ブラウザではゲームを開始できません。Safariでこのページを開き、ホーム画面に追加してから起動してください。":"スマホ・iPadでは、ホーム画面に追加したアプリから開いた時だけゲームを開始できます。");
     return;
   }
-  clearQuestionTimer();if(!STATE.loggedIn||STATE.playerId!==currentInputPlayerId()){if(!(await loginWithCurrentId()))return}if(!isSelectedGradeUnlocked())return;const pid=STATE.playerId;STATE.grade=Number($("grade").value);STATE.position=STATE.grade<=2?"BASIC":$("position").value;try{
+  clearQuestionTimer();if(!STATE.loggedIn||STATE.playerId!==currentInputPlayerId()){if(!(await loginWithCurrentId()))return}if(!isSelectedGradeUnlocked())return;saveGameSelection();const pid=STATE.playerId;STATE.grade=Number($("grade").value);STATE.position=STATE.grade<=2?"BASIC":$("position").value;try{
     const needsQuestionLoad=!(Array.isArray(STATE.questions)&&STATE.questions.length);
     if(needsQuestionLoad)showGameDataLoading("初回のみ問題データを読み込んでいます。");
     await ensureQuestionsLoaded(true);
