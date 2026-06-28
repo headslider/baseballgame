@@ -1,13 +1,13 @@
 {
-  "app_version": "v1095-production",
-  "cache_version": "yakyu-yarouze-v1095-production",
-  "public_version": "v1.1.94",
+  "app_version": "v1096-production",
+  "cache_version": "yakyu-yarouze-v1096-production",
+  "public_version": "v1.1.95",
   "updated_at": "2026-06-28T00:00:00+09:00",
   "release_date": "2026-06-28",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "野球博士チャレンジの椅子を背景固定仕様に統一し、二重表示を防止。",
+  "change_summary": "野球博士チャレンジの背景椅子位置を微調整。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

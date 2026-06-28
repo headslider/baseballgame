@@ -7685,7 +7685,7 @@ html:has(body.screen-quiz-master-active){
   inset:0;
   background:
     linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.05) 46%,rgba(0,0,0,.46)),
-    url("quiz_master_chair.webp") center 56% / auto clamp(280px,38vh,440px) no-repeat;
+    url("quiz_master_chair.webp") center calc(56% + 5px) / auto clamp(280px,38vh,440px) no-repeat;
   pointer-events:none;
   z-index:-1;
 }
@@ -10144,7 +10144,7 @@ body.quiz-master-failed .quiz-master-shell{
   .quiz-master-shell::before{
     background:
       linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.05) 46%,rgba(0,0,0,.46)),
-      url("quiz_master_chair.webp") center 56% / auto clamp(200px,32vh,400px) no-repeat;
+      url("quiz_master_chair.webp") center calc(56% + 5px) / auto clamp(200px,32vh,400px) no-repeat;
   }
 }
 
