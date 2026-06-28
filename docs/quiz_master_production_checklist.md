@@ -58,3 +58,25 @@ PWA更新時は、以下のバージョン整合性を確認する。公開入�
 - `version.json`
 
 段階リリース中の `index.html` はメンテナンス画面であり、ゲーム本体のJS/CSSバージョンは秘密URL用の `app_shell.html` で確認する。本公開時は `index.html` を実アプリ版へ差し替え、同じバージョン整合性を `index.html` で確認する。`scores/release_versions.json` は本番運用データのため、管理画面以外から勝手に編集しない。
+
+## 開始前読込・ライフ消費の仕様
+
+野球博士チャレンジは、問題データ読込完了前にゲームを開始した扱いにしない。
+
+- 読込中は `QUIZ_MASTER_STATE.loading=true`。
+- 読込中のタイマー表示は `--`。
+- 問題読込中・第1問開始前に「メニューに戻る」を押しても、ライフ消費警告は出さない。
+- ライフ消費は `startQuizMaster()` ではなく、実際に第1問が始まる直前の `beginQuizMasterAttemptIfNeeded()` で行う。
+- `attemptConsumed=false` または `questionStartedAt=0` の状態は、まだライフ消費済みのゲームとして扱わない。
+- `roundToken` は古い非同期イントロ・読込処理を失効させるために使う。新規開始や開始前離脱時にリセットせず、必ず進める。
+
+この仕様を崩すと、問題が表示されていないのにカウントだけ進む、または開始していないのにライフが減る事故が再発する。
+
+## 背景椅子の仕様
+
+野球博士チャレンジの椅子は背景画像に貼り付けて動かさない。
+
+- 正しい表示元は `.quiz-master-shell::before` の `quiz_master_chair.webp`。
+- HTML上の `.quiz-master-chair` は互換上残っていても、CSSの最終ルールで `display:none !important` にする。
+- `.quiz-master-chair` を fixed/relative 配置で再表示すると、背景椅子と二重表示になる。
+- 位置調整はPC用と `@media(max-width:999px)` の背景位置を同時に変更する。

@@ -15,6 +15,9 @@
 | マイページ大量表示 | 「その他の上位ランキング」や履歴一覧が大量に縦表示される | マイページ内の一覧が件数に応じた高さ制限・折りたたみを持たず、特に上位ランキングカードは1件の高さが低いため10件前後見えてしまう | 5件以上はアコーディオン化して内部スクロール、10件以上はスクロール上部にページネーションを置く |
 | お知らせ大量表示 | お知らせページに通知履歴が大量に縦表示される | `renderNotices()` が取得した全件を一括描画していた | 5件以上はお知らせ一覧を内部スクロール、10件以上はページネーションで10件ずつ表示する |
 | PWA日次ライフ更新 | PWAを開きっぱなしにすると翌日になっても野球博士チャレンジのライフ表示が更新されない | 日付キーは変わるが、リロードや画面操作がない限りUI再描画が発火しない | JST日付変更タイマー、1分ポーリング、PWA復帰時の再判定で `updateQuizMasterDailyUI()` を実行する |
+| 野球博士開始前進行 | 問題読込中なのにカウントだけ進み、メニューへ戻るとライフ消費警告が出る | 問題未確定の画面状態と古い非同期イントロ処理が残り、タイマー・ライフ消費の開始条件が曖昧だった | `loading`、`attemptConsumed`、`roundToken` で開始前状態を明示し、問題開始直前までタイマーとライフ消費を開始しない |
+| 野球博士の椅子二重表示 | ゲーム画面の椅子が二重に見える | `quiz_master_chair.webp` が背景疑似要素とHTMLの `.quiz-master-chair` の2系統で描画されていた | 椅子は背景レイヤー固定が正仕様。HTMLの椅子imgは全画面で非表示にし、背景側だけ表示する |
+| ゲームデータ読込全般 | 画面遷移後や連打時に古い通信結果が表示を上書きするリスク | 各画面の読込処理に timeout とロード世代管理が統一されていなかった | `fetchJsonWithTimeout()`、`GAME_DATA_LOAD_TOKEN`、`RANKING_LOAD_TOKEN`、`NOTICES_LOAD_TOKEN` で読込結果を制御する |
 | 招待解除済みユーザー | 互換救済で再解放されるリスク | 古い `flags` だけを見て補完すると解除済みまで復活する | 補完条件は「有効な invite source が残っていること」。解除処理は source を削除するため再解放しない |
 | 本番運用データ | 復旧時に `scores/` を直接編集・上書きするリスク | 本番固有のプレイヤー・ID・スコア・監査データが入っている | コードで互換対応する。`scores/`、`requests/`、`vendor/` は原則変更しない |
 | デプロイ | push しただけで本番反映されたと誤認 | 本番 `deploy.yml` は手動 `workflow_dispatch` のみ | `deploy.yml` を `apply=true` で実行して初めて本番反映 |
@@ -40,6 +43,23 @@
 - フロント更新時は `version.json`、`service-worker.js`、配信中のゲームHTMLのバージョンを同期する。
 - 段階リリース中のゲームHTMLは `app_shell.html`、本公開後は `index.html` を確認対象にする。
 
+### ゲームデータ読込ガード
+
+- データ読込は「表示だけ先に出す」場合でも、ゲーム開始条件を必ず分離する。
+- 通常ゲームは `ensureQuestionsLoaded(false)` で公開問題API `api/get_game_questions.php?v=838` を読む。
+- 通常ゲームの問題データは初回ロード後 `STATE.questions` に保持する。明示的な再読込が必要な管理用途以外で毎回 `forceReload=true` に戻さない。
+- `api/get_game_questions.php` は `data/questions.json` を直接公開せず、`question_status` により draft/disabled を除外する安全ゲートである。通常ゲームから未フィルタの `data/questions.json` へフォールバックしてはいけない。
+- 共通JSON取得は `fetchJsonWithTimeout(url, options, timeoutMs)` を使う。GETは既定で `cache:"no-store"` にする。
+- 通常ゲームの重い問題APIは 12秒 timeout、野球博士問題JSONは 10秒 timeout、野球博士の統計・称号、お知らせは 7秒 timeout、ランキングは 9秒 timeout を目安にする。
+- 画面遷移後に古い通信結果が戻ってきても表示を上書きしないよう、読込開始時にトークンを採番して完了時に一致確認する。
+- 現在のロードトークンは以下。
+  - `GAME_DATA_LOAD_TOKEN`: 通常ゲームの問題データ読込。
+  - `RANKING_LOAD_TOKEN`: ランキングページ読込。
+  - `NOTICES_LOAD_TOKEN`: お知らせページ読込。
+- `show(id)` で別画面へ移動した場合、該当しない画面のロードトークンを進め、未完了ロード結果を破棄する。
+- ロードトークンは通信キャンセルそのものではなく「戻ってきた古い結果を無視する」ためのガードである。
+- データ読込改善時に、API返却データや保存データを削って軽くする変更を混ぜない。API軽量化は別件として設計する。
+
 ### 野球博士チャレンジの解放判定
 
 - 本番では `QUIZ_MASTER_PRODUCTION_ACCESS_ENABLED=true`。
@@ -60,6 +80,26 @@
   - `visibilitychange`、`pageshow`、`focus` でアプリ復帰時に日付変更と `production_hold_enabled.flag` を再確認する。
 - ライフ上限や使用回数を手動で移行・削除しない。日付キーが変われば新しい日のキーを読み、自然に残り回数が戻る。
 - 通常ゲーム完了ボーナスも日付キー付きなので、翌日は再度1回だけ獲得できる。
+
+### 野球博士チャレンジの開始条件・読込中仕様
+
+- 野球博士チャレンジは、問題データ読込が完了するまでタイマーを開始しない。
+- 読込中は `QUIZ_MASTER_STATE.loading=true` とし、タイマー表示は `--` にする。
+- 読込中・開始前に「メニューに戻る」を押した場合は、ライフ消費警告を出さずにメニューへ戻す。
+- ライフ消費は `startQuizMaster()` の読込直後ではなく、`startQuizMasterRoundIntro()` の最後、実際に第1問が開始される直前の `beginQuizMasterAttemptIfNeeded()` で行う。
+- `QUIZ_MASTER_STATE.attemptConsumed` が `true` になる前は、ライフを消費したゲームとして扱わない。
+- `QUIZ_MASTER_STATE.questionStartedAt` がセットされる前は、回答時間・タイマー・警告付き中断の対象にしない。
+- `roundToken` は古い非同期イントロや読込処理を失効させるための世代番号である。新規開始・開始前メニュー戻り・警告OK時には進める。
+- `tickQuizMasterTimer()` と `resumeQuizMasterTimerAfterPrompt()` は、`loading`、`animating`、`questionStartedAt` を確認し、開始前にカウントを進めてはいけない。
+- 問題データ読込失敗時は、問題パネルに失敗メッセージを表示し、タイマー・ライフ消費・スコア保存を開始しない。
+
+### 野球博士チャレンジの背景椅子仕様
+
+- 椅子は `assets/styles.css` の `.quiz-master-shell::before` 背景レイヤーとして表示する。
+- HTMLの `<img class="quiz-master-chair" src="assets/quiz_master_chair.webp">` は互換上残っているが、全画面で `display:none !important` にする。
+- `.quiz-master-chair` を再表示したり、fixed配置で動かす仕様に戻すと、背景椅子と二重表示になる。
+- 背景椅子の位置はPC・モバイルとも `url("quiz_master_chair.webp") center calc(56% + 5px) / ... no-repeat` を基準にする。
+- モバイルでは椅子を独立要素としてスクロールさせず、背景と一体で動かす。
 
 ### マイページの一覧表示
 
@@ -136,6 +176,13 @@
 - お知らせUI修正だけで `api/get_public_notices.php` の返却件数や保存データを変更しない。
 - 野球博士の日次ライフ更新のために localStorage の過去キーを一括削除しない。更新発火の問題は `setupQuizMasterDailyRefresh()` 側で直す。
 - 日次ライフ更新目的で強制リロードを標準仕様にしない。PWAでは利用中のゲームや入力状態を失うため、UI再判定で解決する。
+- 野球博士の問題読込中にタイマーやライフ消費を開始しない。`loading`、`attemptConsumed`、`questionStartedAt` のガードを外さない。
+- 野球博士の「メニューに戻る」ボタンで、開始前・読込中にライフ消費警告を出さない。
+- 野球博士のライフ消費を `startQuizMaster()` の読込直後へ戻さない。実際の第1問開始直前にだけ消費する。
+- `.quiz-master-chair` を表示・アニメーション対象に戻さない。椅子は背景固定レイヤーが正仕様。
+- 通常ゲームの `ensureQuestionsLoaded(false)` を安易に `true` へ戻さない。毎回2MB級の問題データ再取得になり、開始遅延と読込中事故の原因になる。
+- 通常ゲームから未フィルタの `data/questions.json` へフォールバックしない。draft/disabled が出題されるリスクがある。
+- ランキングやお知らせのtimeout・ロードトークンを外さない。画面遷移後の古い通信結果が表示を上書きする原因になる。
 - 学年・ポジション復元のために、学年解放判定 `isSelectedGradeUnlocked()` や `maxUnlockedGrade()` を迂回しない。
 - アコーディオン保存のために、ユーザーのスコア・ランキング・通知本文などの業務データをlocalStorageへ複製しない。
 - `scores/`、`requests/`、`vendor/` をデプロイ対象に含めない。
@@ -223,6 +270,36 @@
 5. `visibilitychange`、`pageshow`、`focus` で `refreshQuizMasterDailyState(false)` と `refreshQuizMasterHoldPreview()` が走ることを確認する。
 6. 強制リロードや localStorage 削除ではなく、`updateQuizMasterDailyUI()` の再実行で直す。
 
+### 野球博士で問題読込中にタイマーだけ進む・ライフ警告が出る
+
+1. `assets/app.js` の `QUIZ_MASTER_STATE.loading`、`attemptConsumed`、`questionStartedAt` を確認する。
+2. `startQuizMaster()` が読込開始時に `loading=true`、`attemptConsumed=false`、`questionStartedAt=0`、`quizMasterTimer="--"` にしているか確認する。
+3. `loadQuizMasterQuestions()`、`loadQuizMasterQuestionStats()`、`loadQuizMasterTitles()` が `fetchJsonWithTimeout()` を使っているか確認する。
+4. 読込完了前に `quizMasterConsumeDailyAttempt()` が呼ばれていないか確認する。
+5. ライフ消費は `beginQuizMasterAttemptIfNeeded()` だけで行う。
+6. `startQuizMasterRoundIntro()` の最後、`questionStartedAt=Date.now()` の直前に `beginQuizMasterAttemptIfNeeded()` があることを確認する。
+7. `quizMasterExitBtn` のクリック処理が、`loading` または `!questionStartedAt` または `!attemptConsumed` の場合に警告なしでメニューへ戻すことを確認する。
+8. `tickQuizMasterTimer()` が `loading`、`animating`、`!questionStartedAt` の場合に何もしないことを確認する。
+9. 修正後は `assets/app.js` の構文チェックと、野球博士開始直後に「問題データを読み込み中...」でカウントが進まないことをテスト環境で確認する。
+
+### 野球博士の椅子が二重表示される
+
+1. `assets/styles.css` の `.quiz-master-shell::before` に `quiz_master_chair.webp` があることを確認する。
+2. `index.html` と `app_shell.html` に `<img class="quiz-master-chair">` が残っていてもよいが、CSSの最終ルールで `.quiz-master-chair{display:none !important;}` になっていることを確認する。
+3. `.quiz-master-chair` を fixed/relative で表示する過去CSSを復活させない。
+4. 椅子位置調整は `.quiz-master-shell::before` の背景位置だけを変更する。PC用と `@media(max-width:999px)` のモバイル用を同時に揃える。
+5. 二重表示が再発した場合は、`quiz_master_chair.webp` の参照数と最終CSSルールを確認する。
+
+### 通常ゲーム・ランキング・お知らせの読込結果が遅れて上書きされる
+
+1. `assets/app.js` の `GAME_DATA_LOAD_TOKEN`、`RANKING_LOAD_TOKEN`、`NOTICES_LOAD_TOKEN` を確認する。
+2. `show(id)` で該当しない画面のトークンを進めているか確認する。
+3. `startGame()` は `const loadToken=++GAME_DATA_LOAD_TOKEN` を採番し、`ensureQuestionsLoaded(false)` 後に一致確認しているか確認する。
+4. `openRanking()` と `openNotices()` は読込開始時にトークンを採番し、描画直前に一致確認と画面active確認をしているか確認する。
+5. `fetchJsonWithTimeout()` が使われているか確認する。timeoutなしの直接 `fetch()` に戻さない。
+6. 通常ゲームの問題APIは `api/get_game_questions.php?v=838` を読む。未フィルタの `data/questions.json` を直接読ませない。
+7. 修正後は、読込中に別画面へ戻っても古い結果が表示を上書きしないことを確認する。
+
 ### 学年・ポジションやアコーディオン開閉が復元されない
 
 1. `assets/app.js` の `saveGameSelection()` と `restoreGameSelection()` を確認する。
@@ -276,7 +353,10 @@ Select-String -Path assets/app.js -Pattern "myPageAccordionHtml|rank-award-accor
 Select-String -Path assets/app.js -Pattern "listPageState|listPaginationHtml|NOTICE_LIST_PAGE"
 Select-String -Path assets/app.js -Pattern "setupQuizMasterDailyRefresh|scheduleQuizMasterDailyRefresh|refreshQuizMasterDailyState|quizMasterNextJstMidnightDelay"
 Select-String -Path assets/app.js -Pattern "saveGameSelection|restoreGameSelection|bindPersistentAccordions|savedAccordionOpen"
+Select-String -Path assets/app.js -Pattern "GAME_DATA_LOAD_TOKEN|RANKING_LOAD_TOKEN|NOTICES_LOAD_TOKEN|fetchJsonWithTimeout|beginQuizMasterAttemptIfNeeded"
+Select-String -Path assets/app.js -Pattern "loading|attemptConsumed|questionStartedAt|roundToken|quizMasterTimer"
 Select-String -Path assets/styles.css -Pattern "mypage-list-accordion|mypage-list-scroll|rank-award-accordion|notice-list-scroll|mypage-list-pagination"
+Select-String -Path assets/styles.css -Pattern "quiz-master-shell::before|quiz-master-chair|quiz_master_chair.webp"
 Select-String -Path version.json,service-worker.js,index.html,app_shell.html -Pattern "v<新番号>|yakyu-yarouze-v<新番号>-production|\\?v=<新番号>"
 ```
 
@@ -290,6 +370,9 @@ Select-String -Path version.json,service-worker.js,index.html,app_shell.html -Pa
 - `assets/app.js`: マイページとお知らせの10件以上の一覧を `listPageState()` / `listPaginationHtml()` で10件ずつ表示する。
 - `assets/app.js`: `setupQuizMasterDailyRefresh()` でPWA起動中・復帰時の日付変更を検知し、野球博士チャレンジのライフUIをリロードなしで更新する。
 - `assets/app.js`: `saveGameSelection()` / `restoreGameSelection()` で学年・ポジションをプレイヤーID別に保存し、`bindPersistentAccordions()` でアコーディオン開閉状態を保存する。
+- `assets/app.js`: `loading`、`attemptConsumed`、`roundToken`、`beginQuizMasterAttemptIfNeeded()` で野球博士の読込中タイマー開始・開始前ライフ消費を防止する。
+- `assets/app.js`: `fetchJsonWithTimeout()`、`GAME_DATA_LOAD_TOKEN`、`RANKING_LOAD_TOKEN`、`NOTICES_LOAD_TOKEN` で通常ゲーム・ランキング・お知らせの読込結果を制御する。
 - `assets/styles.css`: `.mypage-list-scroll`、`.notice-list-scroll`、`.rank-award-accordion .mypage-list-scroll` で、一覧種別ごとにスクロール上限を制御する。
+- `assets/styles.css`: 野球博士の椅子は `.quiz-master-shell::before` の背景固定レイヤーで表示し、`.quiz-master-chair` は二重表示防止のため非表示にする。
 
 この実装は、同じ症状が再発したときの最初の確認ポイントである。
