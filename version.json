@@ -1,13 +1,13 @@
 {
-  "app_version": "v1097-production",
-  "cache_version": "yakyu-yarouze-v1097-production",
-  "public_version": "v1.1.96",
+  "app_version": "v1098-production",
+  "cache_version": "yakyu-yarouze-v1098-production",
+  "public_version": "v1.1.97",
   "updated_at": "2026-06-28T00:00:00+09:00",
   "release_date": "2026-06-28",
   "environment": "production",
   "start_url": "./",
   "scope": "./",
-  "change_summary": "野球博士チャレンジの問題読込中はタイマーとライフ消費を開始しないよう修正。",
+  "change_summary": "ゲームデータ読込のtimeoutと画面遷移時の古い読込結果破棄を全体改善。",
   "question_pool": {
     "csv_master_total": 603,
     "active_total": 597,

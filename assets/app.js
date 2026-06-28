@@ -282,6 +282,9 @@ function maxScoreForCurrentGame(){return (STATE.sequence&&STATE.sequence.length?
 function show(id){
   if(id!=="screen-game")clearQuestionTimer();
   if(id!=="screen-quiz-master")clearQuizMasterTimer();
+  if(id!=="screen-game"){GAME_DATA_LOAD_TOKEN+=1;hideGameDataLoading();}
+  if(id!=="screen-ranking")RANKING_LOAD_TOKEN+=1;
+  if(id!=="screen-notices")NOTICES_LOAD_TOKEN+=1;
   console.log(`[show] Transitioning to ${id}`);
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   const target=$(id);
@@ -1311,6 +1314,9 @@ function hideGameDataLoading(){
 }
 
 let questionLoadPromise=null;
+let GAME_DATA_LOAD_TOKEN=0;
+let RANKING_LOAD_TOKEN=0;
+let NOTICES_LOAD_TOKEN=0;
 async function ensureQuestionsLoaded(forceReload=false){
   if(forceReload){
     questionLoadPromise=null;
@@ -1321,9 +1327,9 @@ async function ensureQuestionsLoaded(forceReload=false){
     // 非公開（下書き）・停止の問題をゲームに出さないため、
     // ゲーム本体では data/questions.json を直接読まず、サーバー側で公開問題だけに絞ったAPIを読む。
     // APIが読めない場合は安全側に倒し、未フィルタのquestions.jsonへフォールバックしない。
-    questionLoadPromise=fetch("api/get_game_questions.php?v=838",{cache:"no-store"})
-      .then(r=>{if(!r.ok)throw new Error("published questions fetch failed");return r.json();})
-      .then(data=>{
+    questionLoadPromise=fetchJsonWithTimeout("api/get_game_questions.php?v=838",{cache:"no-store"},12000)
+      .then(({res,data})=>{
+        if(!res.ok)throw new Error("published questions fetch failed");
         if(!data||data.ok!==true||!Array.isArray(data.questions))throw new Error("published questions payload invalid");
         STATE.questions=data.questions;
         return STATE.questions;
@@ -1333,9 +1339,9 @@ async function ensureQuestionsLoaded(forceReload=false){
   return questionLoadPromise;
 }
 async function fetchJsonNoStore(url){
-  const res=await fetch(url,{cache:"no-store"});
+  const {res,data}=await fetchJsonWithTimeout(url,{cache:"no-store"},12000);
   if(!res.ok)throw new Error(`${url} fetch failed`);
-  return res.json();
+  return data;
 }
 function normalizeAdminMasterQuestionRow(row){
   if(!row||typeof row!=="object")return row;
@@ -1876,8 +1882,8 @@ async function loadQuizMasterQuestions(){
   ];
   for(const url of Array.from(new Set(candidates))){
     try{
-      const res=await fetch(url,{cache:"no-store"});
-      if(res.ok){data=await res.json();break}
+      const result=await fetchJsonWithTimeout(url,{cache:"no-store"},10000);
+      if(result.res.ok){data=result.data;break}
     }catch(e){
       console.warn("quiz data fetch candidate failed",url,e);
     }
@@ -1892,8 +1898,7 @@ async function loadQuizMasterQuestions(){
 }
 async function loadQuizMasterQuestionStats(){
   try{
-    const res=await fetch("api/get_quiz_master_question_stats.php?v=1016",{cache:"no-store"});
-    const data=await res.json();
+    const {res,data}=await fetchJsonWithTimeout("api/get_quiz_master_question_stats.php?v=1016",{cache:"no-store"},7000);
     QUIZ_MASTER_STATE.questionStats=(res.ok&&data&&data.ok&&data.stats&&typeof data.stats==="object")?data.stats:{};
   }catch(e){
     console.warn("quiz question stats fetch failed",e);
@@ -1928,8 +1933,7 @@ function quizMasterLevelIconHtml(level,cssClass){
 async function loadQuizMasterTitles(){
   if(QUIZ_MASTER_STATE.titles.length)return QUIZ_MASTER_STATE.titles;
   try{
-    const res=await fetch("api/get_quiz_master_titles.php?v=1016",{cache:"no-store"});
-    const data=await res.json();
+    const {res,data}=await fetchJsonWithTimeout("api/get_quiz_master_titles.php?v=1016",{cache:"no-store"},7000);
     QUIZ_MASTER_STATE.titles=normalizeQuizMasterTitles(res.ok&&data&&data.ok?data.titles:null);
   }catch(e){
     console.warn("quiz title fetch failed",e);
@@ -3748,7 +3752,11 @@ async function fetchJsonWithTimeout(url,options={},timeoutMs=7000){
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),timeoutMs);
   try{
-    const res=await fetch(url,Object.assign({},options,{signal:controller.signal}));
+    const init=Object.assign({},options);
+    if(!init.method||String(init.method).toUpperCase()==="GET"){
+      init.cache=init.cache||"no-store";
+    }
+    const res=await fetch(url,Object.assign(init,{signal:controller.signal}));
     const text=await res.text();
     let data=null;
     try{data=text?JSON.parse(text):{};}catch(e){data={ok:false,error:"invalid json",raw:text.slice(0,300)};}
@@ -3919,15 +3927,17 @@ function formatNoticeDate(value){
 }
 async function openNotices(){
   closeTopMenu();
+  const loadToken=++NOTICES_LOAD_TOKEN;
   show("screen-notices");
   renderNoticesLoading();
   try{
-    const res=await fetch("api/get_public_notices.php",{cache:"no-store"});
-    const data=await res.json().catch(()=>({ok:false}));
+    const {res,data}=await fetchJsonWithTimeout("api/get_public_notices.php",{cache:"no-store"},7000);
+    if(loadToken!==NOTICES_LOAD_TOKEN||!$("screen-notices")?.classList.contains("active"))return;
     if(!res.ok||!data.ok)throw new Error((data&&data.error)||"load failed");
     renderNotices(data.notices||[]);
     renderPublicVersionInfo();
   }catch(e){
+    if(loadToken!==NOTICES_LOAD_TOKEN)return;
     console.warn("notices load failed",e);
     renderNoticesError();
   }
@@ -4071,7 +4081,26 @@ async function openMyPage(){
 }
 
 
-async function openRanking(){if(!STATE.loggedIn||!STATE.playerId){if(!(await loginWithCurrentId()))return}show("screen-ranking");renderRankingLoading();try{const res=await fetch("api/get_ranking.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({player_id:STATE.playerId})});const data=await res.json();if(!res.ok||!data.ok)throw new Error((data&&data.error)||"load failed");renderRanking(data)}catch(e){console.warn("ranking load failed",e);renderRankingError()}}
+async function openRanking(){
+  if(!STATE.loggedIn||!STATE.playerId){if(!(await loginWithCurrentId()))return}
+  const loadToken=++RANKING_LOAD_TOKEN;
+  show("screen-ranking");
+  renderRankingLoading();
+  try{
+    const {res,data}=await fetchJsonWithTimeout("api/get_ranking.php",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({player_id:STATE.playerId,client_token:getClientToken(),t:Date.now()})
+    },9000);
+    if(loadToken!==RANKING_LOAD_TOKEN||!$("screen-ranking")?.classList.contains("active"))return;
+    if(!res.ok||!data.ok)throw new Error((data&&data.error)||"load failed");
+    renderRanking(data);
+  }catch(e){
+    if(loadToken!==RANKING_LOAD_TOKEN)return;
+    console.warn("ranking load failed",e);
+    renderRankingError();
+  }
+}
 function renderRankingLoading(){$("rankingSummary").innerHTML=`<div class="profile-id">プレイヤーID：${escapeHtml(STATE.playerId)}</div><div>ランキングを読み込み中...</div>`;$("rankingRecords").innerHTML=""}
 function renderRankingError(){$("rankingSummary").innerHTML='<div class="mypage-empty">ランキングを読み込めませんでした。PHPが利用できるサーバーに設置されているか確認してください。</div>';$("rankingRecords").innerHTML=""}
 function renderRanking(data){
@@ -4111,13 +4140,15 @@ async function startGame(){
     alert(isLineInAppBrowser()?"LINE内ブラウザではゲームを開始できません。Safariでこのページを開き、ホーム画面に追加してから起動してください。":"スマホ・iPadでは、ホーム画面に追加したアプリから開いた時だけゲームを開始できます。");
     return;
   }
-  clearQuestionTimer();if(!STATE.loggedIn||STATE.playerId!==currentInputPlayerId()){if(!(await loginWithCurrentId()))return}if(!isSelectedGradeUnlocked())return;saveGameSelection();const pid=STATE.playerId;STATE.grade=Number($("grade").value);STATE.position=STATE.grade<=2?"BASIC":$("position").value;try{
+  clearQuestionTimer();if(!STATE.loggedIn||STATE.playerId!==currentInputPlayerId()){if(!(await loginWithCurrentId()))return}if(!isSelectedGradeUnlocked())return;saveGameSelection();const pid=STATE.playerId;const loadToken=++GAME_DATA_LOAD_TOKEN;STATE.grade=Number($("grade").value);STATE.position=STATE.grade<=2?"BASIC":$("position").value;try{
     const needsQuestionLoad=!(Array.isArray(STATE.questions)&&STATE.questions.length);
     if(needsQuestionLoad)showGameDataLoading("初回のみ問題データを読み込んでいます。");
-    await ensureQuestionsLoaded(true);
+    await ensureQuestionsLoaded(false);
+    if(loadToken!==GAME_DATA_LOAD_TOKEN)return;
     if(needsQuestionLoad)hideGameDataLoading();
     STATE.sequence=makeSequence();
   }catch(e){
+    if(loadToken!==GAME_DATA_LOAD_TOKEN)return;
     hideGameDataLoading();
     console.error(e);
     alert("問題データの読み込みに問題があります。通信環境を確認して再度お試しください。");
