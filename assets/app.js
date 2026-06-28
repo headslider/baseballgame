@@ -94,7 +94,7 @@ const QUIZ_MASTER_TITLE_DEFAULTS=[
   {level:11,title:"オールスター",point:2500000},{level:12,title:"甲子園スター",point:3080000},{level:13,title:"ドラフト候補",point:3730000},{level:14,title:"プロ野球選手",point:4440000},{level:15,title:"メジャーリーガー",point:5210000},
   {level:16,title:"首位打者",point:6040000},{level:17,title:"ホームラン王",point:6930000},{level:18,title:"サイヤング賞",point:7890000},{level:19,title:"MVP",point:8910000},{level:20,title:"野球殿堂",point:10000000}
 ];
-const QUIZ_MASTER_STATE={questions:[],questionStats:{},titles:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
+const QUIZ_MASTER_STATE={questions:[],questionStats:{},titles:[],sequence:[],currentIndex:0,score:0,selected:null,timer:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,animating:false,loading:false,attemptConsumed:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]};
 const INNING_SLOTS=[
   ["1回表",0,"1B","attack"],["1回表",1,"2B","attack"],["1回表",2,"3B","attack"],
   ["1回裏",0,"1B","defense"],["1回裏",1,"2B","defense"],["1回裏",2,"3B","defense"],
@@ -1524,8 +1524,16 @@ async function init(){
   $("rankingBackBtn").addEventListener("click",()=>show("screen-title"));
   const quizMasterExitBtn=$("quizMasterExitBtn");if(quizMasterExitBtn)quizMasterExitBtn.addEventListener("click",async()=>{
     clearQuizMasterTimer(); // 警告表示中は制限時間を停止する
+    if(QUIZ_MASTER_STATE.loading||!QUIZ_MASTER_STATE.questionStartedAt||!QUIZ_MASTER_STATE.attemptConsumed){
+      QUIZ_MASTER_STATE.roundToken+=1;
+      QUIZ_MASTER_STATE.loading=false;
+      QUIZ_MASTER_STATE.animating=false;
+      show("screen-quiz-master-menu");
+      return;
+    }
     const ok=await confirmQuizMasterExitWarning();
     if(ok){
+      QUIZ_MASTER_STATE.roundToken+=1;
       clearQuizMasterTimer();
       show("screen-quiz-master-menu");
     }else{
@@ -1992,32 +2000,48 @@ async function startQuizMaster(){
     show("screen-title");
     return;
   }
-  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:20,answered:false,startedAt:Date.now(),questionStartedAt:0,logs:[],challenge:false,animating:false,roundToken:0,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]});
+  const startToken=QUIZ_MASTER_STATE.roundToken+1;
+  Object.assign(QUIZ_MASTER_STATE,{sequence:[],currentIndex:0,score:0,selected:null,remaining:20,answered:false,startedAt:0,questionStartedAt:0,logs:[],challenge:false,animating:false,loading:true,attemptConsumed:false,roundToken:startToken,endReason:"",fiftyUsed:false,fiftyHidden:null,failureReview:null,fiftyPromptOpen:false,choiceOrder:[]});
   show("screen-quiz-master");
   updateQuizMasterDailyUI();
   setTextSafe("quizMasterQuestion","問題データを読み込み中...");
   setTextSafe("quizMasterMessage","");
   setTextSafe("quizMasterScore","0");
+  setTextSafe("quizMasterTimer","--");
   const choices=$("quizMasterChoices");if(choices)choices.innerHTML="";
   try{
     const [rows]=await Promise.all([loadQuizMasterQuestions(),loadQuizMasterQuestionStats(),loadQuizMasterTitles()]);
-    const attempt=quizMasterConsumeDailyAttempt();
-    if(!attempt.ok){
-      updateQuizMasterDailyUI();
-      show("screen-title");
-      return;
-    }
+    if(QUIZ_MASTER_STATE.roundToken!==startToken)return;
+    QUIZ_MASTER_STATE.loading=false;
     updateQuizMasterDailyUI();
     QUIZ_MASTER_STATE.sequence=pickQuizMasterSequence(rows);
     renderQuizMasterQuestion();
   }catch(e){
     console.warn("quiz master start failed",e);
+    if(QUIZ_MASTER_STATE.roundToken!==startToken)return;
+    QUIZ_MASTER_STATE.loading=false;
+    QUIZ_MASTER_STATE.animating=false;
     setTextSafe("quizMasterQuestion","問題データを読み込めませんでした。");
     setTextSafe("quizMasterMessage",e&&e.message?e.message:"data/quiz_master_questions.json を確認してください。");
   }
 }
 function setTextSafe(id,text){const el=$(id);if(el)el.textContent=text}
 function currentQuizMasterQuestion(){return QUIZ_MASTER_STATE.sequence[QUIZ_MASTER_STATE.currentIndex]||null}
+function beginQuizMasterAttemptIfNeeded(){
+  if(QUIZ_MASTER_STATE.attemptConsumed)return true;
+  const attempt=quizMasterConsumeDailyAttempt();
+  if(!attempt.ok){
+    updateQuizMasterDailyUI();
+    setTextSafe("quizMasterQuestion","本日のライフを使い切りました。");
+    setTextSafe("quizMasterMessage","毎日24時にリセットされます。通常の野球やろうぜ！を1回クリアすると、本日だけライフが1つ増えます。");
+    show("screen-quiz-master-menu");
+    return false;
+  }
+  QUIZ_MASTER_STATE.attemptConsumed=true;
+  QUIZ_MASTER_STATE.startedAt=Date.now();
+  updateQuizMasterDailyUI();
+  return true;
+}
 function buildQuizMasterChoiceOrder(q){
   return shuffle((Array.isArray(q&&q.choices)?q.choices:[]).map((text,originalIndex)=>({
     text:String(text||""),
@@ -2095,6 +2119,12 @@ async function startQuizMasterRoundIntro(token){
   if(token!==QUIZ_MASTER_STATE.roundToken||$("screen-quiz-master")?.classList.contains("active")===false)return;
   clearQuizMasterStageClasses();
   setTextSafe("quizMasterMessage",q.category?`カテゴリ: ${q.category}`:"")
+  if(!beginQuizMasterAttemptIfNeeded()){
+    QUIZ_MASTER_STATE.roundToken+=1;
+    QUIZ_MASTER_STATE.animating=false;
+    clearQuizMasterTimer();
+    return;
+  }
   QUIZ_MASTER_STATE.animating=false;
   QUIZ_MASTER_STATE.questionStartedAt=Date.now();
   updateQuizMasterFiftyButton();
@@ -2134,7 +2164,7 @@ function askQuizMasterFiftyConfirm(){
   });
 }
 function resumeQuizMasterTimerAfterPrompt(){
-  if(QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating||QUIZ_MASTER_STATE.remaining<=0)return;
+  if(QUIZ_MASTER_STATE.loading||QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating||!QUIZ_MASTER_STATE.questionStartedAt||QUIZ_MASTER_STATE.remaining<=0)return;
   updateQuizMasterCountdown();
   QUIZ_MASTER_STATE.timer=setInterval(tickQuizMasterTimer,1000);
 }
@@ -2174,7 +2204,7 @@ async function useQuizMasterFifty(){
   updateQuizMasterFiftyButton();
 }
 function tickQuizMasterTimer(){
-  if(QUIZ_MASTER_STATE.answered)return;
+  if(QUIZ_MASTER_STATE.loading||QUIZ_MASTER_STATE.answered||QUIZ_MASTER_STATE.animating||!QUIZ_MASTER_STATE.questionStartedAt)return;
   QUIZ_MASTER_STATE.remaining-=1;
   setTextSafe("quizMasterTimer",String(Math.max(0,QUIZ_MASTER_STATE.remaining)));
   updateQuizMasterCountdown();
