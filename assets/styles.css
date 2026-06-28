@@ -919,7 +919,7 @@ button:disabled{
   color:#fff;
 }
 .rank-award-accordion .mypage-list-scroll{
-  /* v1092: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
+  /* v1093: 上位ランキングカードは1件の高さが低いため、5件分でスクロール開始 */
   max-height:334px;
 }
 .mypage-empty,.mypage-loading{
@@ -7412,6 +7412,18 @@ body.screen-game-active #screen-title .stadium-bg{
   -webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;
   padding:12px 4px 4px;
+}
+.notice-list-records .mypage-list-pagination button{
+  color:#0b3a75 !important;
+  text-shadow:none;
+}
+.notice-list-records .mypage-list-pagination button:not(:disabled):hover{
+  color:#063467 !important;
+}
+.notice-list-records .mypage-list-pagination .page-info{
+  color:#0b3a75;
+  background:#eef7ff;
+  text-shadow:none;
 }
 .notice-item{
   background:#fff;
