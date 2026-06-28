@@ -10148,6 +10148,11 @@ body.quiz-master-failed .quiz-master-shell{
   }
 }
 
+/* v1095: 椅子は背景レイヤーに固定する仕様。HTMLの椅子imgは二重表示防止のため全画面で非表示にする。 */
+.quiz-master-chair{
+  display:none !important;
+}
+
 /* v971+: 起動中（app-booting）はログイン状態に依存する条件付きコントロールを
    隠し、JSが状態を確定してから正しいボタンだけを表示する。
    これにより「不要ボタンが一瞬出て消える」チラつきを防ぐ。 */
